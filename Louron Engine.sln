@@ -5,6 +5,11 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Louron Sandbox", "Louron Sandbox\Louron Sandbox.vcxproj", "{88CAEA5C-D73D-491C-8143-2734AE8712DE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Louron Editor", "Louron Editor\Louron Editor.vcxproj", "{4026E2C2-E7B3-4B73-8038-7D8DE9139C49}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2F8B28BD-2C57-4AD3-83FA-5599689D6818} = {2F8B28BD-2C57-4AD3-83FA-5599689D6818}
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Louron Core", "Louron Core\Louron Core.vcxproj", "{2F8B28BD-2C57-4AD3-83FA-5599689D6818}"
 EndProject
 Global
@@ -17,6 +22,10 @@ Global
 		{88CAEA5C-D73D-491C-8143-2734AE8712DE}.Debug|x64.Build.0 = Debug|x64
 		{88CAEA5C-D73D-491C-8143-2734AE8712DE}.Release|x64.ActiveCfg = Release|x64
 		{88CAEA5C-D73D-491C-8143-2734AE8712DE}.Release|x64.Build.0 = Release|x64
+		{4026E2C2-E7B3-4B73-8038-7D8DE9139C49}.Debug|x64.ActiveCfg = Debug|x64
+		{4026E2C2-E7B3-4B73-8038-7D8DE9139C49}.Debug|x64.Build.0 = Debug|x64
+		{4026E2C2-E7B3-4B73-8038-7D8DE9139C49}.Release|x64.ActiveCfg = Release|x64
+		{4026E2C2-E7B3-4B73-8038-7D8DE9139C49}.Release|x64.Build.0 = Release|x64
 		{2F8B28BD-2C57-4AD3-83FA-5599689D6818}.Debug|x64.ActiveCfg = Debug|x64
 		{2F8B28BD-2C57-4AD3-83FA-5599689D6818}.Debug|x64.Build.0 = Debug|x64
 		{2F8B28BD-2C57-4AD3-83FA-5599689D6818}.Release|x64.ActiveCfg = Release|x64

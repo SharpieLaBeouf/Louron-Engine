@@ -1,0 +1,329 @@
+#version 450
+
+struct PointLight {
+    vec4 position;
+
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+
+    float radius;
+    float intensity;
+
+    bool activeLight;
+    bool lastLight;
+};
+
+struct SpotLight {
+	vec4 position;
+	vec4 direction;
+
+	vec4 ambient;
+	vec4 diffuse;
+	vec4 specular;
+    
+	float range;
+	float angle;
+	float intensity;
+	
+    bool activeLight;
+    bool lastLight;
+   
+	// DO NOT USE - this is for SSBO alignment purposes ONLY (8 BYTES)
+	float m_Padding1;
+	float m_Padding2;
+	float m_Padding3;
+};
+
+struct VisibleIndex {
+    int index;
+};
+
+struct BoundingSphere {
+	vec4 centre;
+	float radius;
+};
+
+// Point Lights SSBO
+layout(std430, binding = 0) readonly buffer PL_Buffer {
+    PointLight data[];
+} PL_Buffer_Data;
+
+layout(std430, binding = 1) writeonly buffer PL_IndiciesBuffer {
+    VisibleIndex data[];
+} PL_IndiciesBuffer_Data;
+
+// Spot Lights SSBO
+layout(std430, binding = 2) readonly buffer SL_Buffer {
+    SpotLight data[];
+} SL_Buffer_Data;
+
+layout(std430, binding = 3) writeonly buffer SL_IndiciesBuffer {
+    VisibleIndex data[];
+} SL_IndiciesBuffer_Data;
+
+// Declare Uniforms
+uniform mat4 u_View;
+uniform mat4 u_Proj;
+uniform ivec2 u_ScreenSize;
+uniform sampler2D u_Depth;
+
+// Declare values that are shared between all threads in workgroup
+shared uint minDepthInt;
+shared uint maxDepthInt;
+shared vec4 frustumPlanes[6];
+
+shared int PL_LightCount;
+shared int SL_LightCount;
+
+shared uint PL_VisibleLightCount;
+shared uint SL_VisibleLightCount;
+
+// Shared workgroup storage for visible indicies
+#define MAX_LIGHTS 1024
+
+shared int PL_VisibleLightIndices[MAX_LIGHTS];
+shared int SL_VisibleLightIndices[MAX_LIGHTS];
+
+shared mat4 viewProjection;
+
+BoundingSphere GetConeBoundingSphere(SpotLight light);
+
+#define TILE_SIZE 16
+layout(local_size_x = TILE_SIZE, local_size_y = TILE_SIZE, local_size_z = 1) in;
+
+void main(){
+    
+	ivec2 location = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 itemID = ivec2(gl_LocalInvocationID.xy);
+	ivec2 tileID = ivec2(gl_WorkGroupID.xy);
+	ivec2 tileNumber = ivec2(gl_NumWorkGroups.xy);
+	uint index = tileID.y * tileNumber.x + tileID.x;
+		
+    if (gl_LocalInvocationIndex == 0) {
+		minDepthInt = 0xFFFFFFFF;
+		maxDepthInt = 0;
+		PL_VisibleLightCount = 0;
+		SL_VisibleLightCount = 0;
+		viewProjection = u_Proj * u_View;
+		
+	}
+
+	barrier();
+
+	if(gl_LocalInvocationIndex == 0) {
+	
+		PL_LightCount = 0;
+		SL_LightCount = 0;
+		
+		// LOOP through PL SSBO and Count
+		for (int i = 0; i < PL_Buffer_Data.data.length(); i++) {
+			// BREAK LOOP if reached the last of the lights
+			if (PL_Buffer_Data.data[i].lastLight == true)
+				break;
+
+			PL_LightCount++;
+		}
+		
+		// LOOP through SL SSBO and Count
+		for (int i = 0; i < SL_Buffer_Data.data.length(); i++) {
+
+			// BREAK LOOP if reached the last of the lights
+			if (SL_Buffer_Data.data[i].lastLight == true)
+				break;
+
+			SL_LightCount++;
+		}
+	}
+
+    barrier();
+	
+	// Step 1: Calculate the minimum and maximum depth values for the work group tile
+	float maxDepth, minDepth;
+
+	vec2 text = vec2(location) / u_ScreenSize;
+
+	float depth = texture(u_Depth, text).r;
+    depth = (0.5 * u_Proj[3][2]) / (depth + 0.5 * u_Proj[2][2] - 0.5);
+
+	uint depthInt = floatBitsToUint(depth);
+	atomicMin(minDepthInt, depthInt);
+	atomicMax(maxDepthInt, depthInt);
+
+    barrier();
+
+    // Step 2: One thread should calculate the frustum planes to be used for this tile
+    if (gl_LocalInvocationIndex == 0) {
+
+		// Convert the min and max across the entire tile back to float
+		minDepth = uintBitsToFloat(minDepthInt);
+		maxDepth = uintBitsToFloat(maxDepthInt);
+
+		// Steps based on tile sale
+		vec2 negativeStep = (2.0 * vec2(tileID)) / vec2(tileNumber);
+		vec2 positiveStep = (2.0 * vec2(tileID + ivec2(1, 1))) / vec2(tileNumber);
+		
+		// Set up starting values for planes using steps and min and max z values
+		frustumPlanes[0] = vec4(1.0, 0.0, 0.0, 1.0 - negativeStep.x); // Left
+		frustumPlanes[1] = vec4(-1.0, 0.0, 0.0, -1.0 + positiveStep.x); // Right
+		frustumPlanes[2] = vec4(0.0, 1.0, 0.0, 1.0 - negativeStep.y); // Bottom
+		frustumPlanes[3] = vec4(0.0, -1.0, 0.0, -1.0 + positiveStep.y); // Top
+		frustumPlanes[4] = vec4(0.0, 0.0, -1.0, -minDepth); // Near
+		frustumPlanes[5] = vec4(0.0, 0.0, 1.0, maxDepth); // Far
+
+		// Transform the first four planes
+		for (uint i = 0; i < 4; i++) {
+			frustumPlanes[i] *= viewProjection;
+			frustumPlanes[i] /= length(frustumPlanes[i].xyz);
+		}
+
+		// Transform the depth planes
+		frustumPlanes[4] *= u_View;
+		frustumPlanes[4] /= length(frustumPlanes[4].xyz);
+		frustumPlanes[5] *= u_View;
+		frustumPlanes[5] /= length(frustumPlanes[5].xyz);
+    }
+    
+	barrier();
+	
+	// Step 3: Setup for Light Cull algorithms.
+	uint threadCount = TILE_SIZE * TILE_SIZE;
+	uint passCount = (PL_LightCount + threadCount - 1) / threadCount;
+	
+	// Step 3a: Cull point lights in parallel. Max 256 light checks per pass due to workgroup containing 16x16 threads or pixels.
+	for (uint i = 0; i < passCount; i++) {
+		
+		// Get the lightIndex to test for this thread / pass. If the index is >= light count, then this thread can stop testing lights
+		uint lightIndex = i * threadCount + gl_LocalInvocationIndex;
+		
+		if (lightIndex >= PL_LightCount)
+			break;
+
+		if(!PL_Buffer_Data.data[lightIndex].activeLight)
+			continue;
+
+		vec4 position = PL_Buffer_Data.data[lightIndex].position;
+		float radius = PL_Buffer_Data.data[lightIndex].radius;
+								
+		// We check if the light exists in our frustum
+		float distance = 0.0;
+		for (uint j = 0; j < 6; j++) {
+			distance = dot(position, frustumPlanes[j]) + radius;
+
+			// If one of the tests fails, then there is no intersection
+			if (distance <= 0.0) {
+				break;
+			}
+		}
+
+		// If greater than zero, then it is a visible light
+		if (distance > 0.0) {
+
+			// Add index to the shared array of visible indices
+			uint offset = atomicAdd(PL_VisibleLightCount, 1);
+			PL_VisibleLightIndices[offset] = int(lightIndex);
+
+		}
+	}
+	
+	barrier();
+
+	// Step 3b: Cull spot lights in parallel. Max 256 light checks per pass due to workgroup containing 16x16 threads or pixels.
+	passCount = (SL_LightCount + threadCount - 1) / threadCount;
+	for (uint i = 0; i < passCount; i++) {
+		
+		// Get the lightIndex to test for this thread / pass. If the index is >= light count, then this thread can stop testing lights
+		uint lightIndex = i * threadCount + gl_LocalInvocationIndex;
+		if (lightIndex >= SL_LightCount) {
+			break;
+		}
+		
+		if(!SL_Buffer_Data.data[lightIndex].activeLight)
+			continue;
+		
+		// Create bounding sphere around spotlight cone.
+		BoundingSphere sphere = GetConeBoundingSphere(SL_Buffer_Data.data[lightIndex]);
+
+		float distance = 0.0;
+		for (uint j = 0; j < 6; j++) {
+			distance = dot(vec4(sphere.centre.xyz, 1.0), frustumPlanes[j]) + sphere.radius;
+			
+			// If one of the tests fails, then there is no intersection
+			if (distance <= 0.0) {
+				break;
+			}
+		}
+		
+		// If greater than zero, then it is a visible light
+		if (distance > 0.0) {
+			
+			// Add index to the shared array of visible indices
+			uint offset = atomicAdd(SL_VisibleLightCount, 1);
+			SL_VisibleLightIndices[offset] = int(lightIndex);
+		}
+
+	}
+
+	barrier();
+
+	// Step 4. One thread per workgroup should fill the global light buffer
+	if (gl_LocalInvocationIndex == 0) {
+	
+		uint offset = index * MAX_LIGHTS; // Determine position in global buffer
+	
+		// Fill Indicies buffer for each workgroup for all point lights that have been detected
+		for (uint i = 0; i < PL_VisibleLightCount; i++) {
+			PL_IndiciesBuffer_Data.data[offset + i].index = PL_VisibleLightIndices[i];
+		}
+		
+		// If array is not full, then mark last index in buffer as -1
+		if (PL_VisibleLightCount != MAX_LIGHTS) {
+			PL_IndiciesBuffer_Data.data[offset + PL_VisibleLightCount].index = -1;
+		}
+		
+		// Fill Indicies buffer for each workgroup for all spotlights that have been detected
+		for (uint i = 0; i < SL_VisibleLightCount; i++) {
+			SL_IndiciesBuffer_Data.data[offset + i].index = SL_VisibleLightIndices[i];
+		}
+		
+		// If array is not full, then mark last index in buffer as -1
+		if (SL_VisibleLightCount != MAX_LIGHTS) {
+			SL_IndiciesBuffer_Data.data[offset + SL_VisibleLightCount].index = -1;
+		}
+	}
+}
+
+// This algorithm is not very efficient regarding false positives. This is due
+// to the tiled based rendering technique. Where I may implement clustered
+// based rendering technique, this will allow greater refinement for spotlight culling
+// due to each cluster frustum having a sphere I can test the spot light against.
+// In this current technique, I have to create a sphere around each spotlight opposed
+// to each clusters frustum, then I have to test that against the 6 planes of the tiles
+// frustum, leading to false positives due to the sphere around cone, opposed to sphere
+// around cluster frustum. Cannot make sphere around frustum in tiled based rendering
+// as the sphere would be huge due to depth values for each tile, leading to even more
+// false positives.
+BoundingSphere GetConeBoundingSphere(SpotLight light){
+	
+	float cosPenumbra = cos(radians(light.angle));
+
+	BoundingSphere sphere;
+	
+	// If the angle is less than or equal to 40.51 degrees, use a bounding 
+	// sphere that encompasses the entire cone of the spotlight.
+	if(cosPenumbra <= 0.707107) {
+
+		float coneSin = sqrt(1.0 - cosPenumbra * cosPenumbra);
+		sphere.centre = light.position + cosPenumbra * light.range * light.direction;
+		sphere.radius = coneSin * light.range;
+
+	} 
+	// If the angle is greater than 40.51 degrees, calculate the bounding sphere 
+	// based on the spotlight's range and angle.
+	else {
+		
+		sphere.radius = light.range / (2.0 * cosPenumbra);
+		sphere.centre = light.position + sphere.radius * light.direction;
+	}
+	return sphere;
+}
