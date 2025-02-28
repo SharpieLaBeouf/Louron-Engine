@@ -119,7 +119,6 @@ void LouronEditorLayer::OnAttach()
 
 	m_EditorCamera = std::make_unique<EditorCamera>();
 	m_EditorCamera->OnUpdate();
-
 }
 
 void LouronEditorLayer::OnDetach() {

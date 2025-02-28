@@ -32,10 +32,17 @@ namespace Louron {
 	class Entity {
 
 	public:
+
 		Entity() = default;
 		Entity(entt::entity regHandle, Scene* scene);
-		Entity(const Entity&) = default;
 
+		Entity(const Entity&) = default;
+		Entity(Entity&&) = default;
+
+		Entity& operator=(const Entity&) = default;
+		Entity& operator=(Entity&&) = default;
+
+#pragma region Setters
 
 		// This adds a Component to the applicable Entity, and returns that Component
 		template<typename T, typename... Args>
@@ -138,91 +145,250 @@ namespace Louron {
 			return component;
 		}
 
-		template<typename T>
-		T& GetComponent() {
-						
-			// Return Blank Component - I want to be able to just call GetComponent, and 
-			// not have to worry about error handling when an entity does not have a
-			// specified component, rather, it logs in the console the entity does not
-			// have a component.
-
-			static std::unordered_map<std::type_index, std::shared_ptr<T>> blankComponents;
-			if (m_EntityHandle == entt::null) {
-				L_CORE_ERROR("Entity Cannot GetComponent as Entity Handle is Null");
-
-				if (blankComponents.find(typeid(T)) == blankComponents.end())
-					blankComponents[typeid(T)] = std::make_shared<T>();
-
-				return *blankComponents[typeid(T)];
-			}
-			
-			if (!HasComponent<T>()) {
-				L_CORE_ERROR("Entity Does Not Have Component");
-
-				if (blankComponents.find(typeid(T)) == blankComponents.end())
-					blankComponents[typeid(T)] = std::make_shared<T>();
-
-				return *blankComponents[typeid(T)];
-			}
-
-			return m_Scene->m_Registry.get<T>(m_EntityHandle);
-		}
-
-		TransformComponent& GetTransform()
-		{
-			return GetComponent<TransformComponent>();
-		}
-
-		// This returns if the Entity has an applicable Component
-		template <typename T>
-		bool HasComponent() {
-			return m_Scene->m_Registry.has<T>(m_EntityHandle);
-		}
-
-		template<typename... Components>
-		bool HasAnyComponent() {
-			return m_Scene->m_Registry.any<Components...>(m_EntityHandle);
-		}
-
 		// This removes any Component within the applicable Entity
 		template <typename T>
 		void RemoveComponent() {
 
 			if constexpr (std::is_same_v<T, RigidbodyComponent>) {
-				if(HasComponent<RigidbodyComponent>())
+				if (HasComponent<RigidbodyComponent>())
 					PhysicsSystem::RemoveRigidBody({ m_EntityHandle, m_Scene }, m_Scene);
 			}
 			if constexpr (std::is_same_v<T, SphereColliderComponent>) {
-				if(HasComponent<SphereColliderComponent>())
+				if (HasComponent<SphereColliderComponent>())
 					PhysicsSystem::RemoveCollider({ m_EntityHandle, m_Scene }, m_Scene, PxGeometryType::eSPHERE);
 			}
 			if constexpr (std::is_same_v<T, BoxColliderComponent>) {
 				if (HasComponent<BoxColliderComponent>())
-					PhysicsSystem::RemoveCollider({ m_EntityHandle, m_Scene}, m_Scene, PxGeometryType::eBOX);
+					PhysicsSystem::RemoveCollider({ m_EntityHandle, m_Scene }, m_Scene, PxGeometryType::eBOX);
 			}
 
 			m_Scene->m_Registry.remove_if_exists<T>(m_EntityHandle);
 		}
 
-		operator bool() const { return GetScene() ? GetScene()->GetRegistry()->valid(m_EntityHandle) : m_EntityHandle != entt::null; }
+#pragma endregion
+
+#pragma region Getters
+
+		template<typename T>
+		T& GetComponent() const 
+		{
+						
+			// Return Blank Component - I want to be able to just call GetComponent, and 
+			// not have to worry about error handling when an entity does not have a
+			// specified component, rather, it logs in the console the entity does not
+			// have a component.
+			if (m_EntityHandle == entt::null) {
+				L_CORE_ERROR("Entity Cannot GetComponent as Entity Handle is Null");
+
+				return GetBlankComponent<T>();
+			}
+			
+			if (!HasComponent<T>()) {
+				L_CORE_ERROR("Entity Does Not Have Component");
+
+				return GetBlankComponent<T>();
+			}
+
+			return m_Scene->m_Registry.get<T>(m_EntityHandle);
+		}
+
+		template<typename T>
+		T& GetComponentInParent() const
+		{
+			std::function<T&(Entity)> recursive_parent_search;
+			recursive_parent_search = [&](Entity current_entity) -> T&
+			{
+				// If the current entity has the component, return it
+				if (current_entity.HasComponent<T>())
+				{
+					return current_entity.GetComponent<T>();
+				}
+
+				L_CORE_ASSERT(current_entity.HasComponent<HierarchyComponent>(), "Entity Does Not Have Hierarchy Component - All Entities Must Have This Component.");
+				HierarchyComponent& hierarchy = current_entity.GetComponent<HierarchyComponent>();
+				const Entity& parent_entity = hierarchy.HasParent() ? hierarchy.GetParentEntity() : Entity{};
+				if (parent_entity)  // If a parent exists, continue searching
+				{
+					return recursive_parent_search(parent_entity);
+				}
+
+				return GetBlankComponent<T>();
+			};
+
+			L_CORE_ASSERT(HasComponent<HierarchyComponent>(), "Entity Does Not Have Hierarchy Component - All Entities Must Have This Component.");
+			HierarchyComponent& hierarchy = GetComponent<HierarchyComponent>();
+			const Entity& parent_entity = hierarchy.HasParent() ? hierarchy.GetParentEntity() : Entity{};
+			if (parent_entity)  // If a parent exists, continue searching
+			{
+				return recursive_parent_search(parent_entity);
+			}
+
+			return GetBlankComponent<T>();
+		}
+
+		template<typename T>
+		T& GetComponentInChild() const
+		{
+			std::function<T& (Entity)> recursive_child_search;
+			recursive_child_search = [&](Entity current_entity) -> T&
+			{
+				L_CORE_ASSERT(current_entity.HasComponent<HierarchyComponent>(), "Entity Does Not Have Hierarchy Component - All Entities Must Have This Component.");
+				const HierarchyComponent& hierarchy = current_entity.GetComponent<HierarchyComponent>();
+
+				if (hierarchy.HasChildren())
+				{
+					const auto& children = hierarchy.GetChildren();
+
+					// 1. Check all direct children for the component
+					for (const auto& child_uuid : children)
+					{
+						Entity child_entity = m_Scene->FindEntityByUUID(child_uuid);
+						if (child_entity && child_entity.HasComponent<T>())
+						{
+							return child_entity.GetComponent<T>();
+						}
+					}
+
+					// 2. If not found, recurse into children
+					for (const auto& child_uuid : children)
+					{
+						Entity child_entity = m_Scene->FindEntityByUUID(child_uuid);
+						if (!child_entity) continue;  // Ensure entity is valid before recursing
+
+						T& found_component = recursive_child_search(child_entity);
+						if (&found_component != &GetBlankComponent<T>())  // Component found in a child
+						{
+							return found_component;
+						}
+					}
+				}
+
+				return GetBlankComponent<T>();
+			};
+
+			return recursive_child_search(*this);
+		}
+
+		template<typename T>
+		std::vector<Entity> GetComponentsInParents() const
+		{
+			std::vector<Entity> entities_with_component;
+
+			std::function<void(Entity)> recursive_parent_search;
+			recursive_parent_search = [&](Entity current_entity)
+			{
+				if (current_entity.HasComponent<T>())
+				{
+					entities_with_component.push_back(current_entity);
+				}
+
+				L_CORE_ASSERT(current_entity.HasComponent<HierarchyComponent>(), "Entity Does Not Have Hierarchy Component - All Entities Must Have This Component.");
+				HierarchyComponent& hierarchy = current_entity.GetComponent<HierarchyComponent>();
+				if (hierarchy.HasParent())
+				{
+					recursive_parent_search(hierarchy.GetParentEntity());
+				}
+			};
+
+			L_CORE_ASSERT(HasComponent<HierarchyComponent>(), "Entity Does Not Have Hierarchy Component - All Entities Must Have This Component.");
+			HierarchyComponent& hierarchy = GetComponent<HierarchyComponent>();
+			if (hierarchy.HasParent())
+			{
+				recursive_parent_search(hierarchy.GetParentEntity());
+			}
+
+			return entities_with_component;
+		}
+
+		template<typename T>
+		std::vector<Entity> GetComponentsInChildren() const
+		{
+			std::vector<Entity> entities_with_component;
+			std::function<void(Entity)> recursive_child_search;
+
+			recursive_child_search = [&](Entity current_entity)
+			{
+				L_CORE_ASSERT(current_entity.HasComponent<HierarchyComponent>(), "Entity does not have a HierarchyComponent.");
+				const HierarchyComponent& hierarchy = current_entity.GetComponent<HierarchyComponent>();
+
+				if (hierarchy.HasChildren())
+				{
+					const auto& children = hierarchy.GetChildren();
+
+					// 1. Check all direct children for the component
+					for (const auto& child_uuid : children)
+					{
+						Entity child_entity = m_Scene->FindEntityByUUID(child_uuid);
+						if (child_entity && child_entity.HasComponent<T>())
+						{
+							entities_with_component.push_back(child_entity);
+						}
+					}
+
+					// 2. Recurse into children
+					for (const auto& child_uuid : children)
+					{
+						Entity child_entity = m_Scene->FindEntityByUUID(child_uuid);
+						if (child_entity)
+						{
+							recursive_child_search(child_entity);
+						}
+					}
+				}
+			};
+
+			recursive_child_search(*this);
+			return entities_with_component;
+		}
+
+		TransformComponent& GetTransform() const
+		{
+			return GetComponent<TransformComponent>();
+		}
+
+		Scene* GetScene() const { return m_Scene; }
+		const UUID& GetUUID() const { return GetComponent<IDComponent>().ID; }
+		const std::string& GetName() const { return GetComponent<TagComponent>().Tag; }
+
 		operator entt::entity() const { return m_EntityHandle; }
 		operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 
-		bool operator==(const Entity& other) const {
-			return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;
-		}
+#pragma endregion
 
-		// This returns the UUID reference to the Component
-		UUID GetUUID() { return GetComponent<IDComponent>().ID; }
-		// This returns the tag reference to the Component
-		const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
+#pragma region Validation
 
-		Scene* GetScene() const { return m_Scene; }
+		// This returns if the Entity has an applicable Component
+		template <typename T>
+		bool HasComponent() const { return m_Scene->m_Registry.has<T>(m_EntityHandle); }
+
+		template<typename... Components>
+		bool HasAnyComponent() const { return m_Scene->m_Registry.any<Components...>(m_EntityHandle); }
+
+		operator bool() const { return m_Scene ? m_Scene->GetRegistry()->valid(m_EntityHandle) : m_EntityHandle != entt::null; }
+		bool operator==(const Entity& other) const { return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene; }
+
+#pragma endregion
 
 	private:
 
 		entt::entity m_EntityHandle{ entt::null };
 		Scene* m_Scene = nullptr;
+
+		template<typename T>
+		T& GetBlankComponent() const
+		{
+			static std::unordered_map<std::type_index, std::shared_ptr<void>> s_BlankComponents;
+
+			auto it = s_BlankComponents.find(typeid(T));
+			if (it == s_BlankComponents.end())
+			{
+				s_BlankComponents[typeid(T)] = std::make_shared<T>();
+			}
+
+			return *std::static_pointer_cast<T>(s_BlankComponents[typeid(T)]);
+		}
+
+		friend struct ComponentBase;
 	};
 
 

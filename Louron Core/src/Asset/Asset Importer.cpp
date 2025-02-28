@@ -589,6 +589,7 @@ namespace Louron {
 				else // If there is a parent, we want to create a new sub entity and attach it to that parent in the Prefab registry
 				{
 					current_entity_handle = model_prefab->CreateEntity(node->mName.C_Str());
+					model_prefab->GetComponent<TransformComponent>(current_entity_handle).SetTransform(AssimpHelpers::ConvertMatrixToGLMFormat(node->mTransformation));
 					model_prefab->GetComponent<HierarchyComponent>(current_entity_handle).m_Parent = (uint32_t)parent_entity_handle;
 					model_prefab->GetComponent<HierarchyComponent>(parent_entity_handle).m_Children.push_back((uint32_t)current_entity_handle);
 				}
@@ -632,7 +633,6 @@ namespace Louron {
 				metadata.IsCustomAsset = parent_meta_data.IsCustomAsset;
 
 				// Update Prefab Transform and Add Required Components
-				model_prefab->GetComponent<TransformComponent>(current_entity_handle).SetTransform(AssimpHelpers::ConvertMatrixToGLMFormat(node->mTransformation));
 				model_prefab->AddComponent<MeshFilterComponent>(current_entity_handle).MeshFilterAssetHandle = handle;
 				model_prefab->AddComponent<MeshRendererComponent>(current_entity_handle);
 
@@ -664,8 +664,8 @@ namespace Louron {
 				{
 					// Store instance of node into the loaded node map
 					auto& pair = AssimpHelpers::s_LoadedNodes[node_key];
-					pair.first = model_prefab->AddComponent<MeshFilterComponent>(current_entity_handle).MeshFilterAssetHandle;
-					pair.second = model_prefab->AddComponent<MeshRendererComponent>(current_entity_handle).MeshRendererMaterialHandles;
+					pair.first = model_prefab->GetComponent<MeshFilterComponent>(current_entity_handle).MeshFilterAssetHandle;
+					pair.second = model_prefab->GetComponent<MeshRendererComponent>(current_entity_handle).MeshRendererMaterialHandles;
 
 					// Store instance of AssetMesh in AssetManager registry
 					asset_map->operator[](handle) = asset_mesh;
@@ -676,6 +676,21 @@ namespace Louron {
 					model_prefab->RemoveComponent<MeshFilterComponent>(current_entity_handle);
 					model_prefab->RemoveComponent<MeshRendererComponent>(current_entity_handle);
 				}
+			}
+		} 
+		else if (node != scene->mRootNode) // For empty nodes that act as groups, e.g., Empty Axis in blender with Children
+		{
+			if (parent_entity_handle == entt::null) // If there is no parent, get the Root Entity of the Prefab
+			{
+				current_entity_handle = model_prefab->GetRootEntity();
+				model_prefab->SetPrefabName(path.stem().string());
+			}
+			else // If there is a parent, we want to create a new sub entity and attach it to that parent in the Prefab registry
+			{
+				current_entity_handle = model_prefab->CreateEntity(node->mName.C_Str());
+				model_prefab->GetComponent<TransformComponent>(current_entity_handle).SetTransform(AssimpHelpers::ConvertMatrixToGLMFormat(node->mTransformation));
+				model_prefab->GetComponent<HierarchyComponent>(current_entity_handle).m_Parent = (uint32_t)parent_entity_handle;
+				model_prefab->GetComponent<HierarchyComponent>(parent_entity_handle).m_Children.push_back((uint32_t)current_entity_handle);
 			}
 		}
 

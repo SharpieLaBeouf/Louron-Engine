@@ -54,7 +54,7 @@ namespace Louron {
 		T& AddComponent(entt::entity entity_handle, Args&&... args) {
 
 			if (HasComponent<T>(entity_handle)) {
-				L_CORE_WARN("Entity Already Has: {0}", typeid(T).name());
+				L_CORE_WARN("Prefab Entity Already Has: {0}", typeid(T).name());
 				return GetComponent<T>(entity_handle);
 			}
 
@@ -69,7 +69,7 @@ namespace Louron {
 
 			static std::unordered_map<std::type_index, std::shared_ptr<T>> blankComponents;
 			if (entity_handle == entt::null) {
-				L_CORE_ERROR("Entity Cannot GetComponent as Entity Handle is Null");
+				L_CORE_ERROR("Prefab Entity Cannot GetComponent as Entity Handle is Null");
 
 				if (blankComponents.find(typeid(T)) == blankComponents.end())
 					blankComponents[typeid(T)] = std::make_shared<T>();
@@ -78,7 +78,7 @@ namespace Louron {
 			}
 
 			if (!HasComponent<T>(entity_handle)) {
-				L_CORE_ERROR("Entity Does Not Have Component");
+				L_CORE_ERROR("Prefab Entity Does Not Have Component");
 
 				if (blankComponents.find(typeid(T)) == blankComponents.end())
 					blankComponents[typeid(T)] = std::make_shared<T>();

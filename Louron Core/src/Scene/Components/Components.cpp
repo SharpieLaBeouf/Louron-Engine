@@ -1304,6 +1304,11 @@ namespace Louron {
         return m_Parent != NULL_UUID;
     }
 
+    bool HierarchyComponent::HasChildren() const
+    {
+        return m_Children.size() != 0;
+    }
+
     void HierarchyComponent::Serialize(YAML::Emitter& out) {
 
         out << YAML::Key << "HierarchyComponent";

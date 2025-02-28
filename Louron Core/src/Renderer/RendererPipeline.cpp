@@ -1029,7 +1029,7 @@ namespace Louron {
 			Entity entity = scene_ref->FindEntityByUUID(it->first);
 			if (!entity)
 			{
-				++it;
+				it = FP_Data.EntityOcclusionQueries.erase(it); // remove invalid entities from occlusion queries
 				continue;
 			}
 

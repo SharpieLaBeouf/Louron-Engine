@@ -1973,6 +1973,9 @@
     <ClInclude Include="src\OpenGL\Query.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Scene\Components\Component Base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\Shaders\Basic\basic.glsl" />

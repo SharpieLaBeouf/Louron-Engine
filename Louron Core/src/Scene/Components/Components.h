@@ -172,6 +172,7 @@ namespace Louron {
         Entity GetParentEntity() const;
         const UUID& GetParentID() const;
         bool HasParent() const;
+        bool HasChildren() const;
 
         void Serialize(YAML::Emitter& out);
         bool Deserialize(const YAML::Node data);
