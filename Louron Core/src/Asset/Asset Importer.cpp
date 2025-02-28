@@ -236,17 +236,20 @@ namespace Louron {
 
 	std::shared_ptr<Prefab> ModelImporter::LoadModel(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& path)
 	{
-		if (!asset_map) {
+		if (!asset_map) 
+		{
 			L_CORE_ERROR("Cannot Import Model - Asset Map Invalid.");
 			return nullptr;
 		}
 
-		if (!asset_reg) {
+		if (!asset_reg) 
+		{
 			L_CORE_ERROR("Cannot Import Model - Asset Registry Invalid.");
 			return nullptr;
 		}
 
-		if (!std::filesystem::exists(path)) {
+		if (!std::filesystem::exists(path)) 
+		{
 			L_CORE_ERROR("Cannot Import Model - File Path Does Not Exist.");
 			return nullptr;
 		}

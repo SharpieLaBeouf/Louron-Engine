@@ -26,30 +26,6 @@ namespace Louron
             }
         }
 
-        public Transform transform
-        {
-            get // Create a new reference for a transform, pass it to C++ and store the returned values
-            {
-                _Transform reference = new _Transform();
-                EngineCallbacks.TransformComponent_GetTransform(Entity.ID, ref reference);
-
-                Entity._transform.position = reference.position;
-                Entity._transform.rotation = reference.rotation;
-                Entity._transform.scale = reference.scale;
-
-                return Entity._transform;
-            }
-            set // Create a new temporary transform proxy to pass to C++ to set the transform
-            {
-                _Transform temp;
-                temp.position = value.position;
-                temp.rotation = value.rotation;
-                temp.scale = value.scale;
-
-                EngineCallbacks.TransformComponent_SetTransform(Entity.ID, ref temp);
-            }
-        }
-
         #endregion
 
         #region Component Functions

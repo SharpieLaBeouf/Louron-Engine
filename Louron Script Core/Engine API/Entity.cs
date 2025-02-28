@@ -31,14 +31,7 @@ namespace Louron
         {
             get // Create a new reference for a transform, pass it to C++ and store the returned values
             {
-                _Transform reference = new _Transform();
-                EngineCallbacks.TransformComponent_GetTransform(ID, ref reference);
-
-                _transform.position = reference.position;
-                _transform.rotation = reference.rotation;
-                _transform.scale = reference.scale;
-
-                return _transform;
+                return new Transform(ID);
             }
             set // Create a new temporary transform proxy to pass to C++ to set the transform
             {
@@ -149,16 +142,13 @@ namespace Louron
         protected Entity()
         {
             ID = uint.MaxValue;
-            _transform = new Transform();
         }
 
         internal Entity(uint id)
         {
             ID = id;
-            _transform = new Transform(ID);
         }
 
-        internal Transform _transform;
 
         internal struct _Transform
         {

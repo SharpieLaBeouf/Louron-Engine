@@ -77,12 +77,15 @@ namespace Louron {
 
         m_StateFlags = other.m_StateFlags;
 
+        if (other.m_Material)
+            m_Material = std::make_shared<PhysicsMaterial>(*other.m_Material);
+
+        if (!GetEntity())
+            return;
+
         Entity entity = *GetEntity();
         m_EntityUUID = entity ? entity.GetUUID() : (UUID)NULL_UUID;
         m_RigidbodyUUID = NULL_UUID;
-
-        if (other.m_Material)
-            m_Material = std::make_shared<PhysicsMaterial>(*other.m_Material);
 
         if (entity && entity.GetScene() && (entity.GetScene()->IsRunning() || entity.GetScene()->IsSimulating()))
             Init();
@@ -126,22 +129,24 @@ namespace Louron {
 
         m_StateFlags = other.m_StateFlags;
 
-        Entity entity = *GetEntity();
-        m_EntityUUID = entity ? entity.GetUUID() : (UUID)NULL_UUID;
-        m_RigidbodyUUID = NULL_UUID;
-
         if (m_Material) {
             m_Material->Shutdown();
             m_Material = nullptr;
         }
 
-        if (m_Shape)  {
+        if (m_Shape) {
             m_Shape->Release();
             m_Shape = nullptr;
         }
 
-        if(other.m_Material)
-            m_Material = std::make_shared<PhysicsMaterial>(*other.m_Material);
+        if (other.m_Material) m_Material = std::make_shared<PhysicsMaterial>(*other.m_Material);
+
+        if (!GetEntity())
+            return *this;
+
+        Entity entity = *GetEntity();
+        m_EntityUUID = entity ? entity.GetUUID() : (UUID)NULL_UUID;
+        m_RigidbodyUUID = NULL_UUID;
 
         if (entity && entity.GetScene() && (entity.GetScene()->IsRunning() || entity.GetScene()->IsSimulating()))
             Init();
@@ -535,12 +540,15 @@ namespace Louron {
 
         m_StateFlags = other.m_StateFlags;
 
+        if (other.m_Material)
+            m_Material = std::make_shared<PhysicsMaterial>(*other.m_Material);
+
+        if (!GetEntity())
+            return;
+
         Entity entity = *GetEntity();
         m_EntityUUID = entity ? entity.GetUUID() : (UUID)NULL_UUID;
         m_RigidbodyUUID = NULL_UUID;
-
-        if (other.m_Material)
-            m_Material = std::make_shared<PhysicsMaterial>(*other.m_Material);
 
         if (entity && entity.GetScene() && (entity.GetScene()->IsRunning() || entity.GetScene()->IsSimulating()))
             Init();
@@ -590,10 +598,6 @@ namespace Louron {
 
         m_StateFlags = other.m_StateFlags;
 
-        Entity entity = *GetEntity();
-        m_EntityUUID = entity ? entity.GetUUID() : (UUID)NULL_UUID;
-        m_RigidbodyUUID = NULL_UUID;
-
         if (m_Material) {
             m_Material->Shutdown();
             m_Material = nullptr;
@@ -605,6 +609,13 @@ namespace Louron {
         }
         if (other.m_Material)
             m_Material = std::make_shared<PhysicsMaterial>(*other.m_Material);
+
+        if (!GetEntity())
+            return *this;
+
+        Entity entity = *GetEntity();
+        m_EntityUUID = entity ? entity.GetUUID() : (UUID)NULL_UUID;
+        m_RigidbodyUUID = NULL_UUID;
 
         if (entity && entity.GetScene() && (entity.GetScene()->IsRunning() || entity.GetScene()->IsSimulating()))
             Init();

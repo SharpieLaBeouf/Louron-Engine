@@ -1,0 +1,21 @@
+Prefab Name: Wall_01
+PrefabEntities:
+  - Entity: 0
+    TagComponent:
+      Tag: Wall_01
+    HierarchyComponent:
+      Parent: 4294967295
+      Children:
+        []
+    TransformComponent:
+      Translation: [8, 1.10000002, 8]
+      Rotation: [0, -0, 0]
+      Scale: [2, 1, 2]
+    MeshFilterComponent:
+      MeshAssetHandle: 2903028380
+    MeshRendererComponent:
+      MeshActive: true
+      CastShadows: false
+      MaterialAssetCount: 1
+      MaterialAssetHandles:
+        - 3097488617

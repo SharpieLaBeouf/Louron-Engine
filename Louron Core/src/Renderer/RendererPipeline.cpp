@@ -292,25 +292,28 @@ namespace Louron {
 						// Check if the underlying mesh has been updated, therefore requiring an update to this MeshFilter's AABB - for example, a mesh is altered by C# code, we will then need to update the AABB for this MeshFilter
 						if(!update_AABB) 
 						{
-							if (auto asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_filter_component.MeshFilterAssetHandle); asset_mesh)
+							if (AssetManager::IsAssetLoaded(mesh_filter_component.MeshFilterAssetHandle))
 							{
-								if(asset_mesh->ModifiedAABB)
+								if (auto asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_filter_component.MeshFilterAssetHandle); asset_mesh)
 								{
-									// Set Flags for Updates
-									mesh_filter_component.AABBNeedsUpdate = true;
-									mesh_filter_component.OctreeNeedsUpdate = true;
-									
-									// Ensure processed in this frame
-									update_AABB = mesh_filter_component.AABBNeedsUpdate;
-									
-									// Reset flag on AssetMesh
-									asset_mesh->ModifiedAABB = false;
+									if (asset_mesh->ModifiedAABB)
+									{
+										// Set Flags for Updates
+										mesh_filter_component.AABBNeedsUpdate = true;
+										mesh_filter_component.OctreeNeedsUpdate = true;
+
+										// Ensure processed in this frame
+										update_AABB = mesh_filter_component.AABBNeedsUpdate;
+
+										// Reset flag on AssetMesh
+										asset_mesh->ModifiedAABB = false;
+									}
 								}
 							}
 						}
 
 						// Update the MeshFilter AABB if required
-						if (update_AABB) 
+						if (update_AABB && AssetManager::IsAssetLoaded(mesh_filter_component.MeshFilterAssetHandle))
 						{
 							mesh_filter_component.UpdateTransformedAABB();
 						}

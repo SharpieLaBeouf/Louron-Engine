@@ -1,0 +1,36 @@
+Prefab Name: Player 2
+PrefabEntities:
+  - Entity: 0
+    TagComponent:
+      Tag: Player 2
+    HierarchyComponent:
+      Parent: 4294967295
+      Children:
+        []
+    TransformComponent:
+      Translation: [-3.10896993, 4.12746239, -6.10351562e-05]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    MeshFilterComponent:
+      MeshAssetHandle: 361062613
+    MeshRendererComponent:
+      MeshActive: true
+      CastShadows: false
+      MaterialAssetCount: 2
+      MaterialAssetHandles:
+        - 2325616013
+        - 2353975250
+    RigidbodyComponent:
+      Mass: 1
+      Drag: 0
+      AngularDrag: 0.0500000007
+      AutomaticCentreOfMass: true
+      UseGravity: true
+      IsKinematic: false
+      PositionConstraint: [false, false, false]
+      RotationConstraint: [false, false, false]
+    SphereColliderComponent:
+      IsTrigger: false
+      Radius: 1
+      Centre: [0, 0, 0]
+      MaterialProperties: [0.600000024, 0.600000024, 0]

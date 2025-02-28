@@ -1,17 +1,14 @@
-Material Asset Name: Bubble Material
+Material Asset Name: Wall Material
 Material Asset Type: AssetType::Material_Standard
-Shader Handle: 1221719377
-Render Type: Transparent
+Shader Handle: 487657122
+Render Type: Opaque
 Roughness: 0.5
 Metallic: 0
-Albedo Tint: [1, 1, 1, 1]
+Albedo Tint: [0, 0, 0, 1]
 AlbedoTextureAsset: 4294967295
 MetallicTextureAsset: 4294967295
 NormalTextureAsset: 4294967295
 Material Uniform Block:
-  - Name: BubbleColour
-    Type: vec4
-    Value: [0, 0, 1, 0]
-  - Name: Threshold
+  - Name: MyCustomProperty
     Type: float
     Value: 0
