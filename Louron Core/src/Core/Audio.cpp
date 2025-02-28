@@ -1,13 +1,16 @@
 #include "Audio.h"
 
-#define MINIAUDIO_IMPLEMENTATION
-#include <miniaudio/miniaudio.h>
+// Louron Core Headers
+#include "Logging.h"
+#include "../Debug/Assert.h"
 
+// C++ Standard Library Headers
 #include <stdexcept>
 #include <mutex>
 
-#include "Logging.h"
-#include "../Debug/Assert.h"
+// External Vendor Library Headers
+#define MINIAUDIO_IMPLEMENTATION
+#include <miniaudio/miniaudio.h>
 
 namespace Louron {
 

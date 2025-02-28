@@ -1,4 +1,4 @@
-#include "Skybox.h"
+#include "Skybox Component.h"
 
 // Louron Core Headers
 #include "../../Debug/Assert.h"
@@ -7,6 +7,7 @@
 #include "../../Project/Project.h"
 
 // C++ Standard Library Headers
+#include <fstream>
 
 // External Vendor Library Headers
 #define STB_IMAGE_STATIC

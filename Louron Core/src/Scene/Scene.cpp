@@ -4,29 +4,27 @@
 #include "Entity.h"
 #include "Prefab.h"
 #include "Scene Serializer.h"
-#include "OctreeBounds.h"
+#include "Spatial Partitioning/OctreeBounds.h"
 
-#include "Components/Components.h"
-#include "Components/Light.h"
-#include "Components/Mesh.h"
-#include "Components/UUID.h"
-#include "Components/Skybox.h"
+#include "../Core/UUID.h"
+#include "../Core/Time.h"
+#include "../Core/Input.h"
+#include "../Debug/Profiler.h"
+#include "../Physics/PhysicsWrappers.h"
+#include "../Physics/CollisionCallback.h"
 
-#include "Components/Physics/Collider.h"
-#include "Components/Physics/Rigidbody.h"
-#include "Components/Physics/PhysicsWrappers.h"
-#include "Components/Physics/CollisionCallback.h"
+#include "Components/Core Components.h"
+#include "Components/Light Components.h"
+#include "Components/Mesh Components.h"
+#include "Components/Skybox Component.h"
+#include "Components/Physics/Collider Components.h"
+#include "Components/Physics/Rigidbody Component.h"
 
 #include "Scene Systems/Physics System.h"
-
-#include "../Debug/Profiler.h"
 
 #include "../Renderer/Camera.h"
 #include "../Renderer/Renderer.h"
 #include "../Renderer/RendererPipeline.h"
-
-#include "../Core/Time.h"
-#include "../Core/Input.h"
 
 #include "../OpenGL/Framebuffer.h"
 
@@ -194,31 +192,27 @@ namespace Louron {
 		([&]()
 			{
 				auto view = src.view<Component>();
-				for (auto srcEntity : view)
+				for (auto source_entity_handle : view)
 				{
-					UUID dest_id = src.get<IDComponent>(srcEntity).ID;
-					entt::entity dstEntity = enttMap.at(dest_id);
+					auto& source_component = src.get<Component>(source_entity_handle);
 
-					auto& srcComponent = src.get<Component>(srcEntity);
-					
-					// Store entity uuid and scene of source component
-					UUID source_uuid = srcComponent.entity_uuid;
-					Scene* source_scene = srcComponent.scene;
+					auto source_entity = source_component.GetEntity();
+					if (!source_entity)
+						continue;
 
-					// Change source component uuid and scene to new id and scene
-					srcComponent.entity_uuid = dest_id;
-					srcComponent.scene = scene_ref;
+					entt::entity dest_entity_handle = enttMap.at(src.get<IDComponent>(source_entity_handle).ID);
+					Entity dest_entity = { dest_entity_handle, scene_ref };
 
-					// Copy construct new component with new id and scene
-					auto& dstComponent = dst.emplace_or_replace<Component>(dstEntity, srcComponent);
-					
-					// Ensure new component has the correct id and scene ref
-					dstComponent.entity_uuid = dest_id;
-					dstComponent.scene = scene_ref;
+					// Temporarily Set Source Entity to Destination Entity for Component Copying
+					source_component.SetEntity(dest_entity);
 
-					// Revert source component to its normal state
-					srcComponent.entity_uuid = source_uuid;
-					srcComponent.scene = source_scene;
+					auto& dest_component = dst.emplace_or_replace<Component>(dest_entity_handle, source_component);
+
+					// Revert Source Component Entity Reference to Correct Reference
+					source_component.SetEntity(*source_entity.get());
+
+					// Ensure Destination Component Has Correct Entity
+					dest_component.SetEntity(dest_entity);
 				}
 			}(), ...);
 	}
@@ -304,7 +298,12 @@ namespace Louron {
 
 				const auto& aabb = mesh_filter.TransformedAABB;
 
-				data_sources.push_back(std::make_shared<OctreeDataSource<Entity>>(mesh_filter.GetEntity(), aabb));
+				if (!mesh_filter.GetEntity()) {
+					L_CORE_ERROR("Cannot Insert Entity to Octree - Current Entity Is Invalid!");
+					continue;
+				}
+
+				data_sources.push_back(std::make_shared<OctreeDataSource<Entity>>(*mesh_filter.GetEntity(), aabb));
 			}
 
 			octree_config.Looseness = 1.25f;

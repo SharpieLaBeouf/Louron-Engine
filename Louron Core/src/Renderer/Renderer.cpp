@@ -1,7 +1,12 @@
 #include "Renderer.h"
 
+// Louron Core Headers
 #include "../OpenGL/Buffer.h"
 #include "../OpenGL/Vertex Array.h"
+
+// C++ Standard Library Headers
+
+// External Vendor Library Headers
 
 namespace Louron {
 

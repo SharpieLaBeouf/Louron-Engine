@@ -1,7 +1,6 @@
 #pragma once
 
 // Louron Core Headers
-
 #include "../Core/Logging.h"
 #include "../Core/Time.h"
 #include "../Core/Input.h"
@@ -15,10 +14,9 @@
 #include "../Scene/Scene.h"
 #include "../Scene/Entity.h"
 #include "../Scene/Prefab.h"
-#include "../Scene/Components/Components.h"
-#include "../Scene/Components/Light.h"
-#include "../Scene/Components/Skybox.h"
-
+#include "../Scene/Components/Core Components.h"
+#include "../Scene/Components/Light Components.h"
+#include "../Scene/Components/Skybox Component.h"
 
 #include "Script Manager.h"
 
@@ -268,7 +266,6 @@ namespace Louron {
 
 #pragma region Material
 
-		// TODO: Implement Material as a type in scripting so we can set material script fields in editor 
 		static AssetHandle Material_Create(MonoString* name);
 		static void Material_SetShader(AssetHandle asset_handle, AssetHandle shader_handle);
 		static void Material_Destroy(AssetHandle asset_handle);

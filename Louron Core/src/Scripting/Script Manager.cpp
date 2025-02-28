@@ -1,6 +1,5 @@
 #include "Script Manager.h"
 
-
 // Louron Core Headers
 #include "Script Connector.h"
 #include "../Core/Logging.h"
@@ -40,7 +39,7 @@ namespace Louron {
 		{ "System.Int16",						ScriptFieldType::Short },
 		{ "System.UInt16",						ScriptFieldType::Ushort },
 												
-		{ "Louron.Vector2",						ScriptFieldType::Vector2 },
+		{ "Louron.Vector2",						ScriptFieldType::Vector2 }, // TODO: add UVector, IVector, DVector, and BVector
 		{ "Louron.Vector3",						ScriptFieldType::Vector3 },
 		{ "Louron.Vector4",						ScriptFieldType::Vector4 },
 

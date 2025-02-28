@@ -1,9 +1,8 @@
 #pragma once
 
 // Louron Core Headers
-#include "../Components.h"
-#include "PhysicsWrappers.h"
-
+#include "../Component Base.h"
+#include "../../../Physics/PhysicsWrappers.h"
 
 // C++ Standard Library Headers
 #include <memory>
@@ -22,7 +21,7 @@ class YAML::Node;
 
 namespace Louron {
 
-	struct RigidbodyComponent : public Component {
+	struct RigidbodyComponent : public ComponentBase {
 
 	private:
 

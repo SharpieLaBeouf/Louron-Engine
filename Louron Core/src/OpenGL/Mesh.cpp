@@ -1,21 +1,13 @@
 #include "Mesh.h"
 
 // Louron Core Headers
-#include "Components.h"
-#include "../../Renderer/Renderer.h"
-#include "../../Asset/Asset Manager API.h"
 
 // C++ Standard Library Headers
-#include <iomanip>
 
 // External Vendor Library Headers
 
-#ifndef YAML_CPP_STATIC_DEFINE
-#define YAML_CPP_STATIC_DEFINE
-#endif
-#include <yaml-cpp/yaml.h>
-
-namespace Louron {
+namespace Louron
+{
 
 	SubMesh::SubMesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices) {
 
@@ -109,7 +101,7 @@ namespace Louron {
 
 		for (auto& buffer : m_VAO->GetVertexBuffers())
 		{
-			if (buffer->GetLayout().GetElements().back().Name == "aPos") 
+			if (buffer->GetLayout().GetElements().back().Name == "aPos")
 			{
 				continue;
 			}
@@ -252,7 +244,7 @@ namespace Louron {
 		return nullptr;
 	}
 
-	void SubMesh::RecalculateNormals() 
+	void SubMesh::RecalculateNormals()
 	{
 		size_t vertice_count = 0;
 		const float* vertices = GetVertices(&vertice_count); // Assuming 3 floats per vertex
@@ -345,136 +337,14 @@ namespace Louron {
 		}
 	}
 
-	void MeshRendererComponent::Serialize(YAML::Emitter& out) {
-		out << YAML::Key << "MeshRendererComponent";
-		out << YAML::BeginMap;
-
-		out << YAML::Key << "MeshActive" << YAML::Value << Active;
-		out << YAML::Key << "CastShadows" << YAML::Value << CastShadows;
-
-		{
-			out << YAML::Key << "MaterialAssetCount" << YAML::Value << (uint32_t)MeshRendererMaterialHandles.size();
-			out << YAML::Key << "MaterialAssetHandles" << YAML::Value;
-			
-			out << YAML::BeginSeq;
-			for (const auto& [handle, uniform_block] : MeshRendererMaterialHandles) {
-				out << (uint32_t)handle;
-			}
-			out << YAML::EndSeq;
-		}
-
-		out << YAML::EndMap;
-	}
-
-	bool MeshRendererComponent::Deserialize(const YAML::Node data)
-	{
-		YAML::Node component = data;
-
-		if (component["MeshActive"]) {
-			Active = component["MeshActive"].as<bool>();
-		}
-
-		if (component["CastShadows"]) {
-			CastShadows = component["CastShadows"].as<bool>();
-		}
-
-		if (component["MaterialAssetCount"] && component["MaterialAssetHandles"]) {
-			uint32_t count = component["MaterialAssetCount"].as<uint32_t>();
-			YAML::Node handles = component["MaterialAssetHandles"];
-
-			if (handles.size() != count) {
-				return false;
-			}
-
-			MeshRendererMaterialHandles.clear();
-			for (const auto& handle : handles) {
-				MeshRendererMaterialHandles.push_back({ handle.as<uint32_t>() , nullptr });
-			}
-		}
-		else {
-			return false;
-		}
-
-		return true;
-	}
-
-	void MeshFilterComponent::UpdateTransformedAABB() {
-
-		Entity entity = GetEntity();
-
-		if (!entity || !entity.GetScene())
-			return;
-
-		if (MeshFilterAssetHandle == NULL_UUID)
-			return;
-		
-		if (auto mesh_asset = AssetManager::GetAsset<AssetMesh>(MeshFilterAssetHandle); mesh_asset) {
-
-			// Define the 8 corner points of the AABB
-			std::array<glm::vec3, 8> corners = {
-				mesh_asset->MeshBounds.BoundsMin,
-				glm::vec3(mesh_asset->MeshBounds.BoundsMax.x, mesh_asset->MeshBounds.BoundsMin.y, mesh_asset->MeshBounds.BoundsMin.z),
-				glm::vec3(mesh_asset->MeshBounds.BoundsMax.x, mesh_asset->MeshBounds.BoundsMax.y, mesh_asset->MeshBounds.BoundsMin.z),
-				glm::vec3(mesh_asset->MeshBounds.BoundsMin.x, mesh_asset->MeshBounds.BoundsMax.y, mesh_asset->MeshBounds.BoundsMin.z),
-				glm::vec3(mesh_asset->MeshBounds.BoundsMin.x, mesh_asset->MeshBounds.BoundsMin.y, mesh_asset->MeshBounds.BoundsMax.z),
-				glm::vec3(mesh_asset->MeshBounds.BoundsMax.x, mesh_asset->MeshBounds.BoundsMin.y, mesh_asset->MeshBounds.BoundsMax.z),
-				glm::vec3(mesh_asset->MeshBounds.BoundsMax.x, mesh_asset->MeshBounds.BoundsMax.y, mesh_asset->MeshBounds.BoundsMax.z),
-				glm::vec3(mesh_asset->MeshBounds.BoundsMin.x, mesh_asset->MeshBounds.BoundsMax.y, mesh_asset->MeshBounds.BoundsMax.z)
-			};
-
-			// Transform the corner points
-			glm::mat4 global_transform = GetComponent<TransformComponent>()->GetGlobalTransform();
-			for (int i = 0; i < 8; ++i) {
-				glm::vec4 transformed_corner = global_transform * glm::vec4(corners[i], 1.0f);
-				corners[i] = glm::vec3(transformed_corner);
-			}
-
-			// Find the new BoundsMin and BoundsMax
-			glm::vec3 newMin = corners[0];
-			glm::vec3 newMax = corners[0];
-			for (int i = 1; i < 8; ++i) {
-				newMin = glm::min(newMin, corners[i]);
-				newMax = glm::max(newMax, corners[i]);
-			}
-			TransformedAABB.BoundsMin = newMin;
-			TransformedAABB.BoundsMax = newMax;
-
-			AABBNeedsUpdate = false;
-		}
-	}
-
-	void MeshFilterComponent::Serialize(YAML::Emitter& out) const {
-
-		out << YAML::Key << "MeshFilterComponent";
-		out << YAML::BeginMap;
-
-		out << YAML::Key << "MeshAssetHandle" << YAML::Value << (uint32_t)MeshFilterAssetHandle;
-
-		out << YAML::EndMap;
-	}
-
-	bool MeshFilterComponent::Deserialize(const YAML::Node data) {
-		
-		YAML::Node component = data;
-
-		if (component["MeshAssetHandle"]) {
-			MeshFilterAssetHandle = component["MeshAssetHandle"].as<uint32_t>();
-		}
-		else {
-			return false;
-		}
-
-		return true;
-	}
-
-	AssetMesh::AssetMesh(const AssetMesh& other)
+	StaticMesh::StaticMesh(const StaticMesh& other)
 	{
 		MeshBounds = other.MeshBounds;
 		for (const auto& sub_mesh : other.SubMeshes)
 			SubMeshes.push_back(std::make_shared<SubMesh>(*sub_mesh)); // Copy Sub Mesh
 	}
 
-	AssetMesh& AssetMesh::operator=(const AssetMesh& other)
+	StaticMesh& StaticMesh::operator=(const StaticMesh& other)
 	{
 		if (this == &other)
 			return *this;
@@ -486,13 +356,13 @@ namespace Louron {
 		return *this;
 	}
 
-	AssetMesh::AssetMesh(AssetMesh&& other) noexcept
+	StaticMesh::StaticMesh(StaticMesh&& other) noexcept
 	{
 		MeshBounds = other.MeshBounds; other.MeshBounds = {};
 		SubMeshes = other.SubMeshes; other.SubMeshes.clear();
 	}
 
-	AssetMesh& AssetMesh::operator=(AssetMesh&& other) noexcept
+	StaticMesh& StaticMesh::operator=(StaticMesh&& other) noexcept
 	{
 		if (this == &other)
 			return *this;

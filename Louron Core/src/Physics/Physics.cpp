@@ -1,7 +1,12 @@
 #include "Physics.h"
 
-#include "Logging.h"
+// Louron Core Headers
+#include "../Core/Logging.h"
+
+// C++ Standard Library Headers
 #include <iostream>
+
+// External Vendor Library Headers
 
 namespace Louron {
 

@@ -4,17 +4,20 @@
 // where I hear crickets from the crowd and eventually figure it out myself lol
 // https://gamedev.stackexchange.com/questions/211647/octree-query-frustum-search-and-recursive-vector-inserts/211698#211698
 
-#include <memory>
-#include <vector>
-
-#include <glm/glm.hpp>
-#include <glm/gtx/component_wise.hpp>
-
+// Louron Core Headers
 #include "../Core/Logging.h"
 #include "../Debug/Assert.h"
 
 #include "Bounds.h"
 #include "Frustum.h"
+
+// C++ Standard Library Headers
+#include <memory>
+#include <vector>
+
+// External Vendor Library Headers
+#include <glm/glm.hpp>
+#include <glm/gtx/component_wise.hpp>
 
 namespace Louron {
 

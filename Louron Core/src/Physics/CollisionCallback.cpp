@@ -1,9 +1,14 @@
 #include "CollisionCallback.h"
 
-#include "../../Scene.h"
-#include "../../Entity.h"
+// Louron Core Headers
+#include "../Scene/Scene.h"
+#include "../Scene/Entity.h"
 
-#include "../../../Scripting/Script Manager.h"
+#include "../Scripting/Script Manager.h"
+
+// C++ Standard Library Headers
+
+// External Vendor Library Headers
 
 namespace Louron {
 

@@ -3,22 +3,20 @@
 // Louron Core Headers
 #include "Scene.h"
 #include "Entity.h"
-#include "OctreeBounds.h"
+#include "Spatial Partitioning/OctreeBounds.h"
 
-#include "Components/Components.h"
-#include "Components/Light.h"
-#include "Components/Skybox.h"
-#include "Components/UUID.h"
-
-#include "Components/Physics/Collider.h"
-#include "Components/Physics/Rigidbody.h"
-#include "Components/Physics/PhysicsWrappers.h"
-
-#include "Scene Systems/Physics System.h"
-
+#include "../Core/UUID.h"
+#include "../Core/Time.h"
+#include "../Physics/PhysicsWrappers.h"
 #include "../Renderer/RendererPipeline.h"
 
-#include "../Core/Time.h"
+#include "Components/Core Components.h"
+#include "Components/Light Components.h"
+#include "Components/Skybox Component.h"
+#include "Components/Physics/Collider Components.h"
+#include "Components/Physics/Rigidbody Component.h"
+
+#include "Scene Systems/Physics System.h"
 
 // C++ Standard Library Headers
 #include <fstream>
@@ -489,7 +487,12 @@ namespace Louron {
 
 				const auto& aabb = mesh_filter.TransformedAABB;
 
-				data_sources.push_back(std::make_shared<OctreeDataSource<Entity>>(mesh_filter.GetEntity(), aabb));
+				if (!mesh_filter.GetEntity()) {
+					L_CORE_ERROR("Cannot Insert Entity to Octree - Current Entity Is Invalid!");
+					continue;
+				}
+
+				data_sources.push_back(std::make_shared<OctreeDataSource<Entity>>(*mesh_filter.GetEntity(), aabb));
 			}
 
 			octree_config.Looseness = 1.25f;

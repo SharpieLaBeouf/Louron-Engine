@@ -1,11 +1,15 @@
 #pragma once
 
+// Louron Core Headers
 #include "Asset.h"
 
 #include "../Core/Logging.h"
 
+// C++ Standard Library Headers
 #include <map>
 #include <memory>
+
+// External Vendor Library Headers
 
 // Credit to Cherno for this system design!
 // www.github.com/TheCherno/Hazel/tree/asset-manager/Hazel/src/Hazel/Asset
@@ -35,7 +39,7 @@ namespace Louron {
 		virtual void ClearRuntimeAssets() = 0;
 	};
 
-	struct AssetMesh;
+	struct StaticMesh;
 
 	class Prefab;
 	class Texture2D;
@@ -146,7 +150,7 @@ namespace Louron {
 			if constexpr (std::is_same_v<TAssetType, Texture2D>) {
 				expectedType = AssetType::Texture2D;
 			}
-			else if constexpr (std::is_same_v<TAssetType, AssetMesh>) {
+			else if constexpr (std::is_same_v<TAssetType, StaticMesh>) {
 				expectedType = AssetType::Mesh;
 			}
 			else if constexpr (std::is_same_v<TAssetType, Prefab>) {

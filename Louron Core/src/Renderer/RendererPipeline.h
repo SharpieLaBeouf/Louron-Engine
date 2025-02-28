@@ -1,12 +1,15 @@
 #pragma once
 
 // Louron Core Headers
-#include "../Scene/Components/Components.h"
+#include "../Scene/Components/Core Components.h"
+#include "../Scene/Components/Light Components.h"
+#include "../Scene/Components/Mesh Components.h"
+
 #include "../OpenGL/Material.h"
 #include "../OpenGL/Query.h"
 #include "../OpenGL/Vertex Array.h"
-#include "../Scene/Frustum.h"
-#include "../Scene/OctreeBounds.h"
+#include "../Scene/Spatial Partitioning/Frustum.h"
+#include "../Scene/Spatial Partitioning/OctreeBounds.h"
 
 // C++ Standard Library Headers
 #include <memory>
@@ -46,7 +49,7 @@ namespace Louron {
 	class Entity;
 	class CameraBase;
 
-	struct AssetMesh;
+	struct StaticMesh;
 	struct SubMesh;
 	struct Bounds_AABB;
 	struct Bounds_Sphere;
@@ -148,7 +151,7 @@ namespace Louron {
 			std::thread RenderQueueSortingThread;
 
 			// Cached weak ptr's to reduce AssetManager Get Calls
-			std::unordered_map<AssetHandle, std::weak_ptr<AssetMesh>> CachedMeshAssets;
+			std::unordered_map<AssetHandle, std::weak_ptr<StaticMesh>> CachedMeshAssets;
 			std::unordered_map<AssetHandle, std::weak_ptr<Material>> CachedMaterialAssets;
 
 			std::thread OctreeUpdateThread;

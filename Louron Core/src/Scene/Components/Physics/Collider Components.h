@@ -1,8 +1,7 @@
 #pragma once
 
 // Louron Core Headers
-#include "../Mesh.h"
-#include "../Components.h"
+#include "../Component Base.h"
 
 // C++ Standard Library Headers
 #include <memory>
@@ -41,7 +40,8 @@ namespace Louron {
         ColliderFlag_ShapePropsUpdated = 1U << 2,	// Add this flag when the properties of the shape have been updated.
     };
 
-    struct SphereColliderComponent : public Component {
+    struct SphereColliderComponent : public ComponentBase 
+    {
 
     private:
 
@@ -130,7 +130,8 @@ namespace Louron {
 
     };
 
-    struct BoxColliderComponent : public Component {
+    struct BoxColliderComponent : public ComponentBase 
+    {
 
     private:
 

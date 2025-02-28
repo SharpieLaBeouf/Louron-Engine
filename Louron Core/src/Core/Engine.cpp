@@ -1,18 +1,14 @@
 #include "Engine.h"
 
 // Louron Core Headers
-#include "Logging.h"
 #include "Time.h"
-#include "Physics.h"
+#include "Logging.h"
 #include "../Debug/Profiler.h"
 
-#include "../OpenGL/Vertex Array.h"
-
-#include "../Renderer/Renderer.h"
-
-#include "../Scripting/Script Manager.h"
-
+#include "../Physics/Physics.h"
 #include "../Project/Project.h"
+#include "../Renderer/Renderer.h"
+#include "../Scripting/Script Manager.h"
 
 // C++ Standard Library Headers
 #include <filesystem>

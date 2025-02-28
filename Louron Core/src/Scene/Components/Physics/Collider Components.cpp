@@ -1,13 +1,13 @@
-#include "Collider.h"
+#include "Collider Components.h"
 
 // Louron Core Headers
-#include "../Mesh.h"
-#include "../Components.h"
-
-#include "Rigidbody.h"
-#include "PhysicsWrappers.h"
-
 #include "../../Entity.h"
+
+#include "../Core Components.h"
+#include "../Mesh Components.h"
+
+#include "Rigidbody Component.h"
+#include "../../../Physics/PhysicsWrappers.h"
 
 #include "../../../Core/Logging.h"
 #include "../../../Project/Project.h"
@@ -38,8 +38,8 @@ namespace Louron {
         AddFlag(ColliderFlag_RigidbodyUpdated);
         AddFlag(ColliderFlag_ShapePropsUpdated);
 
-        if(auto entity = GetEntity(); entity)
-            SetColliderUserData(entity.GetUUID());
+        if(auto entity = GetEntity(); entity && *entity)
+            SetColliderUserData(entity->GetUUID());
 
         SetIsTrigger(m_IsTrigger);
         SetCentre(m_Centre);
@@ -61,13 +61,15 @@ namespace Louron {
         m_Material = std::make_shared<PhysicsMaterial>();
     }
 
+    SphereColliderComponent::~SphereColliderComponent() {
+        if (m_Material)
+            m_Material->Shutdown();
+    }
+
     SphereColliderComponent::SphereColliderComponent(const SphereColliderComponent& other) {
 
-        if(!scene)
-            scene = other.scene;
-
-        if (entity_uuid == NULL_UUID)
-            entity_uuid = other.entity_uuid;
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
 
         m_Radius = other.m_Radius;
         m_IsTrigger = other.m_IsTrigger;
@@ -75,22 +77,23 @@ namespace Louron {
 
         m_StateFlags = other.m_StateFlags;
 
-        Entity entity = (scene && entity_uuid != NULL_UUID) ? entity = GetEntity() : Entity();
+        Entity entity = *GetEntity();
         m_EntityUUID = entity ? entity.GetUUID() : (UUID)NULL_UUID;
         m_RigidbodyUUID = NULL_UUID;
 
         if (other.m_Material)
             m_Material = std::make_shared<PhysicsMaterial>(*other.m_Material);
 
-        if (scene && (scene->IsRunning() || scene->IsSimulating()))
+        if (entity && entity.GetScene() && (entity.GetScene()->IsRunning() || entity.GetScene()->IsSimulating()))
             Init();
     }
 
     SphereColliderComponent::SphereColliderComponent(SphereColliderComponent&& other) noexcept {
 
         // Component Base Class Move
-        scene = other.scene; other.scene = nullptr;
-        entity_uuid = other.entity_uuid; other.entity_uuid = NULL_UUID;
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+        other.SetEntity({});
 
         // Sphere Collider Class Move
         m_Radius = other.m_Radius; other.m_Radius = 0.5f;
@@ -106,19 +109,14 @@ namespace Louron {
         m_Material = other.m_Material; other.m_Material = nullptr;
     }
 
-    SphereColliderComponent::~SphereColliderComponent() {
-        if (m_Material)
-            m_Material->Shutdown();
-    }
-
     // COPY ASSIGNMENT OPERATOR
     SphereColliderComponent& SphereColliderComponent::operator=(const SphereColliderComponent& other) {
 
         if (this == &other)
             return *this;
 
-        if (!scene)
-            scene = other.scene;
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
 
         this->Shutdown();
 
@@ -128,7 +126,7 @@ namespace Louron {
 
         m_StateFlags = other.m_StateFlags;
 
-        Entity entity = (scene && entity_uuid != NULL_UUID) ? entity = GetEntity() : Entity();
+        Entity entity = *GetEntity();
         m_EntityUUID = entity ? entity.GetUUID() : (UUID)NULL_UUID;
         m_RigidbodyUUID = NULL_UUID;
 
@@ -145,7 +143,7 @@ namespace Louron {
         if(other.m_Material)
             m_Material = std::make_shared<PhysicsMaterial>(*other.m_Material);
 
-        if (scene && (scene->IsRunning() || scene->IsSimulating()))
+        if (entity && entity.GetScene() && (entity.GetScene()->IsRunning() || entity.GetScene()->IsSimulating()))
             Init();
         
         return *this;
@@ -160,8 +158,9 @@ namespace Louron {
         this->Shutdown();
 
         // Component Base Class Move
-        scene = other.scene; other.scene = nullptr;
-        entity_uuid = other.entity_uuid; other.entity_uuid = NULL_UUID;
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+        other.SetEntity({});
 
         // Sphere Collider Class Move
         m_Radius = other.m_Radius; other.m_Radius = 0.5f;
@@ -210,7 +209,12 @@ namespace Louron {
 
     void SphereColliderComponent::CreateStaticRigidbody() {
 
-        Entity entity = GetEntity();
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot CreateStaticRigidbody - Current Entity Is Invalid!");
+            return;
+        }
+
+        Entity entity = *GetEntity();
         if (!entity || !entity.GetScene()) {
             L_CORE_ERROR("Cannot Create Static Rigidbody - Current Entity Is Invalid and Cannot Access Scene!");
             return;
@@ -244,7 +248,12 @@ namespace Louron {
     /// </summary>
     void SphereColliderComponent::UpdateRigidbody(const UUID& rigidbodyEntityUUID) {
 
-        Entity entity = GetEntity();
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot UpdateRigidbody - Current Entity Is Invalid!");
+            return;
+        }
+
+        Entity entity = *GetEntity();
         if (!entity || !entity.GetScene()) {
             L_CORE_ERROR("Cannot Update Rigidbody - Current Entity Is Invalid and Cannot Access Scene!");
             return;
@@ -490,8 +499,8 @@ namespace Louron {
         AddFlag(ColliderFlag_RigidbodyUpdated);
         AddFlag(ColliderFlag_ShapePropsUpdated);
 
-        if (auto entity = GetEntity(); entity)
-            SetColliderUserData(entity.GetUUID());
+        if (auto entity = GetEntity(); entity && *entity)
+            SetColliderUserData(entity->GetUUID());
 
         SetIsTrigger(m_IsTrigger);
         SetCentre(m_Centre);
@@ -517,11 +526,8 @@ namespace Louron {
     // that the correct entity_uuid and scene are set afterward! 
     BoxColliderComponent::BoxColliderComponent(const BoxColliderComponent& other) {
 
-        if (!scene)
-            scene = other.scene;
-
-        if (entity_uuid == NULL_UUID)
-            entity_uuid = other.entity_uuid;
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
 
         m_BoxExtents = other.m_BoxExtents;
         m_IsTrigger = other.m_IsTrigger;
@@ -529,22 +535,23 @@ namespace Louron {
 
         m_StateFlags = other.m_StateFlags;
 
-        Entity entity = (scene && entity_uuid != NULL_UUID) ? entity = GetEntity() : Entity();
+        Entity entity = *GetEntity();
         m_EntityUUID = entity ? entity.GetUUID() : (UUID)NULL_UUID;
         m_RigidbodyUUID = NULL_UUID;
 
         if (other.m_Material)
             m_Material = std::make_shared<PhysicsMaterial>(*other.m_Material);
 
-        if (scene && (scene->IsRunning() || scene->IsSimulating()))
+        if (entity && entity.GetScene() && (entity.GetScene()->IsRunning() || entity.GetScene()->IsSimulating()))
             Init();
     }
 
     BoxColliderComponent::BoxColliderComponent(BoxColliderComponent&& other) noexcept
     {
         // Component Base Class Move
-        scene = other.scene; other.scene = nullptr;
-        entity_uuid = other.entity_uuid; other.entity_uuid = NULL_UUID;
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+        other.SetEntity({});
 
         // Sphere Collider Class Move
         m_BoxExtents = other.m_BoxExtents; other.m_BoxExtents = { 1.0f, 1.0f, 1.0f };
@@ -572,8 +579,8 @@ namespace Louron {
         if (this == &other)
             return *this;
 
-        if (!scene)
-            scene = other.scene;
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
 
         this->Shutdown();
 
@@ -583,7 +590,7 @@ namespace Louron {
 
         m_StateFlags = other.m_StateFlags;
 
-        Entity entity = (scene && entity_uuid != NULL_UUID) ? entity = GetEntity() : Entity();
+        Entity entity = *GetEntity();
         m_EntityUUID = entity ? entity.GetUUID() : (UUID)NULL_UUID;
         m_RigidbodyUUID = NULL_UUID;
 
@@ -599,7 +606,7 @@ namespace Louron {
         if (other.m_Material)
             m_Material = std::make_shared<PhysicsMaterial>(*other.m_Material);
 
-        if (scene->IsRunning() || scene->IsSimulating())
+        if (entity && entity.GetScene() && (entity.GetScene()->IsRunning() || entity.GetScene()->IsSimulating()))
             Init();
 
         return *this;
@@ -613,8 +620,9 @@ namespace Louron {
         this->Shutdown();
 
         // Component Base Class Move
-        scene = other.scene; other.scene = nullptr;
-        entity_uuid = other.entity_uuid; other.entity_uuid = NULL_UUID;
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+        other.SetEntity({});
 
         // Sphere Collider Class Move
         m_BoxExtents = other.m_BoxExtents; other.m_BoxExtents = { 1.0f, 1.0f, 1.0f };
@@ -662,7 +670,12 @@ namespace Louron {
 
     void BoxColliderComponent::CreateStaticRigidbody() {
 
-        Entity entity = GetEntity();
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot CreateStaticRigidbody - Current Entity Is Invalid!");
+            return;
+        }
+
+        Entity entity = *GetEntity();
         if (!entity || !entity.GetScene()) {
             L_CORE_ERROR("Cannot Create Static Rigidbody - Current Entity Is Invalid and Cannot Access Scene!");
             return;
@@ -696,7 +709,12 @@ namespace Louron {
     /// </summary>
     void BoxColliderComponent::UpdateRigidbody(const UUID& rigidbodyEntityUUID) {
 
-        Entity entity = GetEntity();
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot UpdateRigidbody - Current Entity Is Invalid!");
+            return;
+        }
+
+        Entity entity = *GetEntity();
         if (!entity || !entity.GetScene()) {
             L_CORE_ERROR("Cannot Update Rigidbody - Current Entity Is Invalid and Cannot Access Scene!");
             return;

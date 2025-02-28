@@ -5,6 +5,10 @@
 #include "../Debug/Assert.h"
 
 // C++ Standard Library Headers
+#include <cstring>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
 // External Vendor Library Headers
 #define STB_IMAGE_STATIC

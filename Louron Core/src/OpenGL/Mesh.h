@@ -1,35 +1,16 @@
 #pragma once
 
 // Louron Core Headers
-#include "../../Core/Engine.h"
-
-#include "../../OpenGL/Texture.h"
-#include "../../OpenGL/Material.h"
-#include "../../OpenGL/Vertex Array.h"
-
-#include "Components.h"
-
-#include "../Bounds.h"
+#include "Vertex Array.h"
+#include "../Asset/Asset.h"
+#include "../Scene/Spatial Partitioning/Bounds.h"
 
 // C++ Standard Library Headers
-#include <string>
-#include <vector>
-#include <map>
 
 // External Vendor Library Headers
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
-namespace YAML {
-
-	class Emitter;
-	class Node;
-}
-
-namespace Louron {
-
-#pragma region Mesh Data Structs
+namespace Louron
+{
 
 	struct SubMesh {
 
@@ -51,7 +32,7 @@ namespace Louron {
 		/// </summary>
 		/// <param name="element_count">This is the total count of FLOAT's in the data, NOT total count of vertices.</param>
 		void SetTriangles(uint32_t* triangles, GLuint element_count);
-		
+
 		const GLuint* GetTriangles(size_t* triangle_count) const;
 
 		/// <summary>
@@ -60,7 +41,7 @@ namespace Louron {
 		/// </summary>
 		/// <param name="element_count">This is the total count of FLOAT's in the data, NOT total count of vertices.</param>
 		void SetVertices(float* vertices, GLuint element_count);
-		
+
 		/// <summary>
 		/// This will set the normals of the mesh
 		/// locally before uploading to GPU.
@@ -119,7 +100,7 @@ namespace Louron {
 		/// Set the Vertex Array by copying an existing VAO.
 		/// </summary>
 		void SetVAO(std::unique_ptr<VertexArray> vao) { m_VAO = std::make_unique<VertexArray>(*vao); }
-		
+
 		/// <summary>
 		/// Get a const ref to the existing VAO.
 		/// </summary>
@@ -132,75 +113,25 @@ namespace Louron {
 
 	};
 
-	struct AssetMesh : public Asset {
+	struct StaticMesh : public Asset {
 
 		virtual AssetType GetType() const override { return AssetType::Mesh; }
 
 		std::vector<std::shared_ptr<SubMesh>> SubMeshes{};
 
-		AssetMesh() = default;
+		StaticMesh() = default;
 
-		AssetMesh(const AssetMesh& other);
-		AssetMesh& operator=(const AssetMesh& other);
+		StaticMesh(const StaticMesh& other);
+		StaticMesh& operator=(const StaticMesh& other);
 
-		AssetMesh(AssetMesh&& other) noexcept;
-		AssetMesh& operator=(AssetMesh&& other) noexcept;
+		StaticMesh(StaticMesh&& other) noexcept;
+		StaticMesh& operator=(StaticMesh&& other) noexcept;
 
-		~AssetMesh() = default;
+		~StaticMesh() = default;
 
 		Bounds_AABB MeshBounds{};
 		bool ModifiedAABB = false;
 
 	};
-
-#pragma endregion
-
-#pragma region Mesh Components
-
-	struct MeshFilterComponent : public Component {
-
-		AssetHandle MeshFilterAssetHandle = NULL_UUID;
-
-		Bounds_AABB TransformedAABB{};
-		bool AABBNeedsUpdate = true;
-		bool OctreeNeedsUpdate = true;
-
-		void UpdateTransformedAABB();
-
-		MeshFilterComponent() = default;
-		~MeshFilterComponent() = default;
-
-		MeshFilterComponent(const MeshFilterComponent& other) = default;
-		MeshFilterComponent(MeshFilterComponent&& other) noexcept = default;
-
-		MeshFilterComponent& operator=(const MeshFilterComponent& other) = default;
-		MeshFilterComponent& operator=(MeshFilterComponent&& other) = default;
-
-		void Serialize(YAML::Emitter& out) const;
-		bool Deserialize(const YAML::Node data);
-
-		void SetShouldDisplayDebugLines(const bool& shouldDisplay) { m_DisplayDebugAABB = shouldDisplay; }
-		bool GetShouldDisplayDebugLines() const { return m_DisplayDebugAABB; }
-
-	private:
-
-		bool m_DisplayDebugAABB = false;
-
-	};
-
-	struct MeshRendererComponent : public Component {
-
-	public:
-		bool Active = true;
-		std::vector<std::pair<AssetHandle, std::shared_ptr<MaterialUniformBlock>>> MeshRendererMaterialHandles;
-
-		bool CastShadows = false;
-
-		void Serialize(YAML::Emitter& out);
-		bool Deserialize(const YAML::Node data);
-
-	};
-
-#pragma endregion
 
 }

@@ -27,9 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Scene\Components\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\OpenGL\Vertex Array.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -69,13 +66,10 @@
     <ClCompile Include="src\Renderer\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Components\Components.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Renderer\RendererPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Components\UUID.cpp">
+    <ClCompile Include="src\Core\UUID.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Project\Project.cpp">
@@ -87,28 +81,28 @@
     <ClCompile Include="src\Scene\Scene Serializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Components\Skybox.cpp">
+    <ClCompile Include="src\Scene\Components\Skybox Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Logging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Components\Physics\Rigidbody.cpp">
+    <ClCompile Include="src\Scene\Components\Physics\Rigidbody Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Physics.cpp">
+    <ClCompile Include="src\Physics\Physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\Scene Systems\Physics System.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Components\Physics\Collider.cpp">
+    <ClCompile Include="src\Scene\Components\Physics\Collider Components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Components\Physics\PhysicsWrappers.cpp">
+    <ClCompile Include="src\Physics\PhysicsWrappers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Components\Physics\CollisionCallback.cpp">
+    <ClCompile Include="src\Physics\CollisionCallback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Audio.cpp">
@@ -126,7 +120,7 @@
     <ClCompile Include="src\Scene\Prefab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Components\Light.cpp">
+    <ClCompile Include="src\Scene\Components\Light Components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\ImGuiBuild.cpp">
@@ -174,10 +168,10 @@
     <ClCompile Include="include\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Frustum.cpp">
+    <ClCompile Include="src\Scene\Spatial Partitioning\Frustum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Bounds.cpp">
+    <ClCompile Include="src\Scene\Spatial Partitioning\Bounds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Time.cpp">
@@ -213,18 +207,33 @@
     <ClCompile Include="src\OpenGL\Query.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scene\Components\Script Component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Components\Core Components.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Components\Camera Component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Components\Mesh Components.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OpenGL\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Components\Component Base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\OpenGL\Buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Components\Light.h">
+    <ClInclude Include="src\Scene\Components\Light Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\OpenGL\Vertex Array.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scene\Components\Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Scene\Entity.h">
@@ -269,9 +278,6 @@
     <ClInclude Include="src\Core\EngineStart.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Components\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Renderer\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -293,13 +299,13 @@
     <ClInclude Include="src\Project\Project.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Components\UUID.h">
+    <ClInclude Include="src\Core\UUID.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Scene\Scene Serializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Components\Skybox.h">
+    <ClInclude Include="src\Scene\Components\Skybox Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Logging.h">
@@ -308,22 +314,22 @@
     <ClInclude Include="src\Core\Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Components\Physics\Rigidbody.h">
+    <ClInclude Include="src\Scene\Components\Physics\Rigidbody Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Physics.h">
+    <ClInclude Include="src\Physics\Physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Components\Physics\Collider.h">
+    <ClInclude Include="src\Scene\Components\Physics\Collider Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Scene\Scene Systems\Physics System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Components\Physics\PhysicsWrappers.h">
+    <ClInclude Include="src\Physics\PhysicsWrappers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Components\Physics\CollisionCallback.h">
+    <ClInclude Include="src\Physics\CollisionCallback.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Asset\Asset Manager.h">
@@ -1922,13 +1928,13 @@
     <ClInclude Include="include\yaml-cpp\yaml.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\OctreeBounds.h">
+    <ClInclude Include="src\Scene\Spatial Partitioning\OctreeBounds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Bounds.h">
+    <ClInclude Include="src\Scene\Spatial Partitioning\Bounds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Frustum.h">
+    <ClInclude Include="src\Scene\Spatial Partitioning\Frustum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Scripting\Script Manager.h">
@@ -1974,6 +1980,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Scene\Components\Component Base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Components\Script Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Components\Core Components.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Components\Camera Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Components\Audio Components.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Components\Mesh Components.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OpenGL\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

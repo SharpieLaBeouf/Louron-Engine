@@ -1,11 +1,11 @@
-#include "Rigidbody.h"
+#include "Rigidbody Component.h"
 
 // Louron Core Headers
-#include "PhysicsWrappers.h"
-
-#include "../Components.h"
 #include "../../Entity.h"
 #include "../../../Core/Logging.h"
+#include "../../../Physics/PhysicsWrappers.h"
+
+#include "../Core Components.h"
 
 // C++ Standard Library Headers
 
@@ -80,11 +80,8 @@ namespace Louron {
 
 	RigidbodyComponent::RigidbodyComponent(const RigidbodyComponent& other) {
 
-		if (!scene)
-			scene = other.scene;
-
-		if (!entity_uuid)
-			entity_uuid = other.entity_uuid;
+		if (other.GetEntity())
+			SetEntity(*other.GetEntity());
 
 		m_Mass = other.m_Mass;
 		m_Drag = other.m_Drag;
@@ -100,9 +97,13 @@ namespace Louron {
 		m_DeferredForce = other.m_DeferredForce;
 		m_DeferredTorque = other.m_DeferredTorque;
 
+		if (!GetEntity()) return;
+
+		Entity entity = *GetEntity();
+		auto scene = entity.GetScene();
 		if (scene && (scene->IsRunning() || scene->IsSimulating()))
 		{
-			Init(&GetEntity().GetTransform(), scene->GetPhysScene());
+			Init(&GetEntity()->GetTransform(), scene->GetPhysScene());
 		}
 		else {
 
@@ -114,8 +115,9 @@ namespace Louron {
 	RigidbodyComponent::RigidbodyComponent(RigidbodyComponent&& other) noexcept
 	{
 		// Component Base Class Move
-		entity_uuid = other.entity_uuid; other.entity_uuid = NULL_UUID;
-		scene = other.scene; other.scene = nullptr;
+		if (other.GetEntity())
+			SetEntity(*other.GetEntity());
+		other.SetEntity({});
 
 		// Rigidbody Component Class Move
 		m_Mass = other.m_Mass; other.m_Mass = 1.0f;
@@ -139,16 +141,13 @@ namespace Louron {
 
 	RigidbodyComponent& RigidbodyComponent::operator=(const RigidbodyComponent& other) {
 
-		if (this == &other || !scene)
+		if (this == &other)
 			return *this;
 
 		this->Shutdown();
 
-		if (!scene)
-			scene = other.scene;
-
-		if (!entity_uuid)
-			entity_uuid = other.entity_uuid;
+		if (other.GetEntity())
+			SetEntity(*other.GetEntity());
 
 		m_Mass = other.m_Mass;
 		m_Drag = other.m_Drag;
@@ -164,9 +163,13 @@ namespace Louron {
 		m_DeferredForce = other.m_DeferredForce;
 		m_DeferredTorque = other.m_DeferredTorque;
 
-		if (scene->IsRunning() || scene->IsSimulating())
+		if (!GetEntity()) return *this;
+
+		Entity entity = *GetEntity();
+		auto scene = entity.GetScene();
+		if (entity && (scene->IsRunning() || scene->IsSimulating()))
 		{
-			Init(&GetEntity().GetTransform(), scene->GetPhysScene());
+			Init(&GetEntity()->GetTransform(), scene->GetPhysScene());
 		}
 		else {
 
@@ -185,8 +188,10 @@ namespace Louron {
 		this->Shutdown();
 
 		// Component Base Class Move
-		entity_uuid = other.entity_uuid; other.entity_uuid = NULL_UUID;
-		scene = other.scene; other.scene = nullptr;
+		if (other.GetEntity())
+			SetEntity(*other.GetEntity());
+		other.SetEntity({});
+
 
 		// Rigidbody Component Class Move
 		m_Mass = other.m_Mass; other.m_Mass = 1.0f;
@@ -238,8 +243,7 @@ namespace Louron {
 	}
 
 	void RigidbodyComponent::SetAutomaticCentreOfMass(const bool& automaticCentreOfMass) {
-		// TODO: have option for custom centre of gravity
-
+		// TODO: have option for custom centre of mass
 		m_AutomaticCentreOfMass = automaticCentreOfMass;
 	}
 
@@ -265,9 +269,16 @@ namespace Louron {
 	// Apply force to the rigid body
 	// If the scene is currently in simulation, we want to defer 
 	// this force to next frames physics simulation 
-	void RigidbodyComponent::ApplyForce(const glm::vec3& force, PxForceMode::Enum forceMode) {
-		if (m_RigidDynamic) {
-			Entity entity = GetEntity();
+	void RigidbodyComponent::ApplyForce(const glm::vec3& force, PxForceMode::Enum forceMode) 
+	{
+		if (!GetEntity()) {
+			L_CORE_ERROR("Cannot ApplyForce to Rigidbody - Current Entity Is Invalid!");
+			return;
+		}
+
+		if (m_RigidDynamic) 
+		{
+			Entity entity = *GetEntity();
 			if (entity.GetScene()->IsPhysicsCalculating())
 				m_DeferredForce.push_back({ force, forceMode });
 			else
@@ -278,9 +289,16 @@ namespace Louron {
 	// Apply torque to the rigid body
 	// If the scene is currently in simulation, we want to defer 
 	// this torque to next frames physics simulation 
-	void RigidbodyComponent::ApplyTorque(const glm::vec3& torque) {
-		if (m_RigidDynamic) {
-			Entity entity = GetEntity();
+	void RigidbodyComponent::ApplyTorque(const glm::vec3& torque) 
+	{
+		if (!GetEntity()) {
+			L_CORE_ERROR("Cannot ApplyTorque to Rigidbody - Current Entity Is Invalid!");
+			return;
+		}
+
+		if (m_RigidDynamic) 
+		{
+			Entity entity = *GetEntity();
 			if (entity.GetScene()->IsPhysicsCalculating())
 				m_DeferredTorque.push_back({ torque });
 			else

@@ -1,12 +1,10 @@
 #include "PhysicsWrappers.h"
 
 // Louron Core Headers
-#include "../../../Core/Logging.h"
-#include "../Components.h"
-#include "../UUID.h"
+#include "../Core/Logging.h"
+#include "../Scene/Components/Core Components.h"
 
 // C++ Standard Library Headers
-
 
 // External Vendor Library Headers
 #include <glm/gtx/quaternion.hpp>
@@ -462,7 +460,6 @@ namespace Louron {
     }
 
 #pragma endregion
-
 
 #pragma region PhysicsShape
 

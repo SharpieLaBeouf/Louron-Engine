@@ -1,6 +1,7 @@
 #include "Script Connector.h"
 
 // Louron Core Headers
+#include "../Core/Engine.h"
 #include "../Asset/Asset Manager API.h"
 
 // C++ Standard Library Headers
@@ -2148,7 +2149,7 @@ namespace Louron {
 		IndexBuffer* ebo = new IndexBuffer();
 		sub_mesh->GetVAO()->SetIndexBuffer(ebo);
 
-		std::shared_ptr<AssetMesh> mesh = std::make_shared<AssetMesh>();
+		std::shared_ptr<StaticMesh> mesh = std::make_shared<StaticMesh>();
 
 		mesh->SubMeshes.push_back(std::move(sub_mesh));
 
@@ -2160,7 +2161,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 			
@@ -2172,7 +2173,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 			
@@ -2184,7 +2185,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 		
@@ -2196,7 +2197,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle) || data == nullptr || dataLength == 0)
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 
 		mesh->SubMeshes.front()->SetVertices(data, dataLength);
@@ -2216,7 +2217,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 			
@@ -2228,7 +2229,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 
@@ -2240,7 +2241,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 
@@ -2252,7 +2253,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 		
@@ -2264,7 +2265,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 
@@ -2278,7 +2279,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 
@@ -2292,7 +2293,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 
@@ -2306,7 +2307,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 
@@ -2320,7 +2321,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 
@@ -2356,15 +2357,15 @@ namespace Louron {
 		if (!entity.HasComponent<MeshFilterComponent>())
 			return NULL_UUID;
 
-		auto asset_mesh = AssetManager::GetAsset<AssetMesh>(entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
+		auto asset_mesh = AssetManager::GetAsset<StaticMesh>(entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
 
 		if (asset_mesh && asset_mesh->SubMeshes.size() >= 1 && asset_mesh->SubMeshes.front())
 		{
-			auto copy_asset_mesh = std::make_shared<AssetMesh>();
+			auto copy_asset_mesh = std::make_shared<StaticMesh>();
 			copy_asset_mesh->SubMeshes.push_back(std::make_shared<SubMesh>(*asset_mesh->SubMeshes.front()));
 			copy_asset_mesh->MeshBounds = asset_mesh->MeshBounds;
 
-			return AssetManager::AddRuntimeAsset<AssetMesh>(copy_asset_mesh, "New Runtime Mesh");
+			return AssetManager::AddRuntimeAsset<StaticMesh>(copy_asset_mesh, "New Runtime Mesh");
 		}
 
 		std::shared_ptr<SubMesh> sub_mesh = std::make_shared<SubMesh>();
@@ -2394,7 +2395,7 @@ namespace Louron {
 		IndexBuffer* ebo = new IndexBuffer();
 		sub_mesh->GetVAO()->SetIndexBuffer(ebo);
 
-		asset_mesh = std::make_shared<AssetMesh>();
+		asset_mesh = std::make_shared<StaticMesh>();
 
 		asset_mesh->SubMeshes.push_back(std::move(sub_mesh));
 
@@ -2425,7 +2426,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 
@@ -2437,7 +2438,7 @@ namespace Louron {
 		if (!AssetManager::IsAssetHandleValid(assetHandle))
 			return;
 
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 
@@ -2448,7 +2449,7 @@ namespace Louron {
 
 	void ScriptConnector::Mesh_RecalculateNormals(AssetHandle assetHandle)
 	{
-		const auto& mesh = AssetManager::GetAsset<AssetMesh>(assetHandle);
+		const auto& mesh = AssetManager::GetAsset<StaticMesh>(assetHandle);
 
 		if (!mesh || mesh->SubMeshes.empty() || !mesh->SubMeshes.front()) return;
 

@@ -1,10 +1,16 @@
 #include "Asset Manager.h"
 
+// Louron Core Headers
 #include "Asset Importer.h"
 #include "Asset Manager API.h"
 
+#include "../Core/Engine.h"
 #include "../Project/Project.h"
 
+// C++ Standard Library Headers
+#include <fstream>
+
+// External Vendor Library Headers
 #ifndef YAML_CPP_STATIC_DEFINE
 #define YAML_CPP_STATIC_DEFINE
 #endif

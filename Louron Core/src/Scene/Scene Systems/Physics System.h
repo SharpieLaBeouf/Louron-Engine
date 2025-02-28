@@ -25,7 +25,6 @@ namespace Louron {
 
 	public:
 
-		static RigidbodyComponent& AddRigidBody(Entity entity, Scene* scene);
 		static void RemoveRigidBody(Entity entity, Scene* scene);
 
 		static SphereColliderComponent& AddSphereCollider(Entity entity, Scene* scene);

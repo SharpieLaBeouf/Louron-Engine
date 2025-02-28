@@ -1,11 +1,17 @@
 #include "Asset Importer.h"
 
+// Louron Core Headers
 #include "Asset Manager API.h"
 
+#include "../Debug/Profiler.h"
 #include "../Project/Project.h"
 
-#include "../Debug/Profiler.h"
+#include "../Scene/Scene.h"
+#include "../Scene/Prefab.h"
 
+#include "../OpenGL/Mesh.h"
+
+// C++ Standard Library Headers
 #include <map>
 #include <memory>
 #include <functional>
@@ -310,7 +316,7 @@ namespace Louron {
 		return absolute_texture_path;
 	}
 
-	void ModelImporter::ProcessMesh(const aiScene* scene, aiMesh* mesh, std::shared_ptr<AssetMesh> asset_mesh)
+	void ModelImporter::ProcessMesh(const aiScene* scene, aiMesh* mesh, std::shared_ptr<StaticMesh> asset_mesh)
 	{
 		// 1. Process Vertices
 		std::vector<glm::vec3> vertices;
@@ -371,7 +377,7 @@ namespace Louron {
 		asset_mesh->SubMeshes.push_back(std::move(sub_mesh));
 	}
 
-	void ModelImporter::ProcessMaterial(const aiScene* scene, aiMesh* mesh, std::shared_ptr<Prefab> model_prefab, entt::entity current_entity_handle, std::shared_ptr<AssetMesh> asset_mesh, AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle parent_asset_handle, const AssetMetaData& parent_meta_data, const std::filesystem::path& path)
+	void ModelImporter::ProcessMaterial(const aiScene* scene, aiMesh* mesh, std::shared_ptr<Prefab> model_prefab, entt::entity current_entity_handle, std::shared_ptr<StaticMesh> asset_mesh, AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle parent_asset_handle, const AssetMetaData& parent_meta_data, const std::filesystem::path& path)
 	{
 		// 4. Create Material Asset
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -622,7 +628,7 @@ namespace Louron {
 					AssetUtils::AssetTypeToString(AssetType::Mesh) + path.filename().string() + node->mName.C_Str()
 				));
 
-				std::shared_ptr<AssetMesh> asset_mesh = std::make_shared<AssetMesh>();
+				std::shared_ptr<StaticMesh> asset_mesh = std::make_shared<StaticMesh>();
 				asset_mesh->Handle = handle;
 
 				AssetMetaData metadata;

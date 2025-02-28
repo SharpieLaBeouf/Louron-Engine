@@ -2,7 +2,6 @@
 
 // Louron Core Headers
 #include "../Core/Engine.h"
-
 #include "../Debug/Assert.h"
 
 #include "../Asset/Asset Manager API.h"

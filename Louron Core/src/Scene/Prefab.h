@@ -3,11 +3,13 @@
 // Louron Core Headers
 #include "../Asset/Asset.h"
 
-#include "Components/UUID.h"
-#include "Components/Mesh.h"
-#include "Components/Components.h"
-#include "Components/Physics/Collider.h"
-#include "Components/Physics/Rigidbody.h"
+#include "../Core/UUID.h"
+#include "../Core/Logging.h"
+
+#include "Components/Core Components.h"
+#include "Components/Mesh Components.h"
+#include "Components/Physics/Collider Components.h"
+#include "Components/Physics/Rigidbody Component.h"
 
 #include "Scene Systems/Physics System.h"
 

@@ -1,10 +1,7 @@
 #pragma once
 
 // Louron Core Headers
-#include "../../OpenGL/Shader.h"
-#include "../../OpenGL/Texture.h"
-
-#include "Components.h"
+#include "Component Base.h"
 
 // C++ Standard Library Headers
 #include <string>
@@ -26,7 +23,8 @@ namespace YAML {
 
 namespace Louron {
 
-	enum class ShadowTypeFlag : uint8_t {
+	enum class ShadowTypeFlag : uint8_t 
+	{
 
 		NoShadows	= 0,
 		HardShadows = 1,
@@ -34,8 +32,8 @@ namespace Louron {
 
 	};
 
-	struct PointLightComponent : public Component {
-
+	struct PointLightComponent : public ComponentBase 
+	{
 		bool Active = true;
 
 		glm::vec4 Colour = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -52,8 +50,8 @@ namespace Louron {
 		bool Deserialize(const YAML::Node data);
 	};
 
-	struct SpotLightComponent : public Component {
-
+	struct SpotLightComponent : public ComponentBase 
+	{
 		bool Active = true;
 
 		glm::vec4 Colour = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -71,8 +69,8 @@ namespace Louron {
 		bool Deserialize(const YAML::Node data);
 	};
 
-	struct DirectionalLightComponent : public Component {
-		
+	struct DirectionalLightComponent : public ComponentBase 
+	{		
 		bool Active = true;
 
 		glm::vec4 Colour = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -89,7 +87,8 @@ namespace Louron {
 		bool Deserialize(const YAML::Node data);
 	};
 
-	struct VisibleLightIndex {
+	struct VisibleLightIndex 
+	{
 		uint32_t index;
 
 		VisibleLightIndex() = default;

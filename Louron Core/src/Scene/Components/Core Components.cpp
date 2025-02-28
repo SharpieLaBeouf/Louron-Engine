@@ -1,0 +1,1317 @@
+#include "Core Components.h"
+
+// Louron Core Headers
+#include "../Entity.h"
+
+#include "Mesh Components.h"
+
+#include "Physics/Collider Components.h"
+#include "Physics/Rigidbody Component.h"
+
+// C++ Standard Library Headers
+
+// External Vendor Library Headers
+#include <glm/glm.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
+
+#ifndef YAML_CPP_STATIC_DEFINE
+#define YAML_CPP_STATIC_DEFINE
+#endif
+#include <yaml-cpp/yaml.h>
+
+namespace Louron
+{
+
+#pragma region ID Component
+
+    void IDComponent::Serialize(YAML::Emitter& out) {
+
+        out << YAML::Key << "Entity" << YAML::Value << ID;
+    }
+
+    bool IDComponent::Deserialize(const YAML::Node data) {
+
+        if (data)
+            ID = data.as<uint32_t>();
+        else
+            return false;
+
+        return true;
+    }
+
+#pragma endregion
+
+#pragma region Tag Component
+
+    void TagComponent::Serialize(YAML::Emitter& out) {
+
+        out << YAML::Key << "TagComponent";
+        out << YAML::BeginMap;
+
+        out << YAML::Key << "Tag" << YAML::Value << Tag;
+
+        out << YAML::EndMap;
+    }
+
+    bool TagComponent::Deserialize(const YAML::Node data)
+    {
+        if (data["Tag"])
+            Tag = data["Tag"].as<std::string>();
+
+        return true;
+    }
+
+    void TagComponent::SetUniqueName(const std::string& name)
+    {
+        std::string uniqueName = name.empty() ? "Untitled Entity" : name;
+        int suffix = 1;
+        std::string baseName = uniqueName;
+
+        // Ensure the name is unique by appending a numeric suffix
+        auto check_tags = [&](const char* name) -> bool {
+
+            if (GetComponent<HierarchyComponent>().HasParent()) { // Has Parent
+                const std::vector<UUID>& uuids = GetComponentInParent<HierarchyComponent>().GetChildren();
+                for (auto& uuid : uuids) 
+                {
+                    if (uuid == GetEntity()->GetUUID())
+                        continue;
+
+                    const TagComponent& tag = GetEntity()->GetScene()->FindEntityByUUID(uuid).GetComponent<TagComponent>();
+                    if (tag.Tag == name)
+                        return true;
+                }
+            }
+            else { // At Root Level
+
+                auto view = GetEntity()->GetScene()->GetAllEntitiesWith<HierarchyComponent, TagComponent>();
+                for (auto& entity : view) {
+
+                    if (!view.get<HierarchyComponent>(entity).HasParent()) {
+                        if (view.get<TagComponent>(entity).Tag == name)
+                            return true;
+                    }
+                }
+            }
+
+            return false;
+            };
+
+        while (check_tags(uniqueName.c_str())) {
+            uniqueName = baseName + " (" + std::to_string(suffix++) + ")";
+        }
+        Tag = uniqueName;
+    }
+
+#pragma endregion
+
+#pragma region Hierarchy Component
+
+    // Helper method to recursively get child colliders without a Rigidbody
+    static std::vector<Entity> GetChildCollidersWithoutRigidbody(Entity startEntity) {
+
+        std::vector<Entity> colliders;
+
+        if (!startEntity.HasComponent<RigidbodyComponent>()) {
+
+            if (startEntity.HasAnyComponent<SphereColliderComponent, BoxColliderComponent>())
+                colliders.push_back(startEntity);
+
+            for (UUID child_uuid : startEntity.GetComponent<HierarchyComponent>().GetChildren()) {
+
+                // Recursively check the child's children
+                Entity child_entity = startEntity.GetScene()->FindEntityByUUID(child_uuid);
+                std::vector<Entity> child_colliders = GetChildCollidersWithoutRigidbody(child_entity);
+                colliders.insert(colliders.end(), child_colliders.begin(), child_colliders.end());
+            }
+        }
+
+        return colliders;
+    }
+
+    HierarchyComponent::HierarchyComponent(const HierarchyComponent& other)
+    {
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+
+        m_Parent = other.m_Parent;
+        m_Children = other.m_Children;
+        m_HierarchyOrderIndex = other.m_HierarchyOrderIndex;
+    }
+
+    HierarchyComponent::HierarchyComponent(HierarchyComponent&& other) noexcept
+    {
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+        other.SetEntity({});
+
+        m_Parent = other.m_Parent; other.m_Parent = NULL_UUID;
+
+        m_Children = std::move(other.m_Children); // Move the children directly
+        other.m_Children.clear();
+
+        m_HierarchyOrderIndex = other.m_HierarchyOrderIndex; other.m_HierarchyOrderIndex = -1;
+    }
+
+    HierarchyComponent& HierarchyComponent::operator=(const HierarchyComponent& other)
+    {
+        if (this == &other)
+            return *this;
+
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+
+        m_Parent = other.m_Parent;
+        m_Children = other.m_Children;
+        m_HierarchyOrderIndex = other.m_HierarchyOrderIndex;
+
+        return *this;
+    }
+
+    HierarchyComponent& HierarchyComponent::operator=(HierarchyComponent&& other) noexcept
+    {
+        if (this == &other)
+            return *this;
+
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+        other.SetEntity({});
+
+        m_Parent = other.m_Parent; other.m_Parent = NULL_UUID;
+
+        m_Children = std::move(other.m_Children); // Move the children directly
+        other.m_Children.clear();
+
+        m_HierarchyOrderIndex = other.m_HierarchyOrderIndex; other.m_HierarchyOrderIndex = -1;
+
+        return *this;
+    }
+
+    void HierarchyComponent::AttachParent(const UUID& newParentID) {
+
+        if (newParentID == NULL_UUID) {
+            return;
+        }
+
+        if (newParentID == m_Parent) {
+            L_CORE_WARN("Cannot Attach Self as Parent!");
+            return;
+        }
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot Attach Parent - Current Entity Is Invalid!");
+            return;
+        }
+
+        Entity entity = *GetEntity();
+
+        if (!entity || !entity.GetScene()) {
+            L_CORE_ERROR("Cannot Attach Parent - Current Entity Is Invalid and Cannot Access Scene!");
+            return;
+        }
+
+        for (const auto& child_uuid : m_Children) {
+
+            if (child_uuid == newParentID) {
+                L_CORE_WARN("Cannot Attach Child Entity As New Parent!");
+                return;
+            }
+
+        }
+
+        // 1. Is this Current Entity already connected to another parent? If so call DetachParent first
+        if (m_Parent != NULL_UUID)
+            DetachParent();
+
+        Entity new_parent_entity = entity.GetScene()->FindEntityByUUID(newParentID);
+        if (!new_parent_entity) {
+            L_CORE_ERROR("Cannot Attach Parent - Parent Entity Is Invalid! Entity({0}) will be at the root of the scene now.", entity.GetName());
+            return;
+        }
+
+        // 2. Convert Current Global Transform to Local Transform relative to newParent
+        // Get references to the relevant components
+        auto& entity_transform = entity.GetTransform();
+        auto& parent_transform = new_parent_entity.GetTransform();
+
+        // Calculate the local transform relative to the new parent
+        glm::mat4 localTransform = glm::inverse(parent_transform.GetGlobalTransform()) * entity_transform.GetGlobalTransform();
+        entity_transform.SetPosition(localTransform[3]);
+        entity_transform.SetRotation(glm::vec3(glm::degrees(glm::eulerAngles(glm::quat_cast(localTransform)))));
+        entity_transform.SetScale(glm::vec3(
+            glm::length(localTransform[0]),
+            glm::length(localTransform[1]),
+            glm::length(localTransform[2])
+        ));
+        entity_transform.m_LocalTransform = localTransform;
+        entity_transform.m_GlobalTransform = new_parent_entity.GetTransform().GetGlobalTransform() * localTransform;
+
+        if (!entity.HasComponent<RigidbodyComponent>()) {
+
+            // 1. I need to recursively check my children to see if there are
+            // any children entities that HAVE a SphereCollider or BoxCollider, and 
+            // DO NOT HAVE a Rigidbody.
+            std::vector<Entity> child_colliders = GetChildCollidersWithoutRigidbody(entity);
+
+            // 2. Flag all children with Collider Components without Rigidbodies to update
+            //    rigidbody reference in the physics system
+            for (Entity child_entity : child_colliders) {
+
+                // Attach the collider to the parent's Rigidbody
+                if (child_entity.HasComponent<SphereColliderComponent>()) 
+                {
+                    child_entity.GetComponent<SphereColliderComponent>().AddFlag(ColliderFlag_RigidbodyUpdated);
+                }
+                if (child_entity.HasComponent<BoxColliderComponent>()) 
+                {
+                    child_entity.GetComponent<BoxColliderComponent>().AddFlag(ColliderFlag_RigidbodyUpdated);
+                }
+            }
+        }
+
+        // Finalise relationship 8==D~({})
+        m_Parent = newParentID;
+        new_parent_entity.GetComponent<HierarchyComponent>().m_Children.push_back(entity.GetUUID());
+    }
+
+    void HierarchyComponent::DetachParent() {
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot Detach Parent - Current Entity Is Invalid!");
+            return;
+        }
+
+        Entity entity = *GetEntity();
+
+        if (!entity || !entity.GetScene()) {
+            L_CORE_ERROR("Cannot Detach Parent - Current Entity Is Invalid and Cannot Access Scene!");
+            return;
+        }
+
+        // 1. Calculate the child's global transform
+        auto& entityTransform = entity.GetTransform();
+        glm::mat4 globalTransform = entityTransform.GetGlobalTransform();
+
+        // 2. Update the child's local transform to match the global transform
+        entityTransform.SetPosition(globalTransform[3]);
+        entityTransform.SetRotation(glm::vec3(glm::degrees(glm::eulerAngles(glm::quat_cast(globalTransform)))));
+        entityTransform.SetScale(glm::vec3(
+            glm::length(globalTransform[0]),
+            glm::length(globalTransform[1]),
+            glm::length(globalTransform[2])
+        ));
+        entityTransform.m_LocalTransform = globalTransform;
+        entityTransform.m_GlobalTransform = globalTransform;
+
+        if (!entity.HasComponent<RigidbodyComponent>()) {
+
+            // 1. I need to recursively check my children to see if there are
+            // any children entities that HAVE a SphereCollider or BoxCollider, and 
+            // DO NOT HAVE a Rigidbody.
+            std::vector<Entity> child_colliders = GetChildCollidersWithoutRigidbody(entity);
+
+            // 2. Flag all children with Collider Components without Rigidbodies to update
+            //    rigidbody reference in the physics system
+            for (Entity child_entity : child_colliders) {
+
+                // Attach the collider to the parent's Rigidbody
+                if (child_entity.HasComponent<SphereColliderComponent>()) 
+                {
+                    child_entity.GetComponent<SphereColliderComponent>().AddFlag(ColliderFlag_RigidbodyUpdated);
+                }
+                if (child_entity.HasComponent<BoxColliderComponent>()) 
+                {
+                    child_entity.GetComponent<BoxColliderComponent>().AddFlag(ColliderFlag_RigidbodyUpdated);
+                }
+            }
+
+        }
+
+        if (m_Parent != NULL_UUID) {
+            Entity parentEntity = entity.GetScene()->FindEntityByUUID(m_Parent);
+            if (parentEntity) {
+                auto& parentChildren = parentEntity.GetComponent<HierarchyComponent>().m_Children;
+
+                // Erase-remove idiom to remove the child from the parent's children list
+                parentChildren.erase(
+                    std::remove(parentChildren.begin(), parentChildren.end(), entity.GetUUID()),
+                    parentChildren.end()
+                );
+            }
+
+            // Clear the parent ID
+            m_Parent = NULL_UUID;
+        }
+    }
+
+    void HierarchyComponent::DetachChildren() {
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot Detach Children - Current Entity Is Invalid!");
+            return;
+        }
+
+        const Entity& entity = *GetEntity();
+
+        if (!entity || !entity.GetScene()) {
+            L_CORE_ERROR("Cannot Detach Children - Current Entity Is Invalid and Cannot Access Scene!");
+            return;
+        }
+
+        for (const auto& child : m_Children) {
+            entity.GetScene()->FindEntityByUUID(child).GetComponent<HierarchyComponent>().DetachParent();
+        }
+
+        L_CORE_INFO("Detached {0} Children From Entity({1}).", m_Children.size(), entity.GetName());
+
+        m_Children.clear();
+    }
+
+    void HierarchyComponent::RehomeChildren(const UUID& newParentID) {
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot Rehome Children - Current Entity Is Invalid!");
+            return;
+        }
+
+        const Entity& entity = *GetEntity();
+
+        if (!entity || !entity.GetScene()) 
+        {
+            L_CORE_ERROR("Cannot Rehome Children - Current Entity Is Invalid and Cannot Access Scene!");
+            return;
+        }
+
+        Entity new_parent = entity.GetScene()->FindEntityByUUID(newParentID);
+        if (!new_parent) 
+        {
+            L_CORE_ERROR("Cannot Rehome Children - Parent Entity Is Invalid.");
+            return;
+        }
+
+        for (const auto& child : m_Children) 
+        {
+            entity.GetScene()->FindEntityByUUID(child).GetComponent<HierarchyComponent>().AttachParent(newParentID);
+        }
+
+        L_CORE_INFO("Rehomed {0} Children From Entity({1}) to Entity({2}).", m_Children.size(), entity.GetName(), new_parent.GetName());
+
+        m_Children.clear();
+
+    }
+
+    Entity HierarchyComponent::FindChild(const UUID& childUUID) const {
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot Find Child - Current Entity Is Invalid!");
+            return Entity{};
+        }
+
+        const Entity& entity = *GetEntity();
+        auto scene_ref = entity.GetScene();
+        if (!scene_ref) 
+        {
+            L_CORE_ASSERT(scene_ref, "Cannot Find Child - Current Entity Has Invalid Scene Reference!");
+            return {};
+        }
+
+        if (entity.GetUUID() == childUUID)
+        {
+            L_CORE_WARN("Cannot Pass Child UUID to Self.");
+            return {};
+        }
+
+        if (scene_ref->HasEntity(childUUID)) 
+        {
+            // First check current children
+            for (const auto& child : m_Children)
+                if (child && child == childUUID)
+                    return scene_ref->FindEntityByUUID(child);
+
+            // If still not found, recurse to next level
+            for (const auto& child : m_Children)
+                if (child)
+                    return scene_ref->FindEntityByUUID(childUUID).GetComponent<HierarchyComponent>().FindChild(childUUID);
+        }
+
+        return {};
+    }
+
+    Entity HierarchyComponent::FindChild(const std::string& childName) const {
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot Find Child - Current Entity Is Invalid!");
+            return Entity{};
+        }
+
+        const Entity& entity = *GetEntity();
+        auto scene_ref = entity.GetScene();
+        if (!scene_ref) {
+            L_CORE_ASSERT(scene_ref, "Cannot Find Child - Current Entity Has Invalid Scene Reference!");
+            return {};
+        }
+
+        if (entity.GetName() == childName)
+        {
+            L_CORE_WARN("Cannot Pass Child UUID to Self.");
+            return {};
+        }
+
+        if (scene_ref->HasEntity(childName)) {
+
+            // First check current children
+            for (const auto& child : m_Children)
+                if (Entity child_entity = scene_ref->FindEntityByUUID(child); child_entity && child_entity.GetName() == childName)
+                    return child_entity;
+
+            // If still not found, recurse to next level
+            for (const auto& child : m_Children)
+                if (Entity child_entity = scene_ref->FindEntityByUUID(child); child_entity)
+                    return child_entity.GetComponent<HierarchyComponent>().FindChild(childName);
+        }
+
+        return {};
+    }
+
+    const std::vector<UUID>& HierarchyComponent::GetChildren() const {
+        return m_Children;
+    }
+
+    Entity HierarchyComponent::GetParentEntity() const {
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot Get Parent Entity - Current Entity Is Invalid!");
+            return {};
+        }
+
+        if (!HasParent()) {
+            L_CORE_WARN("Cannot Get Parent Entity - No Parent Attached.");
+            return {};
+        }
+
+        auto scene_ref = GetEntity()->GetScene();
+        if (!scene_ref) {
+            L_CORE_ASSERT(scene_ref, "Cannot Get Parent Entity - Current Entity Has Invalid Scene Reference!");
+            return {};
+        }
+
+        return scene_ref->FindEntityByUUID(m_Parent);
+    }
+
+    const UUID& HierarchyComponent::GetParentID() const {
+        return m_Parent;
+    }
+
+    bool HierarchyComponent::HasParent() const {
+        return m_Parent != NULL_UUID;
+    }
+
+    bool HierarchyComponent::HasChildren() const
+    {
+        return m_Children.size() != 0;
+    }
+
+    void HierarchyComponent::Serialize(YAML::Emitter& out) {
+
+        out << YAML::Key << "HierarchyComponent";
+        out << YAML::BeginMap;
+
+        out << YAML::Key << "Parent" << YAML::Value << m_Parent;
+
+        {
+            out << YAML::Key << "Children" << YAML::Value;
+            out << YAML::BeginSeq;
+
+            for (const auto& child : m_Children) {
+                out << child;
+            }
+
+            out << YAML::EndSeq;;
+        }
+
+        out << YAML::EndMap;
+    }
+
+    bool HierarchyComponent::Deserialize(const YAML::Node data) {
+
+        YAML::Node component = data;
+
+        // Deserialize the Parent value
+        if (component["Parent"]) {
+            m_Parent = component["Parent"].as<uint32_t>();
+        }
+
+        // Deserialize the Children sequence
+        if (component["Children"]) {
+
+            if (component["Children"].IsSequence()) {
+
+                m_Children.clear();
+                for (size_t i = 0; i < component["Children"].size(); ++i) {
+                    m_Children.push_back(component["Children"][i].as<uint32_t>());
+                }
+
+            }
+
+        }
+        return true;
+    }
+
+#pragma endregion
+
+#pragma region Transform Component
+
+    TransformComponent::TransformComponent() {
+        AddFlag(TransformFlag_PropertiesUpdated);
+    }
+
+    TransformComponent::TransformComponent(const TransformComponent& other)
+    {
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+
+        m_Position = other.m_Position;
+        m_Rotation = other.m_Rotation;
+        m_Scale = other.m_Scale;
+
+        m_LocalTransform = other.m_LocalTransform;
+        m_GlobalTransform = other.m_GlobalTransform;
+
+        m_StateFlags = other.m_StateFlags;
+        AddFlag(TransformFlag_PropertiesUpdated);
+    }
+
+    TransformComponent::TransformComponent(TransformComponent&& other) noexcept
+    {
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+        other.SetEntity({});
+
+        m_Position = other.m_Position; other.m_Position = glm::vec3(0.0f);
+        m_Rotation = other.m_Rotation; other.m_Rotation = glm::vec3(0.0f);
+        m_Scale = other.m_Scale; other.m_Scale = glm::vec3(1.0f);
+
+        m_LocalTransform = other.m_LocalTransform; other.m_LocalTransform = glm::mat4(1.0f);
+        m_GlobalTransform = other.m_GlobalTransform; other.m_GlobalTransform = glm::mat4(1.0f);
+
+        m_StateFlags = other.m_StateFlags; other.m_StateFlags = TransformFlag_None;
+
+        AddFlag(TransformFlag_PropertiesUpdated);
+    }
+
+    TransformComponent& TransformComponent::operator=(const TransformComponent& other)
+    {
+        if (this == &other)
+            return *this;
+
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+
+        m_Position = other.m_Position;
+        m_Rotation = other.m_Rotation;
+        m_Scale = other.m_Scale;
+
+        m_LocalTransform = other.m_LocalTransform;
+        m_GlobalTransform = other.m_GlobalTransform;
+
+        m_StateFlags = other.m_StateFlags;
+
+        AddFlag(TransformFlag_PropertiesUpdated);
+
+        return *this;
+    }
+
+    TransformComponent& TransformComponent::operator=(TransformComponent&& other) noexcept
+    {
+        if (this == &other)
+            return *this;
+
+        if (other.GetEntity())
+            SetEntity(*other.GetEntity());
+        other.SetEntity({});
+
+        m_Position = other.m_Position; other.m_Position = glm::vec3(0.0f);
+        m_Rotation = other.m_Rotation; other.m_Rotation = glm::vec3(0.0f);
+        m_Scale = other.m_Scale; other.m_Scale = glm::vec3(1.0f);
+
+        m_LocalTransform = other.m_LocalTransform; other.m_LocalTransform = glm::mat4(1.0f);
+        m_GlobalTransform = other.m_GlobalTransform; other.m_GlobalTransform = glm::mat4(1.0f);
+
+        m_StateFlags = other.m_StateFlags; other.m_StateFlags = TransformFlag_None;
+
+        AddFlag(TransformFlag_PropertiesUpdated);
+
+        return *this;
+    }
+
+    TransformComponent::TransformComponent(const glm::vec3& translation) : m_Position(translation) {
+        AddFlag(TransformFlag_PropertiesUpdated);
+    }
+
+    void TransformComponent::AddFlag(TransformFlags flag) { m_StateFlags = static_cast<TransformFlags>(m_StateFlags | flag); }
+    void TransformComponent::RemoveFlag(TransformFlags flag) { m_StateFlags = static_cast<TransformFlags>(m_StateFlags & ~flag); }
+    bool TransformComponent::CheckFlag(TransformFlags flag) const { return (m_StateFlags & static_cast<TransformFlags>(flag)) != TransformFlag_None; }
+    bool TransformComponent::NoFlagsSet() const { return m_StateFlags == TransformFlag_None; }
+    void TransformComponent::ClearFlags() { m_StateFlags = TransformFlag_None; }
+    TransformFlags TransformComponent::GetFlags() const { return m_StateFlags; }
+
+    /// <summary>
+    /// Set the position to a fixed value.
+    /// </summary>
+    /// <param name="newScale">This will be the new fixed position.</param>
+    void TransformComponent::SetPosition(const glm::vec3& newPosition) {
+
+        m_Position = newPosition;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    void TransformComponent::SetPositionX(const float& newXPosition) {
+        m_Position.x = newXPosition;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    void TransformComponent::SetPositionY(const float& newYPosition) {
+        m_Position.y = newYPosition;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    void TransformComponent::SetPositionZ(const float& newZPosition) {
+        m_Position.z = newZPosition;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Set the rotation to a fixed value.
+    /// </summary>
+    /// <param name="newScale">This will be the new fixed rotation.</param>
+    void TransformComponent::SetRotation(const glm::vec3& newRotation) {
+        m_Rotation = newRotation;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    void TransformComponent::SetRotationX(const float& newXRotation) {
+        m_Rotation.x = newXRotation;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    void TransformComponent::SetRotationY(const float& newYRotation) {
+        m_Rotation.y = newYRotation;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    void TransformComponent::SetRotationZ(const float& newZRotation) {
+        m_Rotation.z = newZRotation;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Set the scale to a fixed value.
+    /// </summary>
+    /// <param name="newScale">This will be the new fixed scale.</param>
+    void TransformComponent::SetScale(const glm::vec3& newScale) {
+        m_Scale = newScale;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    void TransformComponent::SetScaleX(const float& newXScale) {
+        m_Scale.x = newXScale;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    void TransformComponent::SetScaleY(const float& newYScale) {
+        m_Scale.y = newYScale;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    void TransformComponent::SetScaleZ(const float& newZScale) {
+        m_Scale.z = newZScale;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Apply a Translation to the Transform.
+    /// </summary>
+    /// <param name="vector">This will be added to the current position.</param>
+    void TransformComponent::Translate(const glm::vec3& vector) {
+        m_Position += vector;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Apply a Translation to the Transform along the X-axis.
+    /// </summary>
+    /// <param name="delta">This value will be added to the current X position.</param>
+    void TransformComponent::TranslateX(const float& deltaTranslationX) {
+        m_Position.x += deltaTranslationX;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Apply a Translation to the Transform along the Y-axis.
+    /// </summary>
+    /// <param name="delta">This value will be added to the current Y position.</param>
+    void TransformComponent::TranslateY(const float& deltaTranslationY) {
+        m_Position.y += deltaTranslationY;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Apply a Translation to the Transform along the Z-axis.
+    /// </summary>
+    /// <param name="delta">This value will be added to the current Z position.</param>
+    void TransformComponent::TranslateZ(const float& deltaTranslationZ) {
+        m_Position.z += deltaTranslationZ;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+    /// <summary>
+    /// Apply a Rotation to the Transform.
+    /// </summary>
+    /// <param name="vector">This will be added to the current rotation.</param>
+    void TransformComponent::Rotate(const glm::vec3& vector) {
+        m_Rotation += vector;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Apply a Rotation to the Transform around the X-axis.
+    /// </summary>
+    /// <param name="delta">This value will be added to the current X rotation.</param>
+    void TransformComponent::RotateX(const float& deltaRotationX) {
+        m_Rotation.x += deltaRotationX;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Apply a Rotation to the Transform around the Y-axis.
+    /// </summary>
+    /// <param name="delta">This value will be added to the current Y rotation.</param>
+    void TransformComponent::RotateY(const float& deltaRotationY) {
+        m_Rotation.y += deltaRotationY;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Apply a Rotation to the Transform around the Z-axis.
+    /// </summary>
+    /// <param name="delta">This value will be added to the current Z rotation.</param>
+    void TransformComponent::RotateZ(const float& deltaRotationZ) {
+        m_Rotation.z += deltaRotationZ;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Apply a Scale to the Transform.
+    /// </summary>
+    /// <param name="vector">This will be added to the current scale.</param>
+    void TransformComponent::Scale(const glm::vec3& vector) {
+        m_Scale += vector;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Apply a Scale to the Transform along the X-axis.
+    /// </summary>
+    /// <param name="delta">This value will be added to the current X scale.</param>
+    void TransformComponent::ScaleX(const float& deltaScaleX) {
+        m_Scale.x += deltaScaleX;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Apply a Scale to the Transform along the Y-axis.
+    /// </summary>
+    /// <param name="delta">This value will be added to the current Y scale.</param>
+    void TransformComponent::ScaleY(const float& deltaScaleY) {
+        m_Scale.y += deltaScaleY;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    /// <summary>
+    /// Apply a Scale to the Transform along the Z-axis.
+    /// </summary>
+    /// <param name="delta">This value will be added to the current Z scale.</param>
+    void TransformComponent::ScaleZ(const float& deltaScaleZ) {
+        m_Scale.z += deltaScaleZ;
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    const glm::vec3& TransformComponent::GetLocalPosition() const { return m_Position; }
+    const glm::vec3& TransformComponent::GetLocalRotation() const { return m_Rotation; }
+    const glm::vec3& TransformComponent::GetLocalScale() const { return m_Scale; }
+
+    void TransformComponent::SetGlobalPosition(const glm::vec3& globalPosition) {
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot Set Global Position - Current Entity Is Invalid!");
+            return;
+        }
+
+        Entity entity = *GetEntity();
+        if (entity && entity.GetScene() && entity.GetComponent<HierarchyComponent>().HasParent()) {
+
+            glm::mat4 parentGlobalMatrix = GetComponentInParent<TransformComponent>().GetGlobalTransform();
+            glm::mat4 parentInverseMatrix = glm::inverse(parentGlobalMatrix);
+            glm::vec4 localPosition4 = parentInverseMatrix * glm::vec4(globalPosition, 1.0f);
+            SetPosition(glm::vec3(localPosition4));
+        }
+        else {
+            SetPosition(globalPosition);
+        }
+    }
+
+    void TransformComponent::SetGlobalRotation(const glm::vec3& globalRotation) {
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot Set Global Rotation - Current Entity Is Invalid!");
+            return;
+        }
+
+        Entity entity = *GetEntity();
+
+        if (entity && entity.GetScene() && entity.GetComponent<HierarchyComponent>().HasParent()) {
+
+            glm::quat parentGlobalRotation = glm::quat(glm::radians(GetComponentInParent<TransformComponent>().GetGlobalRotation()));
+            glm::quat parentInverseRotation = glm::inverse(parentGlobalRotation);
+
+            glm::quat globalQuat = glm::quat(glm::radians(globalRotation));
+            glm::quat localQuat = parentInverseRotation * globalQuat;
+            glm::vec3 localRot = glm::degrees(glm::eulerAngles(localQuat));
+            SetRotation(localRot);
+        }
+        else {
+            SetRotation(globalRotation);
+        }
+    }
+
+    void TransformComponent::SetGlobalScale(const glm::vec3& globalScale) {
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot Set Global Scale - Current Entity Is Invalid!");
+            return;
+        }
+
+        Entity entity = *GetEntity();
+
+        if (entity && entity.GetScene() && entity.GetComponent<HierarchyComponent>().HasParent()) {
+
+            glm::vec3 parentGlobalScale = GetComponentInParent<TransformComponent>().GetGlobalScale();
+            m_Scale = globalScale / parentGlobalScale;
+        }
+        else {
+            m_Scale = globalScale;
+        }
+
+        AddFlag(TransformFlag_PropertiesUpdated);
+        UpdateLocalTransformMatrix();
+    }
+
+    glm::vec3 TransformComponent::GetPositionFromMatrix(const glm::mat4& transform) {
+        // Extract the position directly from the translation components of the matrix
+        return glm::vec3(transform[3][0], transform[3][1], transform[3][2]);
+    }
+
+    glm::vec3 TransformComponent::GetRotationFromMatrix(const glm::mat4& transform) {
+        // Extract the upper-left 3x3 submatrix (rotation and scale)
+        glm::mat3 rotationMatrix = glm::mat3(transform);
+
+        // Remove the scaling by normalizing the basis vectors
+        rotationMatrix[0] = glm::normalize(rotationMatrix[0]);
+        rotationMatrix[1] = glm::normalize(rotationMatrix[1]);
+        rotationMatrix[2] = glm::normalize(rotationMatrix[2]);
+
+        // Convert the purified rotation matrix to a quaternion
+        return glm::degrees(glm::eulerAngles(glm::quat_cast(rotationMatrix)));
+    }
+
+    glm::vec3 TransformComponent::GetScaleFromMatrix(const glm::mat4& transform) {
+        // Extract the scale from the lengths of the basis vectors
+        return glm::vec3(
+            glm::length(glm::vec3(transform[0][0], transform[0][1], transform[0][2])),
+            glm::length(glm::vec3(transform[1][0], transform[1][1], transform[1][2])),
+            glm::length(glm::vec3(transform[2][0], transform[2][1], transform[2][2]))
+        );
+    }
+
+    void TransformComponent::OnTransformUpdated() {
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot Do On Transform Updated - Current Entity Is Invalid!");
+            return;
+        }
+
+        AddFlag(TransformFlag_GlobalTransformUpdated);
+
+        Entity entity = *GetEntity();
+
+        if (entity.HasComponent<MeshFilterComponent>()) {
+
+            auto& component = entity.GetComponent<MeshFilterComponent>();
+            component.AABBNeedsUpdate = true;
+            component.OctreeNeedsUpdate = true;
+        }
+
+        if (entity && entity.GetScene()) {
+
+            for (const auto& child_uuid : entity.GetComponent<HierarchyComponent>().GetChildren()) {
+                Entity child_entity = entity.GetScene()->FindEntityByUUID(child_uuid);
+
+                child_entity.GetTransform().OnTransformUpdated();
+            }
+        }
+
+    }
+
+    void TransformComponent::UpdateLocalTransformMatrix() {
+
+        if (!GetEntity()) {
+            L_CORE_ERROR("Cannot UpdateLocalTransformMatrix - Current Entity Is Invalid!");
+            return;
+        }
+
+        Entity entity = *GetEntity();
+
+        // Check if any changes made to local transform, if YES WE UPDATE
+        if (CheckFlag(TransformFlag_PropertiesUpdated)) {
+
+            // Compute the local transform matrix if it has changed
+            m_LocalTransform = glm::translate(glm::mat4(1.0f), m_Position) *
+                glm::mat4_cast(glm::quat(glm::radians(m_Rotation))) *
+                glm::scale(glm::mat4(1.0f), m_Scale);
+
+            OnTransformUpdated();
+
+            if (entity && entity.GetScene() && entity.HasComponent<RigidbodyComponent>() && entity.GetComponent<RigidbodyComponent>().GetActor())
+                entity.GetComponent<RigidbodyComponent>().GetActor()->AddFlag(RigidbodyFlag_TransformUpdated);
+
+            RemoveFlag(TransformFlag_PropertiesUpdated);
+        }
+
+    }
+
+    glm::vec3 TransformComponent::GetGlobalPosition() {
+        if (CheckFlag(TransformFlag_GlobalTransformUpdated))
+            return GetGlobalTransform()[3];
+
+        if (m_LocalTransform != m_GlobalTransform)
+            return m_GlobalTransform[3];
+
+        return m_Position;
+    }
+
+    glm::vec3 TransformComponent::GetGlobalRotation() {
+
+        if (CheckFlag(TransformFlag_GlobalTransformUpdated))
+            return GetRotationFromMatrix(GetGlobalTransform());
+
+        if (m_LocalTransform != m_GlobalTransform)
+            return GetRotationFromMatrix(m_GlobalTransform);
+
+
+        return m_Rotation;
+    }
+
+    glm::vec3 TransformComponent::GetGlobalScale() {
+
+        if (CheckFlag(TransformFlag_GlobalTransformUpdated))
+        {
+            glm::mat4 global_transfom = GetGlobalTransform();
+            return  glm::vec3(
+                glm::length(global_transfom[0]),
+                glm::length(global_transfom[1]),
+                glm::length(global_transfom[2])
+            );
+        }
+
+        if (m_LocalTransform != m_GlobalTransform)
+            return  glm::vec3(
+                glm::length(m_GlobalTransform[0]),
+                glm::length(m_GlobalTransform[1]),
+                glm::length(m_GlobalTransform[2])
+            );
+
+        return m_Scale;
+    }
+
+    constexpr glm::vec3 global_forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
+    constexpr glm::vec3 global_right = glm::vec3{ 1.0f, 0.0f, 0.0f };
+    constexpr glm::vec3 global_up = glm::vec3{ 0.0f, 1.0f, 0.0f };
+
+    void TransformComponent::SetForwardDirection(const glm::vec3& direction)
+    {
+        glm::vec3 forward = glm::normalize(direction);
+        glm::vec3 eulerRotation = glm::degrees(glm::eulerAngles(glm::rotation(global_forward, forward)));
+        SetGlobalRotation(eulerRotation); // Set Global
+    }
+
+    void TransformComponent::SetRightDirection(const glm::vec3& direction)
+    {
+        glm::vec3 right = glm::normalize(direction);
+        glm::vec3 eulerRotation = glm::degrees(glm::eulerAngles(glm::rotation(global_right, right)));
+        SetGlobalRotation(eulerRotation); // Set Global
+    }
+
+    void TransformComponent::SetUpDirection(const glm::vec3& direction)
+    {
+        glm::vec3 up = glm::normalize(direction);
+        glm::vec3 eulerRotation = glm::degrees(glm::eulerAngles(glm::rotation(global_up, up)));
+        SetGlobalRotation(eulerRotation); // Set Global
+    }
+
+    glm::vec3 TransformComponent::GetForwardDirection()
+    {
+        glm::vec3 transform;
+
+        if (CheckFlag(TransformFlag_GlobalTransformUpdated))
+            transform = GetGlobalRotation();
+        else if (m_LocalTransform != m_GlobalTransform)
+            transform = GetRotationFromMatrix(m_GlobalTransform);
+        else
+            transform = GetRotationFromMatrix(m_LocalTransform);
+
+        glm::quat globalRotation = glm::quat(glm::radians(transform));
+        glm::vec3 globalForward = globalRotation * global_forward;
+        return glm::normalize(globalForward);
+    }
+
+    glm::vec3 TransformComponent::GetRightDirection()
+    {
+        glm::vec3 transform;
+
+        if (CheckFlag(TransformFlag_GlobalTransformUpdated))
+            transform = GetGlobalRotation();
+        else if (m_LocalTransform != m_GlobalTransform)
+            transform = GetRotationFromMatrix(m_GlobalTransform);
+        else
+            transform = GetRotationFromMatrix(m_LocalTransform);
+
+        glm::quat globalRotation = glm::quat(glm::radians(transform));
+        glm::vec3 globalForward = globalRotation * global_right;
+        return glm::normalize(globalForward);
+    }
+
+    glm::vec3 TransformComponent::GetUpDirection()
+    {
+        glm::vec3 transform;
+
+        if (CheckFlag(TransformFlag_GlobalTransformUpdated))
+            transform = GetGlobalRotation();
+        else if (m_LocalTransform != m_GlobalTransform)
+            transform = GetRotationFromMatrix(m_GlobalTransform);
+        else
+            transform = GetRotationFromMatrix(m_LocalTransform);
+
+        glm::quat globalRotation = glm::quat(glm::radians(transform));
+        glm::vec3 globalForward = globalRotation * global_up;
+        return glm::normalize(globalForward);
+    }
+
+    const glm::mat4& TransformComponent::GetGlobalTransform()
+    {
+        if (CheckFlag(TransformFlag_GlobalTransformUpdated))
+        {
+            if (!GetEntity()) {
+                L_CORE_ERROR("Cannot UpdateLocalTransformMatrix - Current Entity Is Invalid!");
+                return m_GlobalTransform;
+            }
+
+            Entity entity = *GetEntity();
+
+            glm::vec3 old_global_scale = glm::vec3(
+                glm::length(m_GlobalTransform[0]),
+                glm::length(m_GlobalTransform[1]),
+                glm::length(m_GlobalTransform[2])
+            ); // Can't call GetGlobalScale here as it would send it into a never ending recursion as GetGlobalScale will call GetGlobalTransform if the flag is not cleared
+
+            if (entity && entity.GetScene() && entity.GetComponent<HierarchyComponent>().HasParent())
+                m_GlobalTransform = entity.GetComponent<HierarchyComponent>().GetParentEntity().GetTransform().GetGlobalTransform() * GetLocalTransform();
+            else
+                m_GlobalTransform = m_LocalTransform;
+
+            RemoveFlag(TransformFlag_GlobalTransformUpdated);
+
+            if (entity) {
+
+                if (entity.HasComponent<SphereColliderComponent>()) {
+
+                    auto& component = entity.GetComponent<SphereColliderComponent>();
+
+                    if (component.GetShape() && component.GetShape()->IsStatic())
+                        component.AddFlag(ColliderFlag_TransformUpdated);
+
+                    if (old_global_scale != GetGlobalScale())
+                        component.AddFlag(ColliderFlag_ShapePropsUpdated); // TODO: Fix this because it goes on the fritz when child is attached to parent, and the parent scale changes
+
+                }
+
+                if (entity.HasComponent<BoxColliderComponent>()) {
+
+                    auto& component = entity.GetComponent<BoxColliderComponent>();
+
+                    if (component.GetShape() && component.GetShape()->IsStatic())
+                        component.AddFlag(ColliderFlag_TransformUpdated);
+
+                    if (old_global_scale != GetGlobalScale())
+                        component.AddFlag(ColliderFlag_ShapePropsUpdated);
+
+                }
+            }
+        }
+        return m_GlobalTransform;
+    }
+
+    const glm::mat4& TransformComponent::GetLocalTransform() {
+
+        UpdateLocalTransformMatrix();
+        return m_LocalTransform;
+    }
+
+    void TransformComponent::SetTransform(const glm::mat4& transform)
+    {
+        // Decompose Position
+        glm::vec3 position = glm::vec3(transform[3]); // Extract translation (last column)
+
+        // Extract Scale
+        glm::vec3 scale;
+        scale.x = glm::length(glm::vec3(transform[0])); // Length of X column
+        scale.y = glm::length(glm::vec3(transform[1])); // Length of Y column
+        scale.z = glm::length(glm::vec3(transform[2])); // Length of Z column
+
+        // Normalize rotation matrix (remove scale)
+        glm::mat3 rotationMatrix = glm::mat3(transform);
+        rotationMatrix[0] /= scale.x;
+        rotationMatrix[1] /= scale.y;
+        rotationMatrix[2] /= scale.z;
+
+        // Convert to quaternion
+        glm::quat rotationQuat = glm::quat_cast(rotationMatrix);
+
+        // Convert quaternion to Euler angles (in degrees)
+        glm::vec3 rotationEuler = glm::degrees(glm::eulerAngles(rotationQuat));
+
+        // Set internal values
+        m_Position = position;
+        m_Scale = scale;
+        m_Rotation = rotationEuler;
+
+        m_LocalTransform = transform;
+    }
+
+    TransformComponent::operator const glm::mat4()& { return m_LocalTransform; }
+
+    glm::mat4 TransformComponent::operator*(const TransformComponent& other) const { return m_LocalTransform * other.m_LocalTransform; }
+
+    void TransformComponent::Serialize(YAML::Emitter& out) {
+
+        out << YAML::Key << "TransformComponent";
+        out << YAML::BeginMap;
+
+        out << YAML::Key << "Translation" << YAML::Value << YAML::Flow
+            << YAML::BeginSeq
+            << m_Position.x
+            << m_Position.y
+            << m_Position.z
+            << YAML::EndSeq;
+
+        out << YAML::Key << "Rotation" << YAML::Value << YAML::Flow
+            << YAML::BeginSeq
+            << m_Rotation.x
+            << m_Rotation.y
+            << m_Rotation.z
+            << YAML::EndSeq;
+
+        out << YAML::Key << "Scale" << YAML::Value << YAML::Flow
+            << YAML::BeginSeq
+            << m_Scale.x
+            << m_Scale.y
+            << m_Scale.z
+            << YAML::EndSeq;
+
+        out << YAML::EndMap;
+    }
+
+    bool TransformComponent::Deserialize(const YAML::Node data)
+    {
+        AddFlag(TransformFlag_GlobalTransformUpdated);
+        AddFlag(TransformFlag_PropertiesUpdated);
+
+        YAML::Node component = data;
+
+        if (component["Translation"]) {
+            auto translationSeq = component["Translation"];
+            if (translationSeq.IsSequence() && translationSeq.size() == 3) {
+                m_Position.x = translationSeq[0].as<float>();
+                m_Position.y = translationSeq[1].as<float>();
+                m_Position.z = translationSeq[2].as<float>();
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+
+        if (component["Rotation"]) {
+            auto rotationSeq = component["Rotation"];
+            if (rotationSeq.IsSequence() && rotationSeq.size() == 3) {
+                m_Rotation.x = rotationSeq[0].as<float>();
+                m_Rotation.y = rotationSeq[1].as<float>();
+                m_Rotation.z = rotationSeq[2].as<float>();
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+
+        if (component["Scale"]) {
+            auto scaleSeq = component["Scale"];
+            if (scaleSeq.IsSequence() && scaleSeq.size() == 3) {
+                m_Scale.x = scaleSeq[0].as<float>();
+                m_Scale.y = scaleSeq[1].as<float>();
+                m_Scale.z = scaleSeq[2].as<float>();
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+
+        return true;
+    }
+
+#pragma endregion
+
+}

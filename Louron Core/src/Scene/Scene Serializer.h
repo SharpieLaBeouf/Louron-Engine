@@ -9,7 +9,6 @@
 
 // External Vendor Library Headers
 
-
 namespace YAML { class Emitter; }
 
 namespace Louron {

@@ -1,6 +1,6 @@
 #pragma once
 
-#define PX_RELEASE(x)			if(x)	{ x->release(); x = NULL;	}
+#define PX_RELEASE(x) if(x)	{ x->release(); x = NULL;	}
 
 // Louron Core Headers
 

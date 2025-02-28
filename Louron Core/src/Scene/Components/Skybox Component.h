@@ -1,26 +1,24 @@
 #pragma once
 
 // Louron Core Headers
-#include "../../Asset/Asset Manager API.h"
+#include "Component Base.h"
+
 #include "../../OpenGL/Material.h"
 #include "../../OpenGL/Vertex Array.h"
-		  
-#include "../../Core/Engine.h"
-
-#include "Components.h"
 
 // C++ Standard Library Headers
 #include <filesystem>
 
 // External Vendor Library Headers
 
-
 class YAML::Emitter;
 class YAML::Node;
 
-namespace Louron {
+namespace Louron 
+{
 
-	enum L_SKYBOX_BINDING : uint8_t {
+	enum L_SKYBOX_BINDING : uint8_t 
+	{
 		RIGHT = 0,
 		LEFT,
 		TOP,
@@ -29,7 +27,8 @@ namespace Louron {
 		FRONT
 	};
 
-	class SkyboxMaterial : public Material {
+	class SkyboxMaterial : public Material 
+	{
 
 	public:
 
@@ -62,14 +61,9 @@ namespace Louron {
 
 	};
 
-
-	struct SkyboxComponent : public Component {
-
-	public:
-
+	struct SkyboxComponent : public ComponentBase 
+	{
 		AssetHandle SkyboxMaterialAssetHandle = NULL_UUID;
-
-	public:
 
 		SkyboxComponent();
 		SkyboxComponent(const SkyboxComponent&) = default;

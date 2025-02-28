@@ -4,8 +4,10 @@
 #include "../Core/Logging.h"
 
 // C++ Standard Library Headers
-#include <filesystem>
 #include <regex>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
 // External Vendor Library Headers
 

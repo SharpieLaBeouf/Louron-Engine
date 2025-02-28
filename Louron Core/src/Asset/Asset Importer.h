@@ -1,18 +1,22 @@
 #pragma once
 
+// Louron Core Headers
 #include "Asset.h"
 #include "Asset Manager.h"
 
+#include "../OpenGL/Shader.h"
 #include "../OpenGL/Compute Shader Asset.h"
-
-#include "../OpenGL/Texture.h"
 #include "../OpenGL/Material.h"
+#include "../Scene/Components/Skybox Component.h"
 
-#include "../Scene/Scene.h"
-#include "../Scene/Prefab.h"
+// C++ Standard Library Headers
 
-#include "../Scene/Components/Mesh.h"
-#include "../Scene/Components/Skybox.h"
+// External Vendor Library Headers
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+#include <entt/entt.hpp>
 
 namespace Louron {
 
@@ -67,8 +71,8 @@ namespace Louron {
 
 	private:
 
-		static void ProcessMesh(const aiScene* scene, aiMesh* mesh, std::shared_ptr<AssetMesh> asset_mesh);
-		static void ProcessMaterial(const aiScene* scene, aiMesh* mesh, std::shared_ptr<Prefab> model_prefab, entt::entity current_entity_handle, std::shared_ptr<AssetMesh> asset_mesh, AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle parent_asset_handle, const AssetMetaData& parent_meta_data, const std::filesystem::path& path);
+		static void ProcessMesh(const aiScene* scene, aiMesh* mesh, std::shared_ptr<StaticMesh> asset_mesh);
+		static void ProcessMaterial(const aiScene* scene, aiMesh* mesh, std::shared_ptr<Prefab> model_prefab, entt::entity current_entity_handle, std::shared_ptr<StaticMesh> asset_mesh, AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle parent_asset_handle, const AssetMetaData& parent_meta_data, const std::filesystem::path& path);
 		static void ProcessNode(const aiScene* scene, aiNode* node, std::shared_ptr<Prefab> model_prefab, entt::entity parent_entity_handle, AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle parent_asset_handle, const AssetMetaData& parent_meta_data, const std::filesystem::path& path);
 
 	};

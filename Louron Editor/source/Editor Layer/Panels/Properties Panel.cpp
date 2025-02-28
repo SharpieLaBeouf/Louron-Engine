@@ -677,7 +677,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 
 							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_UUID")) {
 								Louron::UUID droppedEntityUUID = *(const Louron::UUID*)payload->Data;
-								Entity droppedEntity = component.GetComponent<HierarchyComponent>()->FindChild(droppedEntityUUID);
+								Entity droppedEntity = component.GetComponent<HierarchyComponent>().FindChild(droppedEntityUUID);
 
 								if (droppedEntity)
 								{
@@ -840,7 +840,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 						component.MeshFilterAssetHandle = dropped_asset_handle;
 						component.AABBNeedsUpdate = true;
 						component.OctreeNeedsUpdate = true;
-						AssetManager::GetAsset<AssetMesh>(component.MeshFilterAssetHandle); // Force load the Asset on the main thread/GL context
+						AssetManager::GetAsset<StaticMesh>(component.MeshFilterAssetHandle); // Force load the Asset on the main thread/GL context
 					}
 					else {
 						L_APP_WARN("Invalid Asset Type Dropped on Skybox Material Target.");

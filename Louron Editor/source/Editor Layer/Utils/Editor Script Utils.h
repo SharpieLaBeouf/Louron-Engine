@@ -2,6 +2,8 @@
 
 #include "Louron.h"
 
+#include <fstream>
+
 namespace Utils {
 
 	static void GenerateScriptingProject(const std::string& project_name, const std::filesystem::path& path)

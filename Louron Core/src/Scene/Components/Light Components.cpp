@@ -1,14 +1,24 @@
-#include "Light.h"
+#include "Light Components.h"
+
+// Louron Core Headers
+
+// C++ Standard Library Headers
+
+// External Vendor Library Headers
+#include <glad/glad.h>
 
 #ifndef YAML_CPP_STATIC_DEFINE
 #define YAML_CPP_STATIC_DEFINE
 #endif
 #include <yaml-cpp/yaml.h>
 
-namespace Louron {
+namespace Louron 
+{
 
+#pragma region Point Light Component
 
-	void PointLightComponent::Serialize(YAML::Emitter& out) {
+	void PointLightComponent::Serialize(YAML::Emitter& out) 
+	{
 
 		out << YAML::Key << "PointLightComponent";
 		out << YAML::BeginMap;
@@ -78,6 +88,10 @@ namespace Louron {
 		return true;
 	}
 
+#pragma endregion
+
+#pragma region Spot Light Component
+
 	void SpotLightComponent::Serialize(YAML::Emitter& out)
 	{
 		out << YAML::Key << "SpotLightComponent";
@@ -103,7 +117,8 @@ namespace Louron {
 		out << YAML::EndMap;
 	}
 
-	bool SpotLightComponent::Deserialize(const YAML::Node data) {
+	bool SpotLightComponent::Deserialize(const YAML::Node data) 
+	{
 		if (!data)
 			return false;
 
@@ -150,7 +165,12 @@ namespace Louron {
 		return true;
 	}
 
-	void DirectionalLightComponent::Serialize(YAML::Emitter& out) {
+#pragma endregion
+
+#pragma region Directional Light Component
+
+	void DirectionalLightComponent::Serialize(YAML::Emitter& out) 
+	{
 
 		out << YAML::Key << "DirectionalLightComponent";
 		out << YAML::BeginMap;
@@ -174,7 +194,8 @@ namespace Louron {
 		out << YAML::EndMap;
 	}
 
-	bool DirectionalLightComponent::Deserialize(const YAML::Node data) {
+	bool DirectionalLightComponent::Deserialize(const YAML::Node data) 
+	{
 		if (!data)
 			return false;
 
@@ -217,5 +238,7 @@ namespace Louron {
 
 		return true;
 	}
+
+#pragma endregion
 
 }

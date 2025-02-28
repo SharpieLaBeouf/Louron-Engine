@@ -1,8 +1,12 @@
 #pragma once
 
+// Louron Core Headers
 #include "Asset.h"
 #include "../Project/Project.h"
-#include "../OpenGL/Compute Shader Asset.h"
+
+// C++ Standard Library Headers
+
+// External Vendor Library Headers
 
 namespace Louron {
 
@@ -80,7 +84,7 @@ namespace Louron {
 				if constexpr (std::is_same_v<TAssetType, Texture2D>) {
 					expectedType = AssetType::Texture2D;
 				}
-				else if constexpr (std::is_same_v<TAssetType, AssetMesh>) {
+				else if constexpr (std::is_same_v<TAssetType, StaticMesh>) {
 					expectedType = AssetType::Mesh;
 				}
 				else if constexpr (std::is_same_v<TAssetType, Prefab>) {
@@ -139,7 +143,7 @@ namespace Louron {
 			if constexpr (std::is_same_v<TAssetType, Texture2D>) {
 				return AssetType::Texture2D;
 			}
-			else if constexpr (std::is_same_v<TAssetType, AssetMesh>) {
+			else if constexpr (std::is_same_v<TAssetType, StaticMesh>) {
 				return AssetType::Mesh;
 			}
 			else if constexpr (std::is_same_v<TAssetType, Prefab>) {

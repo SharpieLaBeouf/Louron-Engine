@@ -8,24 +8,25 @@
 
 // External Vendor Library Headers
 
-
 constexpr uint32_t NULL_UUID = UINT32_MAX;
 
 namespace Louron {
 
 	class UUID
 	{
+
 	public:
+
 		UUID();
 		UUID(uint32_t uuid);
 		UUID(const UUID&) = default;
 
 		uint32_t GetUUID() const { return m_UUID; }
-
 		operator uint32_t() const { return m_UUID; }
-	private:
-		uint32_t m_UUID;
 
+	private:
+
+		uint32_t m_UUID;
 		uint32_t GenerateUUID();
 
 	};
@@ -33,7 +34,9 @@ namespace Louron {
 }
 
 // Define specialisation for the hash template when custom type used (Louron::UUID)
-namespace std {
+namespace std 
+{
+
 	template <typename T> struct hash;
 
 	template<>
@@ -44,5 +47,4 @@ namespace std {
 			return (uint32_t)uuid;
 		}
 	};
-
 }

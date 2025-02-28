@@ -1,9 +1,13 @@
 #include "Compute Shader Asset.h"
 
+// Louron Core Headers
 #include "../Debug/Profiler.h"
 #include "../Debug/Assert.h"
 
+// C++ Standard Library Headers
 #include <memory>
+
+// External Vendor Library Headers
 
 namespace Louron {
 

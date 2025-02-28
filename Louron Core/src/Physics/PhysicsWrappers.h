@@ -1,7 +1,7 @@
 #pragma once
 
 // Louron Core Headers
-#include "../UUID.h"
+#include "../Core/UUID.h"
 
 // C++ Standard Library Headers
 #include <map>

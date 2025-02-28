@@ -1,9 +1,13 @@
 #pragma once
 
-#include "../Scene/Components/UUID.h"
+// Louron Core Headers
+#include "../Core/UUID.h"
 
+// C++ Standard Library Headers
 #include <string>
 #include <filesystem>
+
+// External Vendor Library Headers
 
 namespace Louron {
 

@@ -8,7 +8,7 @@
 #include "../Renderer/Camera.h"
 #include "../Renderer/RendererPipeline.h"
 
-#include "../Scene/OctreeBounds.h"
+#include "../Scene/Spatial Partitioning/OctreeBounds.h"
 #include "../Scene/Entity.h"
 #include "../Scripting/Script Manager.h"
 

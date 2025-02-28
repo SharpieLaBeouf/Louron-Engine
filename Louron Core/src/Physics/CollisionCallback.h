@@ -1,9 +1,13 @@
 #pragma once
 
-#include <PxPhysicsAPI.h>
-#include <memory>
+// Louron Core Headers
 
+// C++ Standard Library Headers
+#include <memory>
 #include <unordered_set>
+
+// External Vendor Library Headers
+#include <PxPhysicsAPI.h>
 
 namespace Louron {
 

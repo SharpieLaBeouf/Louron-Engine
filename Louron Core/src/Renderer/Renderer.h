@@ -3,8 +3,8 @@
 // Louron Core Headers
 #include "../Scene/Entity.h"
 
-#include "../Scene/Components/Mesh.h"
-#include "../Scene/Components/Skybox.h"
+#include "../Scene/Components/Mesh Components.h"
+#include "../Scene/Components/Skybox Component.h"
 
 // C++ Standard Library Headers
 

@@ -1,17 +1,13 @@
 #pragma once
 
 // Louron Core Headers
-#include "OctreeBounds.h"
+#include "Spatial Partitioning/OctreeBounds.h"
+#include "Components/Core Components.h"
 
 #include "../Asset/Asset.h"
-
 #include "../Core/Logging.h"
-
-#include "Components/Components.h"
-#include "Components/Physics/CollisionCallback.h"
-
+#include "../Physics/CollisionCallback.h"
 #include "../Renderer/Camera.h"
-
 
 // C++ Standard Library Headers
 #include <vector>

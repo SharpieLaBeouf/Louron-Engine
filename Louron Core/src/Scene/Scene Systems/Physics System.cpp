@@ -1,18 +1,17 @@
 #include "Physics System.h"
 
 // Louron Core Headers
+#include "../../Core/Time.h"
+#include "../../Debug/Profiler.h"
 
 #include "../Scene.h"
 #include "../Entity.h"
-#include "../Components/Physics/Rigidbody.h"
-#include "../Components/Physics/Collider.h"
+#include "../Components/Physics/Rigidbody Component.h"
+#include "../Components/Physics/Collider Components.h"
 
-#include "../../Debug/Profiler.h"
-
-#include "../../Core/Time.h"
+#include "../../Physics/PhysicsWrappers.h"
 
 // C++ Standard Library Headers
-
 
 // External Vendor Library Headers
 #include <glm/glm.hpp>
@@ -62,21 +61,27 @@ namespace Louron {
 		// 2. Check Parent(s) for Rigidbody
 		if (collider.CheckFlag(ColliderFlag_RigidbodyUpdated)) {
 
-			if (auto rb_ref = collider.GetComponentInParent<RigidbodyComponent>(); rb_ref && rb_ref->GetActor() && *rb_ref->GetActor()) {
+			if (auto rb_ref = collider.GetComponentInParent<RigidbodyComponent>(); rb_ref.GetActor() && *rb_ref.GetActor()) {
 
 				// Remove Collider from Previous Rigidbody
 				if (auto old_rb_ref = collider.GetShape()->GetRigidbody(); old_rb_ref && *old_rb_ref)
 					old_rb_ref->DetachShape(collider.GetShape());
 
-				collider.UpdateRigidbody(rb_ref->GetEntity().GetUUID());
+				if (rb_ref.GetEntity())
+				{
+					const Entity& rb_entity = *rb_ref.GetEntity();
 
-				// Attach the Collider to the New Rigidbody
-				if (auto new_rb_ref = collider.GetShape()->GetRigidbody(); new_rb_ref && *new_rb_ref)
-					new_rb_ref->AttachShape(collider.GetShape(), entity.GetUUID());
+					collider.UpdateRigidbody(rb_entity.GetUUID());
 
-				collider.AddFlag(ColliderFlag_ShapePropsUpdated);
-				collider.AddFlag(ColliderFlag_TransformUpdated);
-				collider.ClearFlag(ColliderFlag_RigidbodyUpdated);
+					// Attach the Collider to the New Rigidbody
+					if (auto new_rb_ref = collider.GetShape()->GetRigidbody(); new_rb_ref && *new_rb_ref)
+						new_rb_ref->AttachShape(collider.GetShape(), entity.GetUUID());
+
+					collider.AddFlag(ColliderFlag_ShapePropsUpdated);
+					collider.AddFlag(ColliderFlag_TransformUpdated);
+					collider.ClearFlag(ColliderFlag_RigidbodyUpdated);
+				}
+
 			}
 
 		}
@@ -360,12 +365,21 @@ namespace Louron {
 				// 1. Current Entity Has Rigidbody and Shape Does Not Already Refer to Rigidbody
 				if(rigidbody.GetActor())
 				{
-					if (rigidbody.GetActor()->CheckFlag(RigidbodyFlag_ShapesUpdated)) {
+					if (rigidbody.GetActor()->CheckFlag(RigidbodyFlag_ShapesUpdated)) 
+					{
 						PxRigidBodyExt::setMassAndUpdateInertia(*rigidbody.GetActor()->GetActor(), rigidbody.GetMass());
 					}
 
-					if (rigidbody.GetActor()->CheckFlag(RigidbodyFlag_TransformUpdated)) {
-						rigidbody.GetActor()->SetGlobalPose(rigidbody.GetEntity().GetTransform());
+					if (rigidbody.GetActor()->CheckFlag(RigidbodyFlag_TransformUpdated)) 
+					{
+						if (!rigidbody.GetEntity()) {
+							L_CORE_ERROR("Cannot Update Rigidbody - Current Entity Is Invalid!");
+							rigidbody.GetActor()->ClearFlags();
+							continue;
+						}
+
+						const Entity& rb_entity = *rigidbody.GetEntity();
+						rigidbody.GetActor()->SetGlobalPose(rb_entity.GetTransform());
 					}
 
 					rigidbody.GetActor()->ClearFlags();
@@ -399,7 +413,7 @@ namespace Louron {
 
 			for (auto& entity_handle : root_view) {
 				if (!root_view.get<HierarchyComponent>(entity_handle).HasParent()) {
-					root_entities.push_back(root_view.get<HierarchyComponent>(entity_handle).GetEntity());
+					root_entities.push_back(*root_view.get<HierarchyComponent>(entity_handle).GetEntity());
 				}
 			}
 		}

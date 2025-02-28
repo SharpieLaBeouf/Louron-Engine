@@ -1,5 +1,10 @@
 #include "Bounds.h"
 
+// Louron Core Headers
+
+// C++ Standard Library Headers
+
+// External Vendor Library Headers
 #include <glm/gtx/norm.hpp>
 
 namespace Louron {

@@ -3,18 +3,22 @@
 // Louron Core Headers
 #include "Scene.h"
 
+#include "../Core/UUID.h"
 #include "../Asset/Asset Manager API.h"
+#include "../Scripting/Script Manager.h"
+#include "../OpenGL/Mesh.h"
 
-#include "Components/Light.h"
-#include "Components/UUID.h"
-#include "Components/Mesh.h"
-#include "Components/Components.h"
-#include "Components/Physics/Collider.h"
-#include "Components/Physics/Rigidbody.h"
+#include "Components/Audio Components.h"
+#include "Components/Camera Component.h"
+#include "Components/Core Components.h"
+#include "Components/Light Components.h"
+#include "Components/Mesh Components.h"
+#include "Components/Script Component.h"
+#include "Components/Skybox Component.h"
+#include "Components/Physics/Collider Components.h"
+#include "Components/Physics/Rigidbody Component.h"
 
 #include "Scene Systems/Physics System.h"
-
-#include "../Scripting/Script Manager.h"
 
 // C++ Standard Library Headers
 #include <iostream>
@@ -55,8 +59,7 @@ namespace Louron {
 
 			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
 
-			component.scene = m_Scene;
-			component.entity_uuid = m_Scene->m_Registry.get<IDComponent>(m_EntityHandle).ID;
+			component.SetEntity(*this);
 
 			if constexpr (std::is_same_v<T, ScriptComponent>) {
 				if(m_Scene && m_Scene->IsRunning())
@@ -115,7 +118,7 @@ namespace Louron {
 				if (HasComponent<MeshFilterComponent>())
 				{
 					glm::mat4 global_transform = GetTransform().GetGlobalTransform();
-					Bounds_AABB mesh_bounds = AssetManager::GetAsset<AssetMesh>(GetComponent<MeshFilterComponent>().MeshFilterAssetHandle)->MeshBounds;
+					Bounds_AABB mesh_bounds = AssetManager::GetAsset<StaticMesh>(GetComponent<MeshFilterComponent>().MeshFilterAssetHandle)->MeshBounds;
 
 					// Create OBB transformation matrix
 					glm::mat4 obb_transform = glm::mat4(1.0f);
@@ -375,7 +378,7 @@ namespace Louron {
 		Scene* m_Scene = nullptr;
 
 		template<typename T>
-		T& GetBlankComponent() const
+		static T& GetBlankComponent()
 		{
 			static std::unordered_map<std::type_index, std::shared_ptr<void>> s_BlankComponents;
 

@@ -1,10 +1,13 @@
 #pragma once
 
+// Louron Core Headers
 #include "../Core/Logging.h"
 
+// C++ Standard Library Headers
 #include <vector>
 #include <memory>
 
+// External Vendor Library Headers
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 

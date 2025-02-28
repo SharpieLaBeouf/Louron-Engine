@@ -2,23 +2,16 @@
 
 // Louron Core Headers
 #include "Renderer.h"
+#include "../Scene/Spatial Partitioning/OctreeBounds.h"
+#include "../OpenGL/Framebuffer.h"
 
+#include "../Core/Time.h"
+#include "../Debug/Profiler.h"
 #include "../Asset/Asset Manager API.h"
 
 #include "../Project/Project.h"
 
 #include "../Scene/Entity.h"
-#include "../Scene/Components/Components.h"
-#include "../Scene/Components/Light.h"
-#include "../Scene/Components/Mesh.h"
-
-#include "../Scene/OctreeBounds.h"
-
-#include "../Debug/Profiler.h"
-
-#include "../Core/Time.h"
-
-#include "../OpenGL/Framebuffer.h"
 
 // C++ Standard Library Headers
 
@@ -299,7 +292,7 @@ namespace Louron {
 						// Check if the underlying mesh has been updated, therefore requiring an update to this MeshFilter's AABB - for example, a mesh is altered by C# code, we will then need to update the AABB for this MeshFilter
 						if(!update_AABB) 
 						{
-							if (auto asset_mesh = AssetManager::GetAsset<AssetMesh>(mesh_filter_component.MeshFilterAssetHandle); asset_mesh)
+							if (auto asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_filter_component.MeshFilterAssetHandle); asset_mesh)
 							{
 								if(asset_mesh->ModifiedAABB)
 								{
@@ -332,7 +325,7 @@ namespace Louron {
 							}
 							else // If we failed, we will remove this Entity from the Scene TODO: maybe think about if we want to entirely remove from scene in this case? Or just force render it if it doesn't fit in the Octree?
 							{
-								L_CORE_WARN("Could Not Be Inserted Into Octree - Deleting Entity: {0}", mesh_filter_component.GetEntity().GetName());
+								L_CORE_WARN("Could Not Be Inserted Into Octree - Deleting Entity: {0}", mesh_filter_component.GetEntity()->GetName());
 								thread_scene_ref->DestroyEntity({ entity_handle, thread_scene_ref.get() });
 							}
 						}
@@ -1161,7 +1154,7 @@ namespace Louron {
 					if (!mesh_asset)
 					{
 						// If Not Loaded, Call GetAsset to Load
-						FP_Data.CachedMeshAssets[asset_mesh_handle] = AssetManager::GetAsset<AssetMesh>(asset_mesh_handle);
+						FP_Data.CachedMeshAssets[asset_mesh_handle] = AssetManager::GetAsset<StaticMesh>(asset_mesh_handle);
 						mesh_asset = FP_Data.CachedMeshAssets[asset_mesh_handle].lock();
 						
 						// If Failed to Load - Continue
@@ -1429,7 +1422,7 @@ namespace Louron {
 						glm::mat4 transform = mesh_entity.GetTransform().GetGlobalTransform();
 						shader->SetMat4("u_Model", transform);
 
-						std::shared_ptr<AssetMesh> asset_mesh = AssetManager::GetAsset<AssetMesh>(mesh_entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
+						std::shared_ptr<StaticMesh> asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
 
 						if (asset_mesh)
 						{
@@ -1565,7 +1558,7 @@ namespace Louron {
 						glm::mat4 transform = mesh_entity.GetTransform().GetGlobalTransform();
 						shader->SetMat4("u_Model", transform);
 
-						std::shared_ptr<AssetMesh> asset_mesh = AssetManager::GetAsset<AssetMesh>(mesh_entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
+						std::shared_ptr<StaticMesh> asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
 						for (auto& sub_mesh : asset_mesh->SubMeshes)
 							Renderer::DrawSubMesh(sub_mesh);
 					}
@@ -1698,7 +1691,7 @@ namespace Louron {
 					glm::mat4 transform = entity.GetTransform().GetGlobalTransform();
 					shader->SetMat4("u_Model", transform);
 
-					std::shared_ptr<AssetMesh> asset_mesh = AssetManager::GetAsset<AssetMesh>(entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
+					std::shared_ptr<StaticMesh> asset_mesh = AssetManager::GetAsset<StaticMesh>(entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
 					for (auto& sub_mesh : asset_mesh->SubMeshes)
 						Renderer::DrawSubMesh(sub_mesh);
 				}
@@ -2039,7 +2032,7 @@ namespace Louron {
 				if (!mesh_asset)
 				{
 					// If Not Loaded, Call GetAsset to Load
-					FP_Data.CachedMeshAssets[mesh_filter_component.MeshFilterAssetHandle] = AssetManager::GetAsset<AssetMesh>(mesh_filter_component.MeshFilterAssetHandle);
+					FP_Data.CachedMeshAssets[mesh_filter_component.MeshFilterAssetHandle] = AssetManager::GetAsset<StaticMesh>(mesh_filter_component.MeshFilterAssetHandle);
 					mesh_asset = FP_Data.CachedMeshAssets[mesh_filter_component.MeshFilterAssetHandle].lock();
 
 					// If Failed to Load - Continue

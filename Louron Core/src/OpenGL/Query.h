@@ -1,8 +1,12 @@
 #pragma once
 
-#include "glad/glad.h"
+// Louron Core Headers
 
+// C++ Standard Library Headers
 #include <cstdint>
+
+// External Vendor Library Headers
+#include "glad/glad.h"
 
 namespace Louron {
 

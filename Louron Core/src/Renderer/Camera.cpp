@@ -1,10 +1,14 @@
 #include "Camera.h"
 
+// Louron Core Headers
 #include "../Core/Engine.h"
 #include "../Core/Input.h"
 #include "../Debug/Assert.h"
 #include "../Scene/Entity.h"
 
+// C++ Standard Library Headers
+
+// External Vendor Library Headers
 #include <glfw/glfw3.h>
 
 #define GLM_ENABLE_EXPERIMENTAL

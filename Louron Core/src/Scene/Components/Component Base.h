@@ -1,16 +1,25 @@
 #pragma once
 
 // Louron Core Headers
-#include "UUID.h"
-#include "../Entity.h"
+#include "../../Core/UUID.h"
 
 // C++ Standard Library Headers
 #include <vector>
+#include <memory>
 
 // External Vendor Library Headers
 
+namespace YAML 
+{
+    class Emitter;
+    class Node;
+}
+
 namespace Louron 
 {
+
+    class Entity;
+
     struct ComponentBase 
     {
 
@@ -18,24 +27,93 @@ namespace Louron
 
         virtual ~ComponentBase() = default;
 
-        const Entity& GetEntity() const { return m_Entity; }
-        void SetEntity(const Entity& entity) { m_Entity = entity; }
+        std::shared_ptr<Entity> GetEntity() const;
+        void SetEntity(const Entity& entity);
 
         template<typename T>
-        T& GetComponentInParent() { return (m_Entity) ? m_Entity.GetComponentInParent<T>() : Entity::GetBlankComponent<T>(); }
+        T& GetComponent();
 
         template<typename T>
-        T& GetComponentInChild() { return (m_Entity) ? m_Entity.GetComponentInChild<T>() : Entity::GetBlankComponent<T>(); }
+        T& GetComponentInParent();
 
         template<typename T>
-        std::vector<Entity> GetComponentsInParents() { return (m_Entity) ? m_Entity.GetComponentsInParents<T>() : {}; }
+        T& GetComponentInChild();
 
         template<typename T>
-        std::vector<Entity> GetComponentsInChildren() { return (m_Entity) ? m_Entity.GetComponentsInChildren<T>() : {}; }
+        std::vector<Entity> GetComponentsInParents();
+
+        template<typename T>
+        std::vector<Entity> GetComponentsInChildren();
 
     private:
 
-        Entity m_Entity{};
+        // Smart Shared Pointer to Auto-Destruct
+        // Can't Use Unique_Ptr as we need the full definition of Entity for that
+        std::shared_ptr<Entity> m_Entity = nullptr; 
 
     };
+
+    #pragma region Component Group
+
+    template<typename... Component>
+    struct ComponentGroup {};
+
+    struct IDComponent;
+    struct TagComponent;
+    struct HierarchyComponent;
+    struct ScriptComponent;
+    struct TransformComponent;
+    
+    struct CameraComponent;
+     
+    struct AudioListener;
+    struct AudioEmitter;
+     
+    struct MeshFilterComponent;
+    struct MeshRendererComponent;
+     
+    struct LODMeshComponent;
+     
+    struct SkyboxComponent;
+    struct PointLightComponent;
+    struct SpotLightComponent;
+    struct DirectionalLightComponent;
+     
+    struct RigidbodyComponent;
+    struct BoxColliderComponent;
+    struct SphereColliderComponent;
+
+    using AllComponents = ComponentGroup <
+
+        ComponentBase,
+
+        IDComponent,
+        TagComponent,
+        HierarchyComponent,
+        ScriptComponent,
+        TransformComponent,
+
+        CameraComponent,
+
+        AudioListener,
+        AudioEmitter,
+
+        MeshFilterComponent,
+        MeshRendererComponent,
+
+        LODMeshComponent,
+
+        SkyboxComponent,
+        PointLightComponent,
+        SpotLightComponent,
+        DirectionalLightComponent,
+
+        RigidbodyComponent,
+        BoxColliderComponent,
+        SphereColliderComponent
+
+    > ;
+
+    #pragma endregion
+
 }

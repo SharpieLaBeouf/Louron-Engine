@@ -1,5 +1,11 @@
 #include "LayerStack.h"
 
+// Louron Core Headers
+
+// C++ Standard Library Headers
+
+// External Vendor Library Headers
+
 namespace Louron {
 
 	LayerStack::~LayerStack()
