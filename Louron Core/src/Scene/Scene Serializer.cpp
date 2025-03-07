@@ -15,6 +15,8 @@
 #include "Components/Skybox Component.h"
 #include "Components/Physics/Collider Components.h"
 #include "Components/Physics/Rigidbody Component.h"
+#include "Components/Animator Component.h"
+#include "Components/SkinnedMeshComponent.h"
 
 #include "Scene Systems/Physics System.h"
 
@@ -165,6 +167,14 @@ namespace Louron {
 
 		if (entity.HasComponent<MeshRendererComponent>()) {
 			entity.GetComponent<MeshRendererComponent>().Serialize(out);
+		}
+
+		if (entity.HasComponent<SkinnedMeshComponent>()) {
+			entity.GetComponent<SkinnedMeshComponent>().Serialize(out);
+		}
+
+		if (entity.HasComponent<AnimatorComponent>()) {
+			entity.GetComponent<AnimatorComponent>().Serialize(out);
 		}
 
 		if (entity.HasComponent<LODMeshComponent>()) {
@@ -376,6 +386,27 @@ namespace Louron {
 							L_CORE_WARN("Deserialisation of Mesh Renderer Not Complete.");
 					}
 
+					// Skinned Mesh Component
+					auto skinnedMeshComponent = entity["SkinnedMeshComponent"];
+					if (skinnedMeshComponent) {
+
+						auto& entitySkinnedMesh = deserializedEntity.AddComponent<SkinnedMeshComponent>();
+
+						if (!entitySkinnedMesh.Deserialize(skinnedMeshComponent))
+							L_CORE_WARN("Deserialisation of Skinned Mesh Component Not Complete.");
+
+					}
+
+					// Animator Component
+					auto animatorComponent = entity["AnimatorComponent"];
+					if (animatorComponent) {
+
+						auto& entityAnimatorComponent = deserializedEntity.AddComponent<AnimatorComponent>();
+
+						if (!entityAnimatorComponent.Deserialize(animatorComponent))
+							L_CORE_WARN("Deserialisation of Animator Component Not Complete.");
+					}
+
 					// LOD Mesh Component
 					auto lodMeshComponent = entity["LODMeshComponent"];
 					if (lodMeshComponent) {
@@ -478,9 +509,9 @@ namespace Louron {
 
 			std::vector<OctreeBounds<Entity>::OctreeData> data_sources;
 
-			auto bounds_view_mesh = scene_ref->GetAllEntitiesWith<MeshFilterComponent, MeshRendererComponent>();
-			for (const auto& entity_handle : bounds_view_mesh) {
-				auto& mesh_filter = bounds_view_mesh.get<MeshFilterComponent>(entity_handle);
+			auto static_mesh_view = scene_ref->GetAllEntitiesWith<MeshFilterComponent, MeshRendererComponent>();
+			for (const auto& entity_handle : static_mesh_view) {
+				auto& mesh_filter = static_mesh_view.get<MeshFilterComponent>(entity_handle);
 
 				// Ensure the AABB is up to date
 				mesh_filter.UpdateTransformedAABB();
@@ -493,6 +524,24 @@ namespace Louron {
 				}
 
 				data_sources.push_back(std::make_shared<OctreeDataSource<Entity>>(*mesh_filter.GetEntity(), aabb));
+			}
+
+			auto skinned_mesh_view = scene_ref->GetAllEntitiesWith<SkinnedMeshComponent>();
+			for (const auto& entity_handle : skinned_mesh_view) {
+				auto& skinned_mesh = skinned_mesh_view.get<SkinnedMeshComponent>(entity_handle);
+
+				// Ensure the AABB is up to date
+				skinned_mesh.UpdateTransformedAABB();
+				skinned_mesh.ComputeFinalBoneTransformations();
+
+				const auto& aabb = skinned_mesh.TransformedAABB;
+
+				if (!skinned_mesh.GetEntity()) {
+					L_CORE_ERROR("Cannot Insert Entity to Octree - Current Entity Is Invalid!");
+					continue;
+				}
+
+				data_sources.push_back(std::make_shared<OctreeDataSource<Entity>>(*skinned_mesh.GetEntity(), aabb));
 			}
 
 			octree_config.Looseness = 1.25f;

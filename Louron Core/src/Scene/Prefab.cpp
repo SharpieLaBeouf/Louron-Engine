@@ -9,6 +9,8 @@
 #include "Components/Light Components.h"
 #include "Components/Mesh Components.h"
 #include "Components/Skybox Component.h"
+#include "Components/Animator Component.h"
+#include "Components/SkinnedMeshComponent.h"
 
 #include "Components/Physics/Collider Components.h"
 #include "Components/Physics/Rigidbody Component.h"
@@ -245,6 +247,7 @@ namespace Louron {
 				auto& component = start_entity.GetComponent<HierarchyComponent>();
 				auto& prefab_component = m_PrefabRegistry.emplace_or_replace<HierarchyComponent>(prefab_entity_handle, component);
 				prefab_component.m_Parent = parent_uuid;
+				prefab_component.m_Children.clear();
 			}
 
 			// 1.c. Camera Component
@@ -336,6 +339,19 @@ namespace Louron {
 				auto& component = start_entity.GetComponent<LODMeshComponent>();
 				component = m_PrefabRegistry.emplace_or_replace<LODMeshComponent>(prefab_entity_handle, component);
 			}
+
+			// 1.r. Skinned Mesh Component
+			if (start_entity.HasComponent<SkinnedMeshComponent>()) {
+				auto& component = start_entity.GetComponent<SkinnedMeshComponent>();
+				component = m_PrefabRegistry.emplace_or_replace<SkinnedMeshComponent>(prefab_entity_handle, component);
+				component.FinalBoneTransformations.clear();
+			}
+
+			// 1.s. Animator Component
+			if (start_entity.HasComponent<AnimatorComponent>()) {
+				auto& component = start_entity.GetComponent<AnimatorComponent>();
+				component = m_PrefabRegistry.emplace_or_replace<AnimatorComponent>(prefab_entity_handle, component);
+			}
 		}
 
 		// 2. Recurse Children
@@ -345,7 +361,8 @@ namespace Louron {
 
 				entt::entity child_entity = CopyEntity(start_entity.GetScene()->FindEntityByUUID(child_uuid), (uint32_t)prefab_entity_handle);
 
-				if (m_PrefabRegistry.has<HierarchyComponent>(prefab_entity_handle)) {
+				if (m_PrefabRegistry.has<HierarchyComponent>(prefab_entity_handle)) 
+				{
 					m_PrefabRegistry.get<HierarchyComponent>(prefab_entity_handle).m_Children.push_back((uint32_t)child_entity);
 				}
 			}
@@ -354,10 +371,11 @@ namespace Louron {
 		// 3. Resolve Handles to Internal Prefab Handles
 		if (first_iteration)
 		{
-			auto view = m_PrefabRegistry.view<LODMeshComponent>();
-			for (auto& prefab_handle : view)
+			// Resolve Entity References of Differing LOD Assets
+			auto view_LOD = m_PrefabRegistry.view<LODMeshComponent>();
+			for (auto& prefab_handle : view_LOD)
 			{
-				auto& component = view.get<LODMeshComponent>(prefab_handle);
+				auto& component = view_LOD.get<LODMeshComponent>(prefab_handle);
 				for (auto& element : component.LOD_Elements)
 				{
 					for (auto& entity_handle : element.MeshRendererEntities)
@@ -365,6 +383,32 @@ namespace Louron {
 						entity_handle = (uint32_t)s_EntityUUID_To_PrefabUUID[entity_handle];
 					}
 				}
+			}
+
+			// Resolve BoneEntityIDs of Bone Layout
+			auto view_SM = m_PrefabRegistry.view<SkinnedMeshComponent>();
+			for (auto& prefab_handle : view_SM)
+			{
+				auto& component = view_SM.get<SkinnedMeshComponent>(prefab_handle);
+
+				std::shared_ptr<Skeleton> asset_skeleton;
+
+				if (AssetManager::IsAssetLoaded(component.SkeletonHandle))
+					asset_skeleton = AssetManager::GetAsset<Skeleton>(component.SkeletonHandle);
+
+				std::function<void(const BoneLayout&)> recurse_bone_tree;
+
+				recurse_bone_tree = [&](const BoneLayout& current_bone)
+				{
+					component.SkeletonBoneMapping[current_bone.BoneID] = (uint32_t)s_EntityUUID_To_PrefabUUID[component.SkeletonBoneMapping[current_bone.BoneID]];
+
+					for (auto& child_bone : current_bone.BoneChildren)
+					{
+						recurse_bone_tree(child_bone);
+					}
+				};
+
+				recurse_bone_tree(asset_skeleton->SkeletonLayout);
 			}
 		}
 
@@ -406,6 +450,14 @@ namespace Louron {
 
 		if (HasComponent<MeshRendererComponent>(entity)) {
 			GetComponent<MeshRendererComponent>(entity).Serialize(out);
+		}
+
+		if (HasComponent<SkinnedMeshComponent>(entity)) {
+			GetComponent<SkinnedMeshComponent>(entity).Serialize(out);
+		}
+
+		if (HasComponent<AnimatorComponent>(entity)) {
+			GetComponent<AnimatorComponent>(entity).Serialize(out);
 		}
 
 		if (HasComponent<LODMeshComponent>(entity)) {
@@ -503,6 +555,26 @@ namespace Louron {
 
 			if (!entityMeshRenderer.Deserialize(meshRenderer))
 				L_CORE_WARN("Deserialisation of Mesh Renderer Not Complete.");
+		}
+
+		// Skinned Mesh Component
+		auto skinnedMeshComponent = entity_node["SkinnedMeshComponent"];
+		if (skinnedMeshComponent) {
+
+			auto& entitySkinnedMesh = AddComponent<SkinnedMeshComponent>(entity);
+
+			if (!entitySkinnedMesh.Deserialize(skinnedMeshComponent))
+				L_CORE_WARN("Deserialisation of Skinned Mesh Component Not Complete.");
+		}
+
+		// Animator Component
+		auto animatorComponent = entity_node["AnimatorComponent"];
+		if (animatorComponent) {
+
+			auto& entityAnimatorComponent = AddComponent<AnimatorComponent>(entity);
+
+			if (!entityAnimatorComponent.Deserialize(animatorComponent))
+				L_CORE_WARN("Deserialisation of Animator Component Not Complete.");
 		}
 
 		// LOD Mesh Component

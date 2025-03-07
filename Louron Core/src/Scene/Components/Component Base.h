@@ -31,19 +31,19 @@ namespace Louron
         void SetEntity(const Entity& entity);
 
         template<typename T>
-        T& GetComponent();
+        T& GetComponent() const;
 
         template<typename T>
-        T& GetComponentInParent();
+        T& GetComponentInParent() const;
 
         template<typename T>
-        T& GetComponentInChild();
+        T& GetComponentInChild() const;
 
         template<typename T>
-        std::vector<Entity> GetComponentsInParents();
+        std::vector<Entity> GetComponentsInParents() const;
 
         template<typename T>
-        std::vector<Entity> GetComponentsInChildren();
+        std::vector<Entity> GetComponentsInChildren() const;
 
     private:
 
@@ -71,6 +71,9 @@ namespace Louron
      
     struct MeshFilterComponent;
     struct MeshRendererComponent;
+
+    struct SkinnedMeshComponent;
+    struct AnimatorComponent;
      
     struct LODMeshComponent;
      
@@ -100,6 +103,9 @@ namespace Louron
 
         MeshFilterComponent,
         MeshRendererComponent,
+
+        SkinnedMeshComponent,
+        AnimatorComponent,
 
         LODMeshComponent,
 

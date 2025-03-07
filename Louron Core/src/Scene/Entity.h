@@ -17,6 +17,8 @@
 #include "Components/Skybox Component.h"
 #include "Components/Physics/Collider Components.h"
 #include "Components/Physics/Rigidbody Component.h"
+#include "Components/Animator Component.h"
+#include "Components/SkinnedMeshComponent.h"
 
 #include "Scene Systems/Physics System.h"
 
@@ -118,30 +120,37 @@ namespace Louron {
 				if (HasComponent<MeshFilterComponent>())
 				{
 					glm::mat4 global_transform = GetTransform().GetGlobalTransform();
-					Bounds_AABB mesh_bounds = AssetManager::GetAsset<StaticMesh>(GetComponent<MeshFilterComponent>().MeshFilterAssetHandle)->MeshBounds;
 
-					// Create OBB transformation matrix
-					glm::mat4 obb_transform = glm::mat4(1.0f);
-					obb_transform = glm::translate(obb_transform, mesh_bounds.Center());
-					obb_transform = glm::scale(obb_transform, mesh_bounds.Size());
+					auto mesh_asset = AssetManager::GetAsset<StaticMesh>(GetComponent<MeshFilterComponent>().StaticMeshHandle);
 
-					// Apply OBB to Global Transform
-					global_transform *= obb_transform;
+					if (mesh_asset)
+					{
+						Bounds_AABB mesh_bounds = mesh_asset->MeshBounds;
 
-					// Inverse Global so Center and Size are local
-					glm::mat4 inv_global = glm::inverse(global_transform);
+						// Create OBB transformation matrix
+						glm::mat4 obb_transform = glm::mat4(1.0f);
+						obb_transform = glm::translate(obb_transform, mesh_bounds.Center());
+						obb_transform = glm::scale(obb_transform, mesh_bounds.Size());
 
-					// Extract Center
-					glm::vec3 center = (inv_global * global_transform)[3];
+						// Apply OBB to Global Transform
+						global_transform *= obb_transform;
 
-					// Extract Local Half Extents
-					glm::vec3 right = glm::vec3(inv_global * global_transform[0]);		// X basis vector
-					glm::vec3 up = glm::vec3(inv_global * global_transform[1]);			// Y basis vector
-					glm::vec3 forward = glm::vec3(inv_global * global_transform[2]);	// Z basis vector
-					glm::vec3 size = glm::vec3(glm::length(right), glm::length(up), glm::length(forward)) * 0.5f;
+						// Inverse Global so Center and Size are local
+						glm::mat4 inv_global = glm::inverse(global_transform);
 
-					component.SetCentre(center);
-					component.SetSize(size);
+						// Extract Center
+						glm::vec3 center = (inv_global * global_transform)[3];
+
+						// Extract Local Half Extents
+						glm::vec3 right = glm::vec3(inv_global * global_transform[0]);		// X basis vector
+						glm::vec3 up = glm::vec3(inv_global * global_transform[1]);			// Y basis vector
+						glm::vec3 forward = glm::vec3(inv_global * global_transform[2]);	// Z basis vector
+						glm::vec3 size = glm::vec3(glm::length(right), glm::length(up), glm::length(forward)) * 0.5f;
+
+						component.SetCentre(center);
+						component.SetSize(size);
+
+					}
 				}
 			}
 

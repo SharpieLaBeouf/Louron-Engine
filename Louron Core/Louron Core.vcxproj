@@ -154,6 +154,8 @@
     <ClCompile Include="src\Project\Project Serializer.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Renderer\RendererPipeline.cpp" />
+    <ClCompile Include="src\Scene\Components\Animator Component.cpp" />
+    <ClCompile Include="src\Scene\Components\SkinnedMeshComponent.cpp" />
     <ClCompile Include="src\Scene\Spatial Partitioning\Bounds.cpp" />
     <ClCompile Include="src\Scene\Components\Camera Component.cpp" />
     <ClCompile Include="src\Scene\Components\Component Base.cpp" />
@@ -183,6 +185,7 @@
     <ClCompile Include="src\Scripting\Script Manager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Animation\Animations.h" />
     <ClInclude Include="src\OpenGL\Mesh.h" />
     <ClInclude Include="src\OpenGL\Query.h" />
     <ClInclude Include="src\Asset\Asset Manager API.h" />
@@ -745,6 +748,8 @@
     <ClInclude Include="src\Project\Project.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\RendererPipeline.h" />
+    <ClInclude Include="src\Scene\Components\Animator Component.h" />
+    <ClInclude Include="src\Scene\Components\SkinnedMeshComponent.h" />
     <ClInclude Include="src\Scene\Spatial Partitioning\Bounds.h" />
     <ClInclude Include="src\Scene\Components\Audio Components.h" />
     <ClInclude Include="src\Scene\Components\Camera Component.h" />

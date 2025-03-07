@@ -103,6 +103,7 @@ namespace Louron {
 		void UpdateComputeData();
 
 		void UpdateLightSSBO();
+		void UpdateBoneSSBO();
 		void ConductLightFrustumCull();
 		void ConductRenderableFrustumCull(const glm::vec3& camera_position, const glm::mat4& projection_matrix);
 		void ConductRenderableOcclusionCull();
@@ -127,8 +128,11 @@ namespace Louron {
 
 			std::unique_ptr<VertexArray> Screen_Quad_VAO;
 
-			GLuint workGroupsX = -1;
-			GLuint workGroupsY = -1;
+			GLuint TileWorkGroupsX = -1;
+			GLuint TileWorkGroupsY = -1;
+
+			GLuint BoneTransform_Buffer = -1;
+			std::unordered_map<UUID, uint32_t> BoneTransform_Offset; // Key = Entity UUID, Value = Offset in BoneTransform_Buffer
 
 			GeometryQueryMap EntityOcclusionQueries;
 			std::unordered_map<UUID, uint8_t> EntityOcclusionHistory;

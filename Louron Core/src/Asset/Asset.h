@@ -6,8 +6,10 @@
 // C++ Standard Library Headers
 #include <string>
 #include <filesystem>
+#include <memory>
 
 // External Vendor Library Headers
+#include <glm/glm.hpp>
 
 namespace Louron {
 
@@ -25,6 +27,9 @@ namespace Louron {
 
 		Mesh,
 		ModelImport,
+
+		Skeleton,
+		AnimationClip,
 
 		Audio,
 
@@ -52,12 +57,40 @@ namespace Louron {
 		virtual AssetType GetType() const = 0;
 	};
 
+	struct AssetImportConfig 
+	{ 
+		//TODO: bool GenerateThumbnails	= true;		// Generate a thumbnail for preview in the editor.
+		//TODO: bool OptimizeForRuntime	= true;		// Optimise asset data for faster loading/rendering.
+		//TODO: bool PreserveSourceData	= false;	// Keep a copy of the raw source file data.
+		bool AutoReimport				= true;		// Automatically reimport when the source file changes.
+	};
+
+	struct ModelImportConfig : public AssetImportConfig
+	{
+		glm::vec3 ImportPosition = glm::vec3(0.0f);	// Import with overriden position for root entity.
+		glm::vec3 ImportRotation = glm::vec3(0.0f);	// Import with overriden rotation for root entity.
+		glm::vec3 ImportScale	 = glm::vec3(1.0f);	// Import with overriden scale for root entity.
+
+		bool ImportSkeleton				= false;	// Import Skeleton Bone Structure.
+		bool ImportAnimations			= false;	// Import Animations.
+		bool ImportMaterials			= true;		// Import embedded materials.
+
+		//TODO: bool MergeMeshes		= false;	// Combine multiple meshes of same material into a single mesh.
+		//TODO: bool GenerateLODs		= false;	// Generate Levels of Detail (LODs).
+		//TODO: bool FlipUVs			= false;	// Flip UV coordinates (useful for certain model formats).
+	};
+
 	struct AssetMetaData {
 
 		/// <summary>
 		/// The Asset Type.
 		/// </summary>
 		AssetType Type = AssetType::None;
+
+		/// <summary>
+		/// Configuration of Asset Import
+		/// </summary>
+		std::shared_ptr<AssetImportConfig> ImportConfig = nullptr;
 
 		/// <summary>
 		/// The Relative file path of the Asset to the Project Asset Directory.

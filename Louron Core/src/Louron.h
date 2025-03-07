@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Animation/Animations.h"
+
 #include "Asset/Asset.h"
 #include "Asset/Asset Importer.h"
 #include "Asset/Asset Manager.h"
@@ -40,6 +42,8 @@
 #include "Scene/Components/Mesh Components.h"
 #include "Scene/Components/Script Component.h"
 #include "Scene/Components/Skybox Component.h"
+#include "Scene/Components/SkinnedMeshComponent.h"
+#include "Scene/Components/Animator Component.h"
 #include "Scene/Components/Physics/Collider Components.h"
 #include "Scene/Components/Physics/Rigidbody Component.h"
 

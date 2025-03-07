@@ -67,45 +67,57 @@ namespace Louron
 
     void TagComponent::SetUniqueName(const std::string& name)
     {
-        std::string uniqueName = name.empty() ? "Untitled Entity" : name;
-        int suffix = 1;
-        std::string baseName = uniqueName;
+        if (name.empty()) {
+            Tag = "Untitled Entity";
+            return;
+        }
 
-        // Ensure the name is unique by appending a numeric suffix
-        auto check_tags = [&](const char* name) -> bool {
+        auto entityUUID = GetEntity()->GetUUID();
 
-            if (GetComponent<HierarchyComponent>().HasParent()) { // Has Parent
-                const std::vector<UUID>& uuids = GetComponentInParent<HierarchyComponent>().GetChildren();
-                for (auto& uuid : uuids) 
-                {
-                    if (uuid == GetEntity()->GetUUID())
+        // Check if the name is already unique
+        auto check_tags = [&](const std::string& testName) -> bool {
+            if (GetComponent<HierarchyComponent>().HasParent()) {
+                const std::vector<UUID>& children = GetComponentInParent<HierarchyComponent>().GetChildren();
+                for (const auto& uuid : children) {
+                    if (uuid == entityUUID)
                         continue;
-
-                    const TagComponent& tag = GetEntity()->GetScene()->FindEntityByUUID(uuid).GetComponent<TagComponent>();
-                    if (tag.Tag == name)
+                    const Entity childEntity = GetEntity()->GetScene()->FindEntityByUUID(uuid);
+                    if (!childEntity) continue; // Ensure entity is valid
+                    const TagComponent& tag = childEntity.GetComponent<TagComponent>();
+                    if (tag.Tag == testName)
                         return true;
                 }
             }
-            else { // At Root Level
-
+            else {
                 auto view = GetEntity()->GetScene()->GetAllEntitiesWith<HierarchyComponent, TagComponent>();
-                for (auto& entity : view) {
-
-                    if (!view.get<HierarchyComponent>(entity).HasParent()) {
-                        if (view.get<TagComponent>(entity).Tag == name)
-                            return true;
-                    }
+                for (auto entity : view) {
+                    if (view.get<HierarchyComponent>(entity).HasParent())
+                        continue;
+                    if (entity == *GetEntity())
+                        continue;
+                    if (view.get<TagComponent>(entity).Tag == testName)
+                        return true;
                 }
             }
-
             return false;
             };
 
-        while (check_tags(uniqueName.c_str())) {
-            uniqueName = baseName + " (" + std::to_string(suffix++) + ")";
+        // If the name is already unique, set it directly
+        if (!check_tags(name)) {
+            Tag = name;
+            return;
         }
+
+        // Append a suffix to ensure uniqueness
+        std::string uniqueName;
+        int suffix = 1;
+        do {
+            uniqueName = name + " (" + std::to_string(suffix++) + ")";
+        } while (check_tags(uniqueName));
+
         Tag = uniqueName;
     }
+
 
 #pragma endregion
 
@@ -561,6 +573,19 @@ namespace Louron
         return true;
     }
 
+    Entity HierarchyComponent::GetRootParentEntity() const
+    {
+        if (!GetEntity())
+            return Entity{};
+
+        if (HasParent())
+        {
+            return GetComponentInParent<HierarchyComponent>().GetRootParentEntity();
+        }
+
+        return *GetEntity();
+    }
+
 #pragma endregion
 
 #pragma region Transform Component
@@ -978,6 +1003,13 @@ namespace Louron
             component.OctreeNeedsUpdate = true;
         }
 
+        if (entity.HasComponent<SkinnedMeshComponent>()) {
+
+            auto& component = entity.GetComponent<SkinnedMeshComponent>();
+            component.AABBNeedsUpdate = true;
+            component.OctreeNeedsUpdate = true;
+        }
+
         if (entity && entity.GetScene()) {
 
             for (const auto& child_uuid : entity.GetComponent<HierarchyComponent>().GetChildren()) {
@@ -1187,14 +1219,18 @@ namespace Louron
         return m_GlobalTransform;
     }
 
-    const glm::mat4& TransformComponent::GetLocalTransform() {
+    const glm::mat4& TransformComponent::GetLocalTransform(bool update_local_transform) {
 
-        UpdateLocalTransformMatrix();
+        if(update_local_transform)
+            UpdateLocalTransformMatrix();
+
         return m_LocalTransform;
     }
 
     void TransformComponent::SetTransform(const glm::mat4& transform)
     {
+        AddFlag(TransformFlag_PropertiesUpdated);
+
         // Decompose Position
         glm::vec3 position = glm::vec3(transform[3]); // Extract translation (last column)
 

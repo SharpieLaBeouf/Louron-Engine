@@ -595,6 +595,50 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								Project::GetStaticEditorAssetManager()->ImportAsset(file_path, Project::GetActiveProject()->GetAssetDirectory(), handle);
 							}
 
+							if (ImGui::MenuItem("Create New Skybox Material")) {
+								std::filesystem::path file_path = m_CurrentDirectory / "New Skybox Material.lskybox";
+
+								// Ensure unique filename
+								int counter = 1;
+								while (std::filesystem::exists(file_path)) {
+									file_path = m_CurrentDirectory / ("New Skybox Material (" + std::to_string(counter) + ").lskybox");
+									counter++;
+								}
+
+								SkyboxMaterial material = SkyboxMaterial{};
+								material.SetName(file_path.stem().string().c_str());
+
+								YAML::Emitter out;
+								out << YAML::BeginMap;
+								material.Serialize(out);
+								out << YAML::EndMap;
+
+								std::ofstream fout(file_path); // Create the file
+								fout << out.c_str();
+								fout.close();
+
+								is_renaming_path = true;
+								renaming_path = file_path;
+								new_path_file_name = file_path.filename().string();
+								first_focus = true;
+
+								// Ensure Custom Handle When Creating Asset
+								AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
+									AssetUtils::AssetTypeToString(AssetType::Material_Skybox) + std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
+								));
+
+								counter = 0;
+								while (AssetManager::IsAssetHandleValid(handle))
+								{
+									handle = static_cast<uint32_t>(std::hash<std::string>{}(
+										AssetUtils::AssetTypeToString(AssetType::Material_Skybox) + std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + "_" + std::to_string(counter)
+									));
+									counter++;
+								}
+
+								Project::GetStaticEditorAssetManager()->ImportAsset(file_path, Project::GetActiveProject()->GetAssetDirectory(), handle);
+							}
+
 							if (ImGui::MenuItem("Create New Shader")) {
 								std::filesystem::path file_path = m_CurrentDirectory / "New Shader.lshader";
 

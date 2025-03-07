@@ -20,6 +20,8 @@
 #include <entt/entt.hpp>
 #include <physx/PxPhysicsAPI.h>
 
+constexpr int MAX_BONE_TRANSFORMATIONS = 204800; // 13.11 mega bytes of VRAM, can support generally near 1024 bones based on 200 bones per animated character
+
 constexpr int MAX_DIRECTIONAL_LIGHTS = 10;
 constexpr int MAX_POINT_LIGHTS = 1024;
 constexpr int MAX_SPOT_LIGHTS = 1024;
@@ -100,7 +102,8 @@ namespace Louron {
 		void OnPhysicsStart();
 		void OnPhysicsStop();
 
-		void OnUpdate(EditorCamera* editor_camera = nullptr);
+		void OnUpdate();
+		void OnRender(EditorCamera* editor_camera = nullptr);
 		void OnUpdateGUI();
 
 		void OnFixedUpdate();
@@ -158,6 +161,9 @@ namespace Louron {
 
 		std::shared_ptr<OctreeBounds<Entity>> m_Octree = nullptr;
 		bool m_DisplayOctree = false;
+
+		std::thread m_AnimationThread;
+		std::atomic<bool> m_AnimationThreadFinished = true;
 
 		friend class Entity;
 		friend class Project;

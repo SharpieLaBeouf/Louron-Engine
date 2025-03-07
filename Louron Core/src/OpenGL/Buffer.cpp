@@ -21,11 +21,19 @@ namespace Louron {
 		glBufferData(GL_ARRAY_BUFFER, m_BufferSize, nullptr, GL_DYNAMIC_DRAW);
 	}
 
-	VertexBuffer::VertexBuffer(const float* vertices, GLuint count) {
+	VertexBuffer::VertexBuffer(const float* data, GLuint count) {
 		m_BufferSize = count * sizeof(GLfloat);
 		glCreateBuffers(1, &m_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, m_BufferSize, vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, m_BufferSize, data, GL_STATIC_DRAW);
+	}
+
+	VertexBuffer::VertexBuffer(const int* data, GLuint count)
+	{
+		m_BufferSize = count * sizeof(GLint);
+		glCreateBuffers(1, &m_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+		glBufferData(GL_ARRAY_BUFFER, m_BufferSize, data, GL_STATIC_DRAW);
 	}
 
 	VertexBuffer::VertexBuffer(const std::vector<Vertex>& vertices, GLuint size) {

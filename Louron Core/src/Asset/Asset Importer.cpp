@@ -9,6 +9,10 @@
 #include "../Scene/Scene.h"
 #include "../Scene/Prefab.h"
 
+#include "../Scene/Components/Animator Component.h"
+#include "../Scene/Components/SkinnedMeshComponent.h"
+
+#include "../Animation/Animations.h"
 #include "../OpenGL/Mesh.h"
 
 // C++ Standard Library Headers
@@ -33,7 +37,8 @@ namespace Louron {
 
 #pragma region Asset Import
 
-	using AssetImportFunction = std::function<std::shared_ptr<Asset>(AssetMap*, AssetRegistry*, AssetHandle, const AssetMetaData&, const std::filesystem::path&)>;
+	//						const AssetImporter::ImportParams& import_params
+	using AssetImportFunction = std::function<std::shared_ptr<Asset>(const AssetImporter::ImportParams&)>;
 	
 	static std::map<AssetType, AssetImportFunction> s_AssetImportFunctions = {
 
@@ -60,7 +65,9 @@ namespace Louron {
 			return nullptr;
 		}
 
-		return s_AssetImportFunctions.at(metadata.Type)(asset_map, asset_reg, handle, metadata, project_asset_directory);
+		ImportParams parameters{ asset_map, asset_reg, handle, metadata, project_asset_directory };
+
+		return s_AssetImportFunctions.at(metadata.Type)(parameters);
 	}
 
 #pragma endregion
@@ -68,18 +75,18 @@ namespace Louron {
 #pragma region Scene Import
 
 
-	std::shared_ptr<Scene> SceneImporter::ImportScene(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory) 
+	std::shared_ptr<Scene> SceneImporter::ImportScene(const AssetImporter::ImportParams& import_params) 
 	{
 		auto project = Project::GetActiveProject();
-		return LoadScene(asset_map, asset_reg, project->GetProjectDirectory() / project->GetConfig().AssetDirectory / meta_data.FilePath);
+		return LoadScene(import_params, project->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
 	}
 
-	std::shared_ptr<Scene> SceneImporter::LoadScene(AssetMap* asset_map, AssetRegistry* asset_reg, const std::filesystem::path& path) 
+	std::shared_ptr<Scene> SceneImporter::LoadScene(const AssetImporter::ImportParams& import_params, const std::filesystem::path& scene_file_path)
 	{
 
 		std::shared_ptr<Scene> scene = std::make_shared<Scene>();
 		SceneSerializer serializer(scene);
-		serializer.Deserialize(path);
+		serializer.Deserialize(scene_file_path);
 		return scene;
 	}
 
@@ -87,9 +94,9 @@ namespace Louron {
 
 #pragma region Prefab File Import
 
-	std::shared_ptr<Prefab> PrefabImporter::ImportPrefab(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& metadata, const std::filesystem::path& project_asset_directory)
+	std::shared_ptr<Prefab> PrefabImporter::ImportPrefab(const AssetImporter::ImportParams& import_params)
 	{
-		return LoadPrefab(metadata.IsCustomAsset ? metadata.FilePath : Project::GetActiveProject()->GetAssetDirectory() / metadata.FilePath);
+		return LoadPrefab(import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
 	}
 
 	std::shared_ptr<Prefab> PrefabImporter::LoadPrefab(const std::filesystem::path& path)
@@ -108,9 +115,9 @@ namespace Louron {
 
 #pragma region Texture2D Import
 
-	std::shared_ptr<Texture2D> TextureImporter::ImportTexture2D(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory) 
+	std::shared_ptr<Texture2D> TextureImporter::ImportTexture2D(const AssetImporter::ImportParams& import_params) 
 	{
-		return LoadTexture2D(meta_data.IsCustomAsset ? meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / meta_data.FilePath);
+		return LoadTexture2D(import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
 	}
 
 	std::shared_ptr<Texture2D> TextureImporter::LoadTexture2D(const std::filesystem::path& path) {
@@ -122,12 +129,12 @@ namespace Louron {
 
 #pragma region Material Import
 
-	std::shared_ptr<Material> MaterialImporter::ImportMaterial(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory) {
+	std::shared_ptr<Material> MaterialImporter::ImportMaterial(const AssetImporter::ImportParams& import_params) {
 
-		if (meta_data.FilePath.extension() != ".lmat" && meta_data.FilePath.extension() != ".lmaterial" && meta_data.FilePath.extension() != ".lskybox") {
+		if (import_params.asset_meta_data.FilePath.extension() != ".lmat" && import_params.asset_meta_data.FilePath.extension() != ".lmaterial" && import_params.asset_meta_data.FilePath.extension() != ".lskybox") {
 
 			L_CORE_WARN("Incompatible Material File Extension");
-			L_CORE_WARN("Extension Used: {0}", meta_data.FilePath.extension().string());
+			L_CORE_WARN("Extension Used: {0}", import_params.asset_meta_data.FilePath.extension().string());
 
 			return nullptr;
 		}
@@ -135,7 +142,7 @@ namespace Louron {
 		YAML::Node data;
 
 		auto project = Project::GetActiveProject();
-		std::filesystem::path file_path = project->GetProjectDirectory() / project->GetConfig().AssetDirectory / meta_data.FilePath;
+		std::filesystem::path file_path = project->GetAssetDirectory() / import_params.asset_meta_data.FilePath;
 
 		if (!std::filesystem::exists(file_path))
 			return nullptr;
@@ -144,21 +151,21 @@ namespace Louron {
 			data = YAML::LoadFile(file_path.string());
 		}
 		catch (YAML::ParserException e) {
-			L_CORE_ERROR("YAML-CPP Failed to Load Scene File: '{0}', {1}", meta_data.FilePath.string(), e.what());
+			L_CORE_ERROR("YAML-CPP Failed to Load Scene File: '{0}', {1}", import_params.asset_meta_data.FilePath.string(), e.what());
 			return nullptr;
 		}
 
 		if (!data["Material Asset Type"]) {
-			L_CORE_ERROR("Material Type Node is Not Specified in File: '{0}'", meta_data.FilePath.string());
+			L_CORE_ERROR("Material Type Node is Not Specified in File: '{0}'", import_params.asset_meta_data.FilePath.string());
 			return nullptr;
 		}
 
 		if (data["Material Asset Type"].as<std::string>() == AssetUtils::AssetTypeToString(AssetType::Material_Skybox)) {
-			return LoadMaterialSkybox(meta_data.IsCustomAsset ? meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / meta_data.FilePath);
+			return LoadMaterialSkybox(import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
 		}
 
 		if (data["Material Asset Type"].as<std::string>() == AssetUtils::AssetTypeToString(AssetType::Material_Standard)) {
-			return LoadMaterialPBR(meta_data.IsCustomAsset ? meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / meta_data.FilePath);
+			return LoadMaterialPBR(import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
 		}
 
 		return nullptr;
@@ -209,6 +216,14 @@ namespace Louron {
 			std::vector<uint32_t> mesh_references;
 			bool operator==(const MeshInstanceKey& other) const { return mesh_references == other.mesh_references; }
 			void normalize() { std::sort(mesh_references.begin(), mesh_references.end()); }
+
+			void GenerateKey(const aiNode* ai_node)
+			{
+				mesh_references.reserve(ai_node->mNumMeshes);
+				for (unsigned int i = 0; i < ai_node->mNumMeshes; i++)
+					mesh_references.emplace_back(ai_node->mMeshes[i]);
+				normalize();
+			}
 		};
 
 		// Used to compare nodes within an aiScene to identify Linked Duplicates
@@ -227,99 +242,150 @@ namespace Louron {
 			std::pair<AssetHandle, // AssetMesh Reference
 			std::vector<std::pair<AssetHandle, std::shared_ptr<MaterialUniformBlock>>>>, // Material Vector
 			MeshInstanceKeyHash> s_LoadedNodes = {};
+
+		static std::filesystem::path ResolveAssimpTexturePath(const std::filesystem::path& asset_file_path, const aiString& assimp_texture_string)
+		{
+			std::filesystem::path absolute_texture_path = assimp_texture_string.C_Str(); // Assume is absolute
+
+			if (absolute_texture_path.is_relative()) // Check if relative
+			{
+				absolute_texture_path = std::filesystem::absolute(asset_file_path.parent_path() / assimp_texture_string.C_Str());
+			}
+			else if (absolute_texture_path.filename() == absolute_texture_path) // Check if path stripped and is just in the same directory as model file
+			{
+				absolute_texture_path = std::filesystem::absolute(asset_file_path.parent_path() / absolute_texture_path);
+			}
+			else // Just format it to an absolute path if neither of the above work
+			{
+				absolute_texture_path = std::filesystem::absolute(absolute_texture_path);
+			}
+
+			return absolute_texture_path;
+		}
+
 	}
 
-	std::shared_ptr<Prefab> ModelImporter::ImportModel(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory)
+	std::shared_ptr<Prefab> ModelImporter::ImportModel(const AssetImporter::ImportParams& import_params)
 	{
-		return LoadModel(asset_map, asset_reg, handle, meta_data, meta_data.IsCustomAsset ? meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / meta_data.FilePath);
+		return LoadModel(import_params, import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
 	}
 
-	std::shared_ptr<Prefab> ModelImporter::LoadModel(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& path)
+	bool ModelImporter::ImportSkeleton = false;
+	bool ModelImporter::ImportAnimations = false;
+	bool ModelImporter::ImportMaterials = true;
+	AssetHandle ModelImporter::ImportedSkeletonHandle = NULL_UUID;
+
+	std::shared_ptr<Prefab> ModelImporter::LoadModel(const AssetImporter::ImportParams& import_params, const std::filesystem::path& model_file_path)
 	{
-		if (!asset_map) 
+
+		if (!import_params.asset_map)
 		{
 			L_CORE_ERROR("Cannot Import Model - Asset Map Invalid.");
 			return nullptr;
 		}
 
-		if (!asset_reg) 
+		if (!import_params.asset_reg)
 		{
 			L_CORE_ERROR("Cannot Import Model - Asset Registry Invalid.");
 			return nullptr;
 		}
 
-		if (!std::filesystem::exists(path)) 
+		if (!std::filesystem::exists(model_file_path)) 
 		{
 			L_CORE_ERROR("Cannot Import Model - File Path Does Not Exist.");
 			return nullptr;
 		}
 
-		std::string model_name = path.filename().replace_extension().string();
+		std::string model_name = model_file_path.filename().replace_extension().string();
 
-		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path.string(),
-			aiProcess_GenUVCoords | \
-			aiProcess_GenSmoothNormals | \
-			aiProcess_GenBoundingBoxes | \
-			aiProcess_CalcTangentSpace | \
-			aiProcess_SplitLargeMeshes | \
-			aiProcess_JoinIdenticalVertices | \
-			aiProcess_ImproveCacheLocality | \
-			aiProcess_RemoveRedundantMaterials | \
-			aiProcess_Triangulate | \
-			aiProcess_SortByPType | \
-			aiProcess_FindDegenerates | \
-			aiProcess_FindInvalidData | \
-			aiProcess_LimitBoneWeights | \
+
+		static Assimp::Importer ai_importer = {};
+
+		const aiScene* ai_scene = ai_importer.ReadFile(model_file_path.string(),
+
+			aiProcess_Triangulate |
+			aiProcess_SortByPType |
+			aiProcess_SplitLargeMeshes |
+			aiProcess_ImproveCacheLocality |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_RemoveRedundantMaterials |
+
+			aiProcess_GenUVCoords |
+			aiProcess_GenSmoothNormals |
+			aiProcess_GenBoundingBoxes |
+
+			aiProcess_CalcTangentSpace |
+			aiProcess_LimitBoneWeights |
+			aiProcess_PopulateArmatureData |
+
+			aiProcess_FindDegenerates |
+			aiProcess_FindInvalidData |
 			0
+
 		);
 
-		if (!scene) {
-			L_CORE_ERROR("Cannot Import Model - Assimp Scene Invalid: {0}", importer.GetErrorString());
+		if (!ai_scene) {
+			L_CORE_ERROR("Cannot Import Model - Assimp Scene Invalid: {0}", ai_importer.GetErrorString());
+			ai_importer.FreeScene();
 			return nullptr;
 		}
 
-		if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
+		if (ai_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
 			L_CORE_ERROR("Cannot Import Model - Assimp Scene Data Structure Incomplete. Potentially Corrupted File.");
+			ai_importer.FreeScene();
 			return nullptr;
 		}
 
-		if (!scene->mRootNode) {
+		if (!ai_scene->mRootNode) {
 			L_CORE_ERROR("Cannot Import Model - Assimp Scene Has No Root Node");
+			ai_importer.FreeScene();
 			return nullptr;
+		}
+
+		ImportSkeleton = false;
+		ImportAnimations = false;
+		ImportMaterials = true;
+		ImportedSkeletonHandle = NULL_UUID;
+
+		if (import_params.asset_meta_data.ImportConfig)
+		{
+			auto import_config = static_pointer_cast<ModelImportConfig>(import_params.asset_meta_data.ImportConfig);
+			if (import_config)
+			{
+				ImportSkeleton = import_config->ImportSkeleton;
+				ImportAnimations = import_config->ImportAnimations;
+				ImportMaterials = import_config->ImportMaterials;
+			}
 		}
 
 		std::shared_ptr<Prefab> model_prefab = std::make_shared<Prefab>();
 		model_prefab->SetMutable(false);
 
-		ProcessNode(scene, scene->mRootNode, model_prefab, entt::null, asset_map, asset_reg, handle, meta_data, path);
+		if (ImportSkeleton)
+		{
+			auto& skinned_mesh_component = model_prefab->AddComponent<SkinnedMeshComponent>(model_prefab->GetRootEntity());
+			entt::entity first_bone_entity = ProcessSkeleton(import_params, ai_scene, ai_scene->mRootNode, model_prefab, model_file_path);
+			ProcessSkinnedMeshNode(import_params, ai_scene, model_prefab, model_file_path);
+
+			skinned_mesh_component.ComputeFinalBoneTransformations(model_prefab);
+		}
+		else
+		{
+			ProcessStaticMeshNode(import_params, ai_scene, ai_scene->mRootNode, model_prefab, entt::null, model_file_path);
+		}
+		
+		if (ImportAnimations)
+		{
+			ProcessAnimations(import_params, ai_scene, model_prefab, model_file_path);
+		}
 
 		AssimpHelpers::s_LoadedNodes.clear();
+		ai_importer.FreeScene();
 
 		return model_prefab;
 	}
 
-	static std::filesystem::path ResolveAssimpTexturePath(const std::filesystem::path& asset_file_path, const aiString& assimp_texture_string)
-	{
-		std::filesystem::path absolute_texture_path = assimp_texture_string.C_Str(); // Assume is absolute
-
-		if (absolute_texture_path.is_relative()) // Check if relative
-		{
-			absolute_texture_path = std::filesystem::absolute(asset_file_path.parent_path() / assimp_texture_string.C_Str());
-		}
-		else if (absolute_texture_path.filename() == absolute_texture_path) // Check if path stripped and is just in the same directory as model file
-		{
-			absolute_texture_path = std::filesystem::absolute(asset_file_path.parent_path() / absolute_texture_path);
-		}
-		else // Just format it to an absolute path if neither of the above work
-		{
-			absolute_texture_path = std::filesystem::absolute(absolute_texture_path);
-		}
-
-		return absolute_texture_path;
-	}
-
-	void ModelImporter::ProcessMesh(const aiScene* scene, aiMesh* mesh, std::shared_ptr<StaticMesh> asset_mesh)
+	void ModelImporter::ProcessMesh(const aiScene* ai_scene, aiMesh* ai_mesh, std::shared_ptr<StaticMesh> asset_mesh, BoneLayout* skeleton)
 	{
 		// 1. Process Vertices
 		std::vector<glm::vec3> vertices;
@@ -327,14 +393,74 @@ namespace Louron {
 		std::vector<glm::vec2> texcoords;
 		std::vector<glm::vec3> tangents;
 		std::vector<glm::vec3> bitangents;
-		for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+		std::vector<glm::ivec4> bone_ids;
+		std::vector<glm::vec4> bone_weights;
 
-			vertices.push_back(glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
-			normals.push_back(glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z));
+		// Extract Vertice Data
+		for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++) {
 
-			if (mesh->mTextureCoords[0]) texcoords.push_back(glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y));
-			if (mesh->mTangents) tangents.push_back(glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z));
-			if (mesh->mBitangents) bitangents.push_back(glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z));
+			bone_ids.push_back({ -1, -1, -1, -1 });
+			bone_weights.push_back({ 0.0f, 0.0f, 0.0f, 0.0f });
+
+			vertices.push_back(glm::vec3(ai_mesh->mVertices[i].x, ai_mesh->mVertices[i].y, ai_mesh->mVertices[i].z));
+			normals.push_back(glm::vec3(ai_mesh->mNormals[i].x, ai_mesh->mNormals[i].y, ai_mesh->mNormals[i].z));
+
+			if (ai_mesh->mTextureCoords[0]) texcoords.push_back(glm::vec2(ai_mesh->mTextureCoords[0][i].x, ai_mesh->mTextureCoords[0][i].y));
+			if (ai_mesh->mTangents) tangents.push_back(glm::vec3(ai_mesh->mTangents[i].x, ai_mesh->mTangents[i].y, ai_mesh->mTangents[i].z));
+			if (ai_mesh->mBitangents) bitangents.push_back(glm::vec3(ai_mesh->mBitangents[i].x, ai_mesh->mBitangents[i].y, ai_mesh->mBitangents[i].z));
+		}
+
+		// Extract Bone Data
+		if (ImportSkeleton && skeleton)
+		{
+			for (unsigned int i = 0; i < ai_mesh->mNumBones; i++)
+			{
+				aiBone* ai_bone = ai_mesh->mBones[i];
+
+				BoneLayout* skeleton_bone = skeleton->find(ai_bone->mName.C_Str());
+
+				if (!skeleton_bone)
+					continue;
+
+				skeleton_bone->BoneOffsetMatrix = AssimpHelpers::ConvertMatrixToGLMFormat(ai_bone->mOffsetMatrix);
+
+				// Loop throughy vertices affected by this bone
+				for (unsigned int j = 0; j < ai_bone->mNumWeights; j++)
+				{
+					aiVertexWeight weight = ai_bone->mWeights[j];
+
+					// Get index to vertex in vertices vector
+					int vertex_id = weight.mVertexId;
+
+					// Get weight of bone on vertice
+					float vertex_weight = weight.mWeight;
+
+					// Find the weakest bone influence
+					int min_index = -1;
+					float min_weight = 1.0f;
+					for (int k = 0; k < 4; k++)
+					{
+						if (bone_ids[vertex_id][k] == -1)
+						{
+							// Prefer an unassigned slot
+							min_index = k;
+							break;
+						}
+						if (bone_weights[vertex_id][k] < min_weight)
+						{
+							min_weight = bone_weights[vertex_id][k];
+							min_index = k;
+						}
+					}
+
+					// If a weaker or empty slot is found, replace it
+					if (min_index != -1)
+					{
+						bone_ids[vertex_id][min_index] = static_cast<int>(skeleton_bone->BoneID);
+						bone_weights[vertex_id][min_index] = vertex_weight;
+					}
+				}
+			}
 		}
 
 		std::shared_ptr<SubMesh> sub_mesh = std::make_shared<SubMesh>();
@@ -342,11 +468,11 @@ namespace Louron {
 		sub_mesh->SetVAO(std::make_unique<VertexArray>());
 
 		// Separate VBOs so that vertex data is separate for runtime modification
-		VertexBuffer* vbo_verts = new VertexBuffer(&vertices[0][0],		(GLuint)vertices.size() * 3);
+		VertexBuffer* vbo_verts = new VertexBuffer(&vertices[0][0], (GLuint)vertices.size() * 3);
 		vbo_verts->SetLayout(BufferLayout{ {ShaderDataType::Float3, "aPos"} });
 		sub_mesh->GetVAO()->AddVertexBuffer(vbo_verts);
 
-		VertexBuffer* vbo_norms = new VertexBuffer(&normals[0][0],		(GLuint)normals.size() * 3);
+		VertexBuffer* vbo_norms = new VertexBuffer(&normals[0][0], (GLuint)normals.size() * 3);
 		vbo_norms->SetLayout(BufferLayout{ {ShaderDataType::Float3, "aNormal"} });
 		sub_mesh->GetVAO()->AddVertexBuffer(vbo_norms);
 
@@ -360,19 +486,31 @@ namespace Louron {
 			vbo_tangents->SetLayout(BufferLayout{ {ShaderDataType::Float3, "aTangent"} });
 			sub_mesh->GetVAO()->AddVertexBuffer(vbo_tangents);
 		}
-		if(!bitangents.empty()){
+		if (!bitangents.empty()) {
 			VertexBuffer* vbo_bitangents = new VertexBuffer(&bitangents[0][0], (GLuint)bitangents.size() * 3);
 			vbo_bitangents->SetLayout(BufferLayout{ {ShaderDataType::Float3, "aBitangent"} });
 			sub_mesh->GetVAO()->AddVertexBuffer(vbo_bitangents);
 		}
+		if (!bone_ids.empty()) {
+			VertexBuffer* vbo_bone_ids = new VertexBuffer(&bone_ids[0][0], (GLuint)bone_ids.size() * 4);
+			vbo_bone_ids->SetLayout(BufferLayout{ {ShaderDataType::Int4, "aBoneIDs"} });
+			sub_mesh->GetVAO()->AddVertexBuffer(vbo_bone_ids);
+		}
+		if (!bone_weights.empty()) {
+			VertexBuffer* vbo_bone_weights = new VertexBuffer(&bone_weights[0][0], (GLuint)bone_weights.size() * 4);
+			vbo_bone_weights->SetLayout(BufferLayout{ {ShaderDataType::Float4, "aBoneWeights"} });
+			sub_mesh->GetVAO()->AddVertexBuffer(vbo_bone_weights);
+		}
 
 		// 2. Process Indices
 		std::vector<GLuint> mesh_indices;
-		for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-			aiFace face = mesh->mFaces[i];
+		for (unsigned int i = 0; i < ai_mesh->mNumFaces; i++) 
+		{
+			aiFace face = ai_mesh->mFaces[i];
 			for (unsigned int j = 0; j < face.mNumIndices; j++)
 				mesh_indices.push_back(face.mIndices[j]);
 		}
+
 		IndexBuffer* ebo = new IndexBuffer(mesh_indices, (GLuint)mesh_indices.size());
 		sub_mesh->GetVAO()->SetIndexBuffer(ebo);
 
@@ -380,42 +518,42 @@ namespace Louron {
 		asset_mesh->SubMeshes.push_back(std::move(sub_mesh));
 	}
 
-	void ModelImporter::ProcessMaterial(const aiScene* scene, aiMesh* mesh, std::shared_ptr<Prefab> model_prefab, entt::entity current_entity_handle, std::shared_ptr<StaticMesh> asset_mesh, AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle parent_asset_handle, const AssetMetaData& parent_meta_data, const std::filesystem::path& path)
+	void ModelImporter::ProcessMaterial(const AssetImporter::ImportParams& import_params, const aiScene* ai_scene, const aiMesh* ai_mesh, std::shared_ptr<Prefab> model_prefab, entt::entity current_entity_handle, std::shared_ptr<StaticMesh> asset_mesh, const std::filesystem::path& model_file_path)
 	{
 		// 4. Create Material Asset
-		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		aiMaterial* material = ai_scene->mMaterials[ai_mesh->mMaterialIndex];
 		aiString materialName;
 		material->Get(AI_MATKEY_NAME, materialName);
 
 		auto project = Project::GetActiveProject();
 		AssetHandle asset_material_handle;
 
-		if (materialName == aiString("DefaultMaterial"))
+		std::string material_suffix;
+		if (materialName == aiString("DefaultMaterial") || !ImportMaterials)
 		{
-			// If DefaultMaterial set to inbuilt asset Default_Material
-			asset_material_handle = static_cast<uint32_t>(std::hash<std::string>{}(
-				AssetUtils::AssetTypeToString(AssetType::Material_Standard) + "InBuiltAsset" + "Default_Material"
-				));
+			material_suffix = "InBuiltAssetDefault_Material";  // Default Material
 		}
 		else
 		{
-			// Unique Material
-			asset_material_handle = static_cast<uint32_t>(std::hash<std::string>{}(
-				AssetUtils::AssetTypeToString(AssetType::Material_Standard) + path.filename().string() + materialName.C_Str()
-			));
+			material_suffix = model_file_path.filename().string() + materialName.C_Str();  // Unique Material
 		}
+
+		// Generate the material handle
+		asset_material_handle = static_cast<uint32_t>(std::hash<std::string>{}(
+			AssetUtils::AssetTypeToString(AssetType::Material_Standard) + material_suffix
+			));
 
 		// If the Material has not already been loaded into the asset map, we 
 		// want to create a new material. Once this is done, we won't need to do this again 
 		// for this material.
-		if (asset_map->count(asset_material_handle) == 0)
+		if (import_params.asset_map->count(asset_material_handle) == 0)
 		{
 			AssetMetaData material_metadata;
-			material_metadata.FilePath = std::filesystem::relative(path, Project::GetActiveProject()->GetAssetDirectory());
+			material_metadata.FilePath = std::filesystem::relative(model_file_path, Project::GetActiveProject()->GetAssetDirectory());
 			material_metadata.Type = AssetType::Material_Standard;
 			material_metadata.AssetName = materialName.C_Str();
-			material_metadata.ParentAssetHandle = parent_asset_handle;
-			material_metadata.IsCustomAsset = parent_meta_data.IsCustomAsset;
+			material_metadata.ParentAssetHandle = import_params.asset_handle;
+			material_metadata.IsCustomAsset = import_params.asset_meta_data.IsCustomAsset;
 
 			std::shared_ptr<Material> asset_material = std::make_shared<Material>();
 
@@ -456,7 +594,7 @@ namespace Louron {
 					aiString assimp_texture_string;
 					material->GetTexture(texture_type, 0, &assimp_texture_string);
 
-					std::filesystem::path absolute_texture_path = ResolveAssimpTexturePath(path, assimp_texture_string);
+					std::filesystem::path absolute_texture_path = AssimpHelpers::ResolveAssimpTexturePath(model_file_path, assimp_texture_string);
 
 					AssetHandle texture_handle;
 					AssetMetaData texture_meta_data;
@@ -480,34 +618,33 @@ namespace Louron {
 							));
 
 						// Check if texture file already loaded.
-						if (asset_map->count(texture_handle) == 0)
+						if (import_params.asset_map->count(texture_handle) == 0)
 							texture_asset = std::make_shared<Texture2D>(absolute_texture_path);
 						else
-							texture_asset = static_pointer_cast<Texture2D>(asset_map->at(texture_handle));
+							texture_asset = static_pointer_cast<Texture2D>(import_params.asset_map->at(texture_handle));
 					}
-					else if (auto assimp_texture_ref = scene->GetEmbeddedTexture(assimp_texture_string.C_Str()))
+					else if (auto assimp_texture_ref = ai_scene->GetEmbeddedTexture(assimp_texture_string.C_Str()))
 					{
 						texture_meta_data.AssetName = assimp_texture_string.C_Str();
-						texture_meta_data.FilePath = std::filesystem::relative(path, Project::GetActiveProject()->GetAssetDirectory());
+						texture_meta_data.FilePath = std::filesystem::relative(model_file_path, Project::GetActiveProject()->GetAssetDirectory());
 						texture_meta_data.Type = AssetType::Texture2D;
 
 						// This is an embedded texture which requires the model 
 						// to be loaded so we can access this texture
-						texture_meta_data.ParentAssetHandle = parent_asset_handle;
+						texture_meta_data.ParentAssetHandle = import_params.asset_handle;
 
 						texture_handle = static_cast<uint32_t>(std::hash<std::string>{}(
-							AssetUtils::AssetTypeToString(texture_meta_data.Type) + path.filename().string() + texture_meta_data.AssetName
-							));
-
+							AssetUtils::AssetTypeToString(texture_meta_data.Type) + model_file_path.filename().string() + texture_meta_data.AssetName
+						));
 
 						glm::ivec2 texture_size = { assimp_texture_ref->mWidth, assimp_texture_ref->mHeight };
 						unsigned char* texture_data = reinterpret_cast<unsigned char*>(assimp_texture_ref->pcData);
 
 						// Check if texture file already loaded.
-						if (asset_map->count(texture_handle) == 0)
+						if (import_params.asset_map->count(texture_handle) == 0)
 							texture_asset = std::make_shared<Texture2D>(texture_data, texture_size.x, texture_size.y, Texture2D::TextureFormat::RED_GREEN_BLUE_ALPHA_8, Texture2D::TextureFormat::BLUE_GREEN_RED_ALPHA_8);
 						else
-							texture_asset = static_pointer_cast<Texture2D>(asset_map->at(texture_handle));
+							texture_asset = static_pointer_cast<Texture2D>(import_params.asset_map->at(texture_handle));
 					}
 					else if (!absolute_texture_path.empty())
 					{
@@ -542,8 +679,8 @@ namespace Louron {
 
 						texture_asset->Handle = texture_handle;
 
-						asset_map->operator[](texture_handle) = texture_asset;
-						asset_reg->operator[](texture_handle) = texture_meta_data;
+						import_params.asset_map->operator[](texture_handle) = texture_asset;
+						import_params.asset_reg->operator[](texture_handle) = texture_meta_data;
 					}
 
 				};
@@ -556,49 +693,64 @@ namespace Louron {
 
 			if (asset_material) {
 
-				auto& component = model_prefab->GetComponent<MeshRendererComponent>(current_entity_handle);
-				component.MeshRendererMaterialHandles.push_back({ asset_material_handle, nullptr });
+				if (ImportSkeleton)
+				{
+					auto& component = model_prefab->GetComponent<SkinnedMeshComponent>(current_entity_handle);
+					component.MaterialHandles.push_back({ asset_material_handle, nullptr });
+				}
+				else
+				{
+					auto& component = model_prefab->GetComponent<MeshRendererComponent>(current_entity_handle);
+					component.MaterialHandles.push_back({ asset_material_handle, nullptr });
+				}
 
 				asset_material->Handle = asset_material_handle;
-				asset_map->operator[](asset_material_handle) = asset_material;
-				asset_reg->operator[](asset_material_handle) = material_metadata;
+				import_params.asset_map->operator[](asset_material_handle) = asset_material;
+				import_params.asset_reg->operator[](asset_material_handle) = material_metadata;
 			}
 
 		}
 		else
 		{
-			model_prefab->GetComponent<MeshRendererComponent>(current_entity_handle).MeshRendererMaterialHandles.push_back({ asset_material_handle, nullptr });
+			if (ImportSkeleton)
+			{
+				model_prefab->GetComponent<SkinnedMeshComponent>(current_entity_handle).MaterialHandles.push_back({ asset_material_handle, nullptr });
+			}
+			else
+			{
+				model_prefab->GetComponent<MeshRendererComponent>(current_entity_handle).MaterialHandles.push_back({ asset_material_handle, nullptr });
+			}
 		}
 	}
 
-	void ModelImporter::ProcessNode(const aiScene* scene, aiNode* node, std::shared_ptr<Prefab> model_prefab, entt::entity parent_entity_handle, AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle parent_asset_handle, const AssetMetaData& parent_meta_data, const std::filesystem::path& path)
+	void ModelImporter::ProcessStaticMeshNode(const AssetImporter::ImportParams& import_params, const aiScene* ai_scene, aiNode* ai_node, std::shared_ptr<Prefab> model_prefab, entt::entity parent_entity_handle, const std::filesystem::path& model_file_path)
 	{
 		entt::entity current_entity_handle = entt::null;
 
 		// Check if the current node is the root node and has children,
 		// if the root node has children, we want to have a root node 
 		// that all children attach to which will be the root node.
-		if (node == scene->mRootNode && node->mNumChildren > 1) 
+		if (ai_node == ai_scene->mRootNode && ai_node->mNumChildren > 1)
 		{
 			current_entity_handle = model_prefab->GetRootEntity();
-			model_prefab->SetPrefabName(path.stem().string());
+			model_prefab->SetPrefabName(model_file_path.stem().string());
 		}
 
-		if (node->mNumMeshes > 0) 
+		if (ai_node->mNumMeshes > 0)
 		{
 			// If the Current Entity Handle has not been set
-			if (current_entity_handle == entt::null) 
+			if (current_entity_handle == entt::null)
 			{
-				
+
 				if (parent_entity_handle == entt::null) // If there is no parent, get the Root Entity of the Prefab
 				{
 					current_entity_handle = model_prefab->GetRootEntity();
-					model_prefab->SetPrefabName(path.stem().string());
+					model_prefab->SetPrefabName(model_file_path.stem().string());
 				}
 				else // If there is a parent, we want to create a new sub entity and attach it to that parent in the Prefab registry
 				{
-					current_entity_handle = model_prefab->CreateEntity(node->mName.C_Str());
-					model_prefab->GetComponent<TransformComponent>(current_entity_handle).SetTransform(AssimpHelpers::ConvertMatrixToGLMFormat(node->mTransformation));
+					current_entity_handle = model_prefab->CreateEntity(ai_node->mName.C_Str());
+					model_prefab->GetComponent<TransformComponent>(current_entity_handle).SetTransform(AssimpHelpers::ConvertMatrixToGLMFormat(ai_node->mTransformation));
 					model_prefab->GetComponent<HierarchyComponent>(current_entity_handle).m_Parent = (uint32_t)parent_entity_handle;
 					model_prefab->GetComponent<HierarchyComponent>(parent_entity_handle).m_Children.push_back((uint32_t)current_entity_handle);
 				}
@@ -608,114 +760,412 @@ namespace Louron {
 			// Compare the Node to any Instances Already Loaded
 			// This merely compares the meshes contained in the node
 			AssimpHelpers::MeshInstanceKey node_key{};
-			node_key.mesh_references.reserve(node->mNumMeshes);
-			for (unsigned int i = 0; i < node->mNumMeshes; i++)
-				node_key.mesh_references.emplace_back(node->mMeshes[i]);
-			node_key.normalize();
+			node_key.GenerateKey(ai_node);
 
 			// We have already loaded an instance of this node
 			if (AssimpHelpers::s_LoadedNodes.count(node_key) != 0)
 			{
-				model_prefab->GetComponent<TransformComponent>(current_entity_handle).SetTransform(AssimpHelpers::ConvertMatrixToGLMFormat(node->mTransformation));
+				model_prefab->GetComponent<TransformComponent>(current_entity_handle).SetTransform(AssimpHelpers::ConvertMatrixToGLMFormat(ai_node->mTransformation));
 
-				auto& mesh_filter_component		= model_prefab->AddComponent<MeshFilterComponent>(current_entity_handle);
-				auto& mesh_renderer_component	= model_prefab->AddComponent<MeshRendererComponent>(current_entity_handle);
+				auto& mesh_filter_component = model_prefab->AddComponent<MeshFilterComponent>(current_entity_handle);
+				auto& mesh_renderer_component = model_prefab->AddComponent<MeshRendererComponent>(current_entity_handle);
 
-				mesh_filter_component.MeshFilterAssetHandle = AssimpHelpers::s_LoadedNodes[node_key].first;
-				mesh_renderer_component.MeshRendererMaterialHandles = AssimpHelpers::s_LoadedNodes[node_key].second;
+				mesh_filter_component.StaticMeshHandle = AssimpHelpers::s_LoadedNodes[node_key].first;
+				mesh_renderer_component.MaterialHandles = AssimpHelpers::s_LoadedNodes[node_key].second;
 			}
 			else
 			{
 				// Generate AssetMesh Handle
 				AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-					AssetUtils::AssetTypeToString(AssetType::Mesh) + path.filename().string() + node->mName.C_Str()
-				));
+					AssetUtils::AssetTypeToString(AssetType::Mesh) + model_file_path.filename().string() + ai_node->mName.C_Str()
+					));
 
 				std::shared_ptr<StaticMesh> asset_mesh = std::make_shared<StaticMesh>();
 				asset_mesh->Handle = handle;
 
 				AssetMetaData metadata;
 				metadata.Type = AssetType::Mesh;
-				metadata.AssetName = node->mName.C_Str();
-				metadata.ParentAssetHandle = parent_asset_handle;
-				metadata.FilePath = std::filesystem::relative(path, Project::GetActiveProject()->GetAssetDirectory());
-				metadata.IsCustomAsset = parent_meta_data.IsCustomAsset;
+				metadata.AssetName = ai_node->mName.C_Str();
+				metadata.ParentAssetHandle = import_params.asset_handle;
+				metadata.FilePath = import_params.asset_meta_data.FilePath;
+				metadata.IsCustomAsset = import_params.asset_meta_data.IsCustomAsset;
 
 				// Update Prefab Transform and Add Required Components
-				model_prefab->AddComponent<MeshFilterComponent>(current_entity_handle).MeshFilterAssetHandle = handle;
+				model_prefab->AddComponent<MeshFilterComponent>(current_entity_handle).StaticMeshHandle = handle;
 				model_prefab->AddComponent<MeshRendererComponent>(current_entity_handle);
 
 				// Process Meshes of the Node
-				for (unsigned int i = 0; i < node->mNumMeshes; i++) 
+				for (unsigned int i = 0; i < ai_node->mNumMeshes; i++)
 				{
-					aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-					ProcessMesh(scene, mesh, asset_mesh);
-					ProcessMaterial(scene, mesh, model_prefab, current_entity_handle, asset_mesh, asset_map, asset_reg, parent_asset_handle, parent_meta_data, path);
+					aiMesh* ai_mesh = ai_scene->mMeshes[ai_node->mMeshes[i]];
+					ProcessMesh(ai_scene, ai_mesh, asset_mesh);
+					ProcessMaterial(import_params, ai_scene, ai_mesh, model_prefab, current_entity_handle, asset_mesh, model_file_path);
 
 					// Calculate the the AABB of the mesh including any sub meshes
 					// Update bounds to include the current submesh
 					asset_mesh->MeshBounds.BoundsMax = glm::max(asset_mesh->MeshBounds.BoundsMax,
 						glm::vec3{
-							mesh->mAABB.mMax.x,
-							mesh->mAABB.mMax.y,
-							mesh->mAABB.mMax.z,
+							ai_mesh->mAABB.mMax.x,
+							ai_mesh->mAABB.mMax.y,
+							ai_mesh->mAABB.mMax.z,
 						});
 
 					asset_mesh->MeshBounds.BoundsMin = glm::min(asset_mesh->MeshBounds.BoundsMin,
 						glm::vec3{
-							mesh->mAABB.mMin.x,
-							mesh->mAABB.mMin.y,
-							mesh->mAABB.mMin.z,
+							ai_mesh->mAABB.mMin.x,
+							ai_mesh->mAABB.mMin.y,
+							ai_mesh->mAABB.mMin.z,
 						});
 				}
 
-				if (asset_mesh) 
+				if (asset_mesh)
 				{
 					// Store instance of node into the loaded node map
 					auto& pair = AssimpHelpers::s_LoadedNodes[node_key];
-					pair.first = model_prefab->GetComponent<MeshFilterComponent>(current_entity_handle).MeshFilterAssetHandle;
-					pair.second = model_prefab->GetComponent<MeshRendererComponent>(current_entity_handle).MeshRendererMaterialHandles;
+					pair.first = model_prefab->GetComponent<MeshFilterComponent>(current_entity_handle).StaticMeshHandle;
+					pair.second = model_prefab->GetComponent<MeshRendererComponent>(current_entity_handle).MaterialHandles;
 
 					// Store instance of AssetMesh in AssetManager registry
-					asset_map->operator[](handle) = asset_mesh;
-					asset_reg->operator[](handle) = metadata;
+					import_params.asset_map->operator[](handle) = asset_mesh;
+					import_params.asset_reg->operator[](handle) = metadata;
 				}
-				else 
+				else
 				{
 					model_prefab->RemoveComponent<MeshFilterComponent>(current_entity_handle);
 					model_prefab->RemoveComponent<MeshRendererComponent>(current_entity_handle);
 				}
 			}
-		} 
-		else if (node != scene->mRootNode) // For empty nodes that act as groups, e.g., Empty Axis in blender with Children
+		}
+		else if (ai_node != ai_scene->mRootNode) // For empty nodes that act as groups, e.g., Empty Axis in blender with Children
 		{
 			if (parent_entity_handle == entt::null) // If there is no parent, get the Root Entity of the Prefab
 			{
 				current_entity_handle = model_prefab->GetRootEntity();
-				model_prefab->SetPrefabName(path.stem().string());
+				model_prefab->SetPrefabName(model_file_path.stem().string());
 			}
 			else // If there is a parent, we want to create a new sub entity and attach it to that parent in the Prefab registry
 			{
-				current_entity_handle = model_prefab->CreateEntity(node->mName.C_Str());
-				model_prefab->GetComponent<TransformComponent>(current_entity_handle).SetTransform(AssimpHelpers::ConvertMatrixToGLMFormat(node->mTransformation));
+				current_entity_handle = model_prefab->CreateEntity(ai_node->mName.C_Str());
+				model_prefab->GetComponent<TransformComponent>(current_entity_handle).SetTransform(AssimpHelpers::ConvertMatrixToGLMFormat(ai_node->mTransformation));
 				model_prefab->GetComponent<HierarchyComponent>(current_entity_handle).m_Parent = (uint32_t)parent_entity_handle;
 				model_prefab->GetComponent<HierarchyComponent>(parent_entity_handle).m_Children.push_back((uint32_t)current_entity_handle);
 			}
 		}
 
 		// Process Any Children Nodes
-		for (unsigned int i = 0; i < node->mNumChildren; i++) {
-			ProcessNode(scene, node->mChildren[i], model_prefab, current_entity_handle, asset_map, asset_reg, parent_asset_handle, parent_meta_data, path);
+		for (unsigned int i = 0; i < ai_node->mNumChildren; i++)
+		{
+			// Check if child node has any meshes for import
+			if (ai_node == ai_scene->mRootNode)
+			{
+				std::function<bool(aiNode*)> has_meshes = [&](aiNode* current_node) -> bool
+					{
+						if (current_node->mNumMeshes > 0)
+							return true;
+
+						for (unsigned int j = 0; j < current_node->mNumChildren; j++)
+						{
+							if (has_meshes(current_node->mChildren[j]))
+								return true;
+						}
+						return false;
+					};
+
+				if (!has_meshes(ai_node->mChildren[i]))
+					continue;
+			}
+
+			ProcessStaticMeshNode(import_params, ai_scene, ai_node->mChildren[i], model_prefab, current_entity_handle, model_file_path);
 		}
+	}
+
+	entt::entity ModelImporter::ProcessSkeleton(const AssetImporter::ImportParams& import_params, const aiScene* ai_scene, const aiNode* ai_node, std::shared_ptr<Prefab> model_prefab, const std::filesystem::path& model_file_path)
+	{
+		std::unordered_set<std::string> bone_names;
+
+		// Step 1: Collect all bone names from the meshes
+		for (unsigned int i = 0; i < ai_scene->mNumMeshes; i++)
+		{
+			aiMesh* mesh = ai_scene->mMeshes[i];
+			for (unsigned int j = 0; j < mesh->mNumBones; j++)
+			{
+				bone_names.insert(mesh->mBones[j]->mName.C_Str());
+			}
+		}
+
+		// Step 2: Identify all bone hierarchy root nodes
+		std::vector<aiNode*> bone_hierarchy_root_nodes;
+		std::function<aiNode* (aiNode*)> find_bone_recursive = [&](aiNode* node) -> aiNode*
+		{
+			if (bone_names.find(node->mName.C_Str()) != bone_names.end())
+			{
+				return node; // Found the first bone in the hierarchy
+			}
+
+			for (unsigned int i = 0; i < node->mNumChildren; i++)
+			{
+				aiNode* found = find_bone_recursive(node->mChildren[i]);
+				if (found) return found;
+			}
+
+			return nullptr;
+		};
+
+		aiNode* first_bone_node = find_bone_recursive(ai_scene->mRootNode);
+		if (!first_bone_node)
+			return entt::null; // No skeleton found
+
+		// Step 3: If this node has a single parent (armature), return the parent
+		if (first_bone_node->mParent && first_bone_node->mParent != ai_scene->mRootNode)
+		{
+			first_bone_node = first_bone_node->mParent; // Likely an armature node
+		}
+
+		// Step 4: Recursive function to create bone hierarchy
+		entt::entity first_bone_entity = entt::null;
+
+		std::function<void(entt::entity, aiNode*, BoneLayout&)> create_bones_recursive;
+		uint32_t bone_counter = 0;
+		create_bones_recursive = [&](entt::entity parent_entity, aiNode* current_node, BoneLayout& current_bone)
+		{
+			// Create entity for the current bone
+			entt::entity bone_entity = model_prefab->CreateEntity(current_node->mName.C_Str());
+
+			current_bone.BoneID = bone_counter;
+			current_bone.BoneName = current_node->mName.C_Str();
+			bone_counter++;
+
+			auto& skinned_mesh_component = model_prefab->GetComponent<SkinnedMeshComponent>(model_prefab->GetRootEntity());
+			skinned_mesh_component.SkeletonBoneMapping[current_bone.BoneID] = (uint32_t)bone_entity;
+
+			// Step 4.1: Set Transform Component using Assimp matrix conversion
+			aiMatrix4x4 transform = current_node->mTransformation;
+			model_prefab->GetComponent<TransformComponent>(bone_entity).SetTransform(AssimpHelpers::ConvertMatrixToGLMFormat(transform));
+
+			// Step 4.2: Setup hierarchy relationship
+			if (parent_entity == entt::null)
+			{
+				first_bone_entity = bone_entity;
+				model_prefab->GetComponent<TagComponent>(bone_entity).Tag = "Skeleton Root Bone";
+				model_prefab->GetComponent<HierarchyComponent>(bone_entity).m_Parent = static_cast<uint32_t>(model_prefab->GetRootEntity());
+				model_prefab->GetComponent<HierarchyComponent>(model_prefab->GetRootEntity()).m_Children.push_back(static_cast<uint32_t>(bone_entity));
+			}
+			else
+			{
+				model_prefab->GetComponent<HierarchyComponent>(bone_entity).m_Parent = static_cast<uint32_t>(parent_entity);
+				model_prefab->GetComponent<HierarchyComponent>(parent_entity).m_Children.push_back(static_cast<uint32_t>(bone_entity));
+			}
+
+			// Step 4.3: Recursively process child bones
+			for (unsigned int i = 0; i < current_node->mNumChildren; i++)
+			{
+				current_bone.BoneChildren.push_back({});
+				create_bones_recursive(bone_entity, current_node->mChildren[i], current_bone.BoneChildren.back());
+			}
+		};
+
+		// Step 5: Create Skeleton Asset
+		auto& skinned_mesh_component = model_prefab->GetComponent<SkinnedMeshComponent>(model_prefab->GetRootEntity());
+		skinned_mesh_component.SkeletonHandle = static_cast<uint32_t>(std::hash<std::string>{}(
+			AssetUtils::AssetTypeToString(AssetType::Skeleton) + import_params.asset_meta_data.FilePath.string() + first_bone_node->mName.C_Str()
+		));
+
+		std::shared_ptr<Skeleton> asset_skeleton = std::make_shared<Skeleton>();
+		asset_skeleton->Handle = skinned_mesh_component.SkeletonHandle;
+
+		AssetMetaData metadata;
+		metadata.Type = AssetType::Skeleton;
+		metadata.AssetName = first_bone_node->mName.C_Str();
+		metadata.ParentAssetHandle = import_params.asset_handle;
+		metadata.FilePath = import_params.asset_meta_data.FilePath;
+		metadata.IsCustomAsset = import_params.asset_meta_data.IsCustomAsset;
+
+		// Add to Asset Registry
+		import_params.asset_map->operator[](asset_skeleton->Handle) = asset_skeleton;
+		import_params.asset_reg->operator[](asset_skeleton->Handle) = metadata;
+
+		ImportedSkeletonHandle = asset_skeleton->Handle;
+
+		// Step 6: Start recursive creation from the skeleton root
+		create_bones_recursive(entt::null, first_bone_node, asset_skeleton->SkeletonLayout);
+
+		return first_bone_entity;
+	}
+
+	void ModelImporter::ProcessSkinnedMeshNode(const AssetImporter::ImportParams& import_params, const aiScene* ai_scene, std::shared_ptr<Prefab> model_prefab, const std::filesystem::path& model_file_path)
+	{
+		entt::entity root_entity_handle = model_prefab->GetRootEntity();
+		model_prefab->SetPrefabName(model_file_path.stem().string());
+
+		auto& skinned_mesh_component = model_prefab->GetComponent<SkinnedMeshComponent>(root_entity_handle);
+
+		// Generate AssetMesh Handle
+		skinned_mesh_component.StaticMeshHandle = static_cast<uint32_t>(std::hash<std::string>{}(
+			AssetUtils::AssetTypeToString(AssetType::Mesh) + model_file_path.filename().string() + model_file_path.stem().string()
+		));
+
+		std::shared_ptr<StaticMesh> asset_mesh = std::make_shared<StaticMesh>();
+		asset_mesh->Handle = skinned_mesh_component.StaticMeshHandle;
+
+		AssetMetaData metadata;
+		metadata.Type = AssetType::Mesh;
+		metadata.AssetName = model_file_path.stem().string();
+		metadata.ParentAssetHandle = import_params.asset_handle;
+		metadata.FilePath = import_params.asset_meta_data.FilePath;
+		metadata.IsCustomAsset = import_params.asset_meta_data.IsCustomAsset;
+
+		std::function<void(aiNode*)> process_skin_mesh_nodes;
+
+		std::shared_ptr<Skeleton> asset_skeleton = nullptr;
+		
+		if (AssetManager::IsAssetLoaded(skinned_mesh_component.SkeletonHandle))
+			asset_skeleton = AssetManager::GetAsset<Skeleton>(skinned_mesh_component.SkeletonHandle);
+
+		process_skin_mesh_nodes = [&](aiNode* current_node)
+		{
+			// Process Meshes
+			if (current_node->mNumMeshes > 0)
+			{
+				// Process Meshes of the Node
+				for (unsigned int i = 0; i < current_node->mNumMeshes; i++)
+				{
+					aiMesh* ai_mesh = ai_scene->mMeshes[current_node->mMeshes[i]];
+					ProcessMesh(ai_scene, ai_mesh, asset_mesh, asset_skeleton ? &asset_skeleton->SkeletonLayout : nullptr);
+					ProcessMaterial(import_params, ai_scene, ai_mesh, model_prefab, root_entity_handle, asset_mesh, model_file_path);
+
+					// Calculate the the AABB of the mesh including any sub meshes
+					// Update bounds to include the current submesh
+					asset_mesh->MeshBounds.BoundsMax = glm::max(asset_mesh->MeshBounds.BoundsMax,
+						glm::vec3{
+							ai_mesh->mAABB.mMax.x,
+							ai_mesh->mAABB.mMax.y,
+							ai_mesh->mAABB.mMax.z,
+						});
+
+					asset_mesh->MeshBounds.BoundsMin = glm::min(asset_mesh->MeshBounds.BoundsMin,
+						glm::vec3{
+							ai_mesh->mAABB.mMin.x,
+							ai_mesh->mAABB.mMin.y,
+							ai_mesh->mAABB.mMin.z,
+						});
+				}
+			}
+
+			// Process Child Nodes
+			for (unsigned int i = 0; i < current_node->mNumChildren; i++)
+			{
+				process_skin_mesh_nodes(current_node->mChildren[i]);
+			}
+		};
+
+		process_skin_mesh_nodes(ai_scene->mRootNode);
+
+		if (asset_mesh)
+		{
+			// Store instance of AssetMesh in AssetManager registry
+			import_params.asset_map->operator[](asset_mesh->Handle) = asset_mesh;
+			import_params.asset_reg->operator[](asset_mesh->Handle) = metadata;
+		}
+		else
+		{
+			model_prefab->RemoveComponent<SkinnedMeshComponent>(root_entity_handle);
+		}
+	}
+
+	void ModelImporter::ProcessAnimations(const AssetImporter::ImportParams& import_params, const aiScene* ai_scene, std::shared_ptr<Prefab> model_prefab, const std::filesystem::path& model_file_path)
+	{
+		if (!AssetManager::IsAssetLoaded(ImportedSkeletonHandle))
+			return;
+
+		std::unordered_set<AssetHandle> loaded_animation_handles;
+		for (uint32_t animation_index = 0; animation_index < ai_scene->mNumAnimations; animation_index++)
+		{
+			aiAnimation* ai_animation = ai_scene->mAnimations[animation_index];
+			if (!ai_animation)
+				continue;
+
+			AssetHandle animation_clip_handle = static_cast<uint32_t>(std::hash<std::string>{}(
+				AssetUtils::AssetTypeToString(AssetType::AnimationClip) + import_params.asset_meta_data.FilePath.string() + ai_animation->mName.C_Str()
+			));
+
+			std::shared_ptr<AnimationClip> animation_clip_asset = std::make_shared<AnimationClip>();
+			animation_clip_asset->Handle = animation_clip_handle;
+
+			animation_clip_asset->SetDuration(static_cast<float>(ai_animation->mDuration));
+			animation_clip_asset->SetTicksPerSecond(static_cast<uint32_t>(ai_animation->mTicksPerSecond));
+
+			for (uint32_t channel_index = 0; channel_index < ai_animation->mNumChannels; channel_index++)
+			{
+				aiNodeAnim* ai_channel = ai_animation->mChannels[channel_index];
+				if (!ai_channel)
+					continue;
+
+				BoneKeyframes bone_key_frame;
+
+				for (uint32_t position_index = 0; position_index < ai_channel->mNumPositionKeys; ++position_index)
+				{
+					aiVector3D ai_position = ai_channel->mPositionKeys[position_index].mValue;
+					float time_stamp = static_cast<float>(ai_channel->mPositionKeys[position_index].mTime);
+
+					Keyframe_Position data{};
+					data.Position = glm::vec3(ai_position.x, ai_position.y, ai_position.z);
+					data.Time = time_stamp;
+					bone_key_frame.PositionKeyframes.push_back(data);
+				}
+
+				for (uint32_t rotation_index = 0; rotation_index < ai_channel->mNumRotationKeys; ++rotation_index)
+				{
+					aiQuaternion ai_quaternion = ai_channel->mRotationKeys[rotation_index].mValue;
+					float time_stamp = static_cast<float>(ai_channel->mRotationKeys[rotation_index].mTime);
+
+					Keyframe_Rotation data{};
+					data.Rotation = glm::quat(ai_quaternion.w, ai_quaternion.x, ai_quaternion.y, ai_quaternion.z);
+					data.Time = time_stamp;
+					bone_key_frame.RotationKeyframes.push_back(data);
+				}
+
+				for (uint32_t scale_index = 0; scale_index < ai_channel->mNumScalingKeys; ++scale_index)
+				{
+					aiVector3D ai_scale = ai_channel->mScalingKeys[scale_index].mValue;
+					float time_stamp = static_cast<float>(ai_channel->mScalingKeys[scale_index].mTime);
+
+					Keyframe_Scale data{};
+					data.Scale = glm::vec3(ai_scale.x, ai_scale.y, ai_scale.z);
+					data.Time = time_stamp;
+					bone_key_frame.ScaleKeyframes.push_back(data);
+				}
+
+				animation_clip_asset->AddBoneKeyframes(ai_channel->mNodeName.C_Str(), bone_key_frame);
+			}
+
+			AssetMetaData animation_clip_meta_data;
+			animation_clip_meta_data.Type = AssetType::AnimationClip;
+			animation_clip_meta_data.AssetName = ai_animation->mName.C_Str();
+			animation_clip_meta_data.ParentAssetHandle = import_params.asset_handle;
+			animation_clip_meta_data.FilePath = import_params.asset_meta_data.FilePath;
+			animation_clip_meta_data.IsCustomAsset = import_params.asset_meta_data.IsCustomAsset;
+
+			import_params.asset_map->operator[](animation_clip_asset->Handle) = animation_clip_asset;
+			import_params.asset_reg->operator[](animation_clip_asset->Handle) = animation_clip_meta_data;
+
+			loaded_animation_handles.insert(animation_clip_handle);
+		}
+
+		auto& animator_component = model_prefab->AddComponent<AnimatorComponent>(model_prefab->GetRootEntity());
+		animator_component.AnimationClipHandles.reserve(loaded_animation_handles.size());
+		animator_component.AnimationClipHandles.insert(animator_component.AnimationClipHandles.begin(), loaded_animation_handles.begin(), loaded_animation_handles.end());
+
+		if (animator_component.AnimationClipHandles.size() != 0)
+			animator_component.CurrentClipIndex = 0;
 	}
 
 #pragma endregion
 
 #pragma region Compute Shader Import
 
-	std::shared_ptr<Shader> ShaderImporter::ImportShader(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory)
+	std::shared_ptr<Shader> ShaderImporter::ImportShader(const AssetImporter::ImportParams& import_params)
 	{
-		return LoadShader(meta_data.IsCustomAsset ? meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / meta_data.FilePath);
+		return LoadShader(import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
 	}
 
 	std::shared_ptr<Shader> ShaderImporter::LoadShader(const std::filesystem::path& path)
@@ -728,9 +1178,9 @@ namespace Louron {
 		return nullptr;
 	}
 
-	std::shared_ptr<ComputeShaderAsset> ShaderImporter::ImportComputeShader(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory)
+	std::shared_ptr<ComputeShaderAsset> ShaderImporter::ImportComputeShader(const AssetImporter::ImportParams& import_params)
 	{
-		return LoadComputeShader(meta_data.IsCustomAsset ? meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / meta_data.FilePath);
+		return LoadComputeShader(import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
 	}
 
 	std::shared_ptr<ComputeShaderAsset> ShaderImporter::LoadComputeShader(const std::filesystem::path& path) 

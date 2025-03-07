@@ -4,10 +4,10 @@ Shader Handle: 487657122
 Render Type: Opaque
 Roughness: 0.5
 Metallic: 0
-Albedo Tint: [0, 0, 0, 1]
-AlbedoTextureAsset: 4294967295
+Albedo Tint: [1, 1, 1, 1]
+AlbedoTextureAsset: 321258591
 MetallicTextureAsset: 4294967295
-NormalTextureAsset: 4294967295
+NormalTextureAsset: 3750660094
 Material Uniform Block:
   - Name: MyCustomProperty
     Type: float

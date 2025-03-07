@@ -25,7 +25,9 @@ layout (location = 1) in vec3   aNormal;
 layout (location = 2) in vec2   aTexCoord;
 layout (location = 3) in vec3   aTangent;
 layout (location = 4) in vec3   aBitangent;
-layout (location = 5) in mat4   aInstanceMatrix; // Use this as model matrix when engine instances the mesh opposed to u_VertexIn.Model
+layout (location = 5) in ivec4  aBoneIDs;
+layout (location = 6) in vec4   aBoneWeights;
+layout (location = 7) in mat4   aInstanceMatrix; // Use this as model matrix when engine instances the mesh opposed to u_VertexIn.Model
 
 out VS_OUT {
 

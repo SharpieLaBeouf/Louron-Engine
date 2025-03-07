@@ -31,6 +31,15 @@ namespace Louron {
 	
 	public:
 
+		struct ImportParams
+		{
+			AssetMap* asset_map;
+			AssetRegistry* asset_reg;
+			const AssetHandle& asset_handle;
+			const AssetMetaData& asset_meta_data;
+			const std::filesystem::path& project_asset_directory;
+		};
+
 		static std::shared_ptr<Asset> ImportAsset(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& metadata, const std::filesystem::path& project_asset_directory);
 
 	};
@@ -39,8 +48,8 @@ namespace Louron {
 
 	public:
 
-		static std::shared_ptr<Scene> ImportScene(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory);
-		static std::shared_ptr<Scene> LoadScene(AssetMap* asset_map, AssetRegistry* asset_reg, const std::filesystem::path& path);
+		static std::shared_ptr<Scene> ImportScene(const AssetImporter::ImportParams& import_params);
+		static std::shared_ptr<Scene> LoadScene(const AssetImporter::ImportParams& import_params, const std::filesystem::path& scene_file_path);
 
 	};
 
@@ -48,7 +57,7 @@ namespace Louron {
 
 	public:
 
-		static std::shared_ptr<Prefab> ImportPrefab(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& metadata, const std::filesystem::path& project_asset_directory);
+		static std::shared_ptr<Prefab> ImportPrefab(const AssetImporter::ImportParams& import_params);
 		static std::shared_ptr<Prefab> LoadPrefab(const std::filesystem::path& path);
 
 	};
@@ -57,23 +66,44 @@ namespace Louron {
 
 	public:
 
-		static std::shared_ptr<Texture2D> ImportTexture2D(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory);
+		static std::shared_ptr<Texture2D> ImportTexture2D(const AssetImporter::ImportParams& import_params);
 		static std::shared_ptr<Texture2D> LoadTexture2D(const std::filesystem::path& path);
 	};
 
+	struct BoneLayout;
+
+	namespace AssimpHelpers { struct MeshInstanceKey; }
 	class ModelImporter {
 
 	public:
 
-		static std::shared_ptr<Prefab> ImportModel(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory);
-		static std::shared_ptr<Prefab> LoadModel(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& path);
-
+		static std::shared_ptr<Prefab> ImportModel(const AssetImporter::ImportParams& import_params);
+		static std::shared_ptr<Prefab> LoadModel(const AssetImporter::ImportParams& import_params, const std::filesystem::path& model_file_path);
 
 	private:
 
-		static void ProcessMesh(const aiScene* scene, aiMesh* mesh, std::shared_ptr<StaticMesh> asset_mesh);
-		static void ProcessMaterial(const aiScene* scene, aiMesh* mesh, std::shared_ptr<Prefab> model_prefab, entt::entity current_entity_handle, std::shared_ptr<StaticMesh> asset_mesh, AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle parent_asset_handle, const AssetMetaData& parent_meta_data, const std::filesystem::path& path);
-		static void ProcessNode(const aiScene* scene, aiNode* node, std::shared_ptr<Prefab> model_prefab, entt::entity parent_entity_handle, AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle parent_asset_handle, const AssetMetaData& parent_meta_data, const std::filesystem::path& path);
+		static bool ImportSkeleton;
+		static bool ImportAnimations;
+		static bool ImportMaterials;
+		static AssetHandle ImportedSkeletonHandle;
+
+		// --- General ---
+
+		static void ProcessMesh(const aiScene* ai_scene, aiMesh* ai_mesh, std::shared_ptr<StaticMesh> asset_mesh, BoneLayout* skeleton = nullptr);
+		static void ProcessMaterial(const AssetImporter::ImportParams& import_params, const aiScene* ai_scene, const aiMesh* ai_mesh, std::shared_ptr<Prefab> model_prefab, entt::entity current_entity_handle, std::shared_ptr<StaticMesh> asset_mesh, const std::filesystem::path& model_file_path);
+
+		// --- Static Mesh ---
+
+		static void ProcessStaticMeshNode(const AssetImporter::ImportParams& import_params, const aiScene* ai_scene, aiNode* ai_node, std::shared_ptr<Prefab> model_prefab, entt::entity parent_entity_handle, const std::filesystem::path& model_file_path);
+
+		// --- Skinned Mesh ---
+
+		static entt::entity ProcessSkeleton(const AssetImporter::ImportParams& import_params, const aiScene* ai_scene, const aiNode* ai_node, std::shared_ptr<Prefab> model_prefab, const std::filesystem::path& model_file_path);
+		static void ProcessSkinnedMeshNode(const AssetImporter::ImportParams& import_params, const aiScene* ai_scene, std::shared_ptr<Prefab> model_prefab, const std::filesystem::path& model_file_path);
+
+		// -- Animation --
+
+		static void ProcessAnimations(const AssetImporter::ImportParams& import_params, const aiScene* ai_scene, std::shared_ptr<Prefab> model_prefab, const std::filesystem::path& model_file_path);
 
 	};
 
@@ -89,7 +119,7 @@ namespace Louron {
 
 	public:
 
-		static std::shared_ptr<Material> ImportMaterial(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory);
+		static std::shared_ptr<Material> ImportMaterial(const AssetImporter::ImportParams& import_params);
 
 		static std::shared_ptr<Material> LoadMaterialPBR(const std::filesystem::path& path);
 		static std::shared_ptr<SkyboxMaterial> LoadMaterialSkybox(const std::filesystem::path& path);
@@ -101,10 +131,10 @@ namespace Louron {
 
 	public:
 
-		static std::shared_ptr<Shader> ImportShader(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory);
+		static std::shared_ptr<Shader> ImportShader(const AssetImporter::ImportParams& import_params);
 		static std::shared_ptr<Shader> LoadShader(const std::filesystem::path& path);
 
-		static std::shared_ptr<ComputeShaderAsset> ImportComputeShader(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& meta_data, const std::filesystem::path& project_asset_directory);
+		static std::shared_ptr<ComputeShaderAsset> ImportComputeShader(const AssetImporter::ImportParams& import_params);
 		static std::shared_ptr<ComputeShaderAsset> LoadComputeShader(const std::filesystem::path& path);
 
 	};

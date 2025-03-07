@@ -23,6 +23,9 @@ namespace Louron {
 
 		glm::vec3 tangent{};
 		glm::vec3 bitangent{};
+
+		glm::ivec4 bone_ids = glm::ivec4(-1);
+		glm::vec4 bone_weights{};
 	};
 
 	enum class ShaderDataType { None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool };
@@ -99,6 +102,7 @@ namespace Louron {
 		VertexBuffer();
 		VertexBuffer(GLuint count);
 		VertexBuffer(const float* data, GLuint count);
+		VertexBuffer(const int* data, GLuint count);
 		VertexBuffer(const std::vector<Vertex>& vertices, GLuint size);
 		~VertexBuffer();
 

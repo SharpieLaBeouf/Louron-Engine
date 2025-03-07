@@ -279,37 +279,37 @@ namespace Louron {
 
 		// Set vertex attributes
 		std::size_t vec4Size = sizeof(glm::vec4);
-		glEnableVertexAttribArray(5);
-		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, GLsizei(4 * vec4Size), (void*)0);
-
-		glEnableVertexAttribArray(6);
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, GLsizei(4 * vec4Size), (void*)(1 * vec4Size));
-
 		glEnableVertexAttribArray(7);
-		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, GLsizei(4 * vec4Size), (void*)(2 * vec4Size));
+		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, GLsizei(4 * vec4Size), (void*)0);
 
 		glEnableVertexAttribArray(8);
-		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, GLsizei(4 * vec4Size), (void*)(3 * vec4Size));
+		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, GLsizei(4 * vec4Size), (void*)(1 * vec4Size));
 
-		glVertexAttribDivisor(5, 1);
-		glVertexAttribDivisor(6, 1);
-		glVertexAttribDivisor(7, 1);
-		glVertexAttribDivisor(8, 1);
+		glEnableVertexAttribArray(9);
+		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, GLsizei(4 * vec4Size), (void*)(2 * vec4Size));
+
+		glEnableVertexAttribArray(10);
+		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, GLsizei(4 * vec4Size), (void*)(3 * vec4Size));
+
+		glVertexAttribDivisor(7,	1);
+		glVertexAttribDivisor(8,	1);
+		glVertexAttribDivisor(9,	1);
+		glVertexAttribDivisor(10,	1);
 
 		// DRAW CALL
 		glDrawElementsInstanced(GL_TRIANGLES, sub_mesh.GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0, static_cast<GLuint>(transforms.size()));
 
 		// Reset state after drawing
-		glDisableVertexAttribArray(5);
-		glDisableVertexAttribArray(6);
 		glDisableVertexAttribArray(7);
 		glDisableVertexAttribArray(8);
+		glDisableVertexAttribArray(9);
+		glDisableVertexAttribArray(10);
 
 		// Optionally reset divisor values if needed
-		glVertexAttribDivisor(5, 0);
-		glVertexAttribDivisor(6, 0);
-		glVertexAttribDivisor(7, 0);
-		glVertexAttribDivisor(8, 0);
+		glVertexAttribDivisor(7,	0);
+		glVertexAttribDivisor(8,	0);
+		glVertexAttribDivisor(9,	0);
+		glVertexAttribDivisor(10,	0);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 

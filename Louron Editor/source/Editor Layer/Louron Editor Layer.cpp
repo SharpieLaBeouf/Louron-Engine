@@ -149,7 +149,8 @@ void LouronEditorLayer::OnUpdate() {
 				m_EditorCamera->SetViewportSize((float)m_ViewportWindowSize.x, (float)m_ViewportWindowSize.y);
 				if (m_SceneWindowHovered) 
 					m_EditorCamera->OnUpdate();
-				scene_ref->OnUpdate(m_EditorCamera.get());
+				scene_ref->OnUpdate();
+				scene_ref->OnRender(m_EditorCamera.get());
 
 				if (m_SelectedEntity && m_SelectedEntity.HasComponent<BoxColliderComponent>())
 				{
@@ -189,7 +190,12 @@ void LouronEditorLayer::OnUpdate() {
 				break;
 			}
 			
-			case SceneState::Play: scene_ref->OnUpdate(); break;
+			case SceneState::Play: 
+			{
+				scene_ref->OnUpdate();
+				scene_ref->OnRender();
+				break;
+			}
 
 		}
 
@@ -1138,725 +1144,746 @@ void LouronEditorLayer::DisplayMaterialPropertiesWindow()
 	}
 
 	ImGui::Dummy({ 0.0f, 5.0f });
-	if (auto material_ref = AssetManager::GetAsset<Material>(m_MaterialContext); material_ref)
+
+	if (!AssetManager::IsAssetHandleValid(m_MaterialContext))
 	{
-		AssetMetaData meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(m_MaterialContext);
-		bool material_modified = false;
-		float first_col_width = ImGui::CalcTextSize("  Metallic Texture  ").x;
 
-		ImGui::Columns(2, "##MaterialCols", false);
-		ImGui::SetColumnWidth(-1, first_col_width);
+		ImGui::Text("No Material Selected.");
+		ImGui::End();
+		return;
+	}
 
-		ImGui::Text("Material Name:");
-
-		ImGui::NextColumn();
-
-		char buf[256];
-		strncpy_s(buf, material_ref->GetName().c_str(), sizeof(buf));
-		buf[sizeof(buf) - 1] = '\0'; // Ensure null-termination
-
-		if (ImGui::InputText("##MaterialName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
+	switch (AssetManager::GetAssetType(m_MaterialContext))
+	{
+		case AssetType::Material_Standard:
 		{
-			material_ref->SetName(buf);
-
-			auto old_file_path = Project::GetActiveProject()->GetAssetDirectory() / meta_data.FilePath;
-			std::filesystem::rename(old_file_path, old_file_path.parent_path() / (std::string(buf) + ".lmaterial"));
-
-			meta_data.FilePath = meta_data.FilePath.parent_path() / (std::string(buf) + ".lmaterial");
-
-			material_modified = true;
-		}
-
-		ImGui::NextColumn();
-
-		ImGui::Text("Render Type:");
-
-		ImGui::NextColumn();
-		
-		// Combo Box for Render Type
-		const char* render_types[] = { "Opaque", "Transparent", "Transparent Write Depth"};
-		static int selected_render_type = static_cast<int>(material_ref->GetRenderType());  // Assuming GetRenderType returns an enum value
-
-		if (ImGui::Combo("##RenderType", &selected_render_type, render_types, IM_ARRAYSIZE(render_types)))
-		{
-			// Set the selected render type
-			material_ref->SetRenderType(static_cast<RenderType>(selected_render_type));
-			material_modified = true;
-		}
-
-		ImGui::NextColumn();
-
-		ImGui::Text("Shader");
-
-		ImGui::NextColumn();
-
-		std::string shader_name;
-		
-		auto shader = material_ref->GetShader();
-		auto default_shader = AssetManager::GetInbuiltShader("FP_Material_PBR_Shader");
-		if (shader)
-		{
-			shader_name = (shader == default_shader) ? "Standard Shader" : Project::GetStaticEditorAssetManager()->GetMetadata(material_ref->GetShaderHandle()).AssetName;
-		}
-		else
-		{
-			shader_name = "No Shader";
-		}
-
-		strncpy_s(buf, shader_name.c_str(), sizeof(buf));
-		buf[sizeof(buf) - 1] = '\0'; // Ensure null-termination
-
-		ImGui::InputText("##ShaderName", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
-
-		// Drag target
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE"))
+			if (auto material_ref = AssetManager::GetAsset<Material>(m_MaterialContext); material_ref)
 			{
-				AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+				AssetMetaData meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(m_MaterialContext);
+				bool material_modified = false;
+				float first_col_width = ImGui::CalcTextSize("  Metallic Texture  ").x;
 
-				if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Shader) 
+				ImGui::Columns(2, "##MaterialCols", false);
+				ImGui::SetColumnWidth(-1, first_col_width);
+
+				ImGui::Text("Material Name:");
+
+				ImGui::NextColumn();
+
+				char buf[256];
+				strncpy_s(buf, material_ref->GetName().c_str(), sizeof(buf));
+				buf[sizeof(buf) - 1] = '\0'; // Ensure null-termination
+
+				if (ImGui::InputText("##MaterialName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
 				{
-					material_ref->SetShader(dropped_asset_handle);
+					material_ref->SetName(buf);
+
+					auto old_file_path = Project::GetActiveProject()->GetAssetDirectory() / meta_data.FilePath;
+					std::filesystem::rename(old_file_path, old_file_path.parent_path() / (std::string(buf) + ".lmaterial"));
+
+					meta_data.FilePath = meta_data.FilePath.parent_path() / (std::string(buf) + ".lmaterial");
+
 					material_modified = true;
 				}
-				else 
+
+				ImGui::NextColumn();
+
+				ImGui::Text("Render Type:");
+
+				ImGui::NextColumn();
+
+				// Combo Box for Render Type
+				const char* render_types[] = { "Opaque", "Transparent", "Transparent Write Depth" };
+				int selected_render_type = static_cast<int>(material_ref->GetRenderType());  // Assuming GetRenderType returns an enum value
+
+				if (ImGui::Combo("##RenderType", &selected_render_type, render_types, IM_ARRAYSIZE(render_types)))
 				{
-					L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
-				}
-			}
-
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) 
-			{
-
-				std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-				std::filesystem::path dropped_asset_path = dropped_asset_path_string;
-
-				if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
-
-					AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
-					if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Shader) {
-						material_ref->SetShader(dropped_asset_handle);
-						material_modified = true;
-					}
-					else {
-						L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
-					}
-				}
-				else {
-					L_APP_WARN("Invalid File Path Dropped on Texture Target.");
-				}
-			}
-
-			ImGui::EndDragDropTarget();
-		}
-
-		if (shader != default_shader)
-		{
-			ImGui::SameLine();
-			if (ImGui::Button("x##RemoveShader"))
-			{
-				material_ref->SetShader(default_shader->Handle);
-				material_modified = true;
-			}
-		}
-
-		ImGui::Dummy({ 0.0f, 5.0f });
-		ImGui::Separator();
-		ImGui::Dummy({ 0.0f, 5.0f });
-
-		ImGui::NextColumn();
-
-		GLuint texture_id = AssetManager::IsAssetHandleValid(material_ref->GetAlbedoTextureAssetHandle()) ? AssetManager::GetAsset<Texture2D>(material_ref->GetAlbedoTextureAssetHandle())->GetID() : 0;
-
-		// Texture and text alignment
-		ImGui::Dummy({ 0.0f, 5.0f });
-		ImGui::Text("Albedo Texture");
-		ImGui::ImageButton("##Albedo Texture", (ImTextureID)(uintptr_t)texture_id, { 32.0f, 32.0f });
-
-		if (texture_id == 0 && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay))
-			ImGui::SetTooltip("Invalid Asset", ImGui::GetStyle().HoverDelayNormal);
-
-		// Drag target
-		if (ImGui::BeginDragDropTarget()) 
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE")) 
-			{
-				AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
-
-				if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
-					material_ref->SetAlbedoTexture(dropped_asset_handle);
+					// Set the selected render type
+					material_ref->SetRenderType(static_cast<RenderType>(selected_render_type));
 					material_modified = true;
 				}
-				else {
-					L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
+
+				ImGui::NextColumn();
+
+				ImGui::Text("Shader");
+
+				ImGui::NextColumn();
+
+				std::string shader_name;
+
+				auto shader = material_ref->GetShader();
+				auto default_shader = AssetManager::GetInbuiltShader("FP_Material_PBR_Shader");
+				if (shader)
+				{
+					shader_name = (shader == default_shader) ? "Standard Shader" : Project::GetStaticEditorAssetManager()->GetMetadata(material_ref->GetShaderHandle()).AssetName;
 				}
-			}
+				else
+				{
+					shader_name = "No Shader";
+				}
 
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+				strncpy_s(buf, shader_name.c_str(), sizeof(buf));
+				buf[sizeof(buf) - 1] = '\0'; // Ensure null-termination
 
-				std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-				std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+				ImGui::InputText("##ShaderName", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
 
-				if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
+				// Drag target
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE"))
+					{
+						AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
 
-					AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
-					if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
-						material_ref->SetAlbedoTexture(dropped_asset_handle);
+						if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Shader)
+						{
+							material_ref->SetShader(dropped_asset_handle);
+							material_modified = true;
+						}
+						else
+						{
+							L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
+						}
+					}
+
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE"))
+					{
+
+						std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+						std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+
+						if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
+
+							AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
+							if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Shader) {
+								material_ref->SetShader(dropped_asset_handle);
+								material_modified = true;
+							}
+							else {
+								L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
+							}
+						}
+						else {
+							L_APP_WARN("Invalid File Path Dropped on Texture Target.");
+						}
+					}
+
+					ImGui::EndDragDropTarget();
+				}
+
+				if (shader != default_shader)
+				{
+					ImGui::SameLine();
+					if (ImGui::Button("x##RemoveShader"))
+					{
+						material_ref->SetShader(default_shader->Handle);
 						material_modified = true;
 					}
-					else {
-						L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
-					}
 				}
-				else {
-					L_APP_WARN("Invalid File Path Dropped on Texture Target.");
-				}
-			}
-
-			ImGui::EndDragDropTarget();
-		}
-
-		if (texture_id != 0)
-		{
-			ImGui::SameLine();
-			if (ImGui::Button("x##RemoveAlbedoTexture"))
-			{
-				material_ref->SetAlbedoTexture(NULL_UUID);
-				material_modified = true;
-			}
-		}
-
-		ImGui::NextColumn();
-
-		// ColorEdit4 button size adjustment
-		glm::vec4 colour = material_ref->GetAlbedoTintColour();
-
-		// Size of font impacts size of ColorEdit4 button, and we want this to be uniform to the ImageButton, so we add FramePadding similar to how ImageButton does this internally
-		ImGuiContext& context = *ImGui::GetCurrentContext();
-		float padding = (32.0f - context.FontSize) / 2.0f + context.Style.FramePadding.y;
-
-		ImGui::Text("Albedo Colour Tint");
-		if (ImGui::ColorEdit4("##AlbedoColour", glm::value_ptr(colour), ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip))
-		{
-			material_ref->SetAlbedoTintColour(colour);
-			material_modified = true;
-		}
-
-		ImGui::NextColumn();
-
-		texture_id = Project::GetStaticEditorAssetManager()->IsAssetHandleValid(material_ref->GetMetallicTextureAssetHandle()) ? AssetManager::GetAsset<Texture2D>(material_ref->GetMetallicTextureAssetHandle())->GetID() : 0;
-
-		ImGui::Dummy({ 0.0f, 5.0f });
-		ImGui::Text("Metallic Texture");
-		ImGui::ImageButton("##Metallic Texture", (ImTextureID)(uintptr_t)texture_id, { 32.0f, 32.0f });
-
-		if (texture_id == 0 && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay))
-			ImGui::SetTooltip("Invalid Asset", ImGui::GetStyle().HoverDelayNormal);
-
-
-		// Drag target
-		if (ImGui::BeginDragDropTarget()) {
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE")) 
-			{
-				AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
-
-				if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
-					material_ref->SetMetallicTexture(dropped_asset_handle);
-					material_modified = true;
-				}
-				else {
-					L_APP_WARN("Invalid Asset Type Dropped on Skybox Material Target.");
-				}
-			}
-
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
-
-				std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-				std::filesystem::path dropped_asset_path = dropped_asset_path_string;
-
-				if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
-
-					AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
-					if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
-						material_ref->SetMetallicTexture(dropped_asset_handle);
-						material_modified = true;
-					}
-					else {
-						L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
-					}
-				}
-				else {
-					L_APP_WARN("Invalid File Path Dropped on Texture Target.");
-				}
-			}
-
-			ImGui::EndDragDropTarget();
-		}
-
-		if (texture_id != 0)
-		{
-			ImGui::SameLine();
-			if (ImGui::Button("x##RemoveMetallicTexture"))
-			{
-				material_ref->SetMetallicTexture(NULL_UUID);
-				material_modified = true;
-			}
-		}
-
-		ImGui::NextColumn();
-
-		if (texture_id == 0) {
-			ImGui::Text("Metallic Factor");
-			float metallic_temp = material_ref->GetMetallic();
-			if (ImGui::SliderFloat("##Metallic", &metallic_temp, 0.0f, 1.0f, "%.2f"))
-			{
-				material_ref->SetMetallic(metallic_temp);
-				material_modified = true;
-			}
-		}
-
-		ImGui::NextColumn();
-
-		texture_id = Project::GetStaticEditorAssetManager()->IsAssetHandleValid(material_ref->GetNormalTextureAssetHandle()) ? AssetManager::GetAsset<Texture2D>(material_ref->GetNormalTextureAssetHandle())->GetID() : 0;
-
-		ImGui::Dummy({ 0.0f, 5.0f });
-		ImGui::Text("Normal Texture");
-		ImGui::ImageButton("##Normal Texture", (ImTextureID)(uintptr_t)texture_id, { 32.0f, 32.0f });
-		if (texture_id == 0 && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay))
-			ImGui::SetTooltip("Invalid Asset", ImGui::GetStyle().HoverDelayNormal);
-
-		// Drag target
-		if (ImGui::BeginDragDropTarget()) 
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE"))
-			{
-				AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
-
-				if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
-					material_ref->SetNormalTexture(dropped_asset_handle);
-					material_modified = true;
-				}
-				else {
-					L_APP_WARN("Invalid Asset Type Dropped on Skybox Material Target.");
-				}
-			}
-
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
-
-				std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-				std::filesystem::path dropped_asset_path = dropped_asset_path_string;
-
-				if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
-
-					AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
-					if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
-						material_ref->SetNormalTexture(dropped_asset_handle);
-						material_modified = true;
-					}
-					else {
-						L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
-					}
-				}
-				else {
-					L_APP_WARN("Invalid File Path Dropped on Texture Target.");
-				}
-			}
-
-			ImGui::EndDragDropTarget();
-		}
-
-		if (texture_id != 0)
-		{
-			ImGui::SameLine();
-			if (ImGui::Button("x##RemoveNormalTexture"))
-			{
-				material_ref->SetNormalTexture(NULL_UUID);
-				material_modified = true;
-			}
-		}
-
-		ImGui::NextColumn();
-		ImGui::Dummy({0.0f, 0.25f});
-		ImGui::NextColumn();
-
-		ImGui::Dummy({ 0.0f, 5.0f });
-		ImGui::Text("Roughness");
-		ImGui::NextColumn();
-		float roughness_temp = material_ref->GetRoughness();
-		if (ImGui::SliderFloat("##Roughness", &roughness_temp, 0.0f, 1.0f, "%.2f"))
-		{
-			material_ref->SetRoughness(roughness_temp);
-			material_modified = true;
-		}
-
-		ImGui::Columns(1);
-
-		if (shader != default_shader) 
-		{
-			ImGui::Dummy({ 0.0f, 5.0f });
-			ImGui::SeparatorText("Material Properties");
-			ImGui::Dummy({ 0.0f, 5.0f });
-
-			ImGui::Columns(2, "##MaterialPropsCols", false);
-			ImGui::SetColumnWidth(-1, first_col_width);
-
-			bool uniforms_modified = false;
-			UniformBlock uniform_block = material_ref->GetUniformBlock()->GetUniforms();
-
-			for (auto& [name, uniform] : uniform_block)
-			{
-				GLSLType type = uniform.first;
-				UniformValue& value = uniform.second;
 
 				ImGui::Dummy({ 0.0f, 5.0f });
-				ImGui::Text(name.c_str());
+				ImGui::Separator();
+				ImGui::Dummy({ 0.0f, 5.0f });
+
 				ImGui::NextColumn();
 
-				switch (type)
-				{
+				GLuint texture_id = AssetManager::IsAssetHandleValid(material_ref->GetAlbedoTextureAssetHandle()) ? AssetManager::GetAsset<Texture2D>(material_ref->GetAlbedoTextureAssetHandle())->GetID() : 0;
 
-					// Bool
-				case GLSLType::Bool:
+				// Texture and text alignment
+				ImGui::Dummy({ 0.0f, 5.0f });
+				ImGui::Text("Albedo Texture");
+				ImGui::ImageButton("##Albedo Texture", (ImTextureID)(uintptr_t)texture_id, { 32.0f, 32.0f });
+
+				if (texture_id == 0 && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay))
+					ImGui::SetTooltip("Invalid Asset", ImGui::GetStyle().HoverDelayNormal);
+
+				// Drag target
+				if (ImGui::BeginDragDropTarget())
 				{
-					bool& temp = std::get<bool>(value);
-					if (ImGui::Checkbox(("##" + name).c_str(), &temp))
-						uniforms_modified = true;
-					break;
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE"))
+					{
+						AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+
+						if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
+							material_ref->SetAlbedoTexture(dropped_asset_handle);
+							material_modified = true;
+						}
+						else {
+							L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
+						}
+					}
+
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+
+						std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+						std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+
+						if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
+
+							AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
+							if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
+								material_ref->SetAlbedoTexture(dropped_asset_handle);
+								material_modified = true;
+							}
+							else {
+								L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
+							}
+						}
+						else {
+							L_APP_WARN("Invalid File Path Dropped on Texture Target.");
+						}
+					}
+
+					ImGui::EndDragDropTarget();
 				}
-				case GLSLType::BVec2:
+
+				if (texture_id != 0)
 				{
-					glm::bvec2& temp = std::get<glm::bvec2>(value);
-
-					if (ImGui::Checkbox(("##1" + name).c_str(), &temp[0]))
-						uniforms_modified = true;
-
 					ImGui::SameLine();
-					if (ImGui::Checkbox(("##2" + name).c_str(), &temp[1]))
-						uniforms_modified = true;
-
-					break;
+					if (ImGui::Button("x##RemoveAlbedoTexture"))
+					{
+						material_ref->SetAlbedoTexture(NULL_UUID);
+						material_modified = true;
+					}
 				}
-				case GLSLType::BVec3:
+
+				ImGui::NextColumn();
+
+				// ColorEdit4 button size adjustment
+				glm::vec4 colour = material_ref->GetAlbedoTintColour();
+
+				// Size of font impacts size of ColorEdit4 button, and we want this to be uniform to the ImageButton, so we add FramePadding similar to how ImageButton does this internally
+				ImGuiContext& context = *ImGui::GetCurrentContext();
+				float padding = (32.0f - context.FontSize) / 2.0f + context.Style.FramePadding.y;
+
+				ImGui::Text("Albedo Colour Tint");
+				if (ImGui::ColorEdit4("##AlbedoColour", glm::value_ptr(colour), ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip))
 				{
-					glm::bvec3& temp = std::get<glm::bvec3>(value);
+					material_ref->SetAlbedoTintColour(colour);
+					material_modified = true;
+				}
 
-					if (ImGui::Checkbox(("##1" + name).c_str(), &temp[0]))
-						uniforms_modified = true;
+				ImGui::NextColumn();
 
+				texture_id = Project::GetStaticEditorAssetManager()->IsAssetHandleValid(material_ref->GetMetallicTextureAssetHandle()) ? AssetManager::GetAsset<Texture2D>(material_ref->GetMetallicTextureAssetHandle())->GetID() : 0;
+
+				ImGui::Dummy({ 0.0f, 5.0f });
+				ImGui::Text("Metallic Texture");
+				ImGui::ImageButton("##Metallic Texture", (ImTextureID)(uintptr_t)texture_id, { 32.0f, 32.0f });
+
+				if (texture_id == 0 && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay))
+					ImGui::SetTooltip("Invalid Asset", ImGui::GetStyle().HoverDelayNormal);
+
+
+				// Drag target
+				if (ImGui::BeginDragDropTarget()) {
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE"))
+					{
+						AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+
+						if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
+							material_ref->SetMetallicTexture(dropped_asset_handle);
+							material_modified = true;
+						}
+						else {
+							L_APP_WARN("Invalid Asset Type Dropped on Skybox Material Target.");
+						}
+					}
+
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+
+						std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+						std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+
+						if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
+
+							AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
+							if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
+								material_ref->SetMetallicTexture(dropped_asset_handle);
+								material_modified = true;
+							}
+							else {
+								L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
+							}
+						}
+						else {
+							L_APP_WARN("Invalid File Path Dropped on Texture Target.");
+						}
+					}
+
+					ImGui::EndDragDropTarget();
+				}
+
+				if (texture_id != 0)
+				{
 					ImGui::SameLine();
-					if (ImGui::Checkbox(("##2" + name).c_str(), &temp[1]))
-						uniforms_modified = true;
+					if (ImGui::Button("x##RemoveMetallicTexture"))
+					{
+						material_ref->SetMetallicTexture(NULL_UUID);
+						material_modified = true;
+					}
+				}
 
+				ImGui::NextColumn();
+
+				if (texture_id == 0) {
+					ImGui::Text("Metallic Factor");
+					float metallic_temp = material_ref->GetMetallic();
+					if (ImGui::SliderFloat("##Metallic", &metallic_temp, 0.0f, 1.0f, "%.2f"))
+					{
+						material_ref->SetMetallic(metallic_temp);
+						material_modified = true;
+					}
+				}
+
+				ImGui::NextColumn();
+
+				texture_id = Project::GetStaticEditorAssetManager()->IsAssetHandleValid(material_ref->GetNormalTextureAssetHandle()) ? AssetManager::GetAsset<Texture2D>(material_ref->GetNormalTextureAssetHandle())->GetID() : 0;
+
+				ImGui::Dummy({ 0.0f, 5.0f });
+				ImGui::Text("Normal Texture");
+				ImGui::ImageButton("##Normal Texture", (ImTextureID)(uintptr_t)texture_id, { 32.0f, 32.0f });
+				if (texture_id == 0 && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay))
+					ImGui::SetTooltip("Invalid Asset", ImGui::GetStyle().HoverDelayNormal);
+
+				// Drag target
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE"))
+					{
+						AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+
+						if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
+							material_ref->SetNormalTexture(dropped_asset_handle);
+							material_modified = true;
+						}
+						else {
+							L_APP_WARN("Invalid Asset Type Dropped on Skybox Material Target.");
+						}
+					}
+
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+
+						std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+						std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+
+						if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
+
+							AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
+							if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
+								material_ref->SetNormalTexture(dropped_asset_handle);
+								material_modified = true;
+							}
+							else {
+								L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
+							}
+						}
+						else {
+							L_APP_WARN("Invalid File Path Dropped on Texture Target.");
+						}
+					}
+
+					ImGui::EndDragDropTarget();
+				}
+
+				if (texture_id != 0)
+				{
 					ImGui::SameLine();
-					if (ImGui::Checkbox(("##3" + name).c_str(), &temp[2]))
-						uniforms_modified = true;
-
-					break;
-				}
-				case GLSLType::BVec4:
-				{
-					glm::bvec4& temp = std::get<glm::bvec4>(value);
-
-					if (ImGui::Checkbox(("##1" + name).c_str(), &temp[0]))
-						uniforms_modified = true;
-
-					ImGui::SameLine();
-					if (ImGui::Checkbox(("##2" + name).c_str(), &temp[1]))
-						uniforms_modified = true;
-
-					ImGui::SameLine();
-					if (ImGui::Checkbox(("##3" + name).c_str(), &temp[2]))
-						uniforms_modified = true;
-
-					ImGui::SameLine();
-					if (ImGui::Checkbox(("##4" + name).c_str(), &temp[3]))
-						uniforms_modified = true;
-
-					break;
-				}
-
-				// Int & Unsigned Int
-				case GLSLType::Int: case GLSLType::Uint:
-				{
-					int& temp = std::get<int>(value);
-					if (ImGui::DragInt(("##" + name).c_str(), &temp))
-						uniforms_modified = true;
-					break;
-				}
-				case GLSLType::IVec2: case GLSLType::UVec2:
-				{
-					glm::ivec2& temp = std::get<glm::ivec2>(value);
-					if (ImGui::DragInt2(("##" + name).c_str(), &temp[0]))
-						uniforms_modified = true;
-					break;
-				}
-				case GLSLType::IVec3: case GLSLType::UVec3:
-				{
-					glm::ivec3& temp = std::get<glm::ivec3>(value);
-					if (ImGui::DragInt3(("##" + name).c_str(), &temp[0]))
-						uniforms_modified = true;
-					break;
-				}
-				case GLSLType::IVec4: case GLSLType::UVec4:
-				{
-					glm::ivec4& temp = std::get<glm::ivec4>(value);
-					if (ImGui::DragInt4(("##" + name).c_str(), &temp[0]))
-						uniforms_modified = true;
-					break;
-				}
-
-				// Float
-				case GLSLType::Float:
-				{
-					float& temp = std::get<float>(value);
-					if (ImGui::DragFloat(("##" + name).c_str(), &temp, 0.1f))
-						uniforms_modified = true;
-					break;
-				}
-				case GLSLType::Vec2:
-				{
-					glm::vec2& temp = std::get<glm::vec2>(value);
-					if (ImGui::DragFloat2(("##" + name).c_str(), &temp[0], 0.1f))
-						uniforms_modified = true;
-					break;
-				}
-				case GLSLType::Vec3:
-				{
-					glm::vec3& temp = std::get<glm::vec3>(value);
-					std::string lower_name = name;
-					std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-
-					if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
-						lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
+					if (ImGui::Button("x##RemoveNormalTexture"))
 					{
-						if (ImGui::ColorEdit3(("##" + name).c_str(), &temp[0]))
-							uniforms_modified = true;
+						material_ref->SetNormalTexture(NULL_UUID);
+						material_modified = true;
 					}
-					else
-					{
-						if (ImGui::DragFloat3(("##" + name).c_str(), &temp[0], 0.1f))
-							uniforms_modified = true;
-					}
-					break;
-				}
-				case GLSLType::Vec4:
-				{
-					glm::vec4& temp = std::get<glm::vec4>(value);
-					std::string lower_name = name;
-					std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-
-					if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
-						lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
-					{
-						if (ImGui::ColorEdit4(("##" + name).c_str(), &temp[0]))
-							uniforms_modified = true;
-					}
-					else
-					{
-						if (ImGui::DragFloat4(("##" + name).c_str(), &temp[0], 0.1f))
-							uniforms_modified = true;
-					}
-					break;
 				}
 
-				// Double
-				case GLSLType::Double:
+				ImGui::NextColumn();
+				ImGui::Dummy({ 0.0f, 0.25f });
+				ImGui::NextColumn();
+
+				ImGui::Dummy({ 0.0f, 5.0f });
+				ImGui::Text("Roughness");
+				ImGui::NextColumn();
+				float roughness_temp = material_ref->GetRoughness();
+				if (ImGui::SliderFloat("##Roughness", &roughness_temp, 0.0f, 1.0f, "%.2f"))
 				{
-					double& temp = std::get<double>(value);
-					float temp_f = static_cast<float>(temp);
-					if (ImGui::DragFloat(("##" + name).c_str(), &temp_f, 0.1f))
-					{
-						temp = temp_f;
-						uniforms_modified = true;
-					}
-					break;
-				}
-				case GLSLType::DVec2:
-				{
-					glm::dvec2& temp = std::get<glm::dvec2>(value);
-					glm::vec2 temp_f = static_cast<glm::vec2>(temp);
-					if (ImGui::DragFloat2(("##" + name).c_str(), &temp_f[0], 0.1f))
-					{
-						temp = temp_f;
-						uniforms_modified = true;
-					}
-					break;
-				}
-				case GLSLType::DVec3:
-				{
-					glm::dvec3& temp = std::get<glm::dvec3>(value);
-					glm::vec3 temp_f = static_cast<glm::vec3>(temp);
-					if (ImGui::DragFloat3(("##" + name).c_str(), &temp_f[0], 0.1f))
-					{
-						temp = temp_f;
-						uniforms_modified = true;
-					}
-					break;
-				}
-				case GLSLType::DVec4:
-				{
-					glm::dvec4& temp = std::get<glm::dvec4>(value);
-					glm::vec4 temp_f = static_cast<glm::vec4>(temp);
-					if (ImGui::DragFloat4(("##" + name).c_str(), &temp_f[0], 0.1f))
-					{
-						temp = temp_f;
-						uniforms_modified = true;
-					}
-					break;
+					material_ref->SetRoughness(roughness_temp);
+					material_modified = true;
 				}
 
-				// Matrix
-				case GLSLType::Mat2:
+				ImGui::Columns(1);
+
+				if (shader != default_shader)
 				{
-					glm::mat2& temp = std::get<glm::mat2>(value);
-					for (int i = 0; i < 2; i++)
-					{
-						if (ImGui::DragFloat2(("##" + name + "_row" + std::to_string(i)).c_str(), &temp[i][0], 0.1f))
-							uniforms_modified = true;
-					}
-					break;
-				}
-				case GLSLType::Mat3:
-				{
-					glm::mat3& temp = std::get<glm::mat3>(value);
-					for (int i = 0; i < 3; i++)
-					{
-						if (ImGui::DragFloat3(("##" + name + "_row" + std::to_string(i)).c_str(), &temp[i][0], 0.1f))
-							uniforms_modified = true;
-					}
-					break;
-				}
-				case GLSLType::Mat4:
-				{
-					glm::mat4& temp = std::get<glm::mat4>(value);
-					for (int i = 0; i < 4; i++)
-					{
-						if (ImGui::DragFloat4(("##" + name + "_row" + std::to_string(i)).c_str(), &temp[i][0], 0.1f))
-							uniforms_modified = true;
-					}
-					break;
-				}
+					ImGui::Dummy({ 0.0f, 5.0f });
+					ImGui::SeparatorText("Material Properties");
+					ImGui::Dummy({ 0.0f, 5.0f });
 
-				// Texture Units
-				case GLSLType::Sampler2D:
-				case GLSLType::Sampler2DShadow:
-				{
-					AssetHandle& texture_handle = std::get<AssetHandle>(value);
+					ImGui::Columns(2, "##MaterialPropsCols", false);
+					ImGui::SetColumnWidth(-1, first_col_width);
 
-					if (auto texture_asset = AssetManager::GetAsset<Texture2D>(texture_handle); texture_asset)
+					bool uniforms_modified = false;
+					UniformBlock uniform_block = material_ref->GetUniformBlock()->GetUniforms();
+
+					for (auto& [name, uniform] : uniform_block)
 					{
-						texture_id = texture_asset->GetID();
-					}
-					else
-					{
-						texture_id = 0;
-					}
+						GLSLType type = uniform.first;
+						UniformValue& value = uniform.second;
 
-					ImGui::ImageButton(("##" + name).c_str(), (ImTextureID)(uintptr_t)texture_id, { 32.0f, 32.0f });
+						ImGui::Dummy({ 0.0f, 5.0f });
+						ImGui::Text(name.c_str());
+						ImGui::NextColumn();
 
-					if (texture_id == 0 && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay))
-						ImGui::SetTooltip("Invalid Asset", ImGui::GetStyle().HoverDelayNormal);
-
-					// Drag target
-					if (ImGui::BeginDragDropTarget())
-					{
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE"))
+						switch (type)
 						{
-							AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
 
-							if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
-								texture_handle = dropped_asset_handle;
+							// Bool
+						case GLSLType::Bool:
+						{
+							bool& temp = std::get<bool>(value);
+							if (ImGui::Checkbox(("##" + name).c_str(), &temp))
+								uniforms_modified = true;
+							break;
+						}
+						case GLSLType::BVec2:
+						{
+							glm::bvec2& temp = std::get<glm::bvec2>(value);
+
+							if (ImGui::Checkbox(("##1" + name).c_str(), &temp[0]))
+								uniforms_modified = true;
+
+							ImGui::SameLine();
+							if (ImGui::Checkbox(("##2" + name).c_str(), &temp[1]))
+								uniforms_modified = true;
+
+							break;
+						}
+						case GLSLType::BVec3:
+						{
+							glm::bvec3& temp = std::get<glm::bvec3>(value);
+
+							if (ImGui::Checkbox(("##1" + name).c_str(), &temp[0]))
+								uniforms_modified = true;
+
+							ImGui::SameLine();
+							if (ImGui::Checkbox(("##2" + name).c_str(), &temp[1]))
+								uniforms_modified = true;
+
+							ImGui::SameLine();
+							if (ImGui::Checkbox(("##3" + name).c_str(), &temp[2]))
+								uniforms_modified = true;
+
+							break;
+						}
+						case GLSLType::BVec4:
+						{
+							glm::bvec4& temp = std::get<glm::bvec4>(value);
+
+							if (ImGui::Checkbox(("##1" + name).c_str(), &temp[0]))
+								uniforms_modified = true;
+
+							ImGui::SameLine();
+							if (ImGui::Checkbox(("##2" + name).c_str(), &temp[1]))
+								uniforms_modified = true;
+
+							ImGui::SameLine();
+							if (ImGui::Checkbox(("##3" + name).c_str(), &temp[2]))
+								uniforms_modified = true;
+
+							ImGui::SameLine();
+							if (ImGui::Checkbox(("##4" + name).c_str(), &temp[3]))
+								uniforms_modified = true;
+
+							break;
+						}
+
+						// Int & Unsigned Int
+						case GLSLType::Int: case GLSLType::Uint:
+						{
+							int& temp = std::get<int>(value);
+							if (ImGui::DragInt(("##" + name).c_str(), &temp))
+								uniforms_modified = true;
+							break;
+						}
+						case GLSLType::IVec2: case GLSLType::UVec2:
+						{
+							glm::ivec2& temp = std::get<glm::ivec2>(value);
+							if (ImGui::DragInt2(("##" + name).c_str(), &temp[0]))
+								uniforms_modified = true;
+							break;
+						}
+						case GLSLType::IVec3: case GLSLType::UVec3:
+						{
+							glm::ivec3& temp = std::get<glm::ivec3>(value);
+							if (ImGui::DragInt3(("##" + name).c_str(), &temp[0]))
+								uniforms_modified = true;
+							break;
+						}
+						case GLSLType::IVec4: case GLSLType::UVec4:
+						{
+							glm::ivec4& temp = std::get<glm::ivec4>(value);
+							if (ImGui::DragInt4(("##" + name).c_str(), &temp[0]))
+								uniforms_modified = true;
+							break;
+						}
+
+						// Float
+						case GLSLType::Float:
+						{
+							float& temp = std::get<float>(value);
+							if (ImGui::DragFloat(("##" + name).c_str(), &temp, 0.1f))
+								uniforms_modified = true;
+							break;
+						}
+						case GLSLType::Vec2:
+						{
+							glm::vec2& temp = std::get<glm::vec2>(value);
+							if (ImGui::DragFloat2(("##" + name).c_str(), &temp[0], 0.1f))
+								uniforms_modified = true;
+							break;
+						}
+						case GLSLType::Vec3:
+						{
+							glm::vec3& temp = std::get<glm::vec3>(value);
+							std::string lower_name = name;
+							std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+
+							if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
+								lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
+							{
+								if (ImGui::ColorEdit3(("##" + name).c_str(), &temp[0]))
+									uniforms_modified = true;
+							}
+							else
+							{
+								if (ImGui::DragFloat3(("##" + name).c_str(), &temp[0], 0.1f))
+									uniforms_modified = true;
+							}
+							break;
+						}
+						case GLSLType::Vec4:
+						{
+							glm::vec4& temp = std::get<glm::vec4>(value);
+							std::string lower_name = name;
+							std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+
+							if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
+								lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
+							{
+								if (ImGui::ColorEdit4(("##" + name).c_str(), &temp[0]))
+									uniforms_modified = true;
+							}
+							else
+							{
+								if (ImGui::DragFloat4(("##" + name).c_str(), &temp[0], 0.1f))
+									uniforms_modified = true;
+							}
+							break;
+						}
+
+						// Double
+						case GLSLType::Double:
+						{
+							double& temp = std::get<double>(value);
+							float temp_f = static_cast<float>(temp);
+							if (ImGui::DragFloat(("##" + name).c_str(), &temp_f, 0.1f))
+							{
+								temp = temp_f;
 								uniforms_modified = true;
 							}
-							else {
-								L_APP_WARN("Invalid Asset Type Dropped on Skybox Material Target.");
+							break;
+						}
+						case GLSLType::DVec2:
+						{
+							glm::dvec2& temp = std::get<glm::dvec2>(value);
+							glm::vec2 temp_f = static_cast<glm::vec2>(temp);
+							if (ImGui::DragFloat2(("##" + name).c_str(), &temp_f[0], 0.1f))
+							{
+								temp = temp_f;
+								uniforms_modified = true;
 							}
+							break;
+						}
+						case GLSLType::DVec3:
+						{
+							glm::dvec3& temp = std::get<glm::dvec3>(value);
+							glm::vec3 temp_f = static_cast<glm::vec3>(temp);
+							if (ImGui::DragFloat3(("##" + name).c_str(), &temp_f[0], 0.1f))
+							{
+								temp = temp_f;
+								uniforms_modified = true;
+							}
+							break;
+						}
+						case GLSLType::DVec4:
+						{
+							glm::dvec4& temp = std::get<glm::dvec4>(value);
+							glm::vec4 temp_f = static_cast<glm::vec4>(temp);
+							if (ImGui::DragFloat4(("##" + name).c_str(), &temp_f[0], 0.1f))
+							{
+								temp = temp_f;
+								uniforms_modified = true;
+							}
+							break;
 						}
 
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+						// Matrix
+						case GLSLType::Mat2:
+						{
+							glm::mat2& temp = std::get<glm::mat2>(value);
+							for (int i = 0; i < 2; i++)
+							{
+								if (ImGui::DragFloat2(("##" + name + "_row" + std::to_string(i)).c_str(), &temp[i][0], 0.1f))
+									uniforms_modified = true;
+							}
+							break;
+						}
+						case GLSLType::Mat3:
+						{
+							glm::mat3& temp = std::get<glm::mat3>(value);
+							for (int i = 0; i < 3; i++)
+							{
+								if (ImGui::DragFloat3(("##" + name + "_row" + std::to_string(i)).c_str(), &temp[i][0], 0.1f))
+									uniforms_modified = true;
+							}
+							break;
+						}
+						case GLSLType::Mat4:
+						{
+							glm::mat4& temp = std::get<glm::mat4>(value);
+							for (int i = 0; i < 4; i++)
+							{
+								if (ImGui::DragFloat4(("##" + name + "_row" + std::to_string(i)).c_str(), &temp[i][0], 0.1f))
+									uniforms_modified = true;
+							}
+							break;
+						}
 
-							std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-							std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+						// Texture Units
+						case GLSLType::Sampler2D:
+						case GLSLType::Sampler2DShadow:
+						{
+							AssetHandle& texture_handle = std::get<AssetHandle>(value);
 
-							if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
+							if (auto texture_asset = AssetManager::GetAsset<Texture2D>(texture_handle); texture_asset)
+							{
+								texture_id = texture_asset->GetID();
+							}
+							else
+							{
+								texture_id = 0;
+							}
 
-								AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
-								if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
-									texture_handle = dropped_asset_handle;
+							ImGui::ImageButton(("##" + name).c_str(), (ImTextureID)(uintptr_t)texture_id, { 32.0f, 32.0f });
+
+							if (texture_id == 0 && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay))
+								ImGui::SetTooltip("Invalid Asset", ImGui::GetStyle().HoverDelayNormal);
+
+							// Drag target
+							if (ImGui::BeginDragDropTarget())
+							{
+								if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE"))
+								{
+									AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+
+									if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
+										texture_handle = dropped_asset_handle;
+										uniforms_modified = true;
+									}
+									else {
+										L_APP_WARN("Invalid Asset Type Dropped on Skybox Material Target.");
+									}
+								}
+
+								if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+
+									std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+									std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+
+									if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
+
+										AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
+										if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Texture2D) {
+											texture_handle = dropped_asset_handle;
+											uniforms_modified = true;
+										}
+										else {
+											L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
+										}
+									}
+									else {
+										L_APP_WARN("Invalid File Path Dropped on Texture Target.");
+									}
+								}
+
+								ImGui::EndDragDropTarget();
+							}
+
+							if (texture_id != 0)
+							{
+								ImGui::SameLine();
+								if (ImGui::Button(("x##UniformBlockTexture" + name).c_str()))
+								{
+									texture_handle = NULL_UUID;
 									uniforms_modified = true;
 								}
-								else {
-									L_APP_WARN("Invalid Asset Type Dropped on Texture Target.");
-								}
 							}
-							else {
-								L_APP_WARN("Invalid File Path Dropped on Texture Target.");
-							}
+
+							break;
 						}
 
-						ImGui::EndDragDropTarget();
-					}
-
-					if (texture_id != 0)
-					{
-						ImGui::SameLine();
-						if (ImGui::Button(("x##UniformBlockTexture" + name).c_str()))
+						case GLSLType::Sampler1D:
+						case GLSLType::Sampler1DShadow:
+						case GLSLType::Sampler1DArray:
+						case GLSLType::Sampler1DArrayShadow:
+						case GLSLType::Sampler2DArray:
+						case GLSLType::Sampler2DArrayShadow:
+						case GLSLType::Sampler3D:
+						case GLSLType::SamplerCubeArray:
+						case GLSLType::SamplerCube:
+						case GLSLType::SamplerCubeShadow:
+						case GLSLType::SamplerCubeArrayShadow:
+						default:
 						{
-							texture_handle = NULL_UUID;
-							uniforms_modified = true;
+							ImGui::Text("Unsupported Type.");
+							break;
 						}
+						}
+
+						ImGui::NextColumn();
 					}
 
-					break;
+					if (uniforms_modified)
+					{
+						material_modified = true;
+						material_ref->GetUniformBlock()->SetUniforms(uniform_block);
+					}
+
+					ImGui::Columns(1);
 				}
 
-				case GLSLType::Sampler1D:
-				case GLSLType::Sampler1DShadow:
-				case GLSLType::Sampler1DArray:
-				case GLSLType::Sampler1DArrayShadow:
-				case GLSLType::Sampler2DArray:
-				case GLSLType::Sampler2DArrayShadow:
-				case GLSLType::Sampler3D:
-				case GLSLType::SamplerCubeArray:
-				case GLSLType::SamplerCube:
-				case GLSLType::SamplerCubeShadow:
-				case GLSLType::SamplerCubeArrayShadow:
-				default:
+				if (material_modified)
 				{
-					ImGui::Text("Unsupported Type.");
-					break;
-				}
-				}
+					YAML::Emitter out;
+					out << YAML::BeginMap;
+					material_ref->Serialize(out);
+					out << YAML::EndMap;
 
-				ImGui::NextColumn();
+					std::ofstream fout(Project::GetActiveProject()->GetAssetDirectory() / meta_data.FilePath); // Create the file
+					fout << out.c_str();
+				}
 			}
 
-			if (uniforms_modified)
-			{
-				material_modified = true;
-				material_ref->GetUniformBlock()->SetUniforms(uniform_block);
-			}
-
-			ImGui::Columns(1);
+			break;
 		}
-
-		if (material_modified)
+		case AssetType::Material_Skybox:
 		{
-			YAML::Emitter out;
-			out << YAML::BeginMap;
-			material_ref->Serialize(out);
-			out << YAML::EndMap;
 
-			std::ofstream fout(Project::GetActiveProject()->GetAssetDirectory() / meta_data.FilePath); // Create the file
-			fout << out.c_str();
+			break;
 		}
-	}
-	else
-	{
-		ImGui::Text("No Material Selected.");
+
 	}
 
+
+	
 
 	ImGui::End();
 }

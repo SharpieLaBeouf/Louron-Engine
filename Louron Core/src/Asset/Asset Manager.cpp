@@ -5,6 +5,7 @@
 #include "Asset Manager API.h"
 
 #include "../Core/Engine.h"
+#include "../Debug/Profiler.h"
 #include "../Project/Project.h"
 
 // C++ Standard Library Headers
@@ -79,6 +80,20 @@ namespace Louron {
 			meta_data.FilePath = std::filesystem::relative(file_path, project_asset_directory);
 			meta_data.Type = AssetManager::GetAssetTypeFromFileExtension(file_path.extension());
 			meta_data.IsComposite = AssetManager::IsAssetTypeComposite(meta_data.Type);
+			
+			switch (meta_data.Type)
+			{
+				case AssetType::ModelImport:
+				{
+					meta_data.ImportConfig = std::make_shared<ModelImportConfig>();
+					break;
+				}
+				default:
+				{
+					meta_data.ImportConfig = std::make_shared<AssetImportConfig>();
+					break;
+				}
+			}
 
 			// Generate New Unique Handle
 			AssetHandle handle = GenerateNewAssetHandle(meta_data.Type, meta_data.FilePath);
@@ -104,6 +119,48 @@ namespace Louron {
 							out << YAML::Key << "Asset Handle" << YAML::Value << handle;
 							out << YAML::Key << "Asset Type" << YAML::Value << AssetUtils::AssetTypeToString(meta_data.Type);
 							out << YAML::Key << "Asset Is Composite" << YAML::Value << meta_data.IsComposite;
+
+							out << YAML::Key << "Asset Import Config" << YAML::Value << YAML::BeginMap;
+							{
+								if (meta_data.ImportConfig)
+									out << YAML::Key << "AutoReImport" << YAML::Value << meta_data.ImportConfig->AutoReimport;
+
+								switch (meta_data.Type)
+								{
+
+									case AssetType::ModelImport:
+									{
+										auto import_config = static_pointer_cast<ModelImportConfig>(meta_data.ImportConfig);
+
+										if (!import_config)
+											break;
+
+										out << YAML::Key << "Import Position" << YAML::Value << YAML::Flow << YAML::BeginSeq;
+										for (int i = 0; i < 3; i++)
+											out << import_config->ImportPosition[i];
+										out << YAML::EndSeq;
+
+										out << YAML::Key << "Import Rotation" << YAML::Value << YAML::Flow << YAML::BeginSeq;
+										for (int i = 0; i < 3; i++)
+											out << import_config->ImportRotation[i];
+										out << YAML::EndSeq;
+
+										out << YAML::Key << "Import Scale" << YAML::Value << YAML::Flow << YAML::BeginSeq;
+										for (int i = 0; i < 3; i++)
+											out << import_config->ImportScale[i];
+										out << YAML::EndSeq;
+
+										out << YAML::Key << "Import Skeleton" << YAML::Value << import_config->ImportSkeleton;
+										out << YAML::Key << "Import Animations" << YAML::Value << import_config->ImportAnimations;
+										out << YAML::Key << "Import Materials" << YAML::Value << import_config->ImportMaterials;
+
+										break;
+									}
+
+								}
+
+							}
+							out << YAML::EndMap;
 
 							if (meta_data.IsComposite)
 							{
@@ -179,6 +236,60 @@ namespace Louron {
 					meta_data.IsComposite = data["Asset Is Composite"].as<bool>();
 
 				meta_data.FilePath = std::filesystem::relative(file_path, project_asset_directory);
+
+				switch (meta_data.Type)
+				{
+					case AssetType::ModelImport:
+					{
+						meta_data.ImportConfig = std::make_shared<ModelImportConfig>();
+
+						auto import_config = static_pointer_cast<ModelImportConfig>(meta_data.ImportConfig);
+						if (!import_config)
+							break;
+
+						if (auto import_config_node = data["Asset Import Config"]; import_config_node)
+						{
+							if (import_config_node["AutoReImport"])
+								import_config->AutoReimport = import_config_node["AutoReImport"].as<bool>();
+
+							if (import_config_node["Import Position"] && import_config_node["Import Position"].IsSequence() && import_config_node["Import Position"].size() == 3)
+							{
+								import_config->ImportPosition.x = import_config_node["Import Position"][0].as<float>();
+								import_config->ImportPosition.y = import_config_node["Import Position"][1].as<float>();
+								import_config->ImportPosition.z = import_config_node["Import Position"][2].as<float>();
+							}
+							if (import_config_node["Import Rotation"] && import_config_node["Import Rotation"].IsSequence() && import_config_node["Import Rotation"].size() == 3)
+							{
+								import_config->ImportRotation.x = import_config_node["Import Rotation"][0].as<float>();
+								import_config->ImportRotation.y = import_config_node["Import Rotation"][1].as<float>();
+								import_config->ImportRotation.z = import_config_node["Import Rotation"][2].as<float>();
+							}
+							if (import_config_node["Import Scale"] && import_config_node["Import Scale"].IsSequence() && import_config_node["Import Scale"].size() == 3)
+							{
+								import_config->ImportScale.x = import_config_node["Import Scale"][0].as<float>();
+								import_config->ImportScale.y = import_config_node["Import Scale"][1].as<float>();
+								import_config->ImportScale.z = import_config_node["Import Scale"][2].as<float>();
+							}
+
+							if (import_config_node["Import Skeleton"]) import_config->ImportSkeleton = import_config_node["Import Skeleton"].as<bool>();
+							if (import_config_node["Import Animations"]) import_config->ImportAnimations = import_config_node["Import Animations"].as<bool>();
+							if (import_config_node["Import Materials"]) import_config->ImportMaterials = import_config_node["Import Materials"].as<bool>();
+						}
+
+						break;
+					}
+					default:
+					{
+						meta_data.ImportConfig = std::make_shared<AssetImportConfig>();
+						break;
+					}
+				}
+
+				if (auto import_config_node = data["Asset Import Config"]; import_config_node && meta_data.ImportConfig)
+				{
+					if (import_config_node["AutoReImport"])
+						meta_data.ImportConfig->AutoReimport = import_config_node["AutoReImport"].as<bool>();
+				}
 
 				new_registry[handle] = meta_data;
 
@@ -277,6 +388,21 @@ namespace Louron {
 
 		AssetMetaData meta_data = asset_meta_data;
 		meta_data.IsCustomAsset = true;
+		
+		switch (meta_data.Type)
+		{
+			case AssetType::ModelImport:
+			{
+				meta_data.ImportConfig = std::make_shared<ModelImportConfig>();
+				break;
+			}
+			default:
+			{
+				meta_data.ImportConfig = std::make_shared<AssetImportConfig>();
+				break;
+			}
+		}
+
 		m_AssetRegistry[asset_handle] = meta_data;
 		m_LoadedAssets[asset_handle] = asset;
 	}
@@ -360,6 +486,60 @@ namespace Louron {
 
 				if (data["Asset Is Composite"])
 					meta_data.IsComposite = data["Asset Is Composite"].as<bool>();
+				
+				switch (meta_data.Type)
+				{
+					case AssetType::ModelImport:
+					{
+						meta_data.ImportConfig = std::make_shared<ModelImportConfig>();
+
+						auto import_config = static_pointer_cast<ModelImportConfig>(meta_data.ImportConfig);
+						if (!import_config)
+							break;
+
+						if (auto import_config_node = data["Asset Import Config"]; import_config_node)
+						{
+							if (import_config_node["AutoReImport"])
+								import_config->AutoReimport = import_config_node["AutoReImport"].as<bool>();
+
+							if (import_config_node["Import Position"] && import_config_node["Import Position"].IsSequence() && import_config_node["Import Position"].size() == 3)
+							{
+								import_config->ImportPosition.x = import_config_node["Import Position"][0].as<float>();
+								import_config->ImportPosition.y = import_config_node["Import Position"][1].as<float>();
+								import_config->ImportPosition.z = import_config_node["Import Position"][2].as<float>();
+							}
+							if (import_config_node["Import Rotation"] && import_config_node["Import Rotation"].IsSequence() && import_config_node["Import Rotation"].size() == 3)
+							{
+								import_config->ImportRotation.x = import_config_node["Import Rotation"][0].as<float>();
+								import_config->ImportRotation.y = import_config_node["Import Rotation"][1].as<float>();
+								import_config->ImportRotation.z = import_config_node["Import Rotation"][2].as<float>();
+							}
+							if (import_config_node["Import Scale"] && import_config_node["Import Scale"].IsSequence() && import_config_node["Import Scale"].size() == 3)
+							{
+								import_config->ImportScale.x = import_config_node["Import Scale"][0].as<float>();
+								import_config->ImportScale.y = import_config_node["Import Scale"][1].as<float>();
+								import_config->ImportScale.z = import_config_node["Import Scale"][2].as<float>();
+							}
+
+							if (import_config_node["Import Skeleton"]) import_config->ImportSkeleton = import_config_node["Import Skeleton"].as<bool>();
+							if (import_config_node["Import Animations"]) import_config->ImportAnimations = import_config_node["Import Animations"].as<bool>();
+							if (import_config_node["Import Materials"]) import_config->ImportMaterials = import_config_node["Import Materials"].as<bool>();
+						}
+
+						break;
+					}
+					default:
+					{
+						meta_data.ImportConfig = std::make_shared<AssetImportConfig>();
+						break;
+					}
+				}
+
+				if (auto import_config_node = data["Asset Import Config"]; import_config_node && meta_data.ImportConfig)
+				{
+					if (import_config_node["AutoReImport"])
+						meta_data.ImportConfig->AutoReimport = import_config_node["AutoReImport"].as<bool>();
+				}
 
 				meta_data.FilePath = std::filesystem::relative(asset_file_path, project_asset_directory);
 			}
@@ -369,6 +549,20 @@ namespace Louron {
 				meta_data.FilePath = std::filesystem::relative(asset_file_path, project_asset_directory);
 				meta_data.Type = AssetManager::GetAssetTypeFromFileExtension(asset_file_path.extension());
 				meta_data.IsComposite = AssetManager::IsAssetTypeComposite(meta_data.Type);
+				
+				switch (meta_data.Type)
+				{
+					case AssetType::ModelImport:
+					{
+						meta_data.ImportConfig = std::make_shared<ModelImportConfig>();
+						break;
+					}
+					default:
+					{
+						meta_data.ImportConfig = std::make_shared<AssetImportConfig>();
+						break;
+					}
+				}
 				handle = (custom_handle == NULL_UUID) ? GenerateNewAssetHandle(meta_data.Type, meta_data.FilePath) : custom_handle;
 			}
 		}
@@ -378,6 +572,21 @@ namespace Louron {
 			meta_data.FilePath = std::filesystem::relative(asset_file_path, project_asset_directory);
 			meta_data.Type = AssetManager::GetAssetTypeFromFileExtension(asset_file_path.extension());
 			meta_data.IsComposite = AssetManager::IsAssetTypeComposite(meta_data.Type);
+			
+			switch (meta_data.Type)
+			{
+				case AssetType::ModelImport:
+				{
+					meta_data.ImportConfig = std::make_shared<ModelImportConfig>();
+					break;
+				}
+				default:
+				{
+					meta_data.ImportConfig = std::make_shared<AssetImportConfig>();
+					break;
+				}
+			}
+			
 			handle = (custom_handle == NULL_UUID) ? GenerateNewAssetHandle(meta_data.Type, meta_data.FilePath) : custom_handle;
 		}
 
@@ -462,6 +671,9 @@ namespace Louron {
 					L_CORE_ERROR("EditorAssetManager::GetAsset - Asset Load Failed!");
 					return nullptr;
 				}
+
+				SerialiseMetaDataFile(asset_handle, meta_data, Project::GetActiveProject()->GetAssetDirectory() / (meta_data.FilePath.string() + ".meta"));
+
 				asset->Handle = asset_handle;
 				m_LoadedAssets[asset_handle] = asset;
 			}
@@ -489,6 +701,9 @@ namespace Louron {
 					L_CORE_ERROR("EditorAssetManager::GetAsset - Parent Asset Import Failed!");
 					return nullptr;
 				}
+
+				SerialiseMetaDataFile(parent_handle, parent_metadata, Project::GetActiveProject()->GetAssetDirectory() / (parent_metadata.FilePath.string() + ".meta"));
+
 				m_LoadedAssets[parent_handle] = asset;
 
 				// Get loaded child asset
@@ -831,21 +1046,79 @@ namespace Louron {
 			out << YAML::Key << "Asset Type"			<< YAML::Value << AssetUtils::AssetTypeToString(asset_meta_data.Type);
 			out << YAML::Key << "Asset Is Composite"	<< YAML::Value << asset_meta_data.IsComposite;
 
+			out << YAML::Key << "Asset Import Config"	<< YAML::Value << YAML::BeginMap;
+			{
+				if (asset_meta_data.ImportConfig)
+					out << YAML::Key << "AutoReImport" << YAML::Value << asset_meta_data.ImportConfig->AutoReimport;
+
+				switch (asset_meta_data.Type)
+				{
+
+					case AssetType::ModelImport:
+					{
+						auto import_config = static_pointer_cast<ModelImportConfig>(asset_meta_data.ImportConfig);
+
+						if (!import_config)
+							break;
+
+						out << YAML::Key << "Import Position" << YAML::Value << YAML::Flow << YAML::BeginSeq;
+						for (int i = 0; i < 3; i++)
+							out << import_config->ImportPosition[i];
+						out << YAML::EndSeq;
+
+						out << YAML::Key << "Import Rotation" << YAML::Value << YAML::Flow << YAML::BeginSeq;
+						for (int i = 0; i < 3; i++)
+							out << import_config->ImportRotation[i];
+						out << YAML::EndSeq;
+
+						out << YAML::Key << "Import Scale" << YAML::Value << YAML::Flow << YAML::BeginSeq;
+						for (int i = 0; i < 3; i++)
+							out << import_config->ImportScale[i];
+						out << YAML::EndSeq;
+
+						out << YAML::Key << "Import Skeleton"			<< YAML::Value << import_config->ImportSkeleton;
+						out << YAML::Key << "Import Animations"			<< YAML::Value << import_config->ImportAnimations;
+						out << YAML::Key << "Import Materials"			<< YAML::Value << import_config->ImportMaterials;
+					
+						break;
+					}
+
+				}
+
+			}
+			out << YAML::EndMap;
+
 			if(asset_meta_data.IsComposite)
 			{
 				out << YAML::Key << "Composite Assets" << YAML::Value << YAML::BeginSeq;
 
-				for (const auto& [handle, metadata] : m_AssetRegistry)
+
+				for (auto it = m_AssetRegistry.begin(); it != m_AssetRegistry.end();)
 				{
-					if (metadata.ParentAssetHandle != asset_handle)
+					if (it->second.ParentAssetHandle != asset_handle)
+					{
+						++it;
 						continue;
+					}
+
+					// Validate Asset Before Serialising
+					if (!IsAssetLoaded(it->first) || (IsAssetLoaded(it->first) && !GetAsset(it->first)))
+					{
+						it = m_AssetRegistry.erase(it);
+
+						if (IsAssetLoaded(it->first))
+							m_LoadedAssets.erase(it->first);
+
+						continue;
+					}
 
 					out << YAML::BeginMap;
-					out << YAML::Key << "Asset Name" << YAML::Value << metadata.AssetName;
-					out << YAML::Key << "Asset Handle" << YAML::Value << handle;
-					out << YAML::Key << "Asset Type" << YAML::Value << AssetUtils::AssetTypeToString(metadata.Type);
+					out << YAML::Key << "Asset Name" << YAML::Value << it->second.AssetName;
+					out << YAML::Key << "Asset Handle" << YAML::Value << it->first;
+					out << YAML::Key << "Asset Type" << YAML::Value << AssetUtils::AssetTypeToString(it->second.Type);
 					out << YAML::EndMap;
 
+					++it;
 				}
 
 				out << YAML::EndSeq;

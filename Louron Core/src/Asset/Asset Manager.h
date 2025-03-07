@@ -47,6 +47,9 @@ namespace Louron {
 	class SkyboxMaterial;
 	class ComputeShaderAsset;
 
+	class Skeleton;
+	class AnimationClip;
+
 	class EditorAssetManager : public AssetManagerBase {
 
 	public: // Primary Methods
@@ -155,6 +158,12 @@ namespace Louron {
 			}
 			else if constexpr (std::is_same_v<TAssetType, Prefab>) {
 				expectedType = AssetType::Prefab;
+			}
+			else if constexpr (std::is_same_v<TAssetType, Skeleton>) {
+				expectedType = AssetType::Skeleton;
+			}
+			else if constexpr (std::is_same_v<TAssetType, AnimationClip>) {
+				expectedType = AssetType::AnimationClip;
 			}
 			else if constexpr (std::is_same_v<TAssetType, SkyboxMaterial>) {
 				expectedType = AssetType::Material_Skybox; // Check this first so we can return Material_Skybox opposed to Material_Standard

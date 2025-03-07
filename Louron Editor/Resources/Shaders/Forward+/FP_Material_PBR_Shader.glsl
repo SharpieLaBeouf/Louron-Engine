@@ -27,7 +27,9 @@ layout (location = 1) in vec3   aNormal;
 layout (location = 2) in vec2   aTexCoord;
 layout (location = 3) in vec3   aTangent;
 layout (location = 4) in vec3   aBitangent;
-layout (location = 5) in mat4   aInstanceMatrix; // Use this as model matrix when engine instances the mesh opposed to u_VertexIn.Model
+layout (location = 5) in ivec4  aBoneIDs;
+layout (location = 6) in vec4   aBoneWeights;
+layout (location = 7) in mat4   aInstanceMatrix; // Use this as model matrix when engine instances the mesh opposed to u_VertexIn.Model
 
 out VS_OUT {
 
@@ -53,6 +55,13 @@ uniform vec3 u_CameraPos;
 uniform VertexData u_VertexIn;
 uniform bool u_UseInstanceData = false;
 
+const int MAX_BONE_INFLUENCE = 4;
+uniform bool u_Skinned;
+uniform uint u_BoneOffset;
+uniform uint u_BoneCount;
+
+layout(std430, binding = 7) readonly buffer BoneTransformation_Buffer { mat4 data[]; } BoneTransformation_Buffer_Data;
+
 // Do Not Change Name ("u_MaterialUniforms")
 // The Engine will bind all uniforms in this block, using this name as the key. 
 uniform MaterialUniforms u_MaterialUniforms;
@@ -60,7 +69,43 @@ uniform MaterialUniforms u_MaterialUniforms;
 void main() 
 {
     mat4 model_matrix = (u_UseInstanceData ? aInstanceMatrix : u_VertexIn.Model);
-    gl_Position = u_VertexIn.Proj * u_VertexIn.View * model_matrix * vec4(aPos, 1.0);
+    
+    vec4 skinned_pos = vec4(aPos, 1.0);
+    vec3 skinned_normal = aNormal;
+    vec3 skinned_tangent = aTangent;
+
+    if (u_Skinned)
+    {
+        vec4 total_position = vec4(0.0);
+        vec3 total_normal = vec3(0.0);
+        vec3 total_tangent = vec3(0.0);
+        
+        for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
+        {
+            if(aBoneIDs[i] == -1) 
+                continue;
+
+            if(aBoneIDs[i] >= u_BoneCount) 
+            {
+                total_position = vec4(aPos, 1.0);
+                total_normal = aNormal;
+                total_tangent = aTangent;
+                break;
+            }
+
+            mat4 bone_transform = BoneTransformation_Buffer_Data.data[u_BoneOffset + aBoneIDs[i]];
+            
+            total_position += (bone_transform * vec4(aPos, 1.0)) * aBoneWeights[i];
+            total_normal += mat3(bone_transform) * aNormal * aBoneWeights[i];
+            total_tangent += mat3(bone_transform) * aTangent * aBoneWeights[i];
+        }
+        
+        skinned_pos = total_position;
+        skinned_normal = normalize(total_normal);
+        skinned_tangent = normalize(total_tangent);
+    }
+
+    gl_Position = u_VertexIn.Proj * u_VertexIn.View * model_matrix * skinned_pos;
 
     // - For Non-Uniform Scaling -
     // Inverse to Correct Distortion of Non-Uniform Scaling
@@ -68,24 +113,24 @@ void main()
     mat3 normal_matrix = transpose(inverse(mat3(model_matrix))); 
 
     // Normal Mapping Functions - Construct TBN Matrix
-
-	vec3 T = normalize(normal_matrix * ((aTangent != vec3(0.0)) ? aTangent : vec3(1.0)));
-	vec3 N = normalize(normal_matrix * aNormal);
+    vec3 T = normalize(normal_matrix * ((skinned_tangent != vec3(0.0)) ? skinned_tangent : vec3(1.0)));
+    vec3 N = normalize(normal_matrix * skinned_normal);
     
     // Gram-Schmidt process
     T = normalize(T - dot(T, N) * N);
-	vec3 B = cross(N, T);
+    vec3 B = cross(N, T);
 
-	mat3 TBN = transpose(mat3(T, B, N));
+    mat3 TBN = transpose(mat3(T, B, N));
 
     // Set VertexOut Data
-    vertex_out.FragPos = vec3(model_matrix * vec4(aPos, 1.0));
-	vertex_out.TexCoord = aTexCoord;
+    vertex_out.FragPos = vec3(model_matrix * skinned_pos);
+    vertex_out.TexCoord = aTexCoord;
     vertex_out.ViewPos = u_CameraPos;
-	vertex_out.TangentFragPos = TBN * vertex_out.FragPos;
-	vertex_out.TangentViewPos = TBN * u_CameraPos;
-	vertex_out.TBN_Matrix = TBN;
+    vertex_out.TangentFragPos = TBN * vertex_out.FragPos;
+    vertex_out.TangentViewPos = TBN * u_CameraPos;
+    vertex_out.TBN_Matrix = TBN;
 }
+
 
 #SHADER FRAGMENT
 

@@ -99,6 +99,11 @@ namespace Louron
 		/// <summary>
 		/// Set the Vertex Array by copying an existing VAO.
 		/// </summary>
+		void InitVAO() { m_VAO = std::make_unique<VertexArray>(); }
+
+		/// <summary>
+		/// Set the Vertex Array by copying an existing VAO.
+		/// </summary>
 		void SetVAO(std::unique_ptr<VertexArray> vao) { m_VAO = std::make_unique<VertexArray>(*vao); }
 
 		/// <summary>

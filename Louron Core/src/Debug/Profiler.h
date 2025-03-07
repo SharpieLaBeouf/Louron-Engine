@@ -36,8 +36,10 @@ namespace Louron {
 				m_Results[result.Name].Time += result.Time; 
 		}
 
-		void NewFrame() {
-			for (auto it = m_Results.begin(); it != m_Results.end(); ) {
+		void NewFrame() 
+		{
+			for (auto it = m_Results.begin(); it != m_Results.end(); ) 
+			{
 				if (it->second.Accumulative) {
 					it = m_Results.erase(it); // erase returns the iterator to the next element
 				}

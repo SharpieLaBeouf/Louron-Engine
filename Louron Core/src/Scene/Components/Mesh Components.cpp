@@ -30,11 +30,11 @@ namespace Louron
 		out << YAML::Key << "CastShadows" << YAML::Value << CastShadows;
 
 		{
-			out << YAML::Key << "MaterialAssetCount" << YAML::Value << (uint32_t)MeshRendererMaterialHandles.size();
+			out << YAML::Key << "MaterialAssetCount" << YAML::Value << (uint32_t)MaterialHandles.size();
 			out << YAML::Key << "MaterialAssetHandles" << YAML::Value;
 
 			out << YAML::BeginSeq;
-			for (const auto& [handle, uniform_block] : MeshRendererMaterialHandles) {
+			for (const auto& [handle, uniform_block] : MaterialHandles) {
 				out << (uint32_t)handle;
 			}
 			out << YAML::EndSeq;
@@ -63,9 +63,9 @@ namespace Louron
 				return false;
 			}
 
-			MeshRendererMaterialHandles.clear();
+			MaterialHandles.clear();
 			for (const auto& handle : handles) {
-				MeshRendererMaterialHandles.push_back({ handle.as<uint32_t>() , nullptr });
+				MaterialHandles.push_back({ handle.as<uint32_t>() , nullptr });
 			}
 		}
 		else {
@@ -91,10 +91,10 @@ namespace Louron
 		if (!entity || !entity.GetScene())
 			return;
 
-		if (MeshFilterAssetHandle == NULL_UUID)
+		if (StaticMeshHandle == NULL_UUID)
 			return;
 
-		if (auto mesh_asset = AssetManager::GetAsset<StaticMesh>(MeshFilterAssetHandle); mesh_asset) {
+		if (auto mesh_asset = AssetManager::GetAsset<StaticMesh>(StaticMeshHandle); mesh_asset) {
 
 			// Define the 8 corner points of the AABB
 			std::array<glm::vec3, 8> corners = {
@@ -134,7 +134,7 @@ namespace Louron
 		out << YAML::Key << "MeshFilterComponent";
 		out << YAML::BeginMap;
 
-		out << YAML::Key << "MeshAssetHandle" << YAML::Value << (uint32_t)MeshFilterAssetHandle;
+		out << YAML::Key << "MeshAssetHandle" << YAML::Value << (uint32_t)StaticMeshHandle;
 
 		out << YAML::EndMap;
 	}
@@ -144,7 +144,7 @@ namespace Louron
 		YAML::Node component = data;
 
 		if (component["MeshAssetHandle"]) {
-			MeshFilterAssetHandle = component["MeshAssetHandle"].as<uint32_t>();
+			StaticMeshHandle = component["MeshAssetHandle"].as<uint32_t>();
 		}
 		else {
 			return false;

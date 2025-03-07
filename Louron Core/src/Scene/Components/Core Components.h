@@ -69,6 +69,8 @@ namespace Louron
         void Serialize(YAML::Emitter& out);
         bool Deserialize(const YAML::Node data);
 
+        Entity GetRootParentEntity() const;
+
     private:
 
         UUID m_Parent = NULL_UUID;
@@ -79,7 +81,6 @@ namespace Louron
 
         friend class Prefab;
         friend class ModelImporter;
-
     };
 
     /// <summary>
@@ -108,7 +109,6 @@ namespace Louron
         TransformFlags m_StateFlags = TransformFlag_None;
 
         void OnTransformUpdated();
-        void UpdateLocalTransformMatrix();
 
     public:
 
@@ -178,7 +178,7 @@ namespace Louron
         const glm::vec3& GetLocalScale() const;
 
         const glm::mat4& GetGlobalTransform();
-        const glm::mat4& GetLocalTransform();
+        const glm::mat4& GetLocalTransform(bool update_local_transform = true);
 
         void SetTransform(const glm::mat4& transform);
 
@@ -193,6 +193,8 @@ namespace Louron
         static glm::vec3 GetRotationFromMatrix(const glm::mat4& transform);
         static glm::vec3 GetScaleFromMatrix(const glm::mat4& transform);
 
+        void UpdateLocalTransformMatrix();
+    
     private:
 
         friend class Scene;

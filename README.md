@@ -13,7 +13,7 @@ This engine utilises OpenGL 4.5 and C++20.
 ## Features
 
 At this point there are an array of features utilised in this project:
-- Forward Plus Tile-Basee Rendering
+- Forward Plus Tile-Based Rendering
   - Automatic instancing of meshes
   - Octree spatial partitioning system primarily for frustum culling [StackExchangePost](https://gamedev.stackexchange.com/questions/211647/octree-query-frustum-search-and-recursive-vector-inserts)
   - Occlusion queries and culling
@@ -51,6 +51,7 @@ At this point there are an array of features utilised in this project:
 - Runtime Asset creation through scripting
   - Can create textures on the fly through scripting
   - Can create meshes on the fly through scripting
+- Simple Animations - can load animations and play them back during runtime (WIP)
 
 ## Goals
 
@@ -66,8 +67,14 @@ There is no doubt this can make a game at its current state, but it would most l
 - Refactor runtime texture and mesh asset workflow
 - Post processing effects such as bloom, and custom FX designed by users
 - Animation system
+  - Root Motion - motion of entity controlled through animation
+  - Animation Graph - state machines, transitions, and blend trees + GUI Node Editing
+- CMAKE or PREMAKE system
+- Linux Support
+- Physics Cast Ray functionality
+- Geometry sorting abstraction - separate all scene management and partitioning into separate abstraction/class
+- Multiple render targets - e.g., multiple cameras with different viewports may render the scene
 - Thorough documentation
-- CMAKE or MAKE system
 - Textured lights and caustics (cookies)
 - Ambient Occlusion
 - Reflections (probes and screen space)

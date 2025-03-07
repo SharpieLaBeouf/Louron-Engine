@@ -24,6 +24,9 @@ namespace Louron {
 			case AssetType::Mesh:					type_string = "AssetType::Mesh";				 break;
 			case AssetType::ModelImport:			type_string = "AssetType::ModelImport";			 break;
 
+			case AssetType::Skeleton:				type_string = "AssetType::Skeleton";			 break;
+			case AssetType::AnimationClip:			type_string = "AssetType::AnimationClip";			 break;
+
 			case AssetType::Audio:					type_string = "AssetType::Audio";				 break;
 
 			case AssetType::Material_Standard:		type_string = "AssetType::Material_Standard";	 break;
@@ -48,6 +51,9 @@ namespace Louron {
 
 		if (assetType == "AssetType::Mesh")					return AssetType::Mesh;
 		if (assetType == "AssetType::ModelImport")			return AssetType::ModelImport;
+
+		if (assetType == "AssetType::Skeleton")				return AssetType::Skeleton;
+		if (assetType == "AssetType::AnimationClip")		return AssetType::AnimationClip;
 
 		if (assetType == "AssetType::Audio")				return AssetType::Audio;
 

@@ -284,7 +284,7 @@ namespace Louron {
 		}
 		if (component_name == "Louron.MeshRendererComponent") {
 			auto& component = entity.AddComponent<MeshRendererComponent>();
-			component.MeshRendererMaterialHandles.push_back({ AssetManager::GetInbuiltAsset<Material>("Default_Material", AssetType::Material_Standard)->Handle, nullptr });
+			component.MaterialHandles.push_back({ AssetManager::GetInbuiltAsset<Material>("Default_Material", AssetType::Material_Standard)->Handle, nullptr });
 		}
 	}
 
@@ -1731,7 +1731,7 @@ namespace Louron {
 		if (!entity.HasComponent<MeshRendererComponent>())
 			return NULL_UUID;
 
-		return entity.GetComponent<MeshRendererComponent>().MeshRendererMaterialHandles.back().first;
+		return entity.GetComponent<MeshRendererComponent>().MaterialHandles.back().first;
 	}
 
 	void ScriptConnector::MeshRendererComponent_SetMaterial(UUID entityID, AssetHandle material_handle)
@@ -1743,12 +1743,12 @@ namespace Louron {
 		if (!entity) return;
 
 		if (!entity.HasComponent<MeshRendererComponent>() || // If No Component
-			 entity.GetComponent<MeshRendererComponent>().MeshRendererMaterialHandles.back().first == material_handle) // If Material Handle Already Set
+			 entity.GetComponent<MeshRendererComponent>().MaterialHandles.back().first == material_handle) // If Material Handle Already Set
 			return;
 
 		if (AssetManager::IsAssetHandleValid(material_handle)) // Check validity of asset
 		{
-			auto& material_pair = entity.GetComponent<MeshRendererComponent>().MeshRendererMaterialHandles.back();
+			auto& material_pair = entity.GetComponent<MeshRendererComponent>().MaterialHandles.back();
 
 			material_pair.first = material_handle;
 
@@ -1772,10 +1772,10 @@ namespace Louron {
 
 		auto& component = entity.GetComponent<MeshRendererComponent>();
 
-		const size_t size = component.MeshRendererMaterialHandles.size();
+		const size_t size = component.MaterialHandles.size();
 		uint32_t* material_array = new uint32_t[size](NULL_UUID);
 		for (int i = 0; i < size; i++)
-			material_array[i] = (uint32_t)component.MeshRendererMaterialHandles[i].first;
+			material_array[i] = (uint32_t)component.MaterialHandles[i].first;
 
 		return material_array;
 	}
@@ -1801,19 +1801,19 @@ namespace Louron {
 			std::shared_ptr<MaterialUniformBlock> uniform_block = nullptr;
 
 			// Find existing material uniform block if it exists
-			auto it = std::find_if(component.MeshRendererMaterialHandles.begin(),
-				component.MeshRendererMaterialHandles.end(),
+			auto it = std::find_if(component.MaterialHandles.begin(),
+				component.MaterialHandles.end(),
 				[&](const std::pair<AssetHandle, std::shared_ptr<MaterialUniformBlock>>& pair)
 				{ return pair.first == material_handles[i]; });
 
-			if (it != component.MeshRendererMaterialHandles.end())
+			if (it != component.MaterialHandles.end())
 				uniform_block = it->second;
 
 			// Add to new vector
 			new_handle_vector.emplace_back(material_handles[i], uniform_block);
 		}
 
-		component.MeshRendererMaterialHandles = std::move(new_handle_vector);
+		component.MaterialHandles = std::move(new_handle_vector);
 	}
 
 	void ScriptConnector::MeshRenderer_EnableUniformBlock(UUID entityID, uint32_t material_index)
@@ -1827,7 +1827,7 @@ namespace Louron {
 		if (!entity.HasComponent<MeshRendererComponent>())
 			return;
 
-		auto& material_handle_vector = entity.GetComponent<MeshRendererComponent>().MeshRendererMaterialHandles;
+		auto& material_handle_vector = entity.GetComponent<MeshRendererComponent>().MaterialHandles;
 
 		if (material_index == -1)
 			material_index = (uint32_t)material_handle_vector.size() - 1;
@@ -1860,7 +1860,7 @@ namespace Louron {
 		if (!entity.HasComponent<MeshRendererComponent>())
 			return nullptr;
 
-		auto& material_handle_vector = entity.GetComponent<MeshRendererComponent>().MeshRendererMaterialHandles;
+		auto& material_handle_vector = entity.GetComponent<MeshRendererComponent>().MaterialHandles;
 
 		if (material_index == -1)
 			material_index = (uint32_t)material_handle_vector.size() - 1;
@@ -1882,7 +1882,7 @@ namespace Louron {
 		if (!entity.HasComponent<MeshRendererComponent>())
 			return;
 
-		auto& material_handle_vector = entity.GetComponent<MeshRendererComponent>().MeshRendererMaterialHandles;
+		auto& material_handle_vector = entity.GetComponent<MeshRendererComponent>().MaterialHandles;
 
 		if (material_index == -1)
 			material_index = (uint32_t)material_handle_vector.size() - 1;
@@ -1905,7 +1905,7 @@ namespace Louron {
 		if (!entity.HasComponent<MeshRendererComponent>())
 			return;
 
-		auto& material_handle_vector = entity.GetComponent<MeshRendererComponent>().MeshRendererMaterialHandles;
+		auto& material_handle_vector = entity.GetComponent<MeshRendererComponent>().MaterialHandles;
 
 		for(auto& [material_handle, uniform_block] : material_handle_vector)
 		{
@@ -1932,7 +1932,7 @@ namespace Louron {
 		if (!entity.HasComponent<MeshRendererComponent>())
 			return;
 
-		auto& material_handle_vector = entity.GetComponent<MeshRendererComponent>().MeshRendererMaterialHandles;
+		auto& material_handle_vector = entity.GetComponent<MeshRendererComponent>().MaterialHandles;
 
 		for (auto& [material_handle, uniform_block] : material_handle_vector)
 		{
@@ -2340,7 +2340,7 @@ namespace Louron {
 		if (!entity.HasComponent<MeshFilterComponent>())
 			return NULL_UUID;
 
-		AssetHandle handle = entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle;
+		AssetHandle handle = entity.GetComponent<MeshFilterComponent>().StaticMeshHandle;
 		if (!AssetManager::IsAssetHandleValid(handle))
 			return NULL_UUID;
 
@@ -2357,7 +2357,7 @@ namespace Louron {
 		if (!entity.HasComponent<MeshFilterComponent>())
 			return NULL_UUID;
 
-		auto asset_mesh = AssetManager::GetAsset<StaticMesh>(entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
+		auto asset_mesh = AssetManager::GetAsset<StaticMesh>(entity.GetComponent<MeshFilterComponent>().StaticMeshHandle);
 
 		if (asset_mesh && asset_mesh->SubMeshes.size() >= 1 && asset_mesh->SubMeshes.front())
 		{
@@ -2400,7 +2400,7 @@ namespace Louron {
 		asset_mesh->SubMeshes.push_back(std::move(sub_mesh));
 
 		AssetHandle handle = AssetManager::AddRuntimeAsset(asset_mesh, "New Runtime Mesh");
-		entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle = handle;
+		entity.GetComponent<MeshFilterComponent>().StaticMeshHandle = handle;
 
 		return handle;
 	}
@@ -2418,7 +2418,7 @@ namespace Louron {
 		if (!entity.HasComponent<MeshFilterComponent>())
 			return;
 
-		entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle = assetHandle;
+		entity.GetComponent<MeshFilterComponent>().StaticMeshHandle = assetHandle;
 	}
 
 	void ScriptConnector::Mesh_SetTriangles(AssetHandle assetHandle, uint32_t* data, uint32_t dataLength)

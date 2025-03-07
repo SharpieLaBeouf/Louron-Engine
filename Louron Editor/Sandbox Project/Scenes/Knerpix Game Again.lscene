@@ -2,268 +2,97 @@ Scene Name: Knerpix Game Again
 Scene Asset Directory: E:\Coding\Louron\Louron Editor\Sandbox Project\Assets
 Scene Pipeline Type: 1
 Entities:
-  - Entity: 2400339882
+  - Entity: 1826675614
     TagComponent:
-      Tag: Winners Position
-    HierarchyComponent:
-      Parent: 4209594178
-      Children:
-        []
-    TransformComponent:
-      Translation: [-2, 19, -13]
-      Rotation: [0, -0, 0]
-      Scale: [1, 1, 1]
-  - Entity: 3601754716
-    TagComponent:
-      Tag: Players
+      Tag: Directional Light
     HierarchyComponent:
       Parent: 4294967295
       Children:
         []
     TransformComponent:
       Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
+      Rotation: [-30, 19, 0]
       Scale: [1, 1, 1]
-  - Entity: 3375590329
+    DirectionalLightComponent:
+      Active: true
+      Colour: [1, 1, 1, 1]
+      Intensity: 1
+      Shadow Type: None
+      Max Shadow Visible Distance: 1
+  - Entity: 2439362488
     TagComponent:
-      Tag: Static Geometry
-    HierarchyComponent:
-      Parent: 4294967295
-      Children:
-        - 437380963
-        - 1986134793
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-  - Entity: 4209594178
-    TagComponent:
-      Tag: Util
-    HierarchyComponent:
-      Parent: 4294967295
-      Children:
-        - 3885195277
-        - 1136546040
-        - 2400339882
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-  - Entity: 926120493
-    TagComponent:
-      Tag: Game Manager
+      Tag: Main Camera
     HierarchyComponent:
       Parent: 4294967295
       Children:
         []
-    ScriptComponent:
-      Script_1:
-        Active: true
-        Script Name: SandboxProject.KnerpixGameManager
-        Fields:
-          - Name: Speed_Multiplier
-            Type: Float
-            Data: 5
-          - Name: Player1_Prefab
-            Type: Prefab
-            Data: 1938405934
-          - Name: WinnerLocation
-            Type: Entity
-            Data: 2400339882
-          - Name: Player2_Prefab
-            Type: Prefab
-            Data: 1502522335
-          - Name: Player1_SpawnPoint
-            Type: Entity
-            Data: 1136546040
-          - Name: Players_Parent_Entity
-            Type: Entity
-            Data: 3601754716
-          - Name: Player2_SpawnPoint
-            Type: Entity
-            Data: 3885195277
-          - Name: DeathFloorY
-            Type: Float
-            Data: -10
+    TransformComponent:
+      Translation: [5.50507941e-08, 22, -17.4160328]
+      Rotation: [130, 0.51099503, 180]
+      Scale: [0.999902964, 0.999999642, 0.999885738]
+    CameraComponent:
+      Camera:
+        Projection Type: Perspective
+        FOV: 60.0000038
+        Near: 0.00999999978
+        Far: 1000
+      Primary: true
+      ClearFlag: Skybox
+      ClearColour: [0.176400006, 0.329400003, 0.560699999, 1]
+    SkyboxComponent:
+      MaterialAssetHandle: 1503862029
+  - Entity: 1986134793
+    TagComponent:
+      Tag: Floor
+    HierarchyComponent:
+      Parent: 3375590329
+      Children:
+        []
     TransformComponent:
       Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [10, 0.100000001, 10]
+    MeshFilterComponent:
+      MeshAssetHandle: 2903028380
+    MeshRendererComponent:
+      MeshActive: true
+      CastShadows: false
+      MaterialAssetCount: 1
+      MaterialAssetHandles:
+        - 1699558496
+    BoxColliderComponent:
+      IsTrigger: false
+      Centre: [0, 0, 0]
+      Size: [1, 1, 1]
+      MaterialProperties: [0.600000024, 0.600000024, 0]
+  - Entity: 437380963
+    TagComponent:
+      Tag: Walls
+    HierarchyComponent:
+      Parent: 3375590329
+      Children:
+        - 1102928761
+        - 462158985
+        - 565144976
+        - 2566348520
+        - 827263371
+        - 716000491
+        - 2365378328
+        - 3590663303
+        - 3705331564
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
-  - Entity: 3885195277
+  - Entity: 1102928761
     TagComponent:
-      Tag: P2 Spawn Point
-    HierarchyComponent:
-      Parent: 4209594178
-      Children:
-        []
-    TransformComponent:
-      Translation: [-4, 2, 8]
-      Rotation: [0, -0, 0]
-      Scale: [1, 1, 1]
-  - Entity: 1136546040
-    TagComponent:
-      Tag: P1 Spawn Point
-    HierarchyComponent:
-      Parent: 4209594178
-      Children:
-        []
-    TransformComponent:
-      Translation: [4, 2, -8]
-      Rotation: [0, -0, 0]
-      Scale: [1, 1, 1]
-  - Entity: 3705331564
-    TagComponent:
-      Tag: Wall_09
+      Tag: Wall_01
     HierarchyComponent:
       Parent: 437380963
       Children:
         []
     TransformComponent:
-      Translation: [-8, 1.10000002, -8]
-      Rotation: [0, -0, 0]
-      Scale: [2, 1, 2]
-    MeshFilterComponent:
-      MeshAssetHandle: 2903028380
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 1
-      MaterialAssetHandles:
-        - 3097488617
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [0, 0, 0]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.600000024, 0.600000024, 0]
-  - Entity: 3590663303
-    TagComponent:
-      Tag: Wall_08
-    HierarchyComponent:
-      Parent: 437380963
-      Children:
-        []
-    TransformComponent:
-      Translation: [0, 1.10000002, -8]
-      Rotation: [0, -0, 0]
-      Scale: [2, 1, 2]
-    MeshFilterComponent:
-      MeshAssetHandle: 2903028380
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 1
-      MaterialAssetHandles:
-        - 3097488617
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [0, 0, 0]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.600000024, 0.600000024, 0]
-  - Entity: 2365378328
-    TagComponent:
-      Tag: Wall_07
-    HierarchyComponent:
-      Parent: 437380963
-      Children:
-        []
-    TransformComponent:
-      Translation: [8, 1.10000002, -8]
-      Rotation: [0, -0, 0]
-      Scale: [2, 1, 2]
-    MeshFilterComponent:
-      MeshAssetHandle: 2903028380
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 1
-      MaterialAssetHandles:
-        - 3097488617
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [0, 0, 0]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.600000024, 0.600000024, 0]
-  - Entity: 716000491
-    TagComponent:
-      Tag: Wall_06
-    HierarchyComponent:
-      Parent: 437380963
-      Children:
-        []
-    TransformComponent:
-      Translation: [-8, 1.10000002, 0]
-      Rotation: [0, -0, 0]
-      Scale: [2, 1, 2]
-    MeshFilterComponent:
-      MeshAssetHandle: 2903028380
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 1
-      MaterialAssetHandles:
-        - 3097488617
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [0, 0, 0]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.600000024, 0.600000024, 0]
-  - Entity: 827263371
-    TagComponent:
-      Tag: Wall_05
-    HierarchyComponent:
-      Parent: 437380963
-      Children:
-        []
-    TransformComponent:
-      Translation: [0, 1.10000002, -2.38418579e-07]
-      Rotation: [0, -0, 0]
-      Scale: [2, 1, 2]
-    MeshFilterComponent:
-      MeshAssetHandle: 2903028380
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 1
-      MaterialAssetHandles:
-        - 3097488617
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [0, 0, 0]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.600000024, 0.600000024, 0]
-  - Entity: 2566348520
-    TagComponent:
-      Tag: Wall_03
-    HierarchyComponent:
-      Parent: 437380963
-      Children:
-        []
-    TransformComponent:
-      Translation: [-8, 1.10000002, 8]
-      Rotation: [0, -0, 0]
-      Scale: [2, 1, 2]
-    MeshFilterComponent:
-      MeshAssetHandle: 2903028380
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 1
-      MaterialAssetHandles:
-        - 3097488617
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [0, 0, 0]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.600000024, 0.600000024, 0]
-  - Entity: 565144976
-    TagComponent:
-      Tag: Wall_04
-    HierarchyComponent:
-      Parent: 437380963
-      Children:
-        []
-    TransformComponent:
-      Translation: [8, 1.10000002, 0]
+      Translation: [8, 1.10000002, 8]
       Rotation: [0, -0, 0]
       Scale: [2, 1, 2]
     MeshFilterComponent:
@@ -303,15 +132,15 @@ Entities:
       Centre: [0, 0, 0]
       Size: [1, 1, 1]
       MaterialProperties: [0.600000024, 0.600000024, 0]
-  - Entity: 1102928761
+  - Entity: 565144976
     TagComponent:
-      Tag: Wall_01
+      Tag: Wall_04
     HierarchyComponent:
       Parent: 437380963
       Children:
         []
     TransformComponent:
-      Translation: [8, 1.10000002, 8]
+      Translation: [8, 1.10000002, 0]
       Rotation: [0, -0, 0]
       Scale: [2, 1, 2]
     MeshFilterComponent:
@@ -327,36 +156,17 @@ Entities:
       Centre: [0, 0, 0]
       Size: [1, 1, 1]
       MaterialProperties: [0.600000024, 0.600000024, 0]
-  - Entity: 437380963
+  - Entity: 2566348520
     TagComponent:
-      Tag: Walls
+      Tag: Wall_03
     HierarchyComponent:
-      Parent: 3375590329
-      Children:
-        - 1102928761
-        - 462158985
-        - 565144976
-        - 2566348520
-        - 827263371
-        - 716000491
-        - 2365378328
-        - 3590663303
-        - 3705331564
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, -0, 0]
-      Scale: [1, 1, 1]
-  - Entity: 1986134793
-    TagComponent:
-      Tag: Floor
-    HierarchyComponent:
-      Parent: 3375590329
+      Parent: 437380963
       Children:
         []
     TransformComponent:
-      Translation: [0, 0, 0]
+      Translation: [-8, 1.10000002, 8]
       Rotation: [0, -0, 0]
-      Scale: [10, 0.100000001, 10]
+      Scale: [2, 1, 2]
     MeshFilterComponent:
       MeshAssetHandle: 2903028380
     MeshRendererComponent:
@@ -364,46 +174,238 @@ Entities:
       CastShadows: false
       MaterialAssetCount: 1
       MaterialAssetHandles:
-        - 1468248674
+        - 3097488617
     BoxColliderComponent:
       IsTrigger: false
       Centre: [0, 0, 0]
       Size: [1, 1, 1]
       MaterialProperties: [0.600000024, 0.600000024, 0]
-  - Entity: 2439362488
+  - Entity: 827263371
     TagComponent:
-      Tag: Main Camera
+      Tag: Wall_05
+    HierarchyComponent:
+      Parent: 437380963
+      Children:
+        []
+    TransformComponent:
+      Translation: [0, 1.10000002, -2.38418579e-07]
+      Rotation: [0, -0, 0]
+      Scale: [2, 1, 2]
+    MeshFilterComponent:
+      MeshAssetHandle: 2903028380
+    MeshRendererComponent:
+      MeshActive: true
+      CastShadows: false
+      MaterialAssetCount: 1
+      MaterialAssetHandles:
+        - 3097488617
+    BoxColliderComponent:
+      IsTrigger: false
+      Centre: [0, 0, 0]
+      Size: [1, 1, 1]
+      MaterialProperties: [0.600000024, 0.600000024, 0]
+  - Entity: 716000491
+    TagComponent:
+      Tag: Wall_06
+    HierarchyComponent:
+      Parent: 437380963
+      Children:
+        []
+    TransformComponent:
+      Translation: [-8, 1.10000002, 0]
+      Rotation: [0, -0, 0]
+      Scale: [2, 1, 2]
+    MeshFilterComponent:
+      MeshAssetHandle: 2903028380
+    MeshRendererComponent:
+      MeshActive: true
+      CastShadows: false
+      MaterialAssetCount: 1
+      MaterialAssetHandles:
+        - 3097488617
+    BoxColliderComponent:
+      IsTrigger: false
+      Centre: [0, 0, 0]
+      Size: [1, 1, 1]
+      MaterialProperties: [0.600000024, 0.600000024, 0]
+  - Entity: 2365378328
+    TagComponent:
+      Tag: Wall_07
+    HierarchyComponent:
+      Parent: 437380963
+      Children:
+        []
+    TransformComponent:
+      Translation: [8, 1.10000002, -8]
+      Rotation: [0, -0, 0]
+      Scale: [2, 1, 2]
+    MeshFilterComponent:
+      MeshAssetHandle: 2903028380
+    MeshRendererComponent:
+      MeshActive: true
+      CastShadows: false
+      MaterialAssetCount: 1
+      MaterialAssetHandles:
+        - 3097488617
+    BoxColliderComponent:
+      IsTrigger: false
+      Centre: [0, 0, 0]
+      Size: [1, 1, 1]
+      MaterialProperties: [0.600000024, 0.600000024, 0]
+  - Entity: 3590663303
+    TagComponent:
+      Tag: Wall_08
+    HierarchyComponent:
+      Parent: 437380963
+      Children:
+        []
+    TransformComponent:
+      Translation: [0, 1.10000002, -8]
+      Rotation: [0, -0, 0]
+      Scale: [2, 1, 2]
+    MeshFilterComponent:
+      MeshAssetHandle: 2903028380
+    MeshRendererComponent:
+      MeshActive: true
+      CastShadows: false
+      MaterialAssetCount: 1
+      MaterialAssetHandles:
+        - 3097488617
+    BoxColliderComponent:
+      IsTrigger: false
+      Centre: [0, 0, 0]
+      Size: [1, 1, 1]
+      MaterialProperties: [0.600000024, 0.600000024, 0]
+  - Entity: 3705331564
+    TagComponent:
+      Tag: Wall_09
+    HierarchyComponent:
+      Parent: 437380963
+      Children:
+        []
+    TransformComponent:
+      Translation: [-8, 1.10000002, -8]
+      Rotation: [0, -0, 0]
+      Scale: [2, 1, 2]
+    MeshFilterComponent:
+      MeshAssetHandle: 2903028380
+    MeshRendererComponent:
+      MeshActive: true
+      CastShadows: false
+      MaterialAssetCount: 1
+      MaterialAssetHandles:
+        - 3097488617
+    BoxColliderComponent:
+      IsTrigger: false
+      Centre: [0, 0, 0]
+      Size: [1, 1, 1]
+      MaterialProperties: [0.600000024, 0.600000024, 0]
+  - Entity: 1136546040
+    TagComponent:
+      Tag: P1 Spawn Point
+    HierarchyComponent:
+      Parent: 4209594178
+      Children:
+        []
+    TransformComponent:
+      Translation: [4, 2, -8]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 3885195277
+    TagComponent:
+      Tag: P2 Spawn Point
+    HierarchyComponent:
+      Parent: 4209594178
+      Children:
+        []
+    TransformComponent:
+      Translation: [-4, 2, 8]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 926120493
+    TagComponent:
+      Tag: Game Manager
     HierarchyComponent:
       Parent: 4294967295
       Children:
         []
+    ScriptComponent:
+      Script_1:
+        Active: true
+        Script Name: SandboxProject.KnerpixGameManager
+        Fields:
+          - Name: Player1_Prefab
+            Type: Prefab
+            Data: 1938405934
+          - Name: Speed_Multiplier
+            Type: Float
+            Data: 5
+          - Name: Player2_Prefab
+            Type: Prefab
+            Data: 1502522335
+          - Name: WinnerLocation
+            Type: Entity
+            Data: 2400339882
+          - Name: Player1_SpawnPoint
+            Type: Entity
+            Data: 1136546040
+          - Name: Player2_SpawnPoint
+            Type: Entity
+            Data: 3885195277
+          - Name: Players_Parent_Entity
+            Type: Entity
+            Data: 3601754716
+          - Name: DeathFloorY
+            Type: Float
+            Data: -10
     TransformComponent:
-      Translation: [5.50507941e-08, 22, -17.4160328]
-      Rotation: [130, 0.51099503, 180]
-      Scale: [0.999902964, 0.999999642, 0.999885738]
-    CameraComponent:
-      Camera:
-        Projection Type: Perspective
-        FOV: 60.0000038
-        Near: 0.00999999978
-        Far: 1000
-      Primary: true
-      ClearFlag: Colour
-      ClearColour: [0.176400006, 0.329400003, 0.560699999, 1]
-  - Entity: 1826675614
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 4209594178
     TagComponent:
-      Tag: Directional Light
+      Tag: Util
+    HierarchyComponent:
+      Parent: 4294967295
+      Children:
+        - 3885195277
+        - 1136546040
+        - 2400339882
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 3375590329
+    TagComponent:
+      Tag: Static Geometry
+    HierarchyComponent:
+      Parent: 4294967295
+      Children:
+        - 437380963
+        - 1986134793
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 3601754716
+    TagComponent:
+      Tag: Players
     HierarchyComponent:
       Parent: 4294967295
       Children:
         []
     TransformComponent:
       Translation: [0, 0, 0]
-      Rotation: [-30, 19, 0]
+      Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
-    DirectionalLightComponent:
-      Active: true
-      Colour: [1, 1, 1, 1]
-      Intensity: 1
-      Shadow Type: None
-      Max Shadow Visible Distance: 1
+  - Entity: 2400339882
+    TagComponent:
+      Tag: Winners Position
+    HierarchyComponent:
+      Parent: 4209594178
+      Children:
+        []
+    TransformComponent:
+      Translation: [-2, 19, -13]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]

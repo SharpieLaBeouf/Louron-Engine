@@ -257,9 +257,9 @@ namespace Louron {
 						{
 							// Check if Entity still has a MeshFilterComponent && MeshRendererComponent
 							Entity entity = data_source->Data;
-							if (!entity.HasComponent<MeshFilterComponent>() || !entity.HasComponent<MeshRendererComponent>()) 
+							if (!entity.HasAnyComponent<MeshFilterComponent, MeshRendererComponent, SkinnedMeshComponent>())
 							{
-								remove_entities.push_back(entity); // Remove if no longer has MeshFilter or MeshRenderer
+								remove_entities.push_back(entity); // Remove if no longer has MeshFilter or MeshRenderer or SkinnedMeshComponent
 							}
 						}
 						else // Remove as No Longer in Scene
@@ -276,12 +276,12 @@ namespace Louron {
 					oct_ref->TryShrinkOctree();
 
 					// 4. Update All AABB's that have changed since last processing - for example, if the transform was altered, it will flag to be updated
-					auto mesh_view = thread_scene_ref->GetAllEntitiesWith<MeshFilterComponent, MeshRendererComponent>();
-					for (const auto& entity_handle : mesh_view) 
+					auto static_mesh_view = thread_scene_ref->GetAllEntitiesWith<MeshFilterComponent, MeshRendererComponent>();
+					for (const auto& entity_handle : static_mesh_view)
 					{
-						auto& mesh_filter_component = mesh_view.get<MeshFilterComponent>(entity_handle);
+						auto& mesh_filter_component = static_mesh_view.get<MeshFilterComponent>(entity_handle);
 
-						if (mesh_filter_component.MeshFilterAssetHandle == NULL_UUID)
+						if (mesh_filter_component.StaticMeshHandle == NULL_UUID)
 						{
 							continue;
 						}
@@ -290,11 +290,11 @@ namespace Louron {
 						bool update_AABB = mesh_filter_component.AABBNeedsUpdate;
 
 						// Check if the underlying mesh has been updated, therefore requiring an update to this MeshFilter's AABB - for example, a mesh is altered by C# code, we will then need to update the AABB for this MeshFilter
-						if(!update_AABB) 
+						if (!update_AABB)
 						{
-							if (AssetManager::IsAssetLoaded(mesh_filter_component.MeshFilterAssetHandle))
+							if (AssetManager::IsAssetLoaded(mesh_filter_component.StaticMeshHandle))
 							{
-								if (auto asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_filter_component.MeshFilterAssetHandle); asset_mesh)
+								if (auto asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_filter_component.StaticMeshHandle); asset_mesh)
 								{
 									if (asset_mesh->ModifiedAABB)
 									{
@@ -313,13 +313,13 @@ namespace Louron {
 						}
 
 						// Update the MeshFilter AABB if required
-						if (update_AABB && AssetManager::IsAssetLoaded(mesh_filter_component.MeshFilterAssetHandle))
+						if (update_AABB && AssetManager::IsAssetLoaded(mesh_filter_component.StaticMeshHandle))
 						{
 							mesh_filter_component.UpdateTransformedAABB();
 						}
 
 						// If MeshFilterComponent requires the Octree to be Updated, we will do this here
-						if (mesh_filter_component.OctreeNeedsUpdate) 
+						if (mesh_filter_component.OctreeNeedsUpdate)
 						{
 							// Try to update the data source in the Octree
 							if (oct_ref->Update({ entity_handle, thread_scene_ref.get() }, mesh_filter_component.TransformedAABB))
@@ -332,6 +332,65 @@ namespace Louron {
 								thread_scene_ref->DestroyEntity({ entity_handle, thread_scene_ref.get() });
 							}
 						}
+					}
+
+					auto skinned_mesh_view = thread_scene_ref->GetAllEntitiesWith<SkinnedMeshComponent>();
+					for (const auto& entity_handle : skinned_mesh_view)
+					{
+						auto& skinned_mesh_component = skinned_mesh_view.get<SkinnedMeshComponent>(entity_handle);
+
+						if (skinned_mesh_component.StaticMeshHandle == NULL_UUID)
+						{
+							continue;
+						}
+
+						// Check if the AABB of this MeshFilter needs to be updated
+						bool update_AABB = skinned_mesh_component.AABBNeedsUpdate;
+
+						// Check if the underlying mesh has been updated, therefore requiring an update to this MeshFilter's AABB - for example, a mesh is altered by C# code, we will then need to update the AABB for this MeshFilter
+						if (!update_AABB)
+						{
+							if (AssetManager::IsAssetLoaded(skinned_mesh_component.StaticMeshHandle))
+							{
+								if (auto asset_mesh = AssetManager::GetAsset<StaticMesh>(skinned_mesh_component.StaticMeshHandle); asset_mesh)
+								{
+									if (asset_mesh->ModifiedAABB)
+									{
+										// Set Flags for Updates
+										skinned_mesh_component.AABBNeedsUpdate = true;
+										skinned_mesh_component.OctreeNeedsUpdate = true;
+
+										// Ensure processed in this frame
+										update_AABB = skinned_mesh_component.AABBNeedsUpdate;
+
+										// Reset flag on AssetMesh
+										asset_mesh->ModifiedAABB = false;
+									}
+								}
+							}
+						}
+
+						// Update the MeshFilter AABB if required
+						if (update_AABB && AssetManager::IsAssetLoaded(skinned_mesh_component.StaticMeshHandle))
+						{
+							skinned_mesh_component.UpdateTransformedAABB();
+						}
+
+						// If MeshFilterComponent requires the Octree to be Updated, we will do this here
+						if (skinned_mesh_component.OctreeNeedsUpdate)
+						{
+							// Try to update the data source in the Octree
+							if (oct_ref->Update({ entity_handle, thread_scene_ref.get() }, skinned_mesh_component.TransformedAABB))
+							{
+								skinned_mesh_component.OctreeNeedsUpdate = false;
+							}
+							else // If we failed, we will remove this Entity from the Scene TODO: maybe think about if we want to entirely remove from scene in this case? Or just force render it if it doesn't fit in the Octree?
+							{
+								L_CORE_WARN("Could Not Be Inserted Into Octree - Deleting Entity: {0}", skinned_mesh_component.GetEntity()->GetName());
+								thread_scene_ref->DestroyEntity({ entity_handle, thread_scene_ref.get() });
+							}
+						}
+
 					}
 				}
 			});
@@ -354,6 +413,7 @@ namespace Louron {
 
 			// 2. Then we update the light data SSBO, including data received from the shadow pass, light matricies, light indices, etc.
 			UpdateLightSSBO();
+			UpdateBoneSSBO();
 
 			// 3. Bind the Scene Framebuffer, Clear and Set Polygon Mode
 			scene_ref->GetSceneFrameBuffer()->Bind();
@@ -438,9 +498,9 @@ namespace Louron {
 		}
 
 		// Calculate workgroups and generate SSBOs from screen size
-		FP_Data.workGroupsX = (unsigned int)std::ceil((float)scene_ref->GetSceneFrameBuffer()->GetConfig().Width / 16.0f);
-		FP_Data.workGroupsY = (unsigned int)std::ceil((float)scene_ref->GetSceneFrameBuffer()->GetConfig().Height / 16.0f);
-		size_t numberOfTiles = static_cast<size_t>(FP_Data.workGroupsX * FP_Data.workGroupsY);
+		FP_Data.TileWorkGroupsX = (unsigned int)std::ceil((float)scene_ref->GetSceneFrameBuffer()->GetConfig().Width / 16.0f);
+		FP_Data.TileWorkGroupsY = (unsigned int)std::ceil((float)scene_ref->GetSceneFrameBuffer()->GetConfig().Height / 16.0f);
+		size_t numberOfTiles = static_cast<size_t>(FP_Data.TileWorkGroupsX * FP_Data.TileWorkGroupsY);
 
 		// Setup Light Buffers
 
@@ -537,6 +597,13 @@ namespace Louron {
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+		// Bone Transform SSBO
+		glGenBuffers(1, &FP_Data.BoneTransform_Buffer);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, FP_Data.BoneTransform_Buffer);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, MAX_BONE_TRANSFORMATIONS * sizeof(glm::mat4), nullptr, GL_DYNAMIC_DRAW);
+		FP_Data.BoneTransform_Offset = {};
+		FP_Data.BoneTransform_Offset.reserve(1024);
+
 		if(!FP_Data.Screen_Quad_VAO)
 		{
 			FP_Data.Screen_Quad_VAO = std::make_unique<VertexArray>();
@@ -618,6 +685,8 @@ namespace Louron {
 		glDeleteFramebuffers(1, &FP_Data.DL_Shadow_FrameBuffer);
 		glDeleteTextures(1, &FP_Data.DL_Shadow_Texture_Array);
 
+		glDeleteBuffers(1, &FP_Data.BoneTransform_Buffer);
+
 		if (FP_Data.Screen_Quad_VAO) {
 			FP_Data.Screen_Quad_VAO.reset();
 			FP_Data.Screen_Quad_VAO = nullptr;
@@ -665,9 +734,9 @@ namespace Louron {
 		}
 
 		// Calculate Workgroups and Generate SSBOs from Screen Size
-		FP_Data.workGroupsX = (unsigned int)std::ceil((float)scene_ref->GetSceneFrameBuffer()->GetConfig().Width / 16.0f);
-		FP_Data.workGroupsY = (unsigned int)std::ceil((float)scene_ref->GetSceneFrameBuffer()->GetConfig().Height / 16.0f);
-		size_t numberOfTiles = static_cast<size_t>(FP_Data.workGroupsX * FP_Data.workGroupsY);
+		FP_Data.TileWorkGroupsX = (unsigned int)std::ceil((float)scene_ref->GetSceneFrameBuffer()->GetConfig().Width / 16.0f);
+		FP_Data.TileWorkGroupsY = (unsigned int)std::ceil((float)scene_ref->GetSceneFrameBuffer()->GetConfig().Height / 16.0f);
+		size_t numberOfTiles = static_cast<size_t>(FP_Data.TileWorkGroupsX * FP_Data.TileWorkGroupsY);
 
 		// Update Light Indice Buffers
 
@@ -821,6 +890,50 @@ namespace Louron {
 	}
 
 	/// <summary>
+	/// This will clear and fill the Bone transformation SSBO
+	/// </summary>
+	void ForwardPlusPipeline::UpdateBoneSSBO()
+	{
+		L_PROFILE_SCOPE("Forward Plus - Update Bone Data");
+
+		auto scene_ref = m_Scene.lock();
+
+		if (!scene_ref) {
+			L_CORE_ERROR("Invalid Scene!");
+			return;
+		}
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, FP_Data.BoneTransform_Buffer);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, FP_Data.BoneTransform_Buffer);
+
+		static std::vector<glm::mat4> s_FinalBoneTransformations = {};
+		if (s_FinalBoneTransformations.capacity() == 0)
+			s_FinalBoneTransformations.reserve(MAX_BONE_TRANSFORMATIONS);
+
+		s_FinalBoneTransformations.clear();
+		FP_Data.BoneTransform_Offset.clear();
+
+		size_t offset = 0;
+		for (const auto& entity : FP_Data.RenderableEntitiesInFrustum)
+		{
+			if (!entity || !entity.HasComponent<SkinnedMeshComponent>())
+				continue;
+
+			auto& skinned_mesh_component = entity.GetComponent<SkinnedMeshComponent>();
+
+			if (offset + skinned_mesh_component.FinalBoneTransformations.size() >= MAX_BONE_TRANSFORMATIONS)
+				break;
+
+			s_FinalBoneTransformations.insert(s_FinalBoneTransformations.begin() + offset, skinned_mesh_component.FinalBoneTransformations.begin(), skinned_mesh_component.FinalBoneTransformations.end());
+			FP_Data.BoneTransform_Offset[entity.GetUUID()] = static_cast<uint32_t>(offset);
+
+			offset += skinned_mesh_component.FinalBoneTransformations.size();
+		}
+
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, s_FinalBoneTransformations.size() * sizeof(glm::mat4), s_FinalBoneTransformations.data());
+	}
+
+	/// <summary>
 	/// This will cull all lights outside camera frustum and update
 	/// the visible PL and SL light vectors in FP_Data
 	/// </summary>
@@ -946,10 +1059,24 @@ namespace Louron {
 			if (!data->Data)
 				continue;
 
-			auto& component = data->Data.GetComponent<MeshRendererComponent>();
-			if (component.Active)
+			if (data->Data.HasComponent<MeshRendererComponent>())
 			{
-				FP_Data.RenderableEntitiesInFrustum.push_back(data->Data);
+				auto& component = data->Data.GetComponent<MeshRendererComponent>();
+				if (component.Active)
+				{
+					FP_Data.RenderableEntitiesInFrustum.push_back(data->Data);
+				}
+
+			}
+
+			if (data->Data.HasComponent<SkinnedMeshComponent>())
+			{
+				auto& component = data->Data.GetComponent<SkinnedMeshComponent>();
+				if (component.Active)
+				{
+					FP_Data.RenderableEntitiesInFrustum.push_back(data->Data);
+				}
+
 			}
 		}
 
@@ -1005,6 +1132,9 @@ namespace Louron {
 		Renderer::s_RenderStats.Entities_Culled_Frustum = static_cast<GLuint>(entity_counter - FP_Data.RenderableEntitiesInFrustum.size());		
 	}
 
+	/// <summary>
+	/// Cull the appropriate meshes that are not currently in view
+	/// </summary>
 	void ForwardPlusPipeline::ConductRenderableOcclusionCull()
 	{
 		L_PROFILE_SCOPE("Forward Plus - Occlusion Culling");
@@ -1100,17 +1230,34 @@ namespace Louron {
 
 			for (auto& entity : FP_Data.RenderableEntitiesInFrustum)
 			{
-				if (!scene_ref->ValidEntity(entity)) continue;
+				if (!scene_ref->ValidEntity(entity)) 
+					continue;
 
 				const glm::vec3& objectPosition = entity.GetTransform().GetGlobalPosition();
-				const Bounds_AABB& object_bounds = entity.GetComponent<MeshFilterComponent>().TransformedAABB;
+				Bounds_AABB object_bounds;
+
+				if (entity.HasComponent<MeshRendererComponent>())
+				{
+					if (entity.GetComponent<MeshRendererComponent>().MaterialHandles.empty()) 
+						continue;
+				}
+				
+				if(entity.HasComponent<MeshFilterComponent>())
+				{
+					object_bounds = entity.GetComponent<MeshFilterComponent>().TransformedAABB;
+				}
+				
+				if (entity.HasComponent<SkinnedMeshComponent>())
+				{
+					auto& component = entity.GetComponent<SkinnedMeshComponent>();
+					if (component.MaterialHandles.empty())
+						continue;
+
+					object_bounds = component.TransformedAABB;
+				}
 
 				// Find distance from closest point of AABB from camera_position
 				float distance = glm::length(camera_position - object_bounds.ClosestPoint(camera_position));
-
-				auto& material_vector = entity.GetComponent<MeshRendererComponent>().MeshRendererMaterialHandles;
-				if (material_vector.empty())
-					continue;
 
 				FP_Data.DepthRenderables.emplace_back(distance, entity.GetUUID());
 			}
@@ -1143,8 +1290,13 @@ namespace Louron {
 					shader->SetMat4("u_Model", entity.GetTransform().GetGlobalTransform());
 					shader->SetUInt("u_EntityID", entity_uuid);
 
-					auto& mesh_filter_component = entity.GetComponent<MeshFilterComponent>();
-					auto& asset_mesh_handle = mesh_filter_component.MeshFilterAssetHandle;
+					AssetHandle asset_mesh_handle = NULL_UUID;
+
+					if (entity.HasComponent<MeshFilterComponent>())
+						asset_mesh_handle = entity.GetComponent<MeshFilterComponent>().StaticMeshHandle;
+
+					if (entity.HasComponent<SkinnedMeshComponent>())
+						asset_mesh_handle = entity.GetComponent<SkinnedMeshComponent>().StaticMeshHandle;
 
 					// Check if Asset Handle is Valid
 					if (!AssetManager::IsAssetHandleValid(asset_mesh_handle))
@@ -1165,9 +1317,30 @@ namespace Louron {
 							continue;
 					}
 
-					auto& material_vector = entity.GetComponent<MeshRendererComponent>().MeshRendererMaterialHandles;
+					// Gather Appropriate Material Vector
+					const std::vector<std::pair<AssetHandle, std::shared_ptr<MaterialUniformBlock>>>& material_vector =
+						entity.HasComponent<MeshRendererComponent>() ? 
+							entity.GetComponent<MeshRendererComponent>().MaterialHandles :
+						entity.HasComponent<SkinnedMeshComponent>() ? 
+							entity.GetComponent<SkinnedMeshComponent>().MaterialHandles : 
+								std::vector<std::pair<AssetHandle, std::shared_ptr<MaterialUniformBlock>>>{};
+					
 					if (material_vector.empty())
 						continue;
+
+					// GET FINAL BONE MATRICES FOR SKELETONS
+					bool skinned = false;
+					if (entity.HasComponent<SkinnedMeshComponent>())
+					{
+						auto index_found = FP_Data.BoneTransform_Offset.find(entity.GetUUID());
+						if (index_found != FP_Data.BoneTransform_Offset.end())
+						{
+							skinned = true;
+							shader->SetBool("u_Skinned", true);
+							shader->SetUInt("u_BoneOffset", index_found->second);
+							shader->SetUInt("u_BoneCount", static_cast<uint32_t>(entity.GetComponent<SkinnedMeshComponent>().FinalBoneTransformations.size()));
+						}
+					}
 
 					if (FP_Data.EntityOcclusionQueries.count(entity_uuid) == 0)
 						FP_Data.EntityOcclusionQueries[entity_uuid] = Query(Query::Type::AnySamplesPassed);
@@ -1209,6 +1382,8 @@ namespace Louron {
 					if (conduct_query)
 						FP_Data.EntityOcclusionQueries[entity_uuid].End();
 
+					if (skinned)
+						shader->SetBool("u_Skinned", false);
 				}
 				scene_ref->GetSceneFrameBuffer()->UnBindEntitySSBO();
 				shader->UnBind();
@@ -1258,7 +1433,7 @@ namespace Louron {
 			glBindTexture(GL_TEXTURE_2D, scene_ref->GetSceneFrameBuffer()->GetTexture(FrameBufferTexture::DepthTexture));
 			lightCull->SetInt("u_Depth", 3);
 
-			glDispatchCompute(FP_Data.workGroupsX, FP_Data.workGroupsY, 1);
+			glDispatchCompute(FP_Data.TileWorkGroupsX, FP_Data.TileWorkGroupsY, 1);
 
 			glFlush();
 
@@ -1271,6 +1446,9 @@ namespace Louron {
 		
 	}
 
+	/// <summary>
+	/// Performs shadow mapping operations on all light types with shadows enabled
+	/// </summary>
 	void ForwardPlusPipeline::ConductShadowMapping(const glm::vec3& camera_position, const glm::mat4& projection_matrix, const glm::mat4& view_matrix)
 	{
 		L_PROFILE_SCOPE("Forward Plus - Shadow Mapping Total");
@@ -1425,7 +1603,7 @@ namespace Louron {
 						glm::mat4 transform = mesh_entity.GetTransform().GetGlobalTransform();
 						shader->SetMat4("u_Model", transform);
 
-						std::shared_ptr<StaticMesh> asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
+						std::shared_ptr<StaticMesh> asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_entity.GetComponent<MeshFilterComponent>().StaticMeshHandle);
 
 						if (asset_mesh)
 						{
@@ -1561,7 +1739,7 @@ namespace Louron {
 						glm::mat4 transform = mesh_entity.GetTransform().GetGlobalTransform();
 						shader->SetMat4("u_Model", transform);
 
-						std::shared_ptr<StaticMesh> asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
+						std::shared_ptr<StaticMesh> asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_entity.GetComponent<MeshFilterComponent>().StaticMeshHandle);
 						for (auto& sub_mesh : asset_mesh->SubMeshes)
 							Renderer::DrawSubMesh(sub_mesh);
 					}
@@ -1694,7 +1872,7 @@ namespace Louron {
 					glm::mat4 transform = entity.GetTransform().GetGlobalTransform();
 					shader->SetMat4("u_Model", transform);
 
-					std::shared_ptr<StaticMesh> asset_mesh = AssetManager::GetAsset<StaticMesh>(entity.GetComponent<MeshFilterComponent>().MeshFilterAssetHandle);
+					std::shared_ptr<StaticMesh> asset_mesh = AssetManager::GetAsset<StaticMesh>(entity.GetComponent<MeshFilterComponent>().StaticMeshHandle);
 					for (auto& sub_mesh : asset_mesh->SubMeshes)
 						Renderer::DrawSubMesh(sub_mesh);
 				}
@@ -1805,7 +1983,7 @@ namespace Louron {
 					material_asset->UpdateUniforms(material_wrapper_pair.uniform_block); // Change
 
 					// Update Specific Forward Plus Uniforms
-					shader->SetInt("u_TilesX", FP_Data.workGroupsX);
+					shader->SetInt("u_TilesX", FP_Data.TileWorkGroupsX);
 					shader->SetInt("u_ShowLightComplexity", FP_Data.Debug_ShowLightComplexity);
 
 					shader->SetFloat("u_Near", near_plane);
@@ -1868,24 +2046,85 @@ namespace Louron {
 						continue;
 
 					bool use_instance_data = (entity_count > 1);
-					shader->SetBool("u_UseInstanceData", use_instance_data);
 
-					if (use_instance_data) {
+					std::vector<Entity> deferred_entities_from_instanced{};
+
+					if (use_instance_data) 
+					{
 						std::vector<glm::mat4> transforms;
 						transforms.reserve(entity_count);
 
-						for (const auto& entity : entities) {
-							const auto& transform = scene_ref->FindEntityByUUID(entity).GetTransform().GetGlobalTransform();
-							transforms.push_back(transform);
+						for (const auto& entity : entities) 
+						{
+							Entity ent = scene_ref->FindEntityByUUID(entity);
+
+							if (!ent) 
+								continue;
+
+							// Separate Skinned Meshes from Instance Batches
+							if (ent.HasComponent<SkinnedMeshComponent>())
+							{
+								deferred_entities_from_instanced.emplace_back(ent);
+								continue;
+							}
+
+							const auto& transform = ent.GetTransform().GetGlobalTransform();
+							transforms.emplace_back(transform);
 						}
 
 						Renderer::DrawInstancedSubMesh(sub_mesh, transforms);
 					}
 					else 
 					{
-						const auto& transform = scene_ref->FindEntityByUUID(entities[0]).GetTransform().GetGlobalTransform();
+						Entity ent = scene_ref->FindEntityByUUID(entities[0]);
+
+						if (!ent)
+							continue;
+
+						bool skinned = false;
+						if (ent.HasComponent<SkinnedMeshComponent>())
+						{
+							auto index_found = FP_Data.BoneTransform_Offset.find(ent.GetUUID());
+							if (index_found != FP_Data.BoneTransform_Offset.end())
+							{
+								skinned = true;
+								shader->SetBool("u_Skinned", true);
+								shader->SetUInt("u_BoneOffset", index_found->second);
+								shader->SetUInt("u_BoneCount", static_cast<uint32_t>(ent.GetComponent<SkinnedMeshComponent>().FinalBoneTransformations.size()));
+							}
+						}
+
+						const auto& transform = ent.GetTransform().GetGlobalTransform();
 						shader->SetMat4("u_VertexIn.Model", transform);
 						Renderer::DrawSubMesh(sub_mesh);
+
+						if(skinned)
+							shader->SetBool("u_Skinned", false);
+					}
+
+					// Process any that can't be instanced
+					shader->SetBool("u_UseInstanceData", false);
+					for (const auto& entity : deferred_entities_from_instanced)
+					{
+						bool skinned = false;
+						if (entity.HasComponent<SkinnedMeshComponent>())
+						{
+							auto index_found = FP_Data.BoneTransform_Offset.find(entity.GetUUID());
+							if (index_found != FP_Data.BoneTransform_Offset.end())
+							{
+								skinned = true;
+								shader->SetBool("u_Skinned", true);
+								shader->SetUInt("u_BoneOffset", index_found->second);
+								shader->SetUInt("u_BoneCount", static_cast<uint32_t>(entity.GetComponent<SkinnedMeshComponent>().FinalBoneTransformations.size()));
+							}
+						}
+
+						const auto& transform = entity.GetTransform().GetGlobalTransform();
+						shader->SetMat4("u_VertexIn.Model", transform);
+						Renderer::DrawSubMesh(sub_mesh);
+
+						if (skinned)
+							shader->SetBool("u_Skinned", false);
 					}
 				}
 			}
@@ -1926,7 +2165,7 @@ namespace Louron {
 					material_asset->UpdateUniforms(material_wrapper_pair.uniform_block);
 
 					// Update Specific Forward Plus Uniforms
-					shader->SetInt("u_TilesX", FP_Data.workGroupsX);
+					shader->SetInt("u_TilesX", FP_Data.TileWorkGroupsX);
 					shader->SetInt("u_ShowLightComplexity", FP_Data.Debug_ShowLightComplexity);
 
 					shader->SetFloat("u_Near", near_plane);
@@ -1984,9 +2223,26 @@ namespace Louron {
 
 				shader->SetBool("u_UseInstanceData", false);
 
+
+				bool skinned = false;
+				if (ent.HasComponent<SkinnedMeshComponent>())
+				{
+					auto index_found = FP_Data.BoneTransform_Offset.find(ent.GetUUID());
+					if (index_found != FP_Data.BoneTransform_Offset.end())
+					{
+						skinned = true;
+						shader->SetBool("u_Skinned", true);
+						shader->SetUInt("u_BoneOffset", index_found->second);
+						shader->SetUInt("u_BoneCount", static_cast<uint32_t>(ent.GetComponent<SkinnedMeshComponent>().FinalBoneTransformations.size()));
+					}
+				}
+
 				const auto& transform = ent.GetTransform().GetGlobalTransform();
 				shader->SetMat4("u_VertexIn.Model", transform);
 				Renderer::DrawSubMesh(sub_mesh);
+
+				if (skinned)
+					shader->SetBool("u_Skinned", false);
 			}
 
 			glDepthMask(GL_TRUE);
@@ -1999,7 +2255,6 @@ namespace Louron {
 		// Sorting
 		FP_Data.RenderQueueSortingThread = std::thread([&]() -> void 
 		{
-
 			L_PROFILE_SCOPE("Forward Plus - Render Pass::Renderable Sorting");
 
 			auto thread_scene_ref = m_Scene.lock();
@@ -2022,21 +2277,31 @@ namespace Louron {
 				if (!thread_scene_ref->ValidEntity(entity))
 					continue;
 
-				auto& mesh_filter_component = entity.GetComponent<MeshFilterComponent>();
+				AssetHandle static_mesh_handle = NULL_UUID;
+
+				if (entity.HasComponent<MeshFilterComponent>())
+				{
+					static_mesh_handle = entity.GetComponent<MeshFilterComponent>().StaticMeshHandle;
+				}
+
+				if (entity.HasComponent<SkinnedMeshComponent>())
+				{
+					static_mesh_handle = entity.GetComponent<SkinnedMeshComponent>().StaticMeshHandle;
+				}
 
 				// Check if Asset Handle is Valid
-				if (!AssetManager::IsAssetHandleValid(mesh_filter_component.MeshFilterAssetHandle))
+				if (!AssetManager::IsAssetHandleValid(static_mesh_handle))
 					continue;
 
 				// Retrieve Cached Mesh Asset
-				auto mesh_asset = FP_Data.CachedMeshAssets[mesh_filter_component.MeshFilterAssetHandle].lock();
+				auto mesh_asset = FP_Data.CachedMeshAssets[static_mesh_handle].lock();
 
 				// Check if Loaded
 				if (!mesh_asset)
 				{
 					// If Not Loaded, Call GetAsset to Load
-					FP_Data.CachedMeshAssets[mesh_filter_component.MeshFilterAssetHandle] = AssetManager::GetAsset<StaticMesh>(mesh_filter_component.MeshFilterAssetHandle);
-					mesh_asset = FP_Data.CachedMeshAssets[mesh_filter_component.MeshFilterAssetHandle].lock();
+					FP_Data.CachedMeshAssets[static_mesh_handle] = AssetManager::GetAsset<StaticMesh>(static_mesh_handle);
+					mesh_asset = FP_Data.CachedMeshAssets[static_mesh_handle].lock();
 
 					// If Failed to Load - Continue
 					if (!mesh_asset)
@@ -2047,7 +2312,12 @@ namespace Louron {
 				auto& sub_meshes = mesh_asset->SubMeshes;
 
 				// Retrieve All MeshMaterialHandles
-				auto& material_handles = entity.GetComponent<MeshRendererComponent>().MeshRendererMaterialHandles;
+				const std::vector<std::pair<AssetHandle, std::shared_ptr<MaterialUniformBlock>>>& material_handles =
+					entity.HasComponent<MeshRendererComponent>() ? 
+						entity.GetComponent<MeshRendererComponent>().MaterialHandles :
+					entity.HasComponent<SkinnedMeshComponent>() ? 
+						entity.GetComponent<SkinnedMeshComponent>().MaterialHandles : 
+							std::vector<std::pair<AssetHandle, std::shared_ptr<MaterialUniformBlock>>>{};
 
 				if (sub_meshes.empty() || material_handles.empty())
 					continue;
@@ -2136,8 +2406,20 @@ namespace Louron {
 				}
 
 				// Set Option for Debug Draw Cube for AABB
-				if (mesh_filter_component.GetShouldDisplayDebugLines())
-					FP_Data.Debug_RenderAABB.push_back(mesh_filter_component.TransformedAABB.GetGlobalBoundsMat4());
+
+				if (entity.HasComponent<MeshFilterComponent>())
+				{
+					auto& component = entity.GetComponent<MeshFilterComponent>();
+					if (component.GetShouldDisplayDebugLines())
+						FP_Data.Debug_RenderAABB.push_back(component.TransformedAABB.GetGlobalBoundsMat4());
+				}
+
+				if (entity.HasComponent<SkinnedMeshComponent>())
+				{
+					auto& component = entity.GetComponent<SkinnedMeshComponent>();
+					if (component.DisplayDebugAABB)
+						FP_Data.Debug_RenderAABB.push_back(component.TransformedAABB.GetGlobalBoundsMat4());
+				}
 			}
 
 			// Back-to-Front Sorting - Transparent Objects
@@ -2198,6 +2480,9 @@ namespace Louron {
 
 						if (entity.HasComponent<MeshFilterComponent>())
 							bounds_matricies.push_back(entity.GetComponent<MeshFilterComponent>().TransformedAABB.GetGlobalBoundsMat4());
+
+						if (entity.HasComponent<SkinnedMeshComponent>())
+							bounds_matricies.push_back(entity.GetComponent<SkinnedMeshComponent>().TransformedAABB.GetGlobalBoundsMat4());
 					}
 
 					Renderer::DrawInstancedDebugCube(bounds_matricies);
@@ -2235,6 +2520,9 @@ namespace Louron {
 		glUseProgram(0);
 	}
 
+	/// <summary>
+	/// Render the Scene to a FBO Quad.
+	/// </summary>
 	void ForwardPlusPipeline::RenderFBOQuad() {
 
 		auto scene_ref = m_Scene.lock();
@@ -2267,6 +2555,9 @@ namespace Louron {
 		}
 	}
 
+	/// <summary>
+	/// Frustum/Sphere Intersection Test
+	/// </summary>
 	bool ForwardPlusPipeline::IsSphereInsideFrustum(const Bounds_Sphere& bounds, const Frustum& frustum) {
 		for (const auto& plane : frustum.planes) {
 			float distance = glm::dot(plane.normal, bounds.BoundsCentre) + plane.distance;

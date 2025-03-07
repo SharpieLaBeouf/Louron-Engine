@@ -56,6 +56,16 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 					selected_entity.AddComponent<MeshRendererComponent>();
 			}
 
+			if (ImGui::MenuItem("Add SkinnedMesh")) {
+				if (!selected_entity.HasComponent<SkinnedMeshComponent>())
+					selected_entity.AddComponent<SkinnedMeshComponent>();
+			}
+
+			if (ImGui::MenuItem("Add Animator")) {
+				if (!selected_entity.HasComponent<AnimatorComponent>())
+					selected_entity.AddComponent<AnimatorComponent>();
+			}
+
 			if (ImGui::MenuItem("Add LOD Mesh Component")) {
 				if (!selected_entity.HasComponent<LODMeshComponent>())
 					selected_entity.AddComponent<LODMeshComponent>();
@@ -164,19 +174,22 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
-		if (ImGui::DragFloat("##Local PositionX", &value.x, 0.1f, 0, 0, "%.2f")) updated = true;
+		std::string label = "##Local PositionX" + std::to_string(selected_entity.GetUUID());
+		if (ImGui::DragFloat(label.c_str(), &value.x, 0.1f, 0, 0, "%.2f")) updated = true;
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
-		if (ImGui::DragFloat("##Local PositionY", &value.y, 0.1f, 0, 0, "%.2f")) updated = true;
+		label = "##Local PositionY" + std::to_string(selected_entity.GetUUID());
+		if (ImGui::DragFloat(label.c_str(), &value.y, 0.1f, 0, 0, "%.2f")) updated = true;
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
-		if (ImGui::DragFloat("##Local PositionZ", &value.z, 0.1f, 0, 0, "%.2f")) updated = true;
+		label = "##Local PositionZ" + std::to_string(selected_entity.GetUUID());
+		if (ImGui::DragFloat(label.c_str(), &value.z, 0.1f, 0, 0, "%.2f")) updated = true;
 
 		if (updated) entity_transform.SetPosition(value);
 
@@ -190,19 +203,22 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
-		if (ImGui::DragFloat("##Local RotationX", &value.x, 0.1f, 0, 0, "%.2f")) updated = true;
+		label = "##Local RotationX" + std::to_string(selected_entity.GetUUID());
+		if (ImGui::DragFloat(label.c_str(), &value.x, 0.1f, 0, 0, "%.2f")) updated = true;
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
-		if (ImGui::DragFloat("##Local RotationY", &value.y, 0.1f, 0, 0, "%.2f")) updated = true;
+		label = "##Local RotationY" + std::to_string(selected_entity.GetUUID());
+		if (ImGui::DragFloat(label.c_str(), &value.y, 0.1f, 0, 0, "%.2f")) updated = true;
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
-		if (ImGui::DragFloat("##Local RotationZ", &value.z, 0.1f, 0, 0, "%.2f")) updated = true;
+		label = "##Local RotationZ" + std::to_string(selected_entity.GetUUID());
+		if (ImGui::DragFloat(label.c_str(), &value.z, 0.1f, 0, 0, "%.2f")) updated = true;
 
 		if (updated) entity_transform.SetRotation(value);
 
@@ -216,19 +232,22 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
-		if (ImGui::DragFloat("##Local ScaleX", &value.x, 0.1f, 0, 0, "%.2f")) updated = true;
+		label = "##Local ScaleX" + std::to_string(selected_entity.GetUUID());
+		if (ImGui::DragFloat(label.c_str(), &value.x, 0.1f, 0, 0, "%.2f")) updated = true;
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
-		if (ImGui::DragFloat("##Local ScaleY", &value.y, 0.1f, 0, 0, "%.2f")) updated = true;
+		label = "##Local ScaleY" + std::to_string(selected_entity.GetUUID());
+		if (ImGui::DragFloat(label.c_str(), &value.y, 0.1f, 0, 0, "%.2f")) updated = true;
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
-		if (ImGui::DragFloat("##Local ScaleZ", &value.z, 0.1f, 0, 0, "%.2f")) updated = true;
+		label = "##Local ScaleZ" + std::to_string(selected_entity.GetUUID());
+		if (ImGui::DragFloat(label.c_str(), &value.z, 0.1f, 0, 0, "%.2f")) updated = true;
 
 		if (updated) entity_transform.SetScale(value);
 
@@ -582,6 +601,27 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 						L_APP_WARN("Invalid Asset Type Dropped on Skybox Material Target.");
 					}
 				}
+
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+
+					std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+					std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+
+					if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
+
+						AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
+
+						if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Material_Skybox) {
+							component.SkyboxMaterialAssetHandle = dropped_asset_handle;
+						}
+						else {
+							L_APP_WARN("Invalid Asset Type Dropped on Skybox Material Target.");
+						}
+					}
+					else {
+						L_APP_WARN("Invalid File Path Dropped on Skybox Material Target.");
+					}
+				}
 				ImGui::EndDragDropTarget();
 			}
 
@@ -781,6 +821,571 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 
 	}
 
+	if (selected_entity.HasComponent<SkinnedMeshComponent>())
+	{
+		ImGui::Dummy({ 0.0f, 5.0f });
+
+		ImGui::BeginChild("##Skinned Mesh Child", {}, ImGuiChildFlags_AutoResizeY);
+
+		if (ImGui::TreeNodeEx(("Skinned Mesh Component##" + selected_entity.GetName()).c_str(), tree_node_flags)) {
+			auto& component = selected_entity.GetComponent<SkinnedMeshComponent>();
+
+			std::string asset_mesh_name;
+			ImVec4 text_colour = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+
+			if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(component.StaticMeshHandle)) 
+			{
+				asset_mesh_name = Project::GetStaticEditorAssetManager()->GetMetadata(component.StaticMeshHandle).AssetName;
+			}
+			else if (component.StaticMeshHandle != NULL_UUID) 
+			{
+				asset_mesh_name = "Asset Handle Invalid: " + std::to_string(component.StaticMeshHandle);
+				text_colour = { 1.0f, 0.35f, 0.35f, 1.0f };
+			}
+			else 
+			{
+				asset_mesh_name = "None";
+			}
+
+			char asset_name_buf[256];
+			strncpy_s(asset_name_buf, asset_mesh_name.c_str(), sizeof(asset_name_buf));
+			asset_name_buf[sizeof(asset_name_buf) - 1] = '\0'; // Ensure null-termination
+
+			ImGui::Columns(2, "skinned_mesh_columns", false);
+			ImGui::SetColumnWidth(-1, first_coloumn_width);
+			ImGui::Text("Skinned Mesh Filter");
+			ImGui::NextColumn();
+
+			ImGui::PushStyleColor(ImGuiCol_Text, text_colour);
+			ImGui::PushStyleVar(ImGuiStyleVar_DisabledAlpha, 1.0f);
+
+			ImGui::BeginDisabled(true);
+			{
+
+				float buttonWidth = ImGui::CalcTextSize("...").x + ImGui::GetStyle().FramePadding.x * 2;
+				float availableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
+				ImGui::PushItemWidth(availableWidth);
+
+				ImGui::InputText("##SkinnedMeshFilterName", asset_name_buf, sizeof(asset_name_buf), ImGuiInputTextFlags_ReadOnly);
+
+				ImGui::PopItemWidth();
+			}
+			ImGui::EndDisabled();
+			ImGui::PopStyleVar();
+			ImGui::PopStyleColor();
+
+			// Drag target
+			if (ImGui::BeginDragDropTarget()) 
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE")) 
+				{
+					AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+
+					if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Mesh) {
+						component.StaticMeshHandle = dropped_asset_handle;
+						component.AABBNeedsUpdate = true;
+						component.OctreeNeedsUpdate = true;
+						AssetManager::GetAsset<StaticMesh>(component.StaticMeshHandle); // Force load the Asset on the main thread/GL context
+					}
+					else {
+						L_APP_WARN("Invalid Asset Type Dropped on Skinned Mesh Filter Target.");
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			ImGui::SameLine();
+			if (ImGui::Button("...")) {
+				L_APP_INFO("Lets Implement Opening an Asset Directory Window - FOR MESHES!");
+			}
+
+			ImGui::NextColumn();
+
+			ImGui::Text("Show Debug AABB");
+			ImGui::NextColumn();
+			ImGui::Checkbox("##DebugAABBCheckBox", &component.DisplayDebugAABB);
+
+			ImGui::Columns(1);
+
+			ImGui::Dummy({ 0.0f, 2.5f });
+			ImGui::Separator();
+			ImGui::Dummy({ 0.0f, 2.5f });
+
+			if (ImGui::TreeNodeEx("Materials", tree_node_flags)) {
+
+				ImGui::Dummy({ 0.0f, 5.0f });
+
+				int i = 0;
+				ImGui::Columns(2, "skinned_mesh_material_columns", false);
+				ImGui::SetColumnWidth(-1, first_coloumn_width);
+
+				for (auto& pair : component.MaterialHandles) {
+
+					std::string material_name;
+					ImVec4 text_colour = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+
+					if (pair.first != NULL_UUID && AssetManager::IsAssetHandleValid(pair.first)) {
+						material_name = Project::GetStaticEditorAssetManager()->GetMetadata(pair.first).AssetName;
+					}
+					else if (pair.first != NULL_UUID) {
+						material_name = "Invalid Asset: " + std::to_string(pair.first);
+						text_colour = { 1.0f, 0.35f, 0.35f, 1.0f };
+					}
+					else {
+						material_name = "None";
+					}
+
+					char asset_name_buf[256];
+					strncpy_s(asset_name_buf, material_name.c_str(), sizeof(asset_name_buf));
+					asset_name_buf[sizeof(asset_name_buf) - 1] = '\0'; // Ensure null-termination
+
+					ImGui::Text("Element %i: ", i);
+
+					ImGui::NextColumn();
+
+					ImGui::PushStyleColor(ImGuiCol_Text, text_colour);
+					ImGui::PushStyleVar(ImGuiStyleVar_DisabledAlpha, 1.0f);
+
+					ImGui::BeginDisabled(true);
+					{
+						float buttonWidth = ImGui::CalcTextSize("...").x + ImGui::GetStyle().FramePadding.x * 2;
+						float availableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
+						ImGui::PushItemWidth(availableWidth);
+
+						ImGui::InputText("##MaterialName", asset_name_buf, sizeof(asset_name_buf), ImGuiInputTextFlags_ReadOnly);
+
+						ImGui::PopItemWidth();
+					}
+
+					ImGui::EndDisabled();
+
+					ImGui::PopStyleVar();
+					ImGui::PopStyleColor();
+
+					// Drag target
+					if (ImGui::BeginDragDropTarget()) {
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE"))
+						{
+							AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+
+							if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Material_Standard) {
+								pair.first = dropped_asset_handle;
+							}
+							else {
+								L_APP_WARN("Invalid Asset Type Dropped on Skinned Mesh Material Target.");
+							}
+						}
+
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+
+							std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+							std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+
+							if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
+
+								AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
+
+								if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Material_Standard) {
+									pair.first = dropped_asset_handle;
+								}
+								else {
+									L_APP_WARN("Invalid Asset Type Dropped on Skinned Mesh Material Target.");
+								}
+							}
+							else {
+								L_APP_WARN("Invalid File Path Dropped on Skinned Mesh Material Target.");
+							}
+						}
+						ImGui::EndDragDropTarget();
+					}
+
+					ImGui::SameLine();
+					if (ImGui::Button("...")) {
+						L_APP_INFO("Lets Implement Opening an Asset Directory Window - FOR MATERIALS!");
+					}
+
+					ImGui::NextColumn();
+					i++;
+				}
+
+				ImGui::Columns(1);
+
+				// Centered Button Row
+				ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x * 0.5f - (ImGui::CalcTextSize(" + ").x + ImGui::GetStyle().ItemSpacing.x) * 1.5f);
+
+				if (ImGui::SmallButton(" + "))
+				{
+					// Add a new entity (NULL_UUID by default)
+					component.MaterialHandles.push_back({ NULL_UUID, nullptr });
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::SmallButton(" - "))
+				{
+					if (component.MaterialHandles.size() > 1)
+						component.MaterialHandles.pop_back();
+				}
+
+				ImGui::TreePop();
+			}
+
+			std::shared_ptr<Skeleton> asset_skeleton;
+			if (AssetManager::IsAssetLoaded(component.SkeletonHandle))
+				asset_skeleton = AssetManager::GetAsset<Skeleton>(component.SkeletonHandle);
+
+			std::string label = "Skeleton";
+			if (!asset_skeleton) 
+			{
+				label += " - Invalid Skeleton";
+				ImGui::PushStyleColor(ImGuiCol_Text, {1.0f, 0.0f, 0.0f, 1.0f});
+			}
+
+			if (ImGui::TreeNodeEx(label.c_str(), tree_node_flags)) {
+
+				ImGui::Dummy({ 0.0f, 5.0f });
+
+				int i = 0;
+				ImGui::Columns(2, "skinned_mesh_bone_columns", false);
+				ImGui::SetColumnWidth(-1, first_coloumn_width);
+
+				std::function<void(BoneLayout&, int)> draw_bone_hierarchy = [&](BoneLayout& bone, int bone_level)
+				{
+					std::string text_label;
+					for (int i = 0; i < bone_level; i++)
+					{
+						text_label += " ";
+					}
+					text_label += bone.BoneName;
+					ImGui::Text(text_label.c_str());
+
+					ImGui::NextColumn();
+
+					ImGui::PushStyleColor(ImGuiCol_Text, text_colour);
+					ImGui::PushStyleVar(ImGuiStyleVar_DisabledAlpha, 1.0f);
+
+					ImGui::BeginDisabled(true);
+					{
+						float buttonWidth = ImGui::CalcTextSize("...").x + ImGui::GetStyle().FramePadding.x * 2;
+						float availableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
+						ImGui::PushItemWidth(availableWidth);
+
+						std::string label = "##BoneReference" + bone.BoneName;
+
+						Entity bone_entity = scene_ref->FindEntityByUUID(component.SkeletonBoneMapping[bone.BoneID]);
+						std::string entity_name = bone_entity ? bone_entity.GetName() : "Invalid Entity";
+
+						char entity_name_buf[256];
+						strncpy_s(entity_name_buf, entity_name.c_str(), sizeof(entity_name_buf));
+						entity_name_buf[sizeof(entity_name_buf) - 1] = '\0'; // Ensure null-termination
+
+						ImGui::InputText(label.c_str(), entity_name_buf, sizeof(entity_name_buf), ImGuiInputTextFlags_ReadOnly);
+
+						ImGui::PopItemWidth();
+					}
+
+					ImGui::EndDisabled();
+
+					ImGui::PopStyleVar();
+					ImGui::PopStyleColor();
+
+					if (ImGui::BeginDragDropTarget()) 
+					{
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_UUID"))
+						{
+							Louron::UUID dropped_uuid = *(const Louron::UUID*)payload->Data;
+
+							component.SkeletonBoneMapping[bone.BoneID] = dropped_uuid;
+
+						}
+
+						ImGui::EndDragDropTarget();
+					}
+
+					ImGui::NextColumn();
+
+					for (auto& child_bone : bone.BoneChildren)
+					{
+						draw_bone_hierarchy(child_bone, bone_level + 1);
+					}
+				};
+
+				std::string skeleton_asset_name;
+
+				if (component.SkeletonHandle == NULL_UUID)
+				{
+					skeleton_asset_name = "None (Skeleton)";
+				}
+				else if (!AssetManager::IsAssetLoaded(component.SkeletonHandle))
+				{
+					skeleton_asset_name = std::to_string(component.SkeletonHandle) + " (Invalid Handle)";
+				}
+				else
+				{
+					skeleton_asset_name = Project::GetStaticEditorAssetManager()->GetMetadata(component.SkeletonHandle).AssetName;
+				}
+
+				ImGui::Text("Skeleton");
+
+				ImGui::NextColumn();
+
+				// Display Skeleton Asset Name
+				{
+					ImGui::PushStyleColor(ImGuiCol_Text, text_colour);
+					ImGui::PushStyleVar(ImGuiStyleVar_DisabledAlpha, 1.0f);
+
+					ImGui::BeginDisabled(true);
+					{
+						float buttonWidth = ImGui::CalcTextSize("...").x + ImGui::GetStyle().FramePadding.x * 2;
+						float availableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
+						ImGui::PushItemWidth(availableWidth);
+
+						std::string label = "##SkeletonReference" + skeleton_asset_name;
+
+						char skeleton_asset_name_buf[256];
+						strncpy_s(skeleton_asset_name_buf, skeleton_asset_name.c_str(), sizeof(skeleton_asset_name_buf));
+						skeleton_asset_name_buf[sizeof(skeleton_asset_name_buf) - 1] = '\0'; // Ensure null-termination
+
+						ImGui::InputText(label.c_str(), skeleton_asset_name_buf, sizeof(skeleton_asset_name_buf), ImGuiInputTextFlags_ReadOnly);
+
+						ImGui::PopItemWidth();
+					}
+
+					ImGui::EndDisabled();
+
+					ImGui::PopStyleVar();
+					ImGui::PopStyleColor();
+
+					// Drag target
+					if (ImGui::BeginDragDropTarget()) 
+					{
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE"))
+						{
+							AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+
+							if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Skeleton) {
+								component.SkeletonHandle = dropped_asset_handle;
+							}
+							else {
+								L_APP_WARN("Invalid Asset Type Dropped on Skeleton Asset Target.");
+							}
+						}
+
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+
+							std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+							std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+
+							if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) 
+							{
+								AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
+
+								if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::ModelImport) 
+								{
+									const auto& asset_reg = Project::GetStaticEditorAssetManager()->GetAssetRegistry();
+									for (const auto& [handle, meta_data] : asset_reg)
+									{
+										if (meta_data.ParentAssetHandle == dropped_asset_handle && meta_data.Type == AssetType::Skeleton)
+										{
+											component.SkeletonHandle = handle;
+										}
+									}
+								}
+								else 
+								{
+									L_APP_WARN("Invalid Asset Type Dropped on Skinned Mesh Material Target.");
+								}
+							}
+							else 
+							{
+								L_APP_WARN("Invalid File Path Dropped on Skinned Mesh Material Target.");
+							}
+						}
+						ImGui::EndDragDropTarget();
+					}
+
+					ImGui::SameLine();
+					if (ImGui::Button("...")) {
+						L_APP_INFO("Lets Implement Opening an Asset Directory Window - FOR SKELETONS!");
+					}
+
+				}
+
+				ImGui::NextColumn();
+
+				if (asset_skeleton)
+				{
+					ImGui::Dummy({ 0.0f, 2.5f });
+					ImGui::Separator();
+					ImGui::Dummy({ 0.0f, 2.5f });
+
+					draw_bone_hierarchy(asset_skeleton->SkeletonLayout, 0);
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (!asset_skeleton)
+				ImGui::PopStyleColor();
+
+			ImGui::TreePop();
+		}
+
+		ImGui::EndChild();
+
+		ShowComponentContextPopup<SkinnedMeshComponent>("Skinned Mesh Component Options", selected_entity);
+
+		ImGui::Dummy({ 0.0f, 5.0f });
+		ImGui::Separator();
+	}
+
+	if (selected_entity.HasComponent<AnimatorComponent>())
+	{
+		ImGui::Dummy({ 0.0f, 5.0f });
+		ImGui::BeginChild("##Animator Component Child", {}, ImGuiChildFlags_AutoResizeY);
+
+		if (ImGui::TreeNodeEx(("Animator Component##" + selected_entity.GetName()).c_str(), tree_node_flags))
+		{
+			ImGui::Indent();
+			auto& component = selected_entity.GetComponent<AnimatorComponent>();
+
+			ImVec4 text_colour = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+
+			ImGui::Text("Current Animation:");
+
+			std::vector<const char*> animation_names;
+			for (const auto& handle : component.AnimationClipHandles)
+			{
+				if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(handle))
+				{
+					animation_names.push_back(Project::GetStaticEditorAssetManager()->GetMetadata(handle).AssetName.c_str());
+				}
+				else if (handle != NULL_UUID)
+				{
+					animation_names.push_back("Invalid Animation");
+				}
+				else
+				{
+					animation_names.push_back("None (Animation)");
+				}
+			}
+
+			ImGui::Combo("Current Animation", &component.CurrentClipIndex, animation_names.data(), static_cast<int>(animation_names.size()));
+
+			ImGui::Checkbox("Auto Play Animation", &component.IsPlaying);
+
+			ImGui::Checkbox("Looping", &component.IsLooping);
+
+			ImGui::DragFloat("Playback Speed", &component.PlaybackSpeed, 0.01f, 0.1f, 10.0f, "%.2f");
+
+			float max_duration = 1.0f;
+
+			if (component.CurrentClipIndex >= 0 && component.CurrentClipIndex < component.AnimationClipHandles.size() && Project::GetStaticEditorAssetManager()->IsAssetLoaded(component.AnimationClipHandles[component.CurrentClipIndex]))
+			{
+				max_duration = AssetManager::GetAsset<AnimationClip>(component.AnimationClipHandles[component.CurrentClipIndex]) ->GetDuration();
+			}
+
+			ImGui::SliderFloat("Current Time", &component.CurrentTime, 0.0f, max_duration, "%.2f");
+
+			ImGui::Dummy({ 0.0f, 2.5f });
+			ImGui::Separator();
+			ImGui::Dummy({ 0.0f, 2.5f });
+
+			if (ImGui::TreeNodeEx(("Animations##" + selected_entity.GetName()).c_str(), tree_node_flags)) {
+				
+				ImGui::Columns(2, "animations_columns", false);
+				ImGui::SetColumnWidth(-1, first_coloumn_width);
+
+				for (int i = 0; i < animation_names.size(); i++)
+				{
+					ImGui::Text(("Animation " + std::to_string(i)).c_str());
+
+					ImGui::NextColumn();
+
+					ImGui::PushStyleColor(ImGuiCol_Text, text_colour);
+					ImGui::PushStyleVar(ImGuiStyleVar_DisabledAlpha, 1.0f);
+
+					ImGui::BeginDisabled(true);
+					{
+						float buttonWidth = ImGui::CalcTextSize("...").x + ImGui::GetStyle().FramePadding.x * 2;
+						float availableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
+						ImGui::PushItemWidth(availableWidth);
+
+						char entity_name_buf[256];
+						strncpy_s(entity_name_buf, animation_names[i], sizeof(entity_name_buf));
+						entity_name_buf[sizeof(entity_name_buf) - 1] = '\0'; // Ensure null-termination
+
+						std::string label = "##AnimationName" + std::string(animation_names[i]);
+						ImGui::InputText(label.c_str(), entity_name_buf, sizeof(entity_name_buf), ImGuiInputTextFlags_ReadOnly);
+
+						ImGui::PopItemWidth();
+					}
+
+					ImGui::EndDisabled();
+
+					ImGui::PopStyleVar();
+					ImGui::PopStyleColor();
+
+					if (ImGui::BeginDragDropTarget())
+					{
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE"))
+						{
+							AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+
+							if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::AnimationClip) {
+								
+								component.AnimationClipHandles[i] = dropped_asset_handle;
+							}
+							else {
+								L_APP_WARN("Invalid Asset Type Dropped on Animation Target.");
+							}
+						}
+						ImGui::EndDragDropTarget();
+					}
+
+					ImGui::SameLine();
+					if (ImGui::Button("...")) {
+						L_APP_INFO("Lets Implement Opening an Asset Directory Window - FOR ANIMATIONS!");
+					}
+
+					ImGui::NextColumn();
+				}
+
+				ImGui::Columns(1);
+
+				// Centered Button Row
+				ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x * 0.5f - (ImGui::CalcTextSize(" + ").x + ImGui::GetStyle().ItemSpacing.x) * 1.5f);
+
+				if (ImGui::SmallButton(" + "))
+				{
+					// Add a new entity (NULL_UUID by default)
+					component.AnimationClipHandles.emplace_back(NULL_UUID);
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::SmallButton(" - "))
+				{
+					if (component.AnimationClipHandles.size() > 1)
+						component.AnimationClipHandles.pop_back();
+				}
+
+				ImGui::TreePop();
+			}
+
+
+			ImGui::Unindent();
+			ImGui::TreePop();
+		}
+
+		ImGui::EndChild();
+
+		ShowComponentContextPopup<AnimatorComponent>("Animator Component Options", selected_entity);
+
+		ImGui::Dummy({ 0.0f, 5.0f });
+		ImGui::Separator();
+	}
+
 	if (selected_entity.HasComponent<MeshFilterComponent>()) {
 
 		ImGui::Dummy({ 0.0f, 5.0f });
@@ -793,11 +1398,11 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			std::string mesh_filter_name;
 			ImVec4 text_colour = ImGui::GetStyleColorVec4(ImGuiCol_Text);
 
-			if (component.MeshFilterAssetHandle != NULL_UUID && Project::GetStaticEditorAssetManager()->IsAssetHandleValid(component.MeshFilterAssetHandle)) {
-				mesh_filter_name = Project::GetStaticEditorAssetManager()->GetMetadata(component.MeshFilterAssetHandle).AssetName;
+			if (component.StaticMeshHandle != NULL_UUID && Project::GetStaticEditorAssetManager()->IsAssetHandleValid(component.StaticMeshHandle)) {
+				mesh_filter_name = Project::GetStaticEditorAssetManager()->GetMetadata(component.StaticMeshHandle).AssetName;
 			}
-			else if (component.MeshFilterAssetHandle != NULL_UUID) {
-				mesh_filter_name = "Asset Handle Invalid: " + std::to_string(component.MeshFilterAssetHandle);
+			else if (component.StaticMeshHandle != NULL_UUID) {
+				mesh_filter_name = "Asset Handle Invalid: " + std::to_string(component.StaticMeshHandle);
 				text_colour = { 1.0f, 0.35f, 0.35f, 1.0f };
 			}
 			else {
@@ -837,10 +1442,10 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 					AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
 
 					if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Mesh) {
-						component.MeshFilterAssetHandle = dropped_asset_handle;
+						component.StaticMeshHandle = dropped_asset_handle;
 						component.AABBNeedsUpdate = true;
 						component.OctreeNeedsUpdate = true;
-						AssetManager::GetAsset<StaticMesh>(component.MeshFilterAssetHandle); // Force load the Asset on the main thread/GL context
+						AssetManager::GetAsset<StaticMesh>(component.StaticMeshHandle); // Force load the Asset on the main thread/GL context
 					}
 					else {
 						L_APP_WARN("Invalid Asset Type Dropped on Skybox Material Target.");
@@ -885,11 +1490,11 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 
 			auto& component = selected_entity.GetComponent<MeshRendererComponent>();
 
-			if (component.MeshRendererMaterialHandles.empty()) {
-				component.MeshRendererMaterialHandles.push_back({ NULL_UUID, nullptr });
+			if (component.MaterialHandles.empty()) {
+				component.MaterialHandles.push_back({ NULL_UUID, nullptr });
 			}
 
-			for (const auto& pair : component.MeshRendererMaterialHandles) {
+			for (const auto& pair : component.MaterialHandles) {
 				if (pair.first != NULL_UUID) {
 					material_list.push_back(pair.first);
 				}
@@ -924,7 +1529,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 				ImGui::Columns(2, "mesh_renderer_material_columns", false);
 				ImGui::SetColumnWidth(-1, first_coloumn_width);
 
-				for (auto& pair : component.MeshRendererMaterialHandles) {
+				for (auto& pair : component.MaterialHandles) {
 
 					std::string material_name;
 					ImVec4 text_colour = ImGui::GetStyleColorVec4(ImGuiCol_Text);
@@ -994,11 +1599,11 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 									pair.first = dropped_asset_handle;
 								}
 								else {
-									L_APP_WARN("Invalid Asset Type Dropped on Skybox Material Target.");
+									L_APP_WARN("Invalid Asset Type Dropped on Mesh Renderer Material Target.");
 								}
 							}
 							else {
-								L_APP_WARN("Invalid File Path Dropped on Skybox Material Target.");
+								L_APP_WARN("Invalid File Path Dropped on Mesh Renderer Material Target.");
 							}
 						}
 						ImGui::EndDragDropTarget();
@@ -1021,15 +1626,15 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 				if (ImGui::SmallButton(" + "))
 				{
 					// Add a new entity (NULL_UUID by default)
-					component.MeshRendererMaterialHandles.push_back({ NULL_UUID, nullptr });
+					component.MaterialHandles.push_back({ NULL_UUID, nullptr });
 				}
 
 				ImGui::SameLine();
 
 				if (ImGui::SmallButton(" - "))
 				{
-					if (component.MeshRendererMaterialHandles.size() > 1)
-						component.MeshRendererMaterialHandles.pop_back();
+					if (component.MaterialHandles.size() > 1)
+						component.MaterialHandles.pop_back();
 				}
 
 				ImGui::TreePop();
@@ -1569,7 +2174,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			if (selected_entity.HasComponent<MeshRendererComponent>())
 			{
 				auto& component = selected_entity.GetComponent<MeshRendererComponent>();
-				for (const auto& pair : component.MeshRendererMaterialHandles) {
+				for (const auto& pair : component.MaterialHandles) {
 					if (pair.first != NULL_UUID) {
 						material_list.push_back(pair.first);
 					}

@@ -19,6 +19,8 @@
 #include "Components/Skybox Component.h"
 #include "Components/Physics/Collider Components.h"
 #include "Components/Physics/Rigidbody Component.h"
+#include "Components/Animator Component.h"
+#include "Components/SkinnedMeshComponent.h"
 
 #include "Scene Systems/Physics System.h"
 
@@ -35,6 +37,7 @@
 
 // C++ Standard Library Headers
 #include <iomanip>
+#include <future>
 
 // External Vendor Library Headers
 #include <glm/gtc/quaternion.hpp>
@@ -289,9 +292,9 @@ namespace Louron {
 
 			std::vector<OctreeBounds<Entity>::OctreeData> data_sources;
 
-			auto bounds_view_mesh = dest_scene->GetAllEntitiesWith<MeshFilterComponent, MeshRendererComponent>();
-			for (const auto& entity_handle : bounds_view_mesh) {
-				auto& mesh_filter = bounds_view_mesh.get<MeshFilterComponent>(entity_handle);
+			auto static_mesh_view = dest_scene->GetAllEntitiesWith<MeshFilterComponent, MeshRendererComponent>();
+			for (const auto& entity_handle : static_mesh_view) {
+				auto& mesh_filter = static_mesh_view.get<MeshFilterComponent>(entity_handle);
 
 				// Ensure the AABB is up to date
 				mesh_filter.UpdateTransformedAABB();
@@ -306,16 +309,28 @@ namespace Louron {
 				data_sources.push_back(std::make_shared<OctreeDataSource<Entity>>(*mesh_filter.GetEntity(), aabb));
 			}
 
+			auto skinned_mesh_view = dest_scene->GetAllEntitiesWith<SkinnedMeshComponent>();
+			for (const auto& entity_handle : skinned_mesh_view) {
+				auto& skinned_mesh = skinned_mesh_view.get<SkinnedMeshComponent>(entity_handle);
+
+				// Ensure the AABB is up to date
+				skinned_mesh.UpdateTransformedAABB();
+
+				const auto& aabb = skinned_mesh.TransformedAABB;
+
+				if (!skinned_mesh.GetEntity()) {
+					L_CORE_ERROR("Cannot Insert Entity to Octree - Current Entity Is Invalid!");
+					continue;
+				}
+
+				data_sources.push_back(std::make_shared<OctreeDataSource<Entity>>(*skinned_mesh.GetEntity(), aabb));
+			}
+
 			octree_config.Looseness = 1.25f;
 			octree_config.PreferredDataSourceLimit = 8;
 
 			// Create the octree and insert data sources
 			dest_scene->m_Octree = std::make_shared<OctreeBounds<Entity>>(octree_config, data_sources);
-		}
-
-		auto view = dest_scene->GetAllEntitiesWith<IDComponent>();
-		for (auto& entity : view) {
-			Entity ent = { entity, dest_scene.get() };
 		}
 
 		return dest_scene;
@@ -500,7 +515,8 @@ namespace Louron {
 		entt::entity prefab_root_entity = prefab->m_RootEntity;
 		std::string prefab_name = prefab->m_PrefabName;
 
-		std::vector<Entity> LODMeshEntities; // So we can easily resolve the prefab handles to entity UUIDs
+		std::vector<Entity> LODMeshEntities;		// So we can easily resolve the prefab handles to entity UUIDs
+		std::vector<Entity> SkinnedMeshEntities;	// So we can easily resolve the prefab handles to entity UUIDs
 		std::unordered_map<Louron::UUID, Louron::UUID> PrefabUUID_To_EntityUUID{}; // Key == Prefab entt::entity, Value == instantiated_entity.GetUUID()
 
 		std::function<Entity(entt::entity, const UUID&)> copy_prefab_entity = [&](entt::entity start_prefab_entity, const UUID& parent_uuid) -> Entity {
@@ -653,17 +669,28 @@ namespace Louron {
 					instantiated_entity.AddComponent<LODMeshComponent>(component);
 					LODMeshEntities.push_back(instantiated_entity);
 				}
+
+				// 1.r. Skinned Mesh Component
+				if (prefab_registry->has<SkinnedMeshComponent>(start_prefab_entity)) {
+					auto& component = prefab_registry->get<SkinnedMeshComponent>(start_prefab_entity);
+					instantiated_entity.AddComponent<SkinnedMeshComponent>(component);
+					SkinnedMeshEntities.push_back(instantiated_entity);
+				}
+
+				// 1.s. Animator Component
+				if (prefab_registry->has<AnimatorComponent>(start_prefab_entity)) {
+					auto& component = prefab_registry->get<AnimatorComponent>(start_prefab_entity);
+					instantiated_entity.AddComponent<AnimatorComponent>(component);
+				}
 			}
 
 			// 2. Recurse Children
-			if (prefab_registry->has<HierarchyComponent>(start_prefab_entity)) {
-
+			if (prefab_registry->has<HierarchyComponent>(start_prefab_entity)) 
+			{
 				for (const auto& child_uuid : prefab_registry->get<HierarchyComponent>(start_prefab_entity).GetChildren())
 				{
-					Entity child_entity = copy_prefab_entity(prefab->FindEntityByUUID(child_uuid), instantiated_entity.GetUUID());
-
+					Entity child_entity = copy_prefab_entity(prefab->FindEntityByUUID(child_uuid), PrefabUUID_To_EntityUUID[(uint32_t)start_prefab_entity]);
 				}
-
 			}
 
 			return instantiated_entity;
@@ -688,6 +715,33 @@ namespace Louron {
 			}
 		}
 
+		// Resolve prefab handles to scene uuids
+		for (auto& entity : SkinnedMeshEntities)
+		{
+			if (!entity || !entity.HasComponent<SkinnedMeshComponent>())
+				continue;
+
+			auto& component = entity.GetComponent<SkinnedMeshComponent>();
+
+			std::shared_ptr<Skeleton> asset_skeleton = AssetManager::GetAsset<Skeleton>(component.SkeletonHandle);
+
+			std::function<void(BoneLayout&)> recurse_bone_tree;
+
+			recurse_bone_tree = [&](BoneLayout& current_bone)
+			{
+				component.SkeletonBoneMapping[current_bone.BoneID] = (uint32_t)PrefabUUID_To_EntityUUID[component.SkeletonBoneMapping[current_bone.BoneID]];
+
+				for (auto& child_bone : current_bone.BoneChildren)
+				{
+					recurse_bone_tree(child_bone);
+				}
+			};
+
+			recurse_bone_tree(asset_skeleton->SkeletonLayout);
+
+			component.ComputeFinalBoneTransformations();
+		}
+
 		return instantiated_entity;
 	}
 
@@ -702,6 +756,7 @@ namespace Louron {
 	void Scene::OnStart() {
 
 		m_SceneConfig.ScenePipeline->OnStartPipeline(std::static_pointer_cast<Scene>(shared_from_this()));
+
 	}
 
 	void Scene::OnStop() {
@@ -716,6 +771,11 @@ namespace Louron {
 		m_IsSimulating = false;
 
 		m_SceneConfig.ScenePipeline->OnStopPipeline();
+
+		if (m_AnimationThread.joinable())
+		{
+			m_AnimationThread.join();
+		}
 	}
 
 	// RUNTIME
@@ -876,16 +936,21 @@ namespace Louron {
 	}
 
 	// UPDATE
-	void Scene::OnUpdate(EditorCamera* editor_camera) {
+	void Scene::OnUpdate() {
 
 		L_PROFILE_SCOPE("Scene - OnUpdate");
 		// Physics
-		if (!m_IsPaused && (m_IsRunning || m_IsSimulating)) {
+		if (!m_IsPaused && (m_IsRunning || m_IsSimulating)) 
+		{
+			L_PROFILE_SCOPE_ACCUMULATIVE("Scene - Physics");
+
 			PhysicsSystem::UpdatePhysicsObjects(std::static_pointer_cast<Scene>(shared_from_this()));
 		}
 
 		// Scripts - only if running
-		if (!m_IsPaused && m_IsRunning) {
+		if (!m_IsPaused && m_IsRunning) 
+		{
+			L_PROFILE_SCOPE_ACCUMULATIVE("Scene - Scripts");
 
 			// See if any entities that have inactive scripts have recently become active
 			ScriptManager::CheckInactiveScriptsOnEntities();
@@ -893,8 +958,79 @@ namespace Louron {
 			auto script_entities = m_Registry.view<ScriptComponent>();
 			for (auto script_entity : script_entities)
 				ScriptManager::OnUpdateEntity({ script_entity, this });
-			
 		}
+
+		// Animation Update
+		if (!m_IsPaused && (m_IsRunning || m_IsSimulating))
+		{
+			L_PROFILE_SCOPE("Scene - Animation");
+
+			// Wait for Animation Processing to Finish
+			if (m_AnimationThread.joinable())
+			{
+				L_PROFILE_SCOPE("Scene - Animation Thread Wait");
+				m_AnimationThread.join();
+			}
+
+			static std::unordered_map<UUID, glm::mat4> updated_bone_transformations{};
+
+			// Fetch Skinned Meshes
+			auto animator_view = GetAllEntitiesWith<SkinnedMeshComponent, AnimatorComponent>();
+			std::vector<std::future<void>> futures;
+			for (const auto& entity_handle : animator_view)
+			{
+				// Push ASYNC Futures into Vector to Compute Final Bone Transformations for GPU
+				futures.push_back(std::async(std::launch::async, [&, entity_handle]()
+					{
+						auto& skinned_mesh_component = animator_view.get<SkinnedMeshComponent>(entity_handle);
+						skinned_mesh_component.ComputeFinalBoneTransformations(updated_bone_transformations);
+					})
+				);
+			}
+
+			// Wait for futures to finish
+			for (auto& future : futures)
+				future.wait();
+
+			// Dispatch Worker for Results Next Frame
+			m_AnimationThread = std::thread([&]()
+			{
+				L_PROFILE_SCOPE("Scene - Animation Thread Work");
+
+				// Double buffering for bone transformations to prevent read/write conflicts
+				std::unordered_map<UUID, glm::mat4> next_updated_bone_transformations;
+				next_updated_bone_transformations.reserve(updated_bone_transformations.size());
+
+				std::vector<std::future<std::unordered_map<UUID, glm::mat4>>> futures;
+				auto animator_thread_view = GetAllEntitiesWith<SkinnedMeshComponent, AnimatorComponent>();
+				for (const auto& entity_handle : animator_thread_view)
+				{
+					// Push ASYNC Futures into Vector to Update Animation States
+					futures.push_back(std::async(std::launch::async, [&, entity_handle]() -> std::unordered_map<UUID, glm::mat4>
+						{
+							auto& animator_component = animator_thread_view.get<AnimatorComponent>(entity_handle);
+							return animator_component.UpdateDeferred();
+						})
+					);
+				}
+
+				// Wait for futures to finish
+				for (auto& future : futures)
+				{
+					future.wait();
+					const auto& result = future.get();
+					next_updated_bone_transformations.insert(result.begin(), result.end());
+				}
+
+				updated_bone_transformations.swap(next_updated_bone_transformations);
+			});
+		}
+
+	}
+
+	void Scene::OnRender(EditorCamera* editor_camera)
+	{
+		L_PROFILE_SCOPE("Scene - OnRender");
 
 		CameraBase* camera = nullptr;
 		Entity camera_entity = GetPrimaryCameraEntity();
@@ -911,32 +1047,33 @@ namespace Louron {
 
 			switch (camera->GetCameraType()) {
 
-				case Camera_Type::None:
-				{
-					camera_position = {};
-					projection_matrix = glm::mat4(1.0f);
-					view_matrix = glm::mat4(1.0f);
-					break;
-				}
+			case Camera_Type::None:
+			{
+				camera_position = {};
+				projection_matrix = glm::mat4(1.0f);
+				view_matrix = glm::mat4(1.0f);
+				break;
+			}
 
-				case Camera_Type::SceneCamera:
-				{
-					camera_position = GetPrimaryCameraEntity().GetTransform().GetGlobalPosition();
-					projection_matrix = camera->GetProjection();
-					// If we are using a scene camera which is attached to a 
-					// camera compoennt, it is simple to get the view matrix 
-					// by simply inverting the global transform matrix
-					view_matrix = glm::inverse(GetPrimaryCameraEntity().GetTransform().GetGlobalTransform());
-					break;
-				}
+			case Camera_Type::SceneCamera:
+			{
+				camera_position = GetPrimaryCameraEntity().GetTransform().GetGlobalPosition();
+				projection_matrix = camera->GetProjection();
+				// If we are using a scene camera which is attached to a 
+				// camera compoennt, it is simple to get the view matrix 
+				// by simply inverting the global transform matrix
+				view_matrix = glm::inverse(GetPrimaryCameraEntity().GetTransform().GetGlobalTransform());
+				break;
+			}
 
-				case Camera_Type::EditorCamera:
-				{
-					camera_position = editor_camera->GetPosition();
-					projection_matrix = camera->GetProjection();
-					view_matrix = camera->GetViewMatrix();
-					break;
-				}
+			case Camera_Type::EditorCamera:
+			{
+				if (editor_camera) camera_position = editor_camera->GetPosition();
+
+				projection_matrix = camera->GetProjection();
+				view_matrix = camera->GetViewMatrix();
+				break;
+			}
 			}
 
 			// Always Render
@@ -961,7 +1098,6 @@ namespace Louron {
 			Renderer::ClearBuffer(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_SceneFrameBuffer->Unbind();
 		}
-
 	}
 
 	void Scene::OnUpdateGUI() {
@@ -973,16 +1109,19 @@ namespace Louron {
 	void Scene::OnFixedUpdate() {
 
 		// Scripts - only if running
-		if (!m_IsPaused && m_IsRunning) {
+		if (!m_IsPaused && m_IsRunning) 
+		{
+			L_PROFILE_SCOPE_ACCUMULATIVE("Scene - Scripts");
 
 			auto script_entities = m_Registry.view<ScriptComponent>();
 			for (auto script_entity : script_entities)
 				ScriptManager::OnFixedUpdateEntity({ script_entity, this });
-
 		}
 
 		// Physics
-		if (!m_IsPaused && (m_IsRunning || m_IsSimulating)) {
+		if (!m_IsPaused && (m_IsRunning || m_IsSimulating)) 
+		{
+			L_PROFILE_SCOPE_ACCUMULATIVE("Scene - Physics");
 
 			m_IsPhysicsCalculating = true;
 

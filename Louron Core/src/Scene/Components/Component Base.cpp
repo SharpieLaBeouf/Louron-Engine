@@ -14,122 +14,132 @@ namespace Louron
 	void ComponentBase::SetEntity(const Entity& entity) { m_Entity = std::make_shared<Entity>(entity); }
 
 	template<typename T>
-	T& ComponentBase::GetComponent() { return (m_Entity) ? m_Entity->GetComponent<T>() : Entity::GetBlankComponent<T>(); }
+	T& ComponentBase::GetComponent() const { return (m_Entity) ? m_Entity->GetComponent<T>() : Entity::GetBlankComponent<T>(); }
 
 	template<typename T>
-	T& ComponentBase::GetComponentInParent() { return (m_Entity) ? m_Entity->GetComponentInParent<T>() : Entity::GetBlankComponent<T>(); }
+	T& ComponentBase::GetComponentInParent() const { return (m_Entity) ? m_Entity->GetComponentInParent<T>() : Entity::GetBlankComponent<T>(); }
 
 	template<typename T>
-	T& ComponentBase::GetComponentInChild() { return (m_Entity) ? m_Entity->GetComponentInChild<T>() : Entity::GetBlankComponent<T>(); }
+	T& ComponentBase::GetComponentInChild() const { return (m_Entity) ? m_Entity->GetComponentInChild<T>() : Entity::GetBlankComponent<T>(); }
 	
 	template<typename T>
-	std::vector<Entity> ComponentBase::GetComponentsInParents() { return (m_Entity) ? m_Entity->GetComponentsInParents<T>() : std::vector<Entity>{}; }
+	std::vector<Entity> ComponentBase::GetComponentsInParents() const { return (m_Entity) ? m_Entity->GetComponentsInParents<T>() : std::vector<Entity>{}; }
 
 	template<typename T>
-	std::vector<Entity> ComponentBase::GetComponentsInChildren() { return (m_Entity) ? m_Entity->GetComponentsInChildren<T>() : std::vector<Entity>{}; }
+	std::vector<Entity> ComponentBase::GetComponentsInChildren() const { return (m_Entity) ? m_Entity->GetComponentsInChildren<T>() : std::vector<Entity>{}; }
 
 	// Specialisations for GetComponent
-	template ComponentBase&					ComponentBase::GetComponent<ComponentBase>();
-	template IDComponent&					ComponentBase::GetComponent<IDComponent>();
-	template TagComponent&					ComponentBase::GetComponent<TagComponent>();
-	template HierarchyComponent&			ComponentBase::GetComponent<HierarchyComponent>();
-	template ScriptComponent&				ComponentBase::GetComponent<ScriptComponent>();
-	template TransformComponent&			ComponentBase::GetComponent<TransformComponent>();
-	template CameraComponent&				ComponentBase::GetComponent<CameraComponent>();
-	template AudioListener&					ComponentBase::GetComponent<AudioListener>();
-	template AudioEmitter&					ComponentBase::GetComponent<AudioEmitter>();
-	template MeshFilterComponent&			ComponentBase::GetComponent<MeshFilterComponent>();
-	template MeshRendererComponent&			ComponentBase::GetComponent<MeshRendererComponent>();
-	template LODMeshComponent&				ComponentBase::GetComponent<LODMeshComponent>();
-	template SkyboxComponent&				ComponentBase::GetComponent<SkyboxComponent>();
-	template PointLightComponent&			ComponentBase::GetComponent<PointLightComponent>();
-	template SpotLightComponent&			ComponentBase::GetComponent<SpotLightComponent>();
-	template DirectionalLightComponent&		ComponentBase::GetComponent<DirectionalLightComponent>();
-	template RigidbodyComponent&			ComponentBase::GetComponent<RigidbodyComponent>();
-	template BoxColliderComponent&			ComponentBase::GetComponent<BoxColliderComponent>();
-	template SphereColliderComponent&		ComponentBase::GetComponent<SphereColliderComponent>();
+	template ComponentBase&					ComponentBase::GetComponent<ComponentBase>() const;
+	template IDComponent&					ComponentBase::GetComponent<IDComponent>() const;
+	template TagComponent&					ComponentBase::GetComponent<TagComponent>() const;
+	template HierarchyComponent&			ComponentBase::GetComponent<HierarchyComponent>() const;
+	template ScriptComponent&				ComponentBase::GetComponent<ScriptComponent>() const;
+	template TransformComponent&			ComponentBase::GetComponent<TransformComponent>() const;
+	template CameraComponent&				ComponentBase::GetComponent<CameraComponent>() const;
+	template AudioListener&					ComponentBase::GetComponent<AudioListener>() const;
+	template AudioEmitter&					ComponentBase::GetComponent<AudioEmitter>() const;
+	template MeshFilterComponent&			ComponentBase::GetComponent<MeshFilterComponent>() const;
+	template MeshRendererComponent&			ComponentBase::GetComponent<MeshRendererComponent>() const;
+	template SkinnedMeshComponent&			ComponentBase::GetComponent<SkinnedMeshComponent>() const;
+	template AnimatorComponent&				ComponentBase::GetComponent<AnimatorComponent>() const;
+	template LODMeshComponent&				ComponentBase::GetComponent<LODMeshComponent>() const;
+	template SkyboxComponent&				ComponentBase::GetComponent<SkyboxComponent>() const;
+	template PointLightComponent&			ComponentBase::GetComponent<PointLightComponent>() const;
+	template SpotLightComponent&			ComponentBase::GetComponent<SpotLightComponent>() const;
+	template DirectionalLightComponent&		ComponentBase::GetComponent<DirectionalLightComponent>() const;
+	template RigidbodyComponent&			ComponentBase::GetComponent<RigidbodyComponent>() const;
+	template BoxColliderComponent&			ComponentBase::GetComponent<BoxColliderComponent>() const;
+	template SphereColliderComponent&		ComponentBase::GetComponent<SphereColliderComponent>() const;
 	
 	// Specialisations for GetComponentInParent
-	template ComponentBase&					ComponentBase::GetComponentInParent<ComponentBase>();
-	template IDComponent&					ComponentBase::GetComponentInParent<IDComponent>();
-	template TagComponent&					ComponentBase::GetComponentInParent<TagComponent>();
-	template HierarchyComponent&			ComponentBase::GetComponentInParent<HierarchyComponent>();
-	template ScriptComponent&				ComponentBase::GetComponentInParent<ScriptComponent>();
-	template TransformComponent&			ComponentBase::GetComponentInParent<TransformComponent>();
-	template CameraComponent&				ComponentBase::GetComponentInParent<CameraComponent>();
-	template AudioListener&					ComponentBase::GetComponentInParent<AudioListener>();
-	template AudioEmitter&					ComponentBase::GetComponentInParent<AudioEmitter>();
-	template MeshFilterComponent&			ComponentBase::GetComponentInParent<MeshFilterComponent>();
-	template MeshRendererComponent&			ComponentBase::GetComponentInParent<MeshRendererComponent>();
-	template LODMeshComponent&				ComponentBase::GetComponentInParent<LODMeshComponent>();
-	template SkyboxComponent&				ComponentBase::GetComponentInParent<SkyboxComponent>();
-	template PointLightComponent&			ComponentBase::GetComponentInParent<PointLightComponent>();
-	template SpotLightComponent&			ComponentBase::GetComponentInParent<SpotLightComponent>();
-	template DirectionalLightComponent&		ComponentBase::GetComponentInParent<DirectionalLightComponent>();
-	template RigidbodyComponent&			ComponentBase::GetComponentInParent<RigidbodyComponent>();
-	template BoxColliderComponent&			ComponentBase::GetComponentInParent<BoxColliderComponent>();
-	template SphereColliderComponent&		ComponentBase::GetComponentInParent<SphereColliderComponent>();
+	template ComponentBase&					ComponentBase::GetComponentInParent<ComponentBase>() const;
+	template IDComponent&					ComponentBase::GetComponentInParent<IDComponent>() const;
+	template TagComponent&					ComponentBase::GetComponentInParent<TagComponent>() const;
+	template HierarchyComponent&			ComponentBase::GetComponentInParent<HierarchyComponent>() const;
+	template ScriptComponent&				ComponentBase::GetComponentInParent<ScriptComponent>() const;
+	template TransformComponent&			ComponentBase::GetComponentInParent<TransformComponent>() const;
+	template CameraComponent&				ComponentBase::GetComponentInParent<CameraComponent>() const;
+	template AudioListener&					ComponentBase::GetComponentInParent<AudioListener>() const;
+	template AudioEmitter&					ComponentBase::GetComponentInParent<AudioEmitter>() const;
+	template MeshFilterComponent&			ComponentBase::GetComponentInParent<MeshFilterComponent>() const;
+	template MeshRendererComponent&			ComponentBase::GetComponentInParent<MeshRendererComponent>() const;
+	template SkinnedMeshComponent&			ComponentBase::GetComponentInParent<SkinnedMeshComponent>() const;
+	template AnimatorComponent&				ComponentBase::GetComponentInParent<AnimatorComponent>() const;
+	template LODMeshComponent&				ComponentBase::GetComponentInParent<LODMeshComponent>() const;
+	template SkyboxComponent&				ComponentBase::GetComponentInParent<SkyboxComponent>() const;
+	template PointLightComponent&			ComponentBase::GetComponentInParent<PointLightComponent>() const;
+	template SpotLightComponent&			ComponentBase::GetComponentInParent<SpotLightComponent>() const;
+	template DirectionalLightComponent&		ComponentBase::GetComponentInParent<DirectionalLightComponent>() const;
+	template RigidbodyComponent&			ComponentBase::GetComponentInParent<RigidbodyComponent>() const;
+	template BoxColliderComponent&			ComponentBase::GetComponentInParent<BoxColliderComponent>() const;
+	template SphereColliderComponent&		ComponentBase::GetComponentInParent<SphereColliderComponent>() const;
 	
 	// Specialisations for GetComponentInChild
-	template ComponentBase&					ComponentBase::GetComponentInChild<ComponentBase>();
-	template IDComponent&					ComponentBase::GetComponentInChild<IDComponent>();
-	template TagComponent&					ComponentBase::GetComponentInChild<TagComponent>();
-	template HierarchyComponent&			ComponentBase::GetComponentInChild<HierarchyComponent>();
-	template ScriptComponent&				ComponentBase::GetComponentInChild<ScriptComponent>();
-	template TransformComponent&			ComponentBase::GetComponentInChild<TransformComponent>();
-	template CameraComponent&				ComponentBase::GetComponentInChild<CameraComponent>();
-	template AudioListener&					ComponentBase::GetComponentInChild<AudioListener>();
-	template AudioEmitter&					ComponentBase::GetComponentInChild<AudioEmitter>();
-	template MeshFilterComponent&			ComponentBase::GetComponentInChild<MeshFilterComponent>();
-	template MeshRendererComponent&			ComponentBase::GetComponentInChild<MeshRendererComponent>();
-	template LODMeshComponent&				ComponentBase::GetComponentInChild<LODMeshComponent>();
-	template SkyboxComponent&				ComponentBase::GetComponentInChild<SkyboxComponent>();
-	template PointLightComponent&			ComponentBase::GetComponentInChild<PointLightComponent>();
-	template SpotLightComponent&			ComponentBase::GetComponentInChild<SpotLightComponent>();
-	template DirectionalLightComponent&		ComponentBase::GetComponentInChild<DirectionalLightComponent>();
-	template RigidbodyComponent&			ComponentBase::GetComponentInChild<RigidbodyComponent>();
-	template BoxColliderComponent&			ComponentBase::GetComponentInChild<BoxColliderComponent>();
-	template SphereColliderComponent&		ComponentBase::GetComponentInChild<SphereColliderComponent>();
+	template ComponentBase&					ComponentBase::GetComponentInChild<ComponentBase>() const;
+	template IDComponent&					ComponentBase::GetComponentInChild<IDComponent>() const;
+	template TagComponent&					ComponentBase::GetComponentInChild<TagComponent>() const;
+	template HierarchyComponent&			ComponentBase::GetComponentInChild<HierarchyComponent>() const;
+	template ScriptComponent&				ComponentBase::GetComponentInChild<ScriptComponent>() const;
+	template TransformComponent&			ComponentBase::GetComponentInChild<TransformComponent>() const;
+	template CameraComponent&				ComponentBase::GetComponentInChild<CameraComponent>() const;
+	template AudioListener&					ComponentBase::GetComponentInChild<AudioListener>() const;
+	template AudioEmitter&					ComponentBase::GetComponentInChild<AudioEmitter>() const;
+	template MeshFilterComponent&			ComponentBase::GetComponentInChild<MeshFilterComponent>() const;
+	template MeshRendererComponent&			ComponentBase::GetComponentInChild<MeshRendererComponent>() const;
+	template SkinnedMeshComponent&			ComponentBase::GetComponentInChild<SkinnedMeshComponent>() const;
+	template AnimatorComponent&				ComponentBase::GetComponentInChild<AnimatorComponent>() const;
+	template LODMeshComponent&				ComponentBase::GetComponentInChild<LODMeshComponent>() const;
+	template SkyboxComponent&				ComponentBase::GetComponentInChild<SkyboxComponent>() const;
+	template PointLightComponent&			ComponentBase::GetComponentInChild<PointLightComponent>() const;
+	template SpotLightComponent&			ComponentBase::GetComponentInChild<SpotLightComponent>() const;
+	template DirectionalLightComponent&		ComponentBase::GetComponentInChild<DirectionalLightComponent>() const;
+	template RigidbodyComponent&			ComponentBase::GetComponentInChild<RigidbodyComponent>() const;
+	template BoxColliderComponent&			ComponentBase::GetComponentInChild<BoxColliderComponent>() const;
+	template SphereColliderComponent&		ComponentBase::GetComponentInChild<SphereColliderComponent>() const;
 	
 	// Specialisations for GetComponentsInParents
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<ComponentBase>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<IDComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<TagComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<HierarchyComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<ScriptComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<TransformComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<CameraComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<AudioListener>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<AudioEmitter>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<MeshFilterComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<MeshRendererComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<LODMeshComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<SkyboxComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<PointLightComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<SpotLightComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<DirectionalLightComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<RigidbodyComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<BoxColliderComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<SphereColliderComponent>();
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<ComponentBase>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<IDComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<TagComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<HierarchyComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<ScriptComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<TransformComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<CameraComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<AudioListener>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<AudioEmitter>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<MeshFilterComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<MeshRendererComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<SkinnedMeshComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<AnimatorComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<LODMeshComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<SkyboxComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<PointLightComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<SpotLightComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<DirectionalLightComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<RigidbodyComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<BoxColliderComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<SphereColliderComponent>() const;
 
 	// Specialisations for GetComponentsInChildren
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<ComponentBase>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<IDComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<TagComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<HierarchyComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<ScriptComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<TransformComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<CameraComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<AudioListener>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<AudioEmitter>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<MeshFilterComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<MeshRendererComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<LODMeshComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<SkyboxComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<PointLightComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<SpotLightComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<DirectionalLightComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<RigidbodyComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<BoxColliderComponent>();
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<SphereColliderComponent>();
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<ComponentBase>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<IDComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<TagComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<HierarchyComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<ScriptComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<TransformComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<CameraComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<AudioListener>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<AudioEmitter>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<MeshFilterComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<MeshRendererComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<SkinnedMeshComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<AnimatorComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<LODMeshComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<SkyboxComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<PointLightComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<SpotLightComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<DirectionalLightComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<RigidbodyComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<BoxColliderComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<SphereColliderComponent>() const;
 }

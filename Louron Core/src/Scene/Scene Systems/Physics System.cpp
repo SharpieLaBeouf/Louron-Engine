@@ -311,7 +311,6 @@ namespace Louron {
 					}
 				}
 			}
-									
 			physxScene->simulate(Time::GetUnscaledFixedDeltaTime());
 			physxScene->fetchResults(true);
 
@@ -406,15 +405,14 @@ namespace Louron {
 		//					alas, the hail mary thus brought fruit!
 		// --------------------------------------------------------------------------------
 
-		auto root_view = scene->GetAllEntitiesWith<HierarchyComponent>();
 		std::vector<Entity> root_entities;
-
-		if (root_view.begin() != root_view.end()) {
-
-			for (auto& entity_handle : root_view) {
-				if (!root_view.get<HierarchyComponent>(entity_handle).HasParent()) {
-					root_entities.push_back(*root_view.get<HierarchyComponent>(entity_handle).GetEntity());
-				}
+		auto rb_view = scene->GetAllEntitiesWith<HierarchyComponent, RigidbodyComponent>();
+		for (const auto& entity_handle : rb_view)
+		{
+			Entity entity = rb_view.get<HierarchyComponent>(entity_handle).GetRootParentEntity();
+			if (entity)
+			{
+				root_entities.push_back(entity);
 			}
 		}
 

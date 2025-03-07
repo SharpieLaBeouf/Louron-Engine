@@ -17,7 +17,7 @@ namespace Louron
 
     struct MeshFilterComponent : public ComponentBase 
     {
-        AssetHandle MeshFilterAssetHandle = NULL_UUID;
+        AssetHandle StaticMeshHandle = NULL_UUID;
 
         Bounds_AABB TransformedAABB{};
         bool AABBNeedsUpdate = true;
@@ -50,7 +50,7 @@ namespace Louron
     struct MeshRendererComponent : public ComponentBase 
     {
         bool Active = true;
-        std::vector<std::pair<AssetHandle, std::shared_ptr<MaterialUniformBlock>>> MeshRendererMaterialHandles;
+        std::vector<std::pair<AssetHandle, std::shared_ptr<MaterialUniformBlock>>> MaterialHandles;
 
         bool CastShadows = false;
 
