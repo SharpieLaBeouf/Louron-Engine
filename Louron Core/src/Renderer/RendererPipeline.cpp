@@ -2072,6 +2072,7 @@ namespace Louron {
 							transforms.emplace_back(transform);
 						}
 
+						shader->SetBool("u_UseInstanceData", true);
 						Renderer::DrawInstancedSubMesh(sub_mesh, transforms);
 					}
 					else 
