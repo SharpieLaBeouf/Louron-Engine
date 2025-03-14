@@ -185,6 +185,7 @@ namespace Louron {
 		void InvokeOnCreate();
 		void InvokeOnUpdate();
 		void InvokeOnFixedUpdate();
+		void InvokeOnLateUpdate();
 		void InvokeOnDestroy();
 
 		void InvokeOnCollideEnter(void** other_collider_param);
@@ -246,6 +247,7 @@ namespace Louron {
 		MonoMethod* m_OnCreateMethod = nullptr;
 		MonoMethod* m_OnUpdateMethod = nullptr;
 		MonoMethod* m_OnFixedUpdateMethod = nullptr;
+		MonoMethod* m_OnLateUpdateMethod = nullptr;
 		MonoMethod* m_OnDestroyMethod = nullptr;
 
 		MonoMethod* m_OnCollideEnterMethod = nullptr;
@@ -293,6 +295,7 @@ namespace Louron {
 
 		static void OnUpdateEntity(Entity entity);
 		static void OnFixedUpdateEntity(Entity entity);
+		static void OnLateUpdateEntity(Entity entity);
 		static void OnCollideEntity(Entity entity, Entity other_entity, _Collision_Type collision_type);
 
 		static void CheckInactiveScriptsOnEntities();

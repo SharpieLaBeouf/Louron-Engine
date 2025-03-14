@@ -7,8 +7,12 @@ PrefabEntities:
       Parent: 4294967295
       Children:
         []
+    ScriptComponent:
+      Script_1:
+        Active: true
+        Script Name: SandboxProject.KnerpixPlayerCollision
     TransformComponent:
-      Translation: [-3.10896993, 4.12746239, -6.10351562e-05]
+      Translation: [0, 0, 0]
       Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     MeshFilterComponent:

@@ -398,7 +398,11 @@ namespace Louron {
 
 			// Allocate an instance of our class
 			MonoObject* temporary_instance = mono_object_new(s_Data->AppDomain, mono_class);
-			L_CORE_ASSERT(temporary_instance, "Could Not Instantiate Mono Class.");
+			if (!temporary_instance)
+			{
+				L_CORE_ERROR("Could Not Instantiate Mono Class.");
+				continue;
+			}
 
 			// Call the parameterless (default) constructor
 			mono_runtime_object_init(temporary_instance);
@@ -715,6 +719,34 @@ namespace Louron {
 		}
 	}
 
+	void ScriptManager::OnLateUpdateEntity(Entity entity)
+	{
+		auto& component = entity.GetComponent<ScriptComponent>();
+
+		for (int i = 0; i < component.Scripts.size(); i++) {
+
+			if (!component.Scripts.at(i).second) // If Script Not Active!
+				continue;
+
+			if (component.Scripts.at(i).first == "") {
+				component.Scripts.at(i).second = false;
+				continue;
+			}
+
+			std::string script_instance_name = std::to_string(entity.GetUUID()) + component.Scripts.at(i).first;
+
+			if (s_Data->EntityInstances.find(script_instance_name) != s_Data->EntityInstances.end())
+			{
+				std::shared_ptr<ScriptInstance> instance = s_Data->EntityInstances[script_instance_name];
+				instance->InvokeOnLateUpdate();
+			}
+			else
+			{
+				L_CORE_ERROR("Could not find ScriptInstance for entity {}::{}", entity.GetUUID(), component.Scripts.at(i).first);
+			}
+		}
+	}
+
 	void ScriptManager::OnCollideEntity(Entity entity, Entity other_entity, _Collision_Type collision_type)
 	{
 		auto& component = entity.GetComponent<ScriptComponent>();
@@ -938,6 +970,7 @@ namespace Louron {
 		m_OnCreateMethod = class_ref->GetMethod("OnStart", 0);
 		m_OnUpdateMethod = class_ref->GetMethod("OnUpdate", 0);
 		m_OnFixedUpdateMethod = class_ref->GetMethod("OnFixedUpdate", 0);
+		m_OnLateUpdateMethod = class_ref->GetMethod("OnLateUpdate", 0);
 		m_OnDestroyMethod = class_ref->GetMethod("OnDestroy", 0);
 
 		m_OnCollideEnterMethod = class_ref->GetMethod("OnCollideEnter", 1);
@@ -1241,6 +1274,14 @@ namespace Louron {
 		m_ScriptClass->InvokeMethod(m_Instance, m_OnFixedUpdateMethod, nullptr, m_EntityUUID);
 	}
 
+	void ScriptInstance::InvokeOnLateUpdate()
+	{
+		if (!m_OnLateUpdateMethod)
+			return;
+
+		m_ScriptClass->InvokeMethod(m_Instance, m_OnLateUpdateMethod, nullptr, m_EntityUUID);
+	}
+
 	void ScriptInstance::InvokeOnDestroy()
 	{
 		if (!m_OnDestroyMethod)
@@ -1251,7 +1292,7 @@ namespace Louron {
 
 	void ScriptInstance::InvokeOnCollideEnter(void** other_collider_param)
 	{
-		if (!m_OnCollideEnterMethod, nullptr, m_EntityUUID)
+		if (!m_OnCollideEnterMethod)
 			return;
 
 		m_ScriptClass->InvokeMethod(m_Instance, m_OnCollideEnterMethod, other_collider_param, m_EntityUUID);
@@ -1259,7 +1300,7 @@ namespace Louron {
 
 	void ScriptInstance::InvokeOnCollideStay(void** other_collider_param)
 	{
-		if (!m_OnCollideStayMethod, nullptr, m_EntityUUID)
+		if (!m_OnCollideStayMethod)
 			return;
 
 		m_ScriptClass->InvokeMethod(m_Instance, m_OnCollideStayMethod, other_collider_param, m_EntityUUID);

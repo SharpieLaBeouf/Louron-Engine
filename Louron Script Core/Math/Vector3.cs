@@ -204,6 +204,16 @@
             return HashCode.Combine(X, Y, Z);
         }
 
+        public readonly float Length()
+        {
+            return MathF.Sqrt(X * X + Y * Y + Z * Z);
+        }
+
+        public readonly float LengthSquared()
+        {
+            return X * X + Y * Y + Z * Z;
+        }
+
         // Normalize function
         public readonly Vector3 Normalize()
         {

@@ -102,7 +102,7 @@ namespace Louron {
 		void SetMaxAngularVelocity(PxReal maxAngularVelocity);
 
 		void SetAngularDamping(PxReal damping);
-		void SetAngularVelocity(const PxVec3& velocity);
+		void SetAngularVelocity(const glm::vec3& velocity);
 		void SetMaxDepenetrationVelocity(PxReal maxDepenetrationVelocity);
 
 		void SetMass(PxReal mass);

@@ -52,6 +52,7 @@ At this point there are an array of features utilised in this project:
   - Can create textures on the fly through scripting
   - Can create meshes on the fly through scripting
 - Simple Animations - can load animations and play them back during runtime (WIP)
+- Multiple render targets - e.g., multiple cameras with different viewports may render the scene
 
 ## Goals
 
@@ -73,7 +74,6 @@ There is no doubt this can make a game at its current state, but it would most l
 - Linux Support
 - Physics Cast Ray functionality
 - Geometry sorting abstraction - separate all scene management and partitioning into separate abstraction/class
-- Multiple render targets - e.g., multiple cameras with different viewports may render the scene
 - Thorough documentation
 - Textured lights and caustics (cookies)
 - Ambient Occlusion

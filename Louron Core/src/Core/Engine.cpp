@@ -108,7 +108,15 @@ namespace Louron {
             }
 
             {
-                L_PROFILE_SCOPE("Engine: 4. GUI Update Loop");
+                L_PROFILE_SCOPE("Engine: 4. Late Update Loop");
+
+                for (Layer* layer : m_LayerStack) {
+                    layer->OnLateUpdate();
+                }
+            }
+
+            {
+                L_PROFILE_SCOPE("Engine: 5. GUI Update Loop");
                 m_GuiLayer->Begin();
                 {
 
@@ -120,7 +128,7 @@ namespace Louron {
             }
 
             {
-                L_PROFILE_SCOPE("Engine: 5. Update Window (Finish GL Commands)");
+                L_PROFILE_SCOPE("Engine: 6. Update Window (Finish GL Commands)");
                 glFinish();
                 m_Input->ResetScroll();
                 m_Window->OnUpdate();

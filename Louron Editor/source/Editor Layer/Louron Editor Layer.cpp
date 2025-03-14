@@ -238,6 +238,13 @@ void LouronEditorLayer::OnFixedUpdate() {
 	}
 }
 
+void LouronEditorLayer::OnLateUpdate() {
+
+	if (auto scene_ref = Project::GetActiveScene(); scene_ref) {
+		scene_ref->OnLateUpdate();
+	}
+}
+
 static std::string s_NewProjectName = ""; // Buffer for the project name
 static std::filesystem::path s_NewFolderPath = ""; // Buffer for the folder path
 

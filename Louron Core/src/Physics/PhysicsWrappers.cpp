@@ -298,9 +298,9 @@ namespace Louron {
         }
     }
 
-    void RigidDynamic::SetAngularVelocity(const PxVec3& velocity) {
+    void RigidDynamic::SetAngularVelocity(const glm::vec3& velocity) {
         if (m_Actor) {
-            m_Actor->setAngularVelocity(velocity);
+            m_Actor->setAngularVelocity(PxVec3(velocity.x, velocity.y, velocity.z));
         }
         else {
             L_CORE_ERROR("Cannot Set Angular Velocity - Actor is Nullptr.");
@@ -469,7 +469,9 @@ namespace Louron {
         m_Shape(PxGetPhysics().createShape(geometry, material, isExclusive, shapeFlags))
     {
         if(m_Shape) 
+        {
             m_Shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+        }
 
         if (!m_Shape) {
             m_Shape = nullptr;

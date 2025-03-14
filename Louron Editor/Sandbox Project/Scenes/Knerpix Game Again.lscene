@@ -37,8 +37,11 @@ Entities:
         Near: 0.00999999978
         Far: 1000
       Primary: true
+      DisplayToMainViewport: true
       ClearFlag: Skybox
       ClearColour: [0.176400006, 0.329400003, 0.560699999, 1]
+      CameraViewport: [0, 0, 1, 1]
+    CameraDepth: "\x00"
     SkyboxComponent:
       MaterialAssetHandle: 1503862029
   - Entity: 1986134793
@@ -334,27 +337,27 @@ Entities:
         Active: true
         Script Name: SandboxProject.KnerpixGameManager
         Fields:
-          - Name: Player1_Prefab
-            Type: Prefab
-            Data: 1938405934
           - Name: Speed_Multiplier
             Type: Float
             Data: 5
-          - Name: Player2_Prefab
+          - Name: Player1_Prefab
             Type: Prefab
-            Data: 1502522335
+            Data: 1938405934
           - Name: WinnerLocation
             Type: Entity
             Data: 2400339882
+          - Name: Player2_Prefab
+            Type: Prefab
+            Data: 1502522335
           - Name: Player1_SpawnPoint
             Type: Entity
             Data: 1136546040
-          - Name: Player2_SpawnPoint
-            Type: Entity
-            Data: 3885195277
           - Name: Players_Parent_Entity
             Type: Entity
             Data: 3601754716
+          - Name: Player2_SpawnPoint
+            Type: Entity
+            Data: 3885195277
           - Name: DeathFloorY
             Type: Float
             Data: -10

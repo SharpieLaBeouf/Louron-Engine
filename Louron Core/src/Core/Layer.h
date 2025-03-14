@@ -18,6 +18,7 @@ namespace Louron {
 		virtual void OnDetach() {}
 		virtual void OnUpdate() {}
 		virtual void OnFixedUpdate() {}
+		virtual void OnLateUpdate() {}
 		virtual void OnGuiRender() {}
 	};
 }

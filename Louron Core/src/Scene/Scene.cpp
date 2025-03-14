@@ -782,6 +782,8 @@ namespace Louron {
 
 		m_IsRunning = true;
 
+		OnPhysicsStart();
+
 		// Scripting
 		{
 			ScriptManager::OnRuntimeStart(std::static_pointer_cast<Scene>(shared_from_this()));
@@ -794,8 +796,6 @@ namespace Louron {
 				ScriptManager::OnCreateEntity(entity);
 			}
 		}
-
-		OnPhysicsStart();
 	}
 	
 	void Scene::OnRuntimeStop() {
@@ -1202,6 +1202,23 @@ namespace Louron {
 			}
 
 			m_IsPhysicsCalculating = false;
+		}
+
+	}
+
+	void Scene::OnLateUpdate() 
+	{
+		// Scripts - only if running
+		if (!m_IsPaused && m_IsRunning)
+		{
+			L_PROFILE_SCOPE_ACCUMULATIVE("Scene - Scripts");
+
+			// See if any entities that have inactive scripts have recently become active
+			ScriptManager::CheckInactiveScriptsOnEntities();
+
+			auto script_entities = m_Registry.view<ScriptComponent>();
+			for (auto script_entity : script_entities)
+				ScriptManager::OnLateUpdateEntity({ script_entity, this });
 		}
 
 	}

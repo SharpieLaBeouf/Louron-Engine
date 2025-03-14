@@ -113,6 +113,7 @@ namespace Louron {
 		void OnUpdateGUI();
 
 		void OnFixedUpdate();
+		void OnLateUpdate();
 
 		void OnViewportResize(const glm::ivec2& new_size);
 

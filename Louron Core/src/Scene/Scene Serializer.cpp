@@ -320,13 +320,6 @@ namespace Louron {
 
 					Entity deserializedEntity = scene_ref->CreateEntity(uuid, tag);
 
-					// Hierarchy
-					auto hierarchy = entity["HierarchyComponent"];
-					if (hierarchy) {
-						auto& entityHierarchy = deserializedEntity.GetComponent<HierarchyComponent>();
-						entityHierarchy.Deserialize(hierarchy);
-					}
-
 					// Script
 					auto script = entity["ScriptComponent"];
 					if (script) {
@@ -472,6 +465,14 @@ namespace Louron {
 						if (!entityBoxCollider.Deserialize(boxCollider))
 							L_CORE_WARN("Deserialisation of Box Collider Not Complete.");
 					}
+
+					// Hierarchy
+					auto hierarchy = entity["HierarchyComponent"];
+					if (hierarchy) {
+						auto& entityHierarchy = deserializedEntity.GetComponent<HierarchyComponent>();
+						entityHierarchy.Deserialize(hierarchy);
+					}
+
 				}
 			}
 			//PhysicsSystem::Update(scene_ref);

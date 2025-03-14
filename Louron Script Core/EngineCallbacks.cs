@@ -309,6 +309,18 @@ namespace Louron
         internal extern static void RigidbodyComponent_SetRotationConstraint(uint entityID, ref BVector3 reference);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void RigidbodyComponent_GetLinearVelocity(uint entityID, out Vector3 result);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void RigidbodyComponent_SetLinearVelocity(uint entityID, ref Vector3 reference);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void RigidbodyComponent_GetAngularVelocity(uint entityID, out Vector3 result);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void RigidbodyComponent_SetAngularVelocity(uint entityID, ref Vector3 reference);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void RigidbodyComponent_ApplyForce(uint entityID, ref Vector3 force, ref ForceMode forceMode);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

@@ -204,10 +204,18 @@ namespace Louron {
 		static void Rigidbody_SetUseGravity(UUID entityID, bool* ref);
 		static void Rigidbody_GetIsKinematic(UUID entityID, bool* out);
 		static void Rigidbody_SetIsKinematic(UUID entityID, bool* ref);
+		
 		static void Rigidbody_GetPositionConstraint(UUID entityID, glm::bvec3* out);
 		static void Rigidbody_SetPositionConstraint(UUID entityID, glm::bvec3* ref);
 		static void Rigidbody_GetRotationConstraint(UUID entityID, glm::bvec3* out);
 		static void Rigidbody_SetRotationConstraint(UUID entityID, glm::bvec3* ref);
+		
+		static void RigidbodyComponent_GetLinearVelocity(UUID entityID, glm::vec3* out);
+		static void RigidbodyComponent_SetLinearVelocity(UUID entityID, glm::vec3* ref);
+
+		static void RigidbodyComponent_GetAngularVelocity(UUID entityID, glm::vec3* out);
+		static void RigidbodyComponent_SetAngularVelocity(UUID entityID, glm::vec3* ref);
+
 		static void Rigidbody_ApplyForce(UUID entityID, glm::vec3* force, PxForceMode::Enum* forceMode);
 		static void Rigidbody_ApplyTorque(UUID entityID, glm::vec3* torque);
 

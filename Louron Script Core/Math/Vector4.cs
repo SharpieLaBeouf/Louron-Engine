@@ -224,6 +224,16 @@
             return Zero; // Return zero vector if length is zero to avoid division by zero
         }
 
+        public readonly float Length()
+        {
+            return MathF.Sqrt(X * X + Y * Y + Z * Z + W * W);
+        }
+
+        public readonly float LengthSquared()
+        {
+            return X * X + Y * Y + Z * Z + W * W;
+        }
+
         // Static Normalize function
         public static Vector4 Normalize(Vector4 v)
         {

@@ -315,6 +315,18 @@
             set { EngineCallbacks.RigidbodyComponent_SetRotationConstraint(Entity.ID, ref value); }
         }
 
+        public Vector3 linearVelocity
+        {
+            get { EngineCallbacks.RigidbodyComponent_GetLinearVelocity(Entity.ID, out Vector3 result); return result; }
+            set { EngineCallbacks.RigidbodyComponent_SetLinearVelocity(Entity.ID, ref value); }
+        }
+
+        public Vector3 angularVelocity
+        {
+            get { EngineCallbacks.RigidbodyComponent_GetAngularVelocity(Entity.ID, out Vector3 result); return result; }
+            set { EngineCallbacks.RigidbodyComponent_SetAngularVelocity(Entity.ID, ref value); }
+        }
+
         public void ApplyForce(Vector3 force, ForceMode forceMode = ForceMode.eFORCE)
         {
             EngineCallbacks.RigidbodyComponent_ApplyForce(Entity.ID, ref force, ref forceMode);

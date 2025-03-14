@@ -175,6 +175,16 @@
             return HashCode.Combine(X, Y);
         }
 
+        public readonly float Length()
+        {
+            return MathF.Sqrt(X * X + Y * Y);
+        }
+
+        public readonly float LengthSquared()
+        {
+            return X * X + Y * Y;
+        }
+
         // Normalize function
         public readonly Vector2 Normalize()
         {

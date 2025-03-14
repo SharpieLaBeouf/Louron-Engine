@@ -120,10 +120,17 @@ namespace Louron {
 		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_SetUseGravity",				Rigidbody_SetUseGravity);
 		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_GetIsKinematic",				Rigidbody_GetIsKinematic);
 		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_SetIsKinematic",				Rigidbody_SetIsKinematic);
+		
 		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_GetPositionConstraint",		Rigidbody_GetPositionConstraint);
 		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_SetPositionConstraint",		Rigidbody_SetPositionConstraint);
 		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_GetRotationConstraint",		Rigidbody_GetRotationConstraint);
 		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_SetRotationConstraint",		Rigidbody_SetRotationConstraint);
+		
+		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_GetLinearVelocity",			RigidbodyComponent_GetLinearVelocity);
+		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_SetLinearVelocity",			RigidbodyComponent_SetLinearVelocity);
+		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_GetAngularVelocity",			RigidbodyComponent_GetAngularVelocity);
+		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_SetAngularVelocity",			RigidbodyComponent_SetAngularVelocity);
+		
 		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_ApplyForce",					Rigidbody_ApplyForce);
 		mono_add_internal_call("Louron.EngineCallbacks::RigidbodyComponent_ApplyTorque",				Rigidbody_ApplyTorque);
 
@@ -1320,6 +1327,86 @@ namespace Louron {
 		entity.GetComponent<RigidbodyComponent>().SetRotationConstraint(*ref);
 	}
 
+	void ScriptConnector::RigidbodyComponent_GetLinearVelocity(UUID entityID, glm::vec3* out)
+	{
+		Scene* scene = ScriptManager::GetSceneContext();
+		L_CORE_ASSERT(scene, "Scene Not Valid.");
+
+		Entity entity = scene->FindEntityByUUID(entityID);
+		if (!entity) return;
+
+		if (!entity.HasComponent<RigidbodyComponent>())
+			return;
+
+		if (auto actor_ref = entity.GetComponent<RigidbodyComponent>().GetActor(); actor_ref)
+		{
+			auto vel = actor_ref->GetLinearVelocity();
+			*out = { vel.x, vel.y, vel.z };
+		}
+	}
+
+	void ScriptConnector::RigidbodyComponent_SetLinearVelocity(UUID entityID, glm::vec3* ref)
+	{
+		Scene* scene = ScriptManager::GetSceneContext();
+		L_CORE_ASSERT(scene, "Scene Not Valid.");
+
+		Entity entity = scene->FindEntityByUUID(entityID);
+		if (!entity) return;
+
+		if (!entity.HasComponent<RigidbodyComponent>())
+			return;
+
+		if (auto actor_ref = entity.GetComponent<RigidbodyComponent>().GetActor(); actor_ref)
+		{
+			glm::vec3 velocity_copy = *ref;
+			Engine::Get().SubmitToMainThread([actor_ref, velocity_copy]()
+				{
+					if (actor_ref)
+						actor_ref->SetLinearVelocity(velocity_copy);
+				});
+		}
+	}
+
+	void ScriptConnector::RigidbodyComponent_GetAngularVelocity(UUID entityID, glm::vec3* out)
+	{
+		Scene* scene = ScriptManager::GetSceneContext();
+		L_CORE_ASSERT(scene, "Scene Not Valid.");
+
+		Entity entity = scene->FindEntityByUUID(entityID);
+		if (!entity) return;
+
+		if (!entity.HasComponent<RigidbodyComponent>())
+			return;
+
+		if (auto actor_ref = entity.GetComponent<RigidbodyComponent>().GetActor(); actor_ref)
+		{
+			auto vel = actor_ref->GetAngularVelocity();
+			*out = { vel.x, vel.y, vel.z };
+		}
+	}
+
+	void ScriptConnector::RigidbodyComponent_SetAngularVelocity(UUID entityID, glm::vec3* ref)
+	{
+		Scene* scene = ScriptManager::GetSceneContext();
+		L_CORE_ASSERT(scene, "Scene Not Valid.");
+
+		Entity entity = scene->FindEntityByUUID(entityID);
+		if (!entity) return;
+
+		if (!entity.HasComponent<RigidbodyComponent>())
+			return;
+
+		if (auto actor_ref = entity.GetComponent<RigidbodyComponent>().GetActor(); actor_ref)
+		{
+			glm::vec3 velocity_copy = *ref;
+			Engine::Get().SubmitToMainThread([actor_ref, velocity_copy]()
+				{
+					if (actor_ref)
+						actor_ref->SetAngularVelocity(velocity_copy);
+				});
+		}
+	}
+
 	void ScriptConnector::Rigidbody_ApplyForce(UUID entityID, glm::vec3* force, PxForceMode::Enum* forceMode) {
 		Scene* scene = ScriptManager::GetSceneContext();
 		L_CORE_ASSERT(scene, "Scene Not Valid.");
@@ -1330,7 +1417,15 @@ namespace Louron {
 		if (!entity.HasComponent<RigidbodyComponent>())
 			return;
 
-		entity.GetComponent<RigidbodyComponent>().ApplyForce(*force, *forceMode);
+		glm::vec3 force_copy = *force;
+		PxForceMode::Enum force_mode_copy = *forceMode;
+
+		// Submit for Next Frame - This function we are in will be in main thread, but we will use this to defer to next frame
+		Engine::Get().SubmitToMainThread([entity, force_copy, force_mode_copy]()
+			{
+				if(entity && entity.HasComponent<RigidbodyComponent>())
+					entity.GetComponent<RigidbodyComponent>().ApplyForce(force_copy, force_mode_copy);
+			});
 	}
 
 	void ScriptConnector::Rigidbody_ApplyTorque(UUID entityID, glm::vec3* torque) {
@@ -1343,7 +1438,14 @@ namespace Louron {
 		if (!entity.HasComponent<RigidbodyComponent>())
 			return;
 
-		entity.GetComponent<RigidbodyComponent>().ApplyTorque(*torque);
+		glm::vec3 torque_copy = *torque;
+
+		// Submit for Next Frame - This function we are in will be in main thread, but we will use this to defer to next frame
+		Engine::Get().SubmitToMainThread([entity, torque_copy]()
+			{
+				if (entity && entity.HasComponent<RigidbodyComponent>())
+					entity.GetComponent<RigidbodyComponent>().ApplyTorque(torque_copy);
+			});
 	}
 
 #pragma endregion

@@ -22,6 +22,7 @@ public:
 	virtual void OnDetach() override;
 	virtual void OnUpdate() override;
 	virtual void OnFixedUpdate() override;
+	virtual void OnLateUpdate() override;
 	virtual void OnGuiRender() override;
 
 	void OnScenePlay();
