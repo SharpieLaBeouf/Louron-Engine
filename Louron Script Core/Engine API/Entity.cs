@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-
-namespace Louron
+﻿namespace Louron
 {
     public class Entity
     {
@@ -63,7 +55,8 @@ namespace Louron
 
         public static void Destroy(uint entity_id)
         {
-            if (entity_id != System.UInt32.MaxValue) { // Is not null
+            if (entity_id != System.UInt32.MaxValue)
+            { // Is not null
                 EngineCallbacks.Entity_DestroyEntity(entity_id);
             }
         }
@@ -111,7 +104,7 @@ namespace Louron
             return component;
         }
 
-        public void RemoveComponent<T>() where T : Component, new ()
+        public void RemoveComponent<T>() where T : Component, new()
         {
             if (!HasComponent<T>())
                 return;

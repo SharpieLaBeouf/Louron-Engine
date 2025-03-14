@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Louron
+﻿namespace Louron
 {
     public class Debug
     {
@@ -12,7 +10,8 @@ namespace Louron
             Critical
         }
 
-        public static void Log(String message, LogType type = LogType.Info) {
+        public static void Log(String message, LogType type = LogType.Info)
+        {
 
             EngineCallbacks.Debug_LogMessage(type, message);
         }

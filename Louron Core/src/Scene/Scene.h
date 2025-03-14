@@ -8,6 +8,8 @@
 #include "../Core/Logging.h"
 #include "../Physics/CollisionCallback.h"
 #include "../Renderer/Camera.h"
+#include "../OpenGL/Vertex Array.h"
+#include "../OpenGL/Framebuffer.h"
 
 // C++ Standard Library Headers
 #include <vector>
@@ -25,6 +27,11 @@ constexpr int MAX_BONE_TRANSFORMATIONS = 204800; // 13.11 mega bytes of VRAM, ca
 constexpr int MAX_DIRECTIONAL_LIGHTS = 10;
 constexpr int MAX_POINT_LIGHTS = 1024;
 constexpr int MAX_SPOT_LIGHTS = 1024;
+
+constexpr int SHADOW_MAP_TEXTURE_RESOLUTION = 2048;
+constexpr int MAX_POINT_LIGHT_SHADOW_MAPS = 5;
+constexpr int MAX_SPOT_LIGHT_SHADOW_MAPS = 30;
+constexpr int MAX_DIRE_LIGHT_SHADOW_MAPS = 5;
 
 using namespace physx;
 
@@ -46,10 +53,7 @@ namespace Louron {
 		std::filesystem::path AssetDirectory;
 		std::filesystem::path SceneFilePath;
 
-		std::shared_ptr<RenderPipeline> ScenePipeline;
-
 		L_RENDER_PIPELINE ScenePipelineType;
-
 	};
 
 	class Scene : public Asset {
@@ -103,7 +107,9 @@ namespace Louron {
 		void OnPhysicsStop();
 
 		void OnUpdate();
-		void OnRender(EditorCamera* editor_camera = nullptr);
+		void OnRuntimeRender();
+		void OnEditorRender(EditorCamera* editor_camera, const std::vector<Entity>& scene_cameras);
+
 		void OnUpdateGUI();
 
 		void OnFixedUpdate();
@@ -114,7 +120,7 @@ namespace Louron {
 
 		template<typename... Components>
 		auto GetAllEntitiesWith() {	return m_Registry.view<Components...>(); }
-
+		
 		Entity GetPrimaryCameraEntity();
 
 		void SetConfig(const SceneConfig& config) { m_SceneConfig = config; }
@@ -129,8 +135,7 @@ namespace Louron {
 		virtual AssetType GetType() const override { return AssetType::Scene; }
 
 		void CreateSceneFrameBuffer(const FrameBufferConfig& framebuffer_config);
-		void SetSceneFrameBuffer(std::shared_ptr<FrameBuffer> framebuffer);
-		std::shared_ptr<FrameBuffer> GetSceneFrameBuffer() const;
+		const std::unique_ptr<FrameBuffer>& GetSceneFrameBuffer() const;
 
 		void SetSceneFilePath(const std::filesystem::path& path) { m_SceneConfig.SceneFilePath = path; }
 		const std::filesystem::path& GetSceneFilePath() const { return m_SceneConfig.SceneFilePath; }
@@ -144,13 +149,17 @@ namespace Louron {
 
 	private:
 
+		void CombineCameraTargets(const std::vector<std::tuple<FrameBuffer*, glm::vec4, uint8_t>>& camera_targets);
+		void DrawCameraTextureToSceneFramebuffer();
+
 		entt::registry m_Registry;
 		std::shared_ptr<std::map<UUID, entt::entity>> m_EntityMap = std::make_shared<std::map<UUID, entt::entity>>();
 
 		PxScene* m_PhysxScene = nullptr;
 		std::unique_ptr<CollisionCallback> m_CollisionCallback = nullptr;
 
-		std::shared_ptr<FrameBuffer> m_SceneFrameBuffer = nullptr;
+		std::unique_ptr<FrameBuffer> m_SceneFrameBuffer = nullptr;
+		std::unique_ptr<VertexArray> m_ScreenQuadVAO = nullptr;
 
 		bool m_IsRunning = false;
 		bool m_IsSimulating = false;

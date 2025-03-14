@@ -1,9 +1,11 @@
 #pragma once
 
 // Louron Core Headers
+#include "../OpenGL/Framebuffer.h"
 
 // C++ Standard Library Headers
 #include <utility>
+#include <memory>
 
 // External Vendor Library Headers
 #include <glm/glm.hpp>
@@ -74,6 +76,9 @@ namespace Louron {
 		float GetOrthographicFarClip() const { return m_OrthographicFar; }
 		void SetOrthographicFarClip(float farClip) { m_OrthographicFar = farClip; RecalculateProjection(); }
 
+		void SetAspectRatio(float aspect) { m_AspectRatio = aspect; }
+		float GetAspectRatio() const { return m_AspectRatio; }
+
 		ProjectionType GetProjectionType() const { return m_ProjectionType; }
 		void SetProjectionType(ProjectionType type) { m_ProjectionType = type; RecalculateProjection(); }
 
@@ -112,7 +117,13 @@ namespace Louron {
 		inline float GetDistance() const { return m_Distance; }
 		inline void SetDistance(float distance) { m_Distance = distance; }
 
-		inline void SetViewportSize(float width, float height) { m_ViewportWidth = width; m_ViewportHeight = height; UpdateProjection(); }
+		inline void SetViewportSize(float width, float height) 
+		{ 
+			m_ViewportWidth = width; 
+			m_ViewportHeight = height; 
+			UpdateProjection(); 
+			UpdateFrameBuffer({ width, height });
+		}
 
 		void FocusOnEntity(Entity entity);
 		void SetFocalPoint(const glm::vec3& focal_point);
@@ -128,6 +139,13 @@ namespace Louron {
 
 		const glm::mat4& GetProjection() const override { return m_Projection; }
 		const glm::mat4& GetViewMatrix() const override { return m_ViewMatrix; }
+
+		const float& GetNearClip() const { return m_NearClip; }
+		const float& GetFarClip() const { return m_FarClip; }
+
+		const FrameBuffer& GetFrameBuffer() const { return *m_EditorCameraFramebuffer.get(); }
+		void CreateNewFrameBuffer(const FrameBufferConfig& config) { m_EditorCameraFramebuffer = std::make_unique<FrameBuffer>(config); SetViewportSize(static_cast<float>(config.Width), static_cast<float>(config.Height)); }
+		void UpdateFrameBuffer(const glm::uvec2& viewport_size) { if (m_EditorCameraFramebuffer) m_EditorCameraFramebuffer->Resize(viewport_size); }
 
 	private:
 
@@ -157,6 +175,8 @@ namespace Louron {
 		float m_Pitch = glm::radians(20.0f), m_Yaw = glm::radians(180.0f);
 
 		float m_ViewportWidth = 1280, m_ViewportHeight = 720;
+
+		std::unique_ptr<FrameBuffer> m_EditorCameraFramebuffer = nullptr;
 
 	};
 

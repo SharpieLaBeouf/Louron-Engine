@@ -307,18 +307,6 @@ namespace Louron {
 			else {
 
 				scene_ref->m_SceneConfig.ScenePipelineType = (L_RENDER_PIPELINE)data["Scene Pipeline Type"].as<uint8_t>();
-
-				switch (scene_ref->m_SceneConfig.ScenePipelineType) {
-				case L_RENDER_PIPELINE::FORWARD:
-					scene_ref->m_SceneConfig.ScenePipeline = std::make_shared<RenderPipeline>();
-					break;
-				case L_RENDER_PIPELINE::FORWARD_PLUS:
-					scene_ref->m_SceneConfig.ScenePipeline = std::make_shared<ForwardPlusPipeline>();
-					break;
-				case L_RENDER_PIPELINE::DEFERRED:
-					scene_ref->m_SceneConfig.ScenePipeline = std::make_shared<DeferredPipeline>();
-					break;
-				}
 			}
 			
 			auto entities = data["Entities"];
@@ -331,8 +319,6 @@ namespace Louron {
 					std::string tag = entity["TagComponent"]["Tag"].as<std::string>();
 
 					Entity deserializedEntity = scene_ref->CreateEntity(uuid, tag);
-
-					L_CORE_INFO("Deserialising Entity: {0}", deserializedEntity.GetName());
 
 					// Hierarchy
 					auto hierarchy = entity["HierarchyComponent"];

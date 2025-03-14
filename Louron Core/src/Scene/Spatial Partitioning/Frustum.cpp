@@ -197,51 +197,85 @@ namespace Louron {
 
 	FrustumContainResult Frustum::Contains(const Bounds_AABB& bounds) const {
 
-        bool allPointsInside = true;
-        bool anyPointInside = false;
+        bool all_points_inside = true;
+        bool any_points_inside = false;
 
         for (const auto& plane : planes) {
-            glm::vec3 positiveVertex = bounds.BoundsMin;
-            glm::vec3 negativeVertex = bounds.BoundsMax;
+            glm::vec3 positive_vertex = bounds.BoundsMin;
+            glm::vec3 negative_vertex = bounds.BoundsMax;
 
             if (plane.normal.x >= 0) {
-                positiveVertex.x = bounds.BoundsMax.x;
-                negativeVertex.x = bounds.BoundsMin.x;
+                positive_vertex.x = bounds.BoundsMax.x;
+                negative_vertex.x = bounds.BoundsMin.x;
             }
             if (plane.normal.y >= 0) {
-                positiveVertex.y = bounds.BoundsMax.y;
-                negativeVertex.y = bounds.BoundsMin.y;
+                positive_vertex.y = bounds.BoundsMax.y;
+                negative_vertex.y = bounds.BoundsMin.y;
             }
             if (plane.normal.z >= 0) {
-                positiveVertex.z = bounds.BoundsMax.z;
-                negativeVertex.z = bounds.BoundsMin.z;
+                positive_vertex.z = bounds.BoundsMax.z;
+                negative_vertex.z = bounds.BoundsMin.z;
             }
 
-            float distanceToPositiveVertex = glm::dot(plane.normal, positiveVertex) + plane.distance;
-            float distanceToNegativeVertex = glm::dot(plane.normal, negativeVertex) + plane.distance;
+            float distance_to_positive = glm::dot(plane.normal, positive_vertex) + plane.distance;
+            float distance_to_negative = glm::dot(plane.normal, negative_vertex) + plane.distance;
 
-            if (distanceToPositiveVertex < 0 && distanceToNegativeVertex < 0) {
+            if (distance_to_positive < 0 && distance_to_negative < 0) {
                 return FrustumContainResult::DoesNotContain;
             }
 
-            if (distanceToPositiveVertex >= 0 || distanceToNegativeVertex >= 0) {
-                anyPointInside = true;
+            if (distance_to_positive >= 0 || distance_to_negative >= 0) {
+                any_points_inside = true;
             }
 
-            if (!(distanceToPositiveVertex >= 0 && distanceToNegativeVertex >= 0)) {
-                allPointsInside = false;
+            if (!(distance_to_positive >= 0 && distance_to_negative >= 0)) {
+                all_points_inside = false;
             }
         }
 
-        if (allPointsInside) {
+        if (all_points_inside) {
             return FrustumContainResult::Contains;
         }
 
-        if (anyPointInside) {
+        if (any_points_inside) {
             return FrustumContainResult::Intersects;
         }
 
         return FrustumContainResult::DoesNotContain;
 	}
+
+    FrustumContainResult Frustum::Contains(const Bounds_Sphere& bounds) const
+    {
+        bool all_inside = true;
+        bool intersects = false;
+
+        for (const auto& plane : planes) {
+            float distance_to_center = glm::dot(plane.normal, bounds.BoundsCentre) + plane.distance;
+
+            // If sphere is completely outside any plane
+            if (distance_to_center < -bounds.BoundsRadius) {
+                return FrustumContainResult::DoesNotContain;
+            }
+
+            // If sphere intersects the plane
+            if (distance_to_center < bounds.BoundsRadius) {
+                intersects = true;
+            }
+
+            // If the sphere is not completely inside the plane, it can't be fully contained
+            if (distance_to_center <= 0) {
+                all_inside = false;
+            }
+        }
+
+        if (all_inside) {
+            return FrustumContainResult::Contains;
+        }
+        if (intersects) {
+            return FrustumContainResult::Intersects;
+        }
+
+        return FrustumContainResult::DoesNotContain;
+    }
 
 }

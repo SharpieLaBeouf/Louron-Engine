@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Louron
+﻿namespace Louron
 {
     public struct Vector3
     {
@@ -84,7 +82,7 @@ namespace Louron
 
         public static Vector3 operator *(Vector3 vector, float scalar)
         {
-            return new Vector3(vector.X * scalar, vector.Y * scalar, vector.Z * scalar  );
+            return new Vector3(vector.X * scalar, vector.Y * scalar, vector.Z * scalar);
         }
 
         public static Vector3 operator *(float scalar, Vector3 vector)

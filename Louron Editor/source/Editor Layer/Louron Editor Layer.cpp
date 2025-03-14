@@ -79,6 +79,7 @@ void LouronEditorLayer::OnAttach()
 
 		{ "Scene", true },
 		{ "Scene Stats", true },
+		{ "Scene Camera Preview", true },
 
 		{ "Scene Hierarchy", true },
 		{ "Properties Panel", true },
@@ -118,6 +119,7 @@ void LouronEditorLayer::OnAttach()
 	m_ContentBrowserPanel.SetDirectory(Project::GetActiveProject()->GetProjectDirectory() / "Assets");
 
 	m_EditorCamera = std::make_unique<EditorCamera>();
+	m_EditorCamera->CreateNewFrameBuffer(fbo_config);
 	m_EditorCamera->OnUpdate();
 }
 
@@ -149,42 +151,60 @@ void LouronEditorLayer::OnUpdate() {
 				m_EditorCamera->SetViewportSize((float)m_ViewportWindowSize.x, (float)m_ViewportWindowSize.y);
 				if (m_SceneWindowHovered) 
 					m_EditorCamera->OnUpdate();
-				scene_ref->OnUpdate();
-				scene_ref->OnRender(m_EditorCamera.get());
 
-				if (m_SelectedEntity && m_SelectedEntity.HasComponent<BoxColliderComponent>())
+				std::vector<Entity> scene_cameras_to_render = {};
+				if (m_SelectedEntity && m_SelectedEntity.HasComponent<CameraComponent>() && m_SelectedEntity.GetComponent<CameraComponent>().CameraFramebuffer)
 				{
+					scene_cameras_to_render.emplace_back(m_SelectedEntity);
+				}
 
-					auto debug_line_shader = AssetManager::GetInbuiltShader("Debug_Line_Draw");
+				scene_ref->OnUpdate();
+				scene_ref->OnEditorRender(m_EditorCamera.get(), scene_cameras_to_render);
 
-					if (debug_line_shader)
+				// EDITOR DEBUG DRAWING
+				{
+					bool resolve_at_end = false;
+
+					if (m_SelectedEntity && m_SelectedEntity.HasComponent<BoxColliderComponent>())
 					{
-						scene_ref->GetSceneFrameBuffer()->Bind();
-						debug_line_shader->Bind();
-						debug_line_shader->SetFloatVec4("u_LineColor", { 0.0f, 1.0f, 0.0f, 1.0f });
-						debug_line_shader->SetMat4("u_VertexIn.Proj", m_EditorCamera->GetProjection());
-						debug_line_shader->SetMat4("u_VertexIn.View", m_EditorCamera->GetViewMatrix());
-						debug_line_shader->SetBool("u_UseInstanceData", false);
 
-						auto& component = m_SelectedEntity.GetComponent<BoxColliderComponent>();
+						auto debug_line_shader = AssetManager::GetInbuiltShader("Debug_Line_Draw");
 
-						// Start with the entity's global transform
-						glm::mat4 collider_cube_transform = m_SelectedEntity.GetTransform().GetGlobalTransform();
+						if (debug_line_shader)
+						{
+							resolve_at_end = true;
 
-						// Apply the collider's center offset (local space to world space)
-						glm::vec3 collider_center = component.GetCentre();
-						collider_cube_transform = glm::translate(collider_cube_transform, collider_center);
+							scene_ref->GetSceneFrameBuffer()->Bind();
+							debug_line_shader->Bind();
+							debug_line_shader->SetFloatVec4("u_LineColor", { 0.0f, 1.0f, 0.0f, 1.0f });
+							debug_line_shader->SetMat4("u_VertexIn.Proj", m_EditorCamera->GetProjection());
+							debug_line_shader->SetMat4("u_VertexIn.View", m_EditorCamera->GetViewMatrix());
+							debug_line_shader->SetBool("u_UseInstanceData", false);
 
-						// Scale the cube to match the collider's size
-						glm::vec3 box_half_extents = component.GetSize();
-						collider_cube_transform = glm::scale(collider_cube_transform, box_half_extents * 2.0f);
+							auto& component = m_SelectedEntity.GetComponent<BoxColliderComponent>();
 
-						debug_line_shader->SetMat4("u_VertexIn.Model", collider_cube_transform);
-						Renderer::DrawDebugCubeLines();
-						scene_ref->GetSceneFrameBuffer()->Unbind();
+							// Start with the entity's global transform
+							glm::mat4 collider_cube_transform = m_SelectedEntity.GetTransform().GetGlobalTransform();
+
+							// Apply the collider's center offset (local space to world space)
+							glm::vec3 collider_center = component.GetCentre();
+							collider_cube_transform = glm::translate(collider_cube_transform, collider_center);
+
+							// Scale the cube to match the collider's size
+							glm::vec3 box_half_extents = component.GetSize();
+							collider_cube_transform = glm::scale(collider_cube_transform, box_half_extents * 2.0f);
+
+							debug_line_shader->SetMat4("u_VertexIn.Model", collider_cube_transform);
+							Renderer::DrawDebugCubeLines();
+							scene_ref->GetSceneFrameBuffer()->Unbind();
+						}
 					}
 
-
+					if (resolve_at_end)
+					{
+						// All Rendering Finished
+						scene_ref->GetSceneFrameBuffer()->ResolveMultisampledFBO();
+					}
 				}
 
 				break;
@@ -193,16 +213,10 @@ void LouronEditorLayer::OnUpdate() {
 			case SceneState::Play: 
 			{
 				scene_ref->OnUpdate();
-				scene_ref->OnRender();
+				scene_ref->OnRuntimeRender();
 				break;
 			}
-
 		}
-
-
-		// All Rendering Finished
-		scene_ref->GetSceneFrameBuffer()->ResolveMultisampledFBO();
-
 	}
 	else {
 
@@ -342,18 +356,19 @@ void LouronEditorLayer::OnGuiRender() {
 							m_ContentBrowserPanel.StartFileWatcher();
 							m_ContentBrowserPanel.m_CurrentDirectory = Project::GetActiveProject()->GetAssetDirectory();
 
-							m_EditorCamera.reset();
-							m_EditorCamera = nullptr;
-							m_EditorCamera = std::make_unique<EditorCamera>();
-							m_EditorCamera->OnUpdate();
-
-							auto scene = Project::GetActiveScene();
-
 							FrameBufferConfig fbo_config;
 							fbo_config.Width = m_ViewportWindowSize.x;
 							fbo_config.Height = m_ViewportWindowSize.y;
 							fbo_config.RenderToScreen = false;
 							fbo_config.Samples = 4;
+
+							m_EditorCamera.reset();
+							m_EditorCamera = nullptr;
+							m_EditorCamera = std::make_unique<EditorCamera>();
+							m_EditorCamera->CreateNewFrameBuffer(fbo_config);
+							m_EditorCamera->OnUpdate();
+
+							auto scene = Project::GetActiveScene();
 
 							scene->CreateSceneFrameBuffer(fbo_config);
 
@@ -595,18 +610,19 @@ void LouronEditorLayer::OnGuiRender() {
 
 					m_ContentBrowserPanel.m_CurrentDirectory = Project::GetActiveProject()->GetAssetDirectory();
 
-					m_EditorCamera.reset();
-					m_EditorCamera = nullptr;
-					m_EditorCamera = std::make_unique<EditorCamera>();
-					m_EditorCamera->OnUpdate();
-
-					auto scene = Project::GetActiveScene();
-
 					FrameBufferConfig fbo_config;
 					fbo_config.Width = m_ViewportWindowSize.x;
 					fbo_config.Height = m_ViewportWindowSize.y;
 					fbo_config.RenderToScreen = false;
 					fbo_config.Samples = 4;
+
+					m_EditorCamera.reset();
+					m_EditorCamera = nullptr;
+					m_EditorCamera = std::make_unique<EditorCamera>();
+					m_EditorCamera->CreateNewFrameBuffer(fbo_config);
+					m_EditorCamera->OnUpdate();
+
+					auto scene = Project::GetActiveScene();
 
 					scene->CreateSceneFrameBuffer(fbo_config);
 
@@ -839,8 +855,8 @@ void LouronEditorLayer::OnSceneStop()
 		Project::SetActiveScene(m_EditorScene);
 
 		FrameBufferConfig fbo_config;
-		fbo_config.Width = 1;
-		fbo_config.Height = 1;
+		fbo_config.Width = m_ViewportWindowSize.x;
+		fbo_config.Height = m_ViewportWindowSize.y;
 		fbo_config.RenderToScreen = false;
 		fbo_config.Samples = 4;
 
@@ -870,7 +886,7 @@ void LouronEditorLayer::DisplaySceneViewportWindow() {
 		
 		auto scene_ref = Project::GetActiveScene();
 		if (scene_ref) {
-			ImGui::Image((ImTextureID)(uintptr_t)scene_ref->GetSceneFrameBuffer()->GetTexture(FrameBufferTexture::ColourTexture), ImGui::GetContentRegionAvail(), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });		
+			ImGui::Image((ImTextureID)(uintptr_t)scene_ref->GetSceneFrameBuffer()->GetTexture(FrameBufferTexture::ColourTexture), ImGui::GetContentRegionAvail(), ImVec2{0, 1}, ImVec2{1, 0});
 		}
 		else {
 			ImGui::Image(0, ImGui::GetContentRegionAvail());
@@ -1004,6 +1020,65 @@ void LouronEditorLayer::DisplaySceneViewportWindow() {
 			ImGui::End();
 		}
 
+		// ----- Draw Preview Camera -----
+		if (m_SelectedEntity && m_SelectedEntity.HasComponent<CameraComponent>() && m_SelectedEntity.GetComponent<CameraComponent>().CameraFramebuffer)
+		{
+			ImGuiWindowFlags window_flags =
+				ImGuiWindowFlags_NoResize |
+				ImGuiWindowFlags_NoScrollbar |
+				ImGuiWindowFlags_NoCollapse |
+				ImGuiWindowFlags_AlwaysAutoResize |
+				ImGuiWindowFlags_NoSavedSettings |
+				ImGuiWindowFlags_NoFocusOnAppearing |
+				ImGuiWindowFlags_NoDocking;
+
+			ImVec2 scene_window_pos = ImGui::GetWindowPos();
+			ImVec2 scene_window_size = ImGui::GetWindowSize();
+
+			// Calculate the diagonal size of the scene window and the framebuffer once
+			float diag_size = std::sqrt(scene_window_size.x * scene_window_size.x + scene_window_size.y * scene_window_size.y) * 0.25f;
+
+			glm::uvec2 frame_buffer_size = {
+				m_SelectedEntity.GetComponent<CameraComponent>().CameraFramebuffer->GetConfig().Width,
+				m_SelectedEntity.GetComponent<CameraComponent>().CameraFramebuffer->GetConfig().Height
+			};
+
+			// Calculate the diagonal of the framebuffer
+			float frame_buffer_diag_size = std::sqrt(frame_buffer_size.x * frame_buffer_size.x + frame_buffer_size.y * frame_buffer_size.y);
+
+			// Calculate the scaling factor for the framebuffer's diagonal
+			float scale_factor = (frame_buffer_diag_size > diag_size) ? diag_size / frame_buffer_diag_size : 1.0f;
+
+			// Apply the scale factor directly to the framebuffer size
+			ImVec2 camera_preview_overlay_size = ImVec2(
+				frame_buffer_size.x * scale_factor,
+				frame_buffer_size.y * scale_factor
+			);
+
+			// If the width of the preview exceeds the height of the parent window, don't display the preview
+			if (camera_preview_overlay_size.x <= scene_window_size.y) 
+			{
+				// Position the camera preview overlay in the bottom-right corner with a margin of 10.0f
+				ImVec2 camera_preview_overlay_pos = ImVec2(
+					scene_window_pos.x + scene_window_size.x - camera_preview_overlay_size.x - 10.0f,  // 10.0f margin from right
+					scene_window_pos.y + scene_window_size.y - camera_preview_overlay_size.y - 10.0f   // 10.0f margin from bottom
+				);
+
+				ImGui::SetNextWindowSize(camera_preview_overlay_size, ImGuiCond_Always);
+				ImGui::SetNextWindowPos(camera_preview_overlay_pos, ImGuiCond_Always);
+				ImGui::SetNextWindowBgAlpha(0.35f);
+
+				if (ImGui::Begin("Camera Preview", nullptr, window_flags))
+				{
+					ImGui::Image((ImTextureID)(uintptr_t)m_SelectedEntity.GetComponent<CameraComponent>().CameraFramebuffer->GetTexture(FrameBufferTexture::ColourTexture),
+						camera_preview_overlay_size, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+				}
+				ImGui::End();
+
+				scene_image_hovered = ImGui::IsItemHovered();
+			}
+		}
+
 		// ----- Draw Simple FPS Counter -----
 		{
 
@@ -1018,36 +1093,38 @@ void LouronEditorLayer::DisplaySceneViewportWindow() {
 			ImVec2 scene_window_size = ImGui::GetWindowSize();
 			ImVec2 fps_overlay_size = ImVec2(100.0f, 50.0f);
 			ImVec2 fps_overlay_pos = ImVec2(
-				scene_window_pos.x + scene_window_size.x - fps_overlay_size.x - 10.0f,  // 10.0f is a margin
-				scene_window_pos.y + scene_window_size.y - fps_overlay_size.y - 10.0f   // 10.0f is a margin
+				scene_window_pos.x + 10.0f,  // Align to bottom-left instead of bottom-right
+				scene_window_pos.y + scene_window_size.y - fps_overlay_size.y - 10.0f
 			);
 
-			ImGui::SetNextWindowSize(fps_overlay_size, ImGuiCond_Always);
-			ImGui::SetNextWindowPos(fps_overlay_pos, ImGuiCond_Always);
-			ImGui::SetNextWindowBgAlpha(0.35f);
-			if (ImGui::Begin("Scene Stats", &m_ActiveGUIWindows["Scene Stats"], window_flags))
+			if (fps_overlay_size.x <= scene_window_size.y)
 			{
-				static float frame_rate = ImGui::GetIO().Framerate;
-				static float timer = 0.25f;
-
-				if (timer <= 0.0f)
+				ImGui::SetNextWindowSize(fps_overlay_size, ImGuiCond_Always);
+				ImGui::SetNextWindowPos(fps_overlay_pos, ImGuiCond_Always);
+				ImGui::SetNextWindowBgAlpha(0.35f);
+				if (ImGui::Begin("Scene Stats", &m_ActiveGUIWindows["Scene Stats"], window_flags))
 				{
-					frame_rate = ImGui::GetIO().Framerate;
-					timer = 0.25f;
-				}
-				else
-				{
-					timer -= Time::GetDeltaTime();
-				}
+					static float frame_rate = ImGui::GetIO().Framerate;
+					static float timer = 0.25f;
 
-				ImGui::Text("FPS Counter");
-				ImGui::Separator();
-				ImGui::Text("%.0f", frame_rate);
+					if (timer <= 0.0f)
+					{
+						frame_rate = ImGui::GetIO().Framerate;
+						timer = 0.25f;
+					}
+					else
+					{
+						timer -= Time::GetDeltaTime();
+					}
 
+					ImGui::Text("FPS Counter");
+					ImGui::Separator();
+					ImGui::Text("%.0f", frame_rate);
+
+				}
+				ImGui::End();
+				scene_image_hovered = ImGui::IsItemHovered();
 			}
-			ImGui::End();
-			scene_image_hovered = ImGui::IsItemHovered();
-
 		}
 
 		auto [mx, my] = ImGui::GetMousePos();
@@ -1071,7 +1148,7 @@ void LouronEditorLayer::DisplaySceneViewportWindow() {
 		{
 			if(ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGui::IsMouseDragging(ImGuiMouseButton_Left) && !ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup)) {
 				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-				uint32_t pixelData = Project::GetActiveScene()->GetSceneFrameBuffer()->ReadEntityPixelData({ mouseX, mouseY });
+				uint32_t pixelData = m_EditorCamera->GetFrameBuffer().ReadEntityPixelData({mouseX, mouseY});
 				m_SelectedEntity = pixelData == NULL_UUID ? Entity() : Project::GetActiveScene()->FindEntityByUUID(pixelData);
 			}
 		}
@@ -1122,7 +1199,7 @@ void LouronEditorLayer::DisplayPropertiesWindow() {
 		return;
 	}
 
-	m_PropertiesPanel.OnImGuiRender(scene_ref, m_SelectedEntity);
+	m_PropertiesPanel.OnImGuiRender(scene_ref, m_SelectedEntity, this);
 
 
 	ImGui::End();
@@ -1913,12 +1990,13 @@ void LouronEditorLayer::DisplayRenderStatsWindow() {
 	if (ImGui::Begin("Render", &m_ActiveGUIWindows["Render Stats"], 0)) {
 
 		auto& stats = Renderer::GetFrameRenderStats();
-		auto& FP_Data = std::static_pointer_cast<ForwardPlusPipeline>(Project::GetActiveScene()->GetConfig().ScenePipeline)->GetFPData();
+		auto FP_Data = ForwardPlusPipeline::GetSceneContext(Project::GetActiveScene().get());
 
 		if (ImGui::TreeNodeEx("Rendering Options")) {
 
-			ImGui::Checkbox("View Light Complexity", &FP_Data.Debug_ShowLightComplexity);
-			ImGui::Checkbox("View Wireframe", &FP_Data.Debug_ShowWireframe);
+			bool fallback = false;
+			ImGui::Checkbox("View Light Complexity", FP_Data ? &FP_Data->Debug_ShowLightComplexity : &fallback);
+			ImGui::Checkbox("View Wireframe", FP_Data ? &FP_Data->Debug_RenderWireframe : &fallback);
 
 			ImGui::TreePop();
 		}
@@ -1958,9 +2036,9 @@ void LouronEditorLayer::DisplayRenderStatsWindow() {
 			ImGui::SeparatorText("Debug - OpenGL API Calls");
 
 			ImGui::Dummy({ 0.0f, 2.5f });
-			ImGui::Text("Total Draw Calls:      %i", stats.Individual_DrawCalls + stats.Instanced_DrawCalls);
-			ImGui::Text("Individual Draw Calls: %i", stats.Individual_DrawCalls);
-			ImGui::Text("Instanced Draw Calls:  %i", stats.Instanced_DrawCalls);
+			ImGui::Text("Total Draw Calls:      %i", stats.Debug_Individual_DrawCalls + stats.Debug_Instanced_DrawCalls);
+			ImGui::Text("Individual Draw Calls: %i", stats.Debug_Individual_DrawCalls);
+			ImGui::Text("Instanced Draw Calls:  %i", stats.Debug_Instanced_DrawCalls);
 			ImGui::Text("Draw Calls Saved By Instancing:  %i", stats.Debug_Geometry_Colour_Instanced);
 			ImGui::Dummy({ 0.0f, 2.5f });
 
@@ -1984,8 +2062,8 @@ void LouronEditorLayer::DisplayRenderStatsWindow() {
 			ImGui::Text("Entities Occlusion Culled: %i", stats.Entities_Culled_Occlusion);
 			ImGui::Text("Entities Frustum Culled: %i", stats.Entities_Culled_Frustum);
 			ImGui::Dummy({ 0.0f, 2.5f });
-			ImGui::Text("Visible Point Lights: %i", (int)FP_Data.PLEntitiesInFrustum.size());
-			ImGui::Text("Visible Spot Lights: %i", (int)FP_Data.SLEntitiesInFrustum.size());
+			ImGui::Text("Visible Point Lights: %i", FP_Data ? (int)FP_Data->PointLight_OverallVisible.size() : 0);
+			ImGui::Text("Visible Spot Lights: %i", FP_Data ? (int)FP_Data->SpotLight_OverallVisible.size() : 0);
 			ImGui::Dummy({ 0.0f, 2.5f });
 
 			ImGui::TreePop();
@@ -2029,7 +2107,7 @@ void LouronEditorLayer::DisplayRenderStatsWindow() {
 				timer = timer_max;
 
 				auto& results = Profiler::Get().GetResults();
-				octreeTime = results["Forward Plus - Frustum Culling Octree Query"].Time;
+				octreeTime = results["ForwardPlusPipeline::SortRenderQueue - Renderable Frustum Cull"].Time;
 
 				// Store the current octree time in the buffer
 				data[data_index] = octreeTime * 1000.0f; // Convert to microseconds for easier reading
@@ -2428,20 +2506,21 @@ void LouronEditorLayer::OpenScene(const std::filesystem::path& scene_file_path) 
 		// TODO: Implement Save Dialog
 		// project->SaveScene();
 
+		FrameBufferConfig fbo_config;
+		fbo_config.Width = m_ViewportWindowSize.x;
+		fbo_config.Height = m_ViewportWindowSize.y;
+		fbo_config.RenderToScreen = false;
+		fbo_config.Samples = 4;
+
 		m_EditorCamera.reset();
 		m_EditorCamera = nullptr;
 		m_EditorCamera = std::make_unique<EditorCamera>();
+		m_EditorCamera->CreateNewFrameBuffer(fbo_config);
 		m_EditorCamera->OnUpdate();
 
 		auto scene = project->LoadScene(filepath);
 
 		if (scene) {
-
-			FrameBufferConfig fbo_config;
-			fbo_config.Width = m_ViewportWindowSize.x;
-			fbo_config.Height = m_ViewportWindowSize.y;
-			fbo_config.RenderToScreen = false;
-			fbo_config.Samples = 4;
 
 			scene->CreateSceneFrameBuffer(fbo_config);
 		}

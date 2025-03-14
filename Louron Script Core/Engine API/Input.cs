@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Louron
+﻿namespace Louron
 {
     public class Input
     {
@@ -49,7 +43,8 @@ namespace Louron
             return GetMousePosition().Y;
         }
 
-        public static Vector2 GetMousePosition() {
+        public static Vector2 GetMousePosition()
+        {
             EngineCallbacks.Input_GetMousePosition(out Vector2 result);
             return result;
         }

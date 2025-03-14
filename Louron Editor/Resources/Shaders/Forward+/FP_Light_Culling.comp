@@ -2,7 +2,6 @@
 
 struct PointLight {
     vec4 position;
-
     vec4 colour;
 
     float radius;
@@ -40,9 +39,7 @@ struct SpotLight {
 	uint m_Padding1;
 };
 
-struct VisibleIndex {
-    uint index;
-};
+struct VisibleIndex { uint index; };
 
 struct BoundingSphere {
 	vec4 centre;
@@ -68,8 +65,8 @@ layout(std430, binding = 3) writeonly buffer SL_IndiciesBuffer {
 } SL_IndiciesBuffer_Data;
 
 // Declare Uniforms
-uniform mat4 u_View;
 uniform mat4 u_Proj;
+uniform mat4 u_View;
 uniform ivec2 u_ScreenSize;
 uniform sampler2D u_Depth;
 

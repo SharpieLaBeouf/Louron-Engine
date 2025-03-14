@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using static Louron.Entity;
-
-namespace Louron
+﻿namespace Louron
 {
 
     public class Transform
     {
         public Transform() { ID = 0; }
 
-        internal Transform(uint id) { 
+        internal Transform(uint id)
+        {
             ID = id;
             _position = position;
             _rotation = rotation;
@@ -27,7 +20,7 @@ namespace Louron
             get
             {
                 EngineCallbacks.TransformComponent_GetPosition(ID, ref _position);
-                return _position; 
+                return _position;
             }
             set
             {
@@ -125,10 +118,10 @@ namespace Louron
 
     public enum ForceMode : uint
     {
-        eFORCE,            
-        eIMPULSE,          
-        eVELOCITY_CHANGE,  
-        eACCELERATION      
+        eFORCE,
+        eIMPULSE,
+        eVELOCITY_CHANGE,
+        eACCELERATION
     };
 
     public enum ShadowTypeFlag : byte

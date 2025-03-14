@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Xml.Linq;
+﻿using System.Runtime.InteropServices;
 
 namespace Louron
 {
@@ -15,8 +11,8 @@ namespace Louron
         // when the script is instantiated.
         internal ComputeShader(uint asset_handle)
         {
-            Asset_Handle = asset_handle; 
-        } 
+            Asset_Handle = asset_handle;
+        }
 
         public void SetBuffer(ComputeBuffer buffer, uint binding_index)
         {
@@ -96,9 +92,9 @@ namespace Louron
             if (data == null)
                 throw new ObjectDisposedException("ComputeBuffer Cannot Set Null Data.");
 
-            if (IsReleased) 
+            if (IsReleased)
                 throw new ObjectDisposedException("ComputeBuffer Invalid Pointer.");
-            
+
             GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
             IntPtr ptr = handle.AddrOfPinnedObject();
 
@@ -119,7 +115,7 @@ namespace Louron
         /// <param name="output">The object the data will be copied into.</param>
         public void GetData<T>(T[] output) where T : struct
         {
-            if (IsReleased) 
+            if (IsReleased)
                 throw new ObjectDisposedException("ComputeBuffer Invalid Pointer.");
 
             GCHandle handle = GCHandle.Alloc(output, GCHandleType.Pinned);

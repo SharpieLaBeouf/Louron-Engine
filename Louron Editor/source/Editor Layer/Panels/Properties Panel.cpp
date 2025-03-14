@@ -14,7 +14,7 @@
 
 using namespace Louron;
 
-void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Entity selected_entity)
+void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Entity selected_entity, LouronEditorLayer* editor_layer)
 {
 	std::vector<AssetHandle> material_list;
 
@@ -460,6 +460,9 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			{
 				component.CameraInstance->SetPerspectiveVerticalFOV(glm::radians(data));
 				component.CameraInstance->SetViewportSize(frame_buffer_config.Width, frame_buffer_config.Height);
+
+				if(component.CameraFramebuffer)
+					component.CameraFramebuffer->Resize({ frame_buffer_config.Width, frame_buffer_config.Height });
 			}
 			ImGui::NextColumn();
 
@@ -471,6 +474,9 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			{
 				component.CameraInstance->SetPerspectiveNearClip(data);
 				component.CameraInstance->SetViewportSize(frame_buffer_config.Width, frame_buffer_config.Height);
+
+				if (component.CameraFramebuffer)
+					component.CameraFramebuffer->Resize({ frame_buffer_config.Width, frame_buffer_config.Height });
 			}
 			ImGui::NextColumn();
 
@@ -482,6 +488,9 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			{
 				component.CameraInstance->SetPerspectiveFarClip(data);
 				component.CameraInstance->SetViewportSize(frame_buffer_config.Width, frame_buffer_config.Height);
+
+				if (component.CameraFramebuffer)
+					component.CameraFramebuffer->Resize({ frame_buffer_config.Width, frame_buffer_config.Height });
 			}
 			ImGui::NextColumn();
 
@@ -519,6 +528,58 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
 			ImGui::ColorEdit4("##SpotLightColour", glm::value_ptr(component.ClearColour));
+			ImGui::NextColumn();
+
+			ImGui::Text("Camera Depth");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(-1.0f);
+
+			// Slider for Position
+			int temp_depth = component.CameraDepth;
+			if (ImGui::DragInt("##Camera Depth", &temp_depth, 0.5f, 0, UINT8_MAX))
+			{
+				component.CameraDepth = static_cast<uint8_t>(temp_depth);
+			}
+			ImGui::NextColumn();
+
+			glm::vec4 temp_viewport = component.GetViewport();
+			glm::vec2 temp_viewport_pos = { temp_viewport.x, temp_viewport.y };
+			glm::vec2 temp_viewport_size = { temp_viewport.z, temp_viewport.w };
+
+			ImGui::Text("Viewport Position");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(-1.0f);
+
+			// Slider for Position
+			if (ImGui::DragFloat2("##Viewport Position", glm::value_ptr(temp_viewport_pos), 0.001f, -1.0f, 1.0f))
+			{
+				temp_viewport.x = temp_viewport_pos.x;
+				temp_viewport.y = temp_viewport_pos.y;
+			}
+			ImGui::NextColumn();
+
+			ImGui::Text("Viewport Size");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(-1.0f);
+
+			// Slider for Size
+			if (ImGui::DragFloat2("##Viewport Size", glm::value_ptr(temp_viewport_size), 0.001f, 0.001f, 1.0f))
+			{
+				temp_viewport.z = temp_viewport_size.x;
+				temp_viewport.w = temp_viewport_size.y;
+			}
+
+			// Update Changes
+			if (temp_viewport != component.GetViewport())
+			{
+				component.SetViewport(temp_viewport, editor_layer->m_ViewportWindowSize);
+			}
+
+			ImGui::NextColumn();
+
+			ImGui::Text("Display to Final ViewPort");
+			ImGui::NextColumn();
+			ImGui::Checkbox("##Display to Final ViewPort", &component.DisplayToMainViewport);
 			ImGui::NextColumn();
 
 			ImGui::Columns(1);

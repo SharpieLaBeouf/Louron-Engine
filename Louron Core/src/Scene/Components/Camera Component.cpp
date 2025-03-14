@@ -14,7 +14,36 @@
 
 namespace Louron
 {
-    CameraComponent::CameraComponent(const CameraComponent& other) 
+
+    void CameraComponent::SetViewport(const glm::vec4& viewport_dimensions, const glm::uvec2& viewport_size)
+    {
+        m_CameraViewport = viewport_dimensions;
+
+        glm::uvec2 new_size = { std::max<uint32_t>(static_cast<uint32_t>(viewport_size.x * m_CameraViewport.z), 1), std::max<uint32_t>(static_cast<uint32_t>(viewport_size.y * m_CameraViewport.w), 1) };
+
+
+        if (CameraFramebuffer)
+        {
+            CameraFramebuffer->Resize(new_size);
+        }
+        if (CameraInstance)
+        {
+            CameraInstance->SetViewportSize(new_size.x, new_size.y);
+        }
+    }
+
+    CameraComponent::CameraComponent()
+    {
+        FrameBufferConfig config = {};
+        config.Width = 800;
+        config.Height = 600;
+        config.RenderToScreen = false;
+        config.Samples = 4;
+
+        CameraFramebuffer = std::make_unique<FrameBuffer>(config);
+    }
+
+    CameraComponent::CameraComponent(const CameraComponent& other)
     {
         if (other.GetEntity())
             SetEntity(*other.GetEntity());
@@ -24,6 +53,11 @@ namespace Louron
         this->ClearColour = other.ClearColour;
 
         this->CameraInstance = std::make_shared<SceneCamera>(*other.CameraInstance);
+
+        this->m_CameraViewport = other.m_CameraViewport;
+        this->CameraDepth = CameraDepth;
+        this->CameraFramebuffer = std::make_unique<FrameBuffer>(other.CameraFramebuffer->GetConfig());
+        this->DisplayToMainViewport = other.DisplayToMainViewport;
 
     }
 
@@ -37,6 +71,11 @@ namespace Louron
         this->ClearFlags = other.ClearFlags; other.ClearFlags = CameraClearFlags::COLOUR_ONLY;
         this->ClearColour = other.ClearColour; other.ClearColour = { 0.1764f, 0.3294f, 0.5607f, 1.0f };
         this->CameraInstance = std::move(other.CameraInstance); other.CameraInstance = nullptr;
+
+        this->m_CameraViewport = other.m_CameraViewport; other.m_CameraViewport = { 0.0f, 0.0f, 1.0f, 1.0f };
+        this->CameraDepth = CameraDepth; other.CameraDepth = 0;
+        this->CameraFramebuffer = std::move(other.CameraFramebuffer); other.CameraFramebuffer = nullptr;
+        this->DisplayToMainViewport = other.DisplayToMainViewport; other.DisplayToMainViewport = true;
     }
 
     CameraComponent& CameraComponent::operator=(const CameraComponent& other)
@@ -52,6 +91,11 @@ namespace Louron
         this->ClearColour = other.ClearColour;
 
         this->CameraInstance = std::make_shared<SceneCamera>(*other.CameraInstance);
+
+        this->m_CameraViewport = other.m_CameraViewport;
+        this->CameraDepth = CameraDepth;
+        this->CameraFramebuffer = std::make_unique<FrameBuffer>(other.CameraFramebuffer->GetConfig());
+        this->DisplayToMainViewport = other.DisplayToMainViewport;
 
         return *this;
     }
@@ -69,6 +113,11 @@ namespace Louron
         this->ClearFlags = other.ClearFlags; other.ClearFlags = CameraClearFlags::COLOUR_ONLY;
         this->ClearColour = other.ClearColour; other.ClearColour = { 0.1764f, 0.3294f, 0.5607f, 1.0f };
         this->CameraInstance = std::move(other.CameraInstance); other.CameraInstance = nullptr;
+
+        this->m_CameraViewport = other.m_CameraViewport; other.m_CameraViewport = { 0.0f, 0.0f, 1.0f, 1.0f };
+        this->CameraDepth = CameraDepth; other.CameraDepth = 0;
+        this->CameraFramebuffer = std::move(other.CameraFramebuffer); other.CameraFramebuffer = nullptr;
+        this->DisplayToMainViewport = other.DisplayToMainViewport; other.DisplayToMainViewport = true;
 
         return *this;
     }
@@ -101,6 +150,7 @@ namespace Louron
             }
 
             out << YAML::Key << "Primary" << YAML::Value << Primary;
+            out << YAML::Key << "DisplayToMainViewport" << YAML::Value << DisplayToMainViewport;
 
             const char* clear_string = (ClearFlags == CameraClearFlags::SKYBOX) ? "Skybox" : "Colour";
             out << YAML::Key << "ClearFlag" << YAML::Value << clear_string;
@@ -114,7 +164,18 @@ namespace Louron
                 << v.a
                 << YAML::EndSeq;
 
+            v = m_CameraViewport;
+            out << YAML::Key << "CameraViewport" << YAML::Value << YAML::Flow
+                << YAML::BeginSeq
+                << v.x
+                << v.y
+                << v.z
+                << v.w
+                << YAML::EndSeq;
+
             out << YAML::EndMap;
+
+            out << YAML::Key << "CameraDepth" << YAML::Value << CameraDepth;
         }
     }
 
@@ -132,21 +193,15 @@ namespace Louron
                 if (cameraNode["FOV"]) {
                     CameraInstance->SetPerspectiveVerticalFOV(glm::radians(cameraNode["FOV"].as<float>()));
                 }
-                else {
-                    return false;
-                }
+
                 if (cameraNode["Near"]) {
                     CameraInstance->SetPerspectiveNearClip(cameraNode["Near"].as<float>());
                 }
-                else {
-                    return false;
-                }
+
                 if (cameraNode["Far"]) {
                     CameraInstance->SetPerspectiveFarClip(cameraNode["Far"].as<float>());
                 }
-                else {
-                    return false;
-                }
+
             }
             else if (cameraNode["Projection Type"] && cameraNode["Projection Type"].as<std::string>() == "Orthographic")
             {
@@ -155,37 +210,21 @@ namespace Louron
                 if (cameraNode["FOV"]) {
                     CameraInstance->SetOrthographicSize(cameraNode["FOV"].as<float>());
                 }
-                else {
-                    return false;
-                }
+
                 if (cameraNode["Near"]) {
                     CameraInstance->SetOrthographicNearClip(cameraNode["Near"].as<float>());
                 }
-                else {
-                    return false;
-                }
+
                 if (cameraNode["Far"]) {
                     CameraInstance->SetOrthographicFarClip(cameraNode["Far"].as<float>());
                 }
-                else {
-                    return false;
-                }
+
             }
-            else {
-                return false;
-            }
-        }
-        else {
-            return false;
         }
 
         if (component["Primary"]) {
             Primary = component["Primary"].as<bool>();
         }
-        else {
-            return false;
-        }
-
         if (component["ClearFlag"]) {
             std::string clearFlagStr = component["ClearFlag"].as<std::string>();
             if (clearFlagStr == "Skybox") {
@@ -198,9 +237,6 @@ namespace Louron
                 return false;
             }
         }
-        else {
-            return false;
-        }
 
         if (component["ClearColour"]) {
             auto clearColourSeq = component["ClearColour"];
@@ -210,6 +246,24 @@ namespace Louron
                 ClearColour.b = clearColourSeq[2].as<float>();
                 ClearColour.a = clearColourSeq[3].as<float>();
             }
+        }
+
+        if (component["CameraViewport"]) {
+            auto viewPortSeq = component["CameraViewport"];
+            if (viewPortSeq.IsSequence() && viewPortSeq.size() == 4) {
+                m_CameraViewport.x = viewPortSeq[0].as<float>();
+                m_CameraViewport.y = viewPortSeq[1].as<float>();
+                m_CameraViewport.z = viewPortSeq[2].as<float>();
+                m_CameraViewport.w = viewPortSeq[3].as<float>();
+            }
+        }
+
+        if (component["DisplayToMainViewport"]) {
+            DisplayToMainViewport = component["DisplayToMainViewport"].as<bool>();
+        }
+
+        if (component["CameraDepth"]) {
+            CameraDepth = component["CameraDepth"].as<uint8_t>();
         }
 
         return true;

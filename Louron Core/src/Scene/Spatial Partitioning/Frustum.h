@@ -12,6 +12,7 @@
 namespace Louron {
 
 	struct Bounds_AABB;
+	struct Bounds_Sphere;
 
 	struct Plane {
 		glm::vec3 normal;
@@ -54,6 +55,7 @@ namespace Louron {
 		static std::array<glm::mat4, 5> CalculateCascadeLightSpaceMatrices(float fov, float aspect_ratio, float near_plane, float far_plane, const glm::mat4& view_matrix, const glm::vec3& light_direction, std::array<float, 5>& shadow_cascade_plane_distances);
 
 		FrustumContainResult Contains(const Bounds_AABB& bounds) const;
+		FrustumContainResult Contains(const Bounds_Sphere& bounds) const;
 	};
 
 }

@@ -2,18 +2,18 @@
 {
     public enum MouseButton
     {
-        Mouse_Button_1       = 0,
-        Mouse_Button_2       = 1,
-        Mouse_Button_3       = 2,
-        Mouse_Button_4       = 3,
-        Mouse_Button_5       = 4,
-        Mouse_Button_6       = 5,
-        Mouse_Button_7       = 6,
-        Mouse_Button_8       = 7,
-        Mouse_Button_Last    = Mouse_Button_8,
-        Mouse_Button_Left    = Mouse_Button_1,
-        Mouse_Button_Right   = Mouse_Button_2,
-        Mouse_Button_Middle  = Mouse_Button_3
+        Mouse_Button_1 = 0,
+        Mouse_Button_2 = 1,
+        Mouse_Button_3 = 2,
+        Mouse_Button_4 = 3,
+        Mouse_Button_5 = 4,
+        Mouse_Button_6 = 5,
+        Mouse_Button_7 = 6,
+        Mouse_Button_8 = 7,
+        Mouse_Button_Last = Mouse_Button_8,
+        Mouse_Button_Left = Mouse_Button_1,
+        Mouse_Button_Right = Mouse_Button_2,
+        Mouse_Button_Middle = Mouse_Button_3
     }
 
     public enum KeyCode

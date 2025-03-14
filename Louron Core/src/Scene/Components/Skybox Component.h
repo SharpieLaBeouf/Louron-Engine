@@ -65,18 +65,15 @@ namespace Louron
 	{
 		AssetHandle SkyboxMaterialAssetHandle = NULL_UUID;
 
-		SkyboxComponent();
+		SkyboxComponent() = default;
 		SkyboxComponent(const SkyboxComponent&) = default;
+		SkyboxComponent(SkyboxComponent&&) = default;
 
-		void Bind() { m_VAO->Bind(); }
-		void UnBind() { glBindVertexArray(0); }
+		SkyboxComponent& operator=(const SkyboxComponent&) noexcept = default;
+		SkyboxComponent& operator=(SkyboxComponent&&) noexcept = default;
 
 		void Serialize(YAML::Emitter& out) const;
 		bool Deserialize(const YAML::Node data);
-
-	private:
-
-		std::shared_ptr<VertexArray> m_VAO = nullptr;
 
 	};
 

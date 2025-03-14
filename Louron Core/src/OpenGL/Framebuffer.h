@@ -49,12 +49,12 @@ namespace Louron {
 		/// <summary>
 		/// This will resize the framebuffer.
 		/// </summary>
-		void Resize(const glm::ivec2& size);
+		void Resize(const glm::uvec2& size);
 
 		/// <summary>
 		/// This will read the data of the pixel for the appropriate COLOUR attachment.
 		/// </summary>
-		uint32_t ReadEntityPixelData(const glm::ivec2& pos) const;
+		uint32_t ReadEntityPixelData(const glm::uvec2& pos) const;
 
 		/// <summary>
 		/// Clears the entity pixel data of the entity texture attachment with the passed value.
@@ -78,6 +78,9 @@ namespace Louron {
 		/// </summary>
 		GLuint GetTexture(const FrameBufferTexture& texture_type) const;
 		GLuint GetMultiSampledTexture(const FrameBufferTexture& texture_type) const;
+
+		GLuint GetFBOID() const { return m_FBO; }
+		GLuint GetMultiSampledFBOID() const { return m_MS_FBO; }
 
 		/// <summary>
 		/// This must be called after all rendering has been completed.

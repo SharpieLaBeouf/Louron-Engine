@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Louron
+﻿namespace Louron
 {
     public struct LMath
     {

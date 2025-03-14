@@ -12,6 +12,7 @@ namespace Louron {
 
 	static std::unique_ptr<VertexArray> s_DebugCubeVAO;
 	static std::unique_ptr<VertexArray> s_DebugSphereVAO; // TODO: Implement this
+	static std::unique_ptr<VertexArray> s_SkyboxVAO;
 
 	RenderPassStats Renderer::s_RenderStats = {};
 
@@ -55,6 +56,62 @@ namespace Louron {
 			s_DebugCubeVAO->SetIndexBuffer(ebo);
 
 			s_DebugCubeVAO->UnBind();
+		}
+
+		if (!s_SkyboxVAO)
+		{
+			static float skyboxVertices[] = {
+				// positions          
+				-1.0f,  1.0f, -1.0f,
+				-1.0f, -1.0f, -1.0f,
+				 1.0f, -1.0f, -1.0f,
+				 1.0f, -1.0f, -1.0f,
+				 1.0f,  1.0f, -1.0f,
+				-1.0f,  1.0f, -1.0f,
+
+				-1.0f, -1.0f,  1.0f,
+				-1.0f, -1.0f, -1.0f,
+				-1.0f,  1.0f, -1.0f,
+				-1.0f,  1.0f, -1.0f,
+				-1.0f,  1.0f,  1.0f,
+				-1.0f, -1.0f,  1.0f,
+
+				 1.0f, -1.0f, -1.0f,
+				 1.0f, -1.0f,  1.0f,
+				 1.0f,  1.0f,  1.0f,
+				 1.0f,  1.0f,  1.0f,
+				 1.0f,  1.0f, -1.0f,
+				 1.0f, -1.0f, -1.0f,
+
+				-1.0f, -1.0f,  1.0f,
+				-1.0f,  1.0f,  1.0f,
+				 1.0f,  1.0f,  1.0f,
+				 1.0f,  1.0f,  1.0f,
+				 1.0f, -1.0f,  1.0f,
+				-1.0f, -1.0f,  1.0f,
+
+				-1.0f,  1.0f, -1.0f,
+				 1.0f,  1.0f, -1.0f,
+				 1.0f,  1.0f,  1.0f,
+				 1.0f,  1.0f,  1.0f,
+				-1.0f,  1.0f,  1.0f,
+				-1.0f,  1.0f, -1.0f,
+
+				-1.0f, -1.0f, -1.0f,
+				-1.0f, -1.0f,  1.0f,
+				 1.0f, -1.0f, -1.0f,
+				 1.0f, -1.0f, -1.0f,
+				-1.0f, -1.0f,  1.0f,
+				 1.0f, -1.0f,  1.0f
+			};
+
+			// Create Buffer
+			VertexBuffer* vbo = new VertexBuffer(skyboxVertices, sizeof(skyboxVertices) / sizeof(float));
+			vbo->SetLayout({ { ShaderDataType::Float3, "aPos" } });
+
+			// Create Vertex Array and Assign Buffer
+			s_SkyboxVAO = std::make_unique<VertexArray>();
+			s_SkyboxVAO->AddVertexBuffer(vbo);
 		}
 	}
 
@@ -201,10 +258,14 @@ namespace Louron {
 		s_RenderStats.Debug_Geometry_VerticeCount += s_DebugCubeVAO->GetIndexBuffer()->GetCount() * static_cast<GLuint>(transforms.size());
 	}
 
-	void Renderer::DrawSkybox(SkyboxComponent& skybox) 
+	void Renderer::DrawSkybox() 
 	{
-		skybox.Bind();
+		if (!s_SkyboxVAO)
+			return;
+
+		s_SkyboxVAO->Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+		s_SkyboxVAO->UnBind();
 
 		s_RenderStats.Individual_DrawCalls++;
 		s_RenderStats.Geometry_Colour_Rendered++;
@@ -335,5 +396,48 @@ namespace Louron {
 	}
 
 	void Renderer::ClearRenderStats() { s_RenderStats = {}; }
+
 	const RenderPassStats& Renderer::GetFrameRenderStats() { return s_RenderStats; }
+
+	void Renderer::CheckOpenGLError()
+	{
+		GLenum error = glGetError();
+		if (error != GL_NO_ERROR)
+		{
+			std::string error_message;
+			switch (error)
+			{
+			case GL_INVALID_ENUM:
+				error_message = "GL_INVALID_ENUM: An unacceptable value has been specified for an enumerated argument.";
+				break;
+			case GL_INVALID_VALUE:
+				error_message = "GL_INVALID_VALUE: A numeric argument is out of range.";
+				break;
+			case GL_INVALID_OPERATION:
+				error_message = "GL_INVALID_OPERATION: The specified operation is not allowed in the current state.";
+				break;
+			case GL_STACK_OVERFLOW:
+				error_message = "GL_STACK_OVERFLOW: Command caused a stack overflow.";
+				break;
+			case GL_STACK_UNDERFLOW:
+				error_message = "GL_STACK_UNDERFLOW: Command caused a stack underflow.";
+				break;
+			case GL_OUT_OF_MEMORY:
+				error_message = "GL_OUT_OF_MEMORY: There is not enough memory left to execute the command.";
+				break;
+			case GL_INVALID_FRAMEBUFFER_OPERATION:
+				error_message = "GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer object is not complete.";
+				break;
+			case GL_CONTEXT_LOST:
+				error_message = "GL_CONTEXT_LOST: The OpenGL context has been lost, due to a graphics card reset.";
+				break;
+			default:
+				error_message = "Unknown OpenGL error.";
+				break;
+			}
+
+			L_CORE_ERROR("OpenGL Error ({}): {}", std::to_string(error), error_message);
+		}
+	}
+
 }

@@ -2,13 +2,15 @@
 
 #include "Louron.h"
 
+class LouronEditorLayer;
+
 class PropertiesPanel {
 
 public:
 
 	PropertiesPanel() = default;
 
-	void OnImGuiRender(const std::shared_ptr<Louron::Scene>& scene_ref, Louron::Entity selected_entity);
+	void OnImGuiRender(const std::shared_ptr<Louron::Scene>& scene_ref, Louron::Entity selected_entity, LouronEditorLayer* editor_layer);
 
 	void DisplayScriptFields(const std::string& script_name, Louron::Entity selected_entity);
 

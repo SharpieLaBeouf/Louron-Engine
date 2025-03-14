@@ -176,6 +176,28 @@ namespace Louron {
             return std::string();
 		}
 
+        static bool IsPathHidden(const std::filesystem::path& p) 
+        {
+            #if defined(L_PLATFORM_WINDOWS)
+
+                // Windows-specific check using GetFileAttributes
+                DWORD attributes = GetFileAttributes(p.c_str());
+                if (attributes != INVALID_FILE_ATTRIBUTES) {
+                    return (attributes & FILE_ATTRIBUTE_HIDDEN) != 0;
+                }
+                return false; // Invalid path or error
+
+            #elif defined(L_PLATFORM_MAC) || defined(L_PLATFORM_LINUX)
+
+                // Unix-like system check (Linux/macOS) - file name starts with a dot
+                return p.filename().string().front() == '.';
+
+            #else
+
+            return false;
+
+            #endif
+        }
 	}
 
 }

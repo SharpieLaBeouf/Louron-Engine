@@ -162,7 +162,7 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 
 					std::filesystem::path entry_path = entry.path().lexically_normal();
 
-					if (entry.is_directory()) {
+					if (entry.is_directory() && !FileUtils::IsPathHidden(entry.path())) {
 
 						bool is_leaf_node = !PathHasSubDirectory(entry_path);
 
@@ -326,10 +326,13 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 				std::vector<std::filesystem::directory_entry> files;
 
 				for (const auto& entry : std::filesystem::directory_iterator(m_CurrentDirectory)) {
-					if (std::filesystem::is_directory(entry)) {
+					if (std::filesystem::is_directory(entry) && !FileUtils::IsPathHidden(entry.path())) {
 						directories.push_back(entry);
 					}
 					else {
+
+						if (FileUtils::IsPathHidden(entry.path()))
+							continue;
 
 						if(entry.path().extension() != ".meta")
 							files.push_back(entry);

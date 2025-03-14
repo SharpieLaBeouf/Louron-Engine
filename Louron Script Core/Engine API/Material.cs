@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
-
-namespace Louron
+﻿namespace Louron
 {
 
     public class Material
@@ -301,29 +296,29 @@ namespace Louron
     {
         Unknown,
 
-		// Bool
-		Bool, BVec2, BVec3, BVec4,
+        // Bool
+        Bool, BVec2, BVec3, BVec4,
 
-		// Int
-		Int, IVec2, IVec3, IVec4,
+        // Int
+        Int, IVec2, IVec3, IVec4,
 
-		// Unsigned Int
-		Uint, UVec2, UVec3, UVec4,
+        // Unsigned Int
+        Uint, UVec2, UVec3, UVec4,
 
-		// Float
-		Float, Vec2, Vec3, Vec4,
+        // Float
+        Float, Vec2, Vec3, Vec4,
 
-		// Double
-		Double, DVec2, DVec3, DVec4,
+        // Double
+        Double, DVec2, DVec3, DVec4,
 
-		// Matrix
-		Mat2, Mat3, Mat4,
+        // Matrix
+        Mat2, Mat3, Mat4,
 
-		// Textures
-		Sampler1D, Sampler1DArray, Sampler1DShadow, Sampler1DArrayShadow, 
-		Sampler2D, Sampler2DArray, Sampler2DShadow, Sampler2DArrayShadow,
-		Sampler3D,
-		SamplerCube, SamplerCubeArray, SamplerCubeShadow, SamplerCubeArrayShadow
+        // Textures
+        Sampler1D, Sampler1DArray, Sampler1DShadow, Sampler1DArrayShadow,
+        Sampler2D, Sampler2DArray, Sampler2DShadow, Sampler2DArrayShadow,
+        Sampler3D,
+        SamplerCube, SamplerCubeArray, SamplerCubeShadow, SamplerCubeArrayShadow
     };
 
 }

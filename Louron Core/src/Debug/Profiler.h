@@ -38,13 +38,10 @@ namespace Louron {
 
 		void NewFrame() 
 		{
-			for (auto it = m_Results.begin(); it != m_Results.end(); ) 
+			for (auto it = m_Results.begin(); it != m_Results.end(); ++it) 
 			{
 				if (it->second.Accumulative) {
-					it = m_Results.erase(it); // erase returns the iterator to the next element
-				}
-				else {
-					++it; // move to the next element
+					it->second.Time = 0.0f;
 				}
 			}
 		}

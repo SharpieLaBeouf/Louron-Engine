@@ -26,7 +26,7 @@ namespace Louron {
 	}
 
 	uint32_t UUID::GenerateUUID() {
-		std::uniform_int_distribution<uint32_t> distribution(0, std::numeric_limits<uint32_t>::max() - 1);
+		std::uniform_int_distribution<uint32_t> distribution(0, std::numeric_limits<uint32_t>::max() - 2); // To Allow NULL_UUID - 1 as valid internal identifier not part of ECS
 		return distribution(s_Engine);
 	}
 

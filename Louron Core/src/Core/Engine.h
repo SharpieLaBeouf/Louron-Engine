@@ -6,6 +6,7 @@
 #include "LayerStack.h"
 #include "Audio.h"
 #include "Logging.h"
+#include "Platform.h"
 
 #include "../OpenGL/Shader.h"
 #include "../OpenGL/Texture.h"

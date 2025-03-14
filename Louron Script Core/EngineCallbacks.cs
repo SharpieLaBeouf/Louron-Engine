@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace Louron
 {
@@ -115,7 +114,7 @@ namespace Louron
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void Input_GetMousePosition(out Vector2 mousePos);
-        
+
         #endregion
 
         #region Components

@@ -1,8 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Runtime.InteropServices;
 
 namespace Louron
 {
@@ -35,7 +31,7 @@ namespace Louron
 
             if (ptr == IntPtr.Zero || count == 0)
                 return Array.Empty<uint>();
-            
+
             uint[] output = new uint[count];
             for (int i = 0; i < count; i++)
                 output[i] = (uint)Marshal.ReadInt32(ptr, i * sizeof(int));
@@ -234,9 +230,9 @@ namespace Louron
         {
             get
             {
-                if (_Mesh == null) 
+                if (_Mesh == null)
                     _Mesh = new Mesh(EngineCallbacks.MeshFilterComponent_CopyMesh(Entity.ID));
-                
+
                 return _Mesh;
             }
             set
@@ -250,9 +246,9 @@ namespace Louron
         {
             get
             {
-                if (_Mesh == null) 
+                if (_Mesh == null)
                     _Mesh = new Mesh(EngineCallbacks.MeshFilterComponent_SharedMesh(Entity.ID));
-                
+
                 return _Mesh;
             }
             set

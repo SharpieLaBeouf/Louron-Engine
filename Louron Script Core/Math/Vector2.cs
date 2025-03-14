@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Louron
+﻿namespace Louron
 {
     public struct Vector2
     {
@@ -329,19 +327,19 @@ namespace Louron
         #endregion
     }
 
-    public struct  UVector2
+    public struct UVector2
     {
         public uint X, Y;
 
-        public static  UVector2 Zero => new  UVector2(0);
+        public static UVector2 Zero => new UVector2(0);
 
-        public  UVector2(uint scalar)
+        public UVector2(uint scalar)
         {
             X = scalar;
             Y = scalar;
         }
 
-        public  UVector2(uint x, uint y)
+        public UVector2(uint x, uint y)
         {
             X = x;
             Y = y;
@@ -350,75 +348,75 @@ namespace Louron
         #region Operators
 
         // Add
-        public static  UVector2 operator +( UVector2 a,  UVector2 b)
+        public static UVector2 operator +(UVector2 a, UVector2 b)
         {
-            return new  UVector2(a.X + b.X, a.Y + b.Y);
+            return new UVector2(a.X + b.X, a.Y + b.Y);
         }
 
-        public static  UVector2 operator +( UVector2 a, uint scalar)
+        public static UVector2 operator +(UVector2 a, uint scalar)
         {
-            return new  UVector2(a.X + scalar, a.Y + scalar);
+            return new UVector2(a.X + scalar, a.Y + scalar);
         }
 
-        public static  UVector2 operator +(uint scalar,  UVector2 a)
+        public static UVector2 operator +(uint scalar, UVector2 a)
         {
-            return new  UVector2(a.X + scalar, a.Y + scalar);
+            return new UVector2(a.X + scalar, a.Y + scalar);
         }
 
         // Subtract
-        public static  UVector2 operator -( UVector2 a,  UVector2 b)
+        public static UVector2 operator -(UVector2 a, UVector2 b)
         {
-            return new  UVector2(a.X - b.X, a.Y - b.Y);
+            return new UVector2(a.X - b.X, a.Y - b.Y);
         }
 
-        public static  UVector2 operator -( UVector2 a, uint scalar)
+        public static UVector2 operator -(UVector2 a, uint scalar)
         {
-            return new  UVector2(a.X - scalar, a.Y - scalar);
+            return new UVector2(a.X - scalar, a.Y - scalar);
         }
 
-        public static  UVector2 operator -(uint scalar,  UVector2 a)
+        public static UVector2 operator -(uint scalar, UVector2 a)
         {
-            return new  UVector2(a.X - scalar, a.Y - scalar);
+            return new UVector2(a.X - scalar, a.Y - scalar);
         }
 
         // Multiply
-        public static  UVector2 operator *( UVector2 a,  UVector2 b)
+        public static UVector2 operator *(UVector2 a, UVector2 b)
         {
-            return new  UVector2(a.X * b.X, a.Y * b.Y);
+            return new UVector2(a.X * b.X, a.Y * b.Y);
         }
 
-        public static  UVector2 operator *( UVector2 vector, uint scalar)
+        public static UVector2 operator *(UVector2 vector, uint scalar)
         {
-            return new  UVector2(vector.X * scalar, vector.Y * scalar);
+            return new UVector2(vector.X * scalar, vector.Y * scalar);
         }
 
-        public static  UVector2 operator *(uint scalar,  UVector2 vector)
+        public static UVector2 operator *(uint scalar, UVector2 vector)
         {
-            return new  UVector2(vector.X * scalar, vector.Y * scalar);
+            return new UVector2(vector.X * scalar, vector.Y * scalar);
         }
 
         // Divide
-        public static  UVector2 operator /( UVector2 a,  UVector2 b)
+        public static UVector2 operator /(UVector2 a, UVector2 b)
         {
-            return new  UVector2(a.X / b.X, a.Y / b.Y);
+            return new UVector2(a.X / b.X, a.Y / b.Y);
         }
 
-        public static  UVector2 operator /( UVector2 vector, uint scalar)
+        public static UVector2 operator /(UVector2 vector, uint scalar)
         {
-            return new  UVector2(vector.X / scalar, vector.Y / scalar);
+            return new UVector2(vector.X / scalar, vector.Y / scalar);
         }
 
-        public static  UVector2 operator /(uint scalar,  UVector2 vector)
+        public static UVector2 operator /(uint scalar, UVector2 vector)
         {
-            return new  UVector2(vector.X / scalar, vector.Y / scalar);
+            return new UVector2(vector.X / scalar, vector.Y / scalar);
         }
 
-        public static bool operator ==( UVector2 a,  UVector2 b)
+        public static bool operator ==(UVector2 a, UVector2 b)
         {
             return a.X == b.X && a.Y == b.Y;
         }
 
-        public static bool operator !=( UVector2 a,  UVector2 b)
+        public static bool operator !=(UVector2 a, UVector2 b)
         {
             return !(a == b);
         }
@@ -430,7 +428,7 @@ namespace Louron
         // Override Equals method
         public override readonly bool Equals(object? obj)
         {
-            if (obj is  UVector2 other)
+            if (obj is UVector2 other)
             {
                 return this == other;
             }

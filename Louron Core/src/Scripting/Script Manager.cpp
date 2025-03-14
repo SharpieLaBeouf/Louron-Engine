@@ -154,7 +154,6 @@ namespace Louron {
 					uint32_t pdbFileSize = 0;
 					char* pdbFileData = ReadBytes(assemblyPath, &fileSize);
 					mono_debug_open_image_from_memory(image, (const mono_byte*)(pdbFileData), pdbFileSize);
-					L_CORE_INFO("Loaded PDB {}", pdbPath.string());
 					//delete[] pdbFileData;
 				}
 			}
@@ -407,7 +406,6 @@ namespace Louron {
 			// Fields
 			{
 				int fieldCount = mono_class_num_fields(mono_class);
-				L_CORE_INFO("{} has {} fields:", name, fieldCount);
 				void* iterator = nullptr;
 				while (MonoClassField* field = mono_class_get_fields(mono_class, &iterator))
 				{
@@ -423,8 +421,6 @@ namespace Louron {
 						char data[16]{};
 						mono_field_get_value(temporary_instance, field, &data);
 						script_class->m_Fields[fieldName].SetInitialValue(data);
-
-						L_CORE_INFO(" - {} ({})", fieldName, ScriptingUtils::ScriptFieldTypeToString(fieldType));
 
 					}
 				}
@@ -445,7 +441,6 @@ namespace Louron {
 		// Load CoreAssembly
 		s_Data->CoreAssemblyFilepath = filepath;
 		s_Data->CoreAssembly = ScriptingUtils::LoadCSharpAssembly(filepath.string(), s_Data->EnableDebugging);
-		ScriptingUtils::PrintAssemblyTypes(s_Data->CoreAssembly);
 
 		// Check if Loaded Correctly
 		if (s_Data->CoreAssembly == nullptr)
@@ -462,7 +457,6 @@ namespace Louron {
 		// Load CoreAssembly
 		s_Data->AppAssemblyFilepath = filepath;
 		s_Data->AppAssembly = ScriptingUtils::LoadCSharpAssembly(filepath.string(), s_Data->EnableDebugging);
-		ScriptingUtils::PrintAssemblyTypes(s_Data->AppAssembly);
 
 		// Check if Loaded Correctly
 		if (s_Data->AppAssembly == nullptr)

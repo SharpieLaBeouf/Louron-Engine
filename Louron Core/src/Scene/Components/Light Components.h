@@ -45,6 +45,10 @@ namespace Louron {
 
 		PointLightComponent() = default;
 		PointLightComponent(const PointLightComponent&) = default;
+		PointLightComponent(PointLightComponent&&) noexcept = default;
+
+		PointLightComponent& operator=(const PointLightComponent&) = default;
+		PointLightComponent& operator=(PointLightComponent&&) noexcept = default;
 
 		void Serialize(YAML::Emitter& out);
 		bool Deserialize(const YAML::Node data);
@@ -64,6 +68,10 @@ namespace Louron {
 
 		SpotLightComponent() = default;
 		SpotLightComponent(const SpotLightComponent&) = default;
+		SpotLightComponent(SpotLightComponent&&) noexcept = default;
+
+		SpotLightComponent& operator=(const SpotLightComponent&) = default;
+		SpotLightComponent& operator=(SpotLightComponent&&) noexcept = default;
 
 		void Serialize(YAML::Emitter& out);
 		bool Deserialize(const YAML::Node data);
@@ -82,20 +90,12 @@ namespace Louron {
 
 		DirectionalLightComponent() = default;
 		DirectionalLightComponent(const DirectionalLightComponent&) = default;
+		DirectionalLightComponent(DirectionalLightComponent&&) noexcept = default;
+
+		DirectionalLightComponent& operator=(const DirectionalLightComponent&) = default;
+		DirectionalLightComponent& operator=(DirectionalLightComponent&&) noexcept = default;
 
 		void Serialize(YAML::Emitter& out);
 		bool Deserialize(const YAML::Node data);
-	};
-
-	struct VisibleLightIndex 
-	{
-		uint32_t index;
-
-		VisibleLightIndex() = default;
-		VisibleLightIndex(const VisibleLightIndex& other) = default;
-		VisibleLightIndex(VisibleLightIndex&& other) = default;
-
-		VisibleLightIndex& operator=(const VisibleLightIndex& other) = default;
-		VisibleLightIndex& operator=(VisibleLightIndex&& other) = default;
 	};
 }

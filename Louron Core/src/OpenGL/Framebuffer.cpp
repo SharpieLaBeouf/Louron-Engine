@@ -2,6 +2,7 @@
 
 // Louron Core Headers
 #include "../Debug/Assert.h"
+#include "../Renderer/Renderer.h"
 
 // C++ Standard Library Headers
 
@@ -132,12 +133,18 @@ namespace Louron {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void FrameBuffer::Resize(const glm::ivec2& size) {
+	void FrameBuffer::Resize(const glm::uvec2& size) {
 
 		// Check if Size is invalid
 		if (size.x <= 0 || size.y <= 0 || size.x > 8192 || size.y > 8192)
 		{
 			L_CORE_WARN("Attempted to rezize framebuffer to {0}, {1}", size.x, size.y);
+			return;
+		}
+
+		// Check if already at this size
+		if (size.x == m_Config.Width && size.y == m_Config.Height)
+		{
 			return;
 		}
 
@@ -152,7 +159,7 @@ namespace Louron {
 		uint32_t depth;
 	};
 
-	uint32_t FrameBuffer::ReadEntityPixelData(const glm::ivec2& pos) const 
+	uint32_t FrameBuffer::ReadEntityPixelData(const glm::uvec2& pos) const 
 	{
 
 		uint32_t index = static_cast<uint32_t>(pos.y) * static_cast<uint32_t>(m_Config.Width) + static_cast<uint32_t>(pos.x);

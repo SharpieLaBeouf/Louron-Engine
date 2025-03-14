@@ -50,50 +50,37 @@ namespace Louron {
 	static PxFilterFlags CustomFilterShader(
 		PxFilterObjectAttributes attributes0, PxFilterData filterData0,
 		PxFilterObjectAttributes attributes1, PxFilterData filterData1,
-		PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize) {
+		PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize) 
+	{
 		pairFlags = PxPairFlag::eCONTACT_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST;
 		return PxFilterFlag::eDEFAULT;
 	}
 
-	Scene::Scene() {
-
+	Scene::Scene() 
+	{
 		m_SceneConfig.SceneFilePath = "Scenes/Untitled Scene.lscene";
 
 		m_SceneConfig.Name = m_SceneConfig.SceneFilePath.filename().replace_extension().string();
 		m_SceneConfig.AssetDirectory = "Assets/";
 
 		m_SceneConfig.ScenePipelineType = L_RENDER_PIPELINE::FORWARD_PLUS;
-		m_SceneConfig.ScenePipeline = std::make_shared<ForwardPlusPipeline>();
 	}
 
-	Scene::Scene(L_RENDER_PIPELINE pipeline) {
-
+	Scene::Scene(L_RENDER_PIPELINE pipeline) 
+	{
 		m_SceneConfig.SceneFilePath = "Scenes/Untitled Scene.lscene";
 
 		m_SceneConfig.Name = m_SceneConfig.SceneFilePath.filename().replace_extension().string();
 		m_SceneConfig.AssetDirectory = "Assets/";
 		m_SceneConfig.ScenePipelineType = pipeline;
-		
-		switch (pipeline) {
-		case L_RENDER_PIPELINE::FORWARD:
-			m_SceneConfig.ScenePipeline = std::make_shared<RenderPipeline>();
-			break;
-		case L_RENDER_PIPELINE::FORWARD_PLUS:
-			m_SceneConfig.ScenePipeline = std::make_shared<ForwardPlusPipeline>();
-			break;
-		case L_RENDER_PIPELINE::DEFERRED:
-			m_SceneConfig.ScenePipeline = std::make_shared<DeferredPipeline>();
-			break;
-		}
-
 	}
 
 	/// <summary>
 	/// Once the Scene has been initialised, call this to load the scene from file.
 	/// </summary>
 	/// <returns>Returns true if the SceneFile was loaded successfully, returns false if not.</returns>
-	bool Scene::LoadSceneFile(const std::filesystem::path& sceneFilePath) {
-
+	bool Scene::LoadSceneFile(const std::filesystem::path& sceneFilePath) 
+	{
 		std::filesystem::path outFilePath = sceneFilePath;
 
 		// Check if Scene File Path is Empty.
@@ -357,9 +344,12 @@ namespace Louron {
 	}
 
 	// FBO Stuff
-	void Scene::CreateSceneFrameBuffer(const FrameBufferConfig& framebuffer_config) { m_SceneFrameBuffer = std::make_shared<FrameBuffer>(framebuffer_config); }
-	void Scene::SetSceneFrameBuffer(std::shared_ptr<FrameBuffer> framebuffer) { m_SceneFrameBuffer = framebuffer; }
-	std::shared_ptr<FrameBuffer> Scene::GetSceneFrameBuffer() const { return m_SceneFrameBuffer; }
+	void Scene::CreateSceneFrameBuffer(const FrameBufferConfig& framebuffer_config) 
+	{ 
+		m_SceneFrameBuffer = std::make_unique<FrameBuffer>(framebuffer_config); 
+		OnViewportResize({framebuffer_config.Width, framebuffer_config.Height});
+	}
+	const std::unique_ptr<FrameBuffer>& Scene::GetSceneFrameBuffer() const { return m_SceneFrameBuffer; }
 
 	// TODO: Duplicates Entity in Scene
 	Entity Scene::DuplicateEntity(Entity entity) {
@@ -753,10 +743,14 @@ namespace Louron {
 	// All scenes are started when they are created, not when we 
 	// are playing. This is to setup required things such as 
 	// collision callbacks and rendering pipeline
-	void Scene::OnStart() {
-
-		m_SceneConfig.ScenePipeline->OnStartPipeline(std::static_pointer_cast<Scene>(shared_from_this()));
-
+	void Scene::OnStart() 
+	{
+		switch (m_SceneConfig.ScenePipelineType)
+		{
+			case L_RENDER_PIPELINE::FORWARD:		ForwardPipeline::OnStartPipeline(this);	break;
+			case L_RENDER_PIPELINE::FORWARD_PLUS:	ForwardPlusPipeline::OnStartPipeline(this);		break;
+			case L_RENDER_PIPELINE::DEFERRED:		DeferredRenderPipeline::OnStartPipeline(this);	break;
+		}
 	}
 
 	void Scene::OnStop() {
@@ -770,7 +764,12 @@ namespace Louron {
 		m_IsRunning = false;
 		m_IsSimulating = false;
 
-		m_SceneConfig.ScenePipeline->OnStopPipeline();
+		switch (m_SceneConfig.ScenePipelineType)
+		{
+			case L_RENDER_PIPELINE::FORWARD:		ForwardPipeline::OnStopPipeline(this);	break;
+			case L_RENDER_PIPELINE::FORWARD_PLUS:	ForwardPlusPipeline::OnStopPipeline(this);		break;
+			case L_RENDER_PIPELINE::DEFERRED:		DeferredRenderPipeline::OnStopPipeline(this);	break;
+		}
 
 		if (m_AnimationThread.joinable())
 		{
@@ -977,15 +976,33 @@ namespace Louron {
 			// Fetch Skinned Meshes
 			auto animator_view = GetAllEntitiesWith<SkinnedMeshComponent, AnimatorComponent>();
 			std::vector<std::future<void>> futures;
-			for (const auto& entity_handle : animator_view)
-			{
-				// Push ASYNC Futures into Vector to Compute Final Bone Transformations for GPU
-				futures.push_back(std::async(std::launch::async, [&, entity_handle]()
-					{
+			const size_t batch_size = 8;
+
+			std::vector<std::vector<entt::entity>> batched_entities;
+			std::vector<entt::entity> current_batch;
+
+			for (const auto& entity_handle : animator_view) {
+				current_batch.push_back(entity_handle);
+				if (current_batch.size() == batch_size) {
+					// Once the batch is full, push it into the batched_entities vector
+					batched_entities.push_back(current_batch);
+					current_batch.clear();
+				}
+			}
+
+			// Add any remaining entities that didn't fill a full batch
+			if (!current_batch.empty()) {
+				batched_entities.push_back(current_batch);
+			}
+
+			// Launch futures for each batch of entities
+			for (const auto& batch : batched_entities) {
+				futures.push_back(std::async(std::launch::async, [&, batch]() {
+					for (const auto& entity_handle : batch) {
 						auto& skinned_mesh_component = animator_view.get<SkinnedMeshComponent>(entity_handle);
 						skinned_mesh_component.ComputeFinalBoneTransformations(updated_bone_transformations);
-					})
-				);
+					}
+				}));
 			}
 
 			// Wait for futures to finish
@@ -995,7 +1012,7 @@ namespace Louron {
 			// Dispatch Worker for Results Next Frame
 			m_AnimationThread = std::thread([&]()
 			{
-				L_PROFILE_SCOPE("Scene - Animation Thread Work");
+				L_PROFILE_SCOPE("Scene - Animation Worker Thread Update");
 
 				// Double buffering for bone transformations to prevent read/write conflicts
 				std::unordered_map<UUID, glm::mat4> next_updated_bone_transformations;
@@ -1028,76 +1045,123 @@ namespace Louron {
 
 	}
 
-	void Scene::OnRender(EditorCamera* editor_camera)
+	void Scene::OnRuntimeRender()
 	{
-		L_PROFILE_SCOPE("Scene - OnRender");
+		L_PROFILE_SCOPE("Scene::OnRuntimeRender - Render Scene Cameras");
 
-		CameraBase* camera = nullptr;
-		Entity camera_entity = GetPrimaryCameraEntity();
-		if (camera_entity && !editor_camera)
-			camera = camera_entity.GetComponent<CameraComponent>().CameraInstance.get();
-		else if (editor_camera)
-			camera = reinterpret_cast<CameraBase*>(editor_camera);
+		std::vector<std::tuple<FrameBuffer*, glm::vec4, uint8_t>> camera_frame_buffers;
 
-		if (camera) {
-
-			static glm::vec3 camera_position{};
-			static glm::mat4 projection_matrix{};
-			static glm::mat4 view_matrix{};
-
-			switch (camera->GetCameraType()) {
-
-			case Camera_Type::None:
-			{
-				camera_position = {};
-				projection_matrix = glm::mat4(1.0f);
-				view_matrix = glm::mat4(1.0f);
-				break;
-			}
-
-			case Camera_Type::SceneCamera:
-			{
-				camera_position = GetPrimaryCameraEntity().GetTransform().GetGlobalPosition();
-				projection_matrix = camera->GetProjection();
-				// If we are using a scene camera which is attached to a 
-				// camera compoennt, it is simple to get the view matrix 
-				// by simply inverting the global transform matrix
-				view_matrix = glm::inverse(GetPrimaryCameraEntity().GetTransform().GetGlobalTransform());
-				break;
-			}
-
-			case Camera_Type::EditorCamera:
-			{
-				if (editor_camera) camera_position = editor_camera->GetPosition();
-
-				projection_matrix = camera->GetProjection();
-				view_matrix = camera->GetViewMatrix();
-				break;
-			}
-			}
-
-			// Always Render
-			m_SceneFrameBuffer->Bind();
-
-			Entity camera_entity = GetPrimaryCameraEntity();
-			Renderer::ClearColour(camera_entity ? camera_entity.GetComponent<CameraComponent>().ClearColour : glm::vec4(49.0f, 77.0f, 121.0f, 1.0f));
-
-			m_SceneConfig.ScenePipeline->OnUpdate(camera_position, projection_matrix, view_matrix);
-			m_SceneFrameBuffer->Unbind();
-
-			// Clear the standard OpenGL back buffer
-			Renderer::ClearBuffer(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			if (m_SceneFrameBuffer->GetConfig().RenderToScreen)
-				m_SceneConfig.ScenePipeline->RenderFBOQuad();
+		switch (m_SceneConfig.ScenePipelineType)
+		{
+			case L_RENDER_PIPELINE::FORWARD:        ForwardPipeline::OnRenderScene(this);			break;
+			case L_RENDER_PIPELINE::FORWARD_PLUS:   ForwardPlusPipeline::OnRenderScene(this);     break;
+			case L_RENDER_PIPELINE::DEFERRED:       DeferredRenderPipeline::OnRenderScene(this);  break;
 		}
-		else {
-			L_CORE_WARN("No Primary Camera Found in Scene");
-			m_SceneFrameBuffer->Bind();
-			Renderer::ClearColour({ 99.0f , 99.0f, 99.0f, 1.0f });
-			Renderer::ClearBuffer(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			m_SceneFrameBuffer->Unbind();
+
+		// Get active cameras (sorted from GetActiveCameras)
+		std::vector<Entity> active_cameras;
+		switch (m_SceneConfig.ScenePipelineType)
+		{
+			case L_RENDER_PIPELINE::FORWARD:       active_cameras = ForwardPipeline::GetActiveCameras(this);			break;
+			case L_RENDER_PIPELINE::FORWARD_PLUS:  active_cameras = ForwardPlusPipeline::GetActiveCameras(this);         break;
+			case L_RENDER_PIPELINE::DEFERRED:      active_cameras = DeferredRenderPipeline::GetActiveCameras(this);      break;
 		}
+
+		for (const auto& camera_entity : active_cameras)
+		{
+			if (!camera_entity || !camera_entity.GetComponent<CameraComponent>().DisplayToMainViewport)
+				continue;
+
+			auto& camera_component = camera_entity.GetComponent<CameraComponent>();
+			camera_frame_buffers.emplace_back(camera_component.CameraFramebuffer.get(), camera_component.GetViewport(), camera_component.CameraDepth);
+		}
+
+		std::sort(camera_frame_buffers.begin(), camera_frame_buffers.end(),
+			[](const auto& a, const auto& b) {
+				uint8_t depthA = std::get<2>(a);
+				uint8_t depthB = std::get<2>(b);
+				if (depthA != depthB)
+					return depthA < depthB; // Lower depth renders first
+
+				// If depths are equal, compare viewport size (larger first)
+				const glm::vec4& viewportA = std::get<1>(a);
+				const glm::vec4& viewportB = std::get<1>(b);
+				float sizeA = viewportA.z * viewportA.w; // Width * Height
+				float sizeB = viewportB.z * viewportB.w;
+				return sizeA > sizeB; // Larger viewport renders first
+			});
+
+		CombineCameraTargets(camera_frame_buffers);
+	}
+
+	void Scene::OnEditorRender(EditorCamera* editor_camera, const std::vector<Entity>& scene_cameras)
+	{
+		L_PROFILE_SCOPE("Scene::OnEditorRender - Render Editor + Scene Cameras");
+
+		std::vector<std::tuple<FrameBuffer*, glm::vec4, uint8_t>> camera_frame_buffers;
+
+		if (editor_camera)
+		{
+			switch (m_SceneConfig.ScenePipelineType)
+			{
+			case L_RENDER_PIPELINE::FORWARD:       ForwardPipeline::OnRenderEditorScene(this, scene_cameras, editor_camera);   break;
+			case L_RENDER_PIPELINE::FORWARD_PLUS:  ForwardPlusPipeline::OnRenderEditorScene(this, scene_cameras, editor_camera);    break;
+			case L_RENDER_PIPELINE::DEFERRED:      DeferredRenderPipeline::OnRenderEditorScene(this, scene_cameras, editor_camera); break;
+			}
+
+			// Full screen editor camera - other scene_camera targets can be composited ontop later e.g., if we wanted a preview of a selected camera
+			camera_frame_buffers.emplace_back(const_cast<FrameBuffer*>(&editor_camera->GetFrameBuffer()), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), 0);
+		}
+
+		CombineCameraTargets(camera_frame_buffers);
+	}
+
+	void Scene::CombineCameraTargets(const std::vector<std::tuple<FrameBuffer*, glm::vec4, uint8_t>>& camera_targets)
+	{
+		if (!m_SceneFrameBuffer)
+			return;
+
+		m_SceneFrameBuffer->Bind();
+
+		Renderer::ClearColour({ 0.0f, 0.0f, 0.0f, 1.0f });
+		Renderer::ClearBuffer(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		auto shader = AssetManager::GetInbuiltShader("Scene_FrameBuffer_Composite");
+		if (shader)
+		{
+			shader->Bind();
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDisable(GL_DEPTH_TEST);
+
+			// Preserve order when rendering
+			for (const auto& [framebuffer, viewport_dimensions, depth] : camera_targets)
+			{
+				if (!framebuffer || (viewport_dimensions.z == 0.0f && viewport_dimensions.w == 0.0f))
+					continue;
+
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, framebuffer->GetTexture(FrameBufferTexture::ColourTexture));
+				shader->SetInt("u_CameraTexture", 0);
+
+				glViewport(
+					static_cast<GLint>(std::ceil(viewport_dimensions.x * m_SceneFrameBuffer->GetConfig().Width)),
+					static_cast<GLint>(std::ceil(viewport_dimensions.y * m_SceneFrameBuffer->GetConfig().Height)),
+					static_cast<GLint>(std::ceil(viewport_dimensions.z * m_SceneFrameBuffer->GetConfig().Width)),
+					static_cast<GLint>(std::ceil(viewport_dimensions.w * m_SceneFrameBuffer->GetConfig().Height))
+				);
+
+				DrawCameraTextureToSceneFramebuffer();
+			}
+
+			glDisable(GL_BLEND);
+			glEnable(GL_DEPTH_TEST);
+			shader->UnBind();
+		}
+
+		m_SceneFrameBuffer->Unbind();
+		m_SceneFrameBuffer->ResolveMultisampledFBO();
 	}
 
 	void Scene::OnUpdateGUI() {
@@ -1146,10 +1210,12 @@ namespace Louron {
 
 		glm::ivec2 final_size = new_size;
 
-		if (final_size.x <= 0 || final_size.y <= 0) {
+		if (final_size.x <= 0 || final_size.y <= 0) 
+		{
+			final_size = { final_size.x > 1 ? final_size.x : 1, final_size.y > 1 ? final_size.y : 1 };
+
 			L_CORE_ERROR("Attempted to Resize FrameBuffer to Invalid Size: X({0}), Y({1}).", new_size.x, new_size.y);
-			L_CORE_ERROR("Setting New Viewport Size to: X(1), Y(1).");
-			final_size = { 1,1 };
+			L_CORE_ERROR("Setting New Viewport Size to: X({0}), Y({1}).", final_size.x, final_size.y);
 		}
 
 		if (m_SceneFrameBuffer) {
@@ -1159,9 +1225,60 @@ namespace Louron {
 
 			// Update Render Pipeline Data
 			m_SceneFrameBuffer->Resize(final_size);
-			m_SceneConfig.ScenePipeline->OnViewportResize();
+
+			switch (m_SceneConfig.ScenePipelineType)
+			{
+				case L_RENDER_PIPELINE::FORWARD:		ForwardPipeline::OnViewportResize(this, final_size);	break;
+				case L_RENDER_PIPELINE::FORWARD_PLUS:	ForwardPlusPipeline::OnViewportResize(this, final_size);		break;
+				case L_RENDER_PIPELINE::DEFERRED:		DeferredRenderPipeline::OnViewportResize(this, final_size);	break;
+			}
+		}
+	}
+
+	void Scene::DrawCameraTextureToSceneFramebuffer()
+	{
+		static GLuint VAO = -1, VBO = -1, EBO = -1;
+		if (VAO == -1)
+		{
+			float quadVertices[] = {
+				// positions   // texCoords
+				-1.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+				-1.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+				 1.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+				 1.0f,  1.0f,  0.0f,  1.0f, 1.0f
+			};
+			GLuint quadIndices[] = { 0, 1, 2, 0, 2, 3 };
+
+			glGenVertexArrays(1, &VAO);
+			glGenBuffers(1, &VBO);
+			glGenBuffers(1, &EBO);
+
+			glBindVertexArray(VAO);
+
+			// VBO
+			glBindBuffer(GL_ARRAY_BUFFER, VBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+			// EBO
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadIndices), quadIndices, GL_STATIC_DRAW);
+
+			// Position attribute
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+			glEnableVertexAttribArray(0);
+
+			// TexCoord attribute
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+			glEnableVertexAttribArray(1);
+
+			glBindVertexArray(0);
 
 		}
+
+		//L_CORE_ASSERT(m_ScreenQuadVAO, "Scene - Could Not Create Screen Quad Vertex Array."); 
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 	}
 

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Louron.Entity;
-
-namespace Louron
+﻿namespace Louron
 {
 
     public abstract class Component
@@ -37,7 +30,8 @@ namespace Louron
 
         public T AddComponent<T>() where T : Component, new()
         {
-            if (HasComponent<T>()) {
+            if (HasComponent<T>())
+            {
                 return new T() { Entity = this.Entity };
             }
 
@@ -290,7 +284,7 @@ namespace Louron
             get { EngineCallbacks.RigidbodyComponent_GetAngularDrag(Entity.ID, out float result); return result; }
             set { EngineCallbacks.RigidbodyComponent_SetAngularDrag(Entity.ID, ref value); }
         }
-        
+
         public bool automaticCentreOfMass
         {
             get { EngineCallbacks.RigidbodyComponent_GetAutomaticCentreOfMass(Entity.ID, out bool result); return result; }
@@ -474,7 +468,7 @@ namespace Louron
 
                 for (int i = 0; i < materials.Length; i++)
                     materials[i].Asset_Handle = handles[i];
-                
+
                 return materials;
             }
             set

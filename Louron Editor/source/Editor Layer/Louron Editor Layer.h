@@ -94,7 +94,6 @@ private:
 	void DisplayHierarchyWindow();
 	void DisplayPropertiesWindow();
 	void DisplayMaterialPropertiesWindow();
-	void DisplayScriptFields(const std::string& script_name);
 
 	void DisplayContentBrowserWindow();
 
@@ -107,5 +106,6 @@ private:
 	void DisplaySceneProperties();
 
 	friend class ContentBrowserPanel;
+	friend class PropertiesPanel;
 
 };
