@@ -50,22 +50,7 @@ namespace Louron
 
 		animation_clip_asset = AssetManager::GetAsset<AnimationClip>(AnimationClipHandles[CurrentClipIndex]);
 
-		// Increment Current Animation Time
-		CurrentTime += Time::GetDeltaTime() * animation_clip_asset->GetTicksPerSecond() * PlaybackSpeed;
-
-		// Loop of Stop Animation
-		if (CurrentTime > animation_clip_asset->GetDuration()) 
-		{
-			if (IsLooping) 
-			{
-				CurrentTime = 0.0f;
-			}
-			else 
-			{ 
-				Stop();
-				return; 
-			}
-		}
+		StepAnimationTimer(animation_clip_asset);
 
 		// Get Skinned Mesh Component
 		auto& skinned_mesh_component = GetComponent<SkinnedMeshComponent>();
@@ -124,6 +109,26 @@ namespace Louron
 		return transform_update_map;
 	}
 
+	void AnimatorComponent::StepAnimationTimer(const std::shared_ptr<AnimationClip>& animation_clip)
+	{
+		// Increment Current Animation Time
+		CurrentTime += Time::GetDeltaTime() * animation_clip->GetTicksPerSecond() * PlaybackSpeed;
+
+		// Loop of Stop Animation
+		if (CurrentTime > animation_clip->GetDuration())
+		{
+			if (IsLooping)
+			{
+				CurrentTime = 0.0f;
+			}
+			else
+			{
+				Stop();
+				return;
+			}
+		}
+	}
+
 	void AnimatorComponent::Serialize(YAML::Emitter& out)
 	{
 		out << YAML::Key << "AnimatorComponent";
@@ -136,6 +141,26 @@ namespace Louron
 
 		out << YAML::Key << "IsPlaying" << YAML::Value << IsPlaying;
 		out << YAML::Key << "IsLooping" << YAML::Value << IsLooping;
+
+		switch (CullingMode)
+		{
+			case AnimationCullingMode::AlwaysAnimate:
+			{
+				out << YAML::Key << "CullingMode" << YAML::Value << "AlwaysAnimate";
+				break;
+			}
+			case AnimationCullingMode::NoAnimateOffScreenContinueTimer:
+			{
+				out << YAML::Key << "CullingMode" << YAML::Value << "NoAnimateOffScreenContinueTimer";
+				break;
+			}
+			default:
+			case AnimationCullingMode::NoAnimateOffScreenStopTimer:
+			{
+				out << YAML::Key << "CullingMode" << YAML::Value << "NoAnimateOffScreenStopTimer";
+				break;
+			}
+		}
 
 		{
 			out << YAML::Key << "AnimationClipHandles" << YAML::Value;
@@ -172,6 +197,17 @@ namespace Louron
 
 		if (component["IsLooping"]) {
 			IsLooping = component["IsLooping"].as<bool>();
+		}
+
+		if (component["CullingMode"]) {
+			std::string culling_mode = component["CullingMode"].as<std::string>();
+
+			if (culling_mode == "AlwaysAnimate")
+				CullingMode = AnimationCullingMode::AlwaysAnimate;
+			else if (culling_mode == "NoAnimateOffScreenContinueTimer")
+				CullingMode = AnimationCullingMode::NoAnimateOffScreenContinueTimer;
+			else if (culling_mode == "NoAnimateOffScreenStopTimer")
+				CullingMode = AnimationCullingMode::NoAnimateOffScreenStopTimer;
 		}
 
 		if (component["AnimationClipHandles"]) {

@@ -1348,6 +1348,27 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 
 			ImGui::SliderFloat("Current Time", &component.CurrentTime, 0.0f, max_duration, "%.2f");
 
+			std::array<const char*, 3> culling_modes = { "Always Animate", "Only Step Animation Timer", "No Animate" };
+			uint8_t item_current = static_cast<uint8_t>(component.CullingMode);
+			if (ImGui::BeginCombo("Animation When Culled", culling_modes[item_current])) {
+
+				for (int n = 0; n < culling_modes.size(); n++)
+				{
+					const bool is_selected = (item_current == n);
+					if (ImGui::Selectable(culling_modes[n], is_selected))
+					{
+						item_current = n;
+						component.CullingMode = static_cast<AnimatorComponent::AnimationCullingMode>(item_current);
+					}
+
+					// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+			}
+
 			ImGui::Dummy({ 0.0f, 2.5f });
 			ImGui::Separator();
 			ImGui::Dummy({ 0.0f, 2.5f });

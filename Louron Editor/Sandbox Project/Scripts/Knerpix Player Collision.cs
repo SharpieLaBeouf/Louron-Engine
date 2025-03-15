@@ -11,6 +11,8 @@ namespace SandboxProject
 
         static float CollisionTimerOffset = 0.0f;
 
+        public float MaxPushForce = 20.0f;
+
         public void OnUpdate()
         {
             if(CollisionTimerOffset > 0.0f)
@@ -39,7 +41,7 @@ namespace SandboxProject
                     direction.Normalize();
 
                     // Calculate impulse magnitude based on other persons velocity
-                    float impulseMagnitude = other_velocity.Length() * 50.0f; // length or length squared?
+                    float impulseMagnitude = MathF.Max(other_velocity.Length() * 50.0f, MaxPushForce); // length or length squared?
 
                     this.GetComponent<RigidbodyComponent>().ApplyForce(direction * impulseMagnitude, ForceMode.eFORCE);
                     CollisionTimerOffset = 1.0f;

@@ -337,27 +337,27 @@ Entities:
         Active: true
         Script Name: SandboxProject.KnerpixGameManager
         Fields:
-          - Name: Speed_Multiplier
-            Type: Float
-            Data: 5
           - Name: Player1_Prefab
             Type: Prefab
             Data: 1938405934
-          - Name: WinnerLocation
-            Type: Entity
-            Data: 2400339882
+          - Name: Speed_Multiplier
+            Type: Float
+            Data: 5
           - Name: Player2_Prefab
             Type: Prefab
             Data: 1502522335
+          - Name: WinnerLocation
+            Type: Entity
+            Data: 2400339882
           - Name: Player1_SpawnPoint
             Type: Entity
             Data: 1136546040
-          - Name: Players_Parent_Entity
-            Type: Entity
-            Data: 3601754716
           - Name: Player2_SpawnPoint
             Type: Entity
             Data: 3885195277
+          - Name: Players_Parent_Entity
+            Type: Entity
+            Data: 3601754716
           - Name: DeathFloorY
             Type: Float
             Data: -10

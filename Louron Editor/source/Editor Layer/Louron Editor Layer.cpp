@@ -1028,7 +1028,7 @@ void LouronEditorLayer::DisplaySceneViewportWindow() {
 		}
 
 		// ----- Draw Preview Camera -----
-		if (m_SelectedEntity && m_SelectedEntity.HasComponent<CameraComponent>() && m_SelectedEntity.GetComponent<CameraComponent>().CameraFramebuffer)
+		if (m_SceneState != SceneState::Play && m_SelectedEntity && m_SelectedEntity.HasComponent<CameraComponent>() && m_SelectedEntity.GetComponent<CameraComponent>().CameraFramebuffer)
 		{
 			ImGuiWindowFlags window_flags =
 				ImGuiWindowFlags_NoResize |
@@ -2114,7 +2114,7 @@ void LouronEditorLayer::DisplayRenderStatsWindow() {
 				timer = timer_max;
 
 				auto& results = Profiler::Get().GetResults();
-				octreeTime = results["ForwardPlusPipeline::SortRenderQueue - Renderable Frustum Cull"].Time;
+				octreeTime = results["F+Pipeline::SceneContext::SortRenderQueue - Renderable Frustum Cull"].Time;
 
 				// Store the current octree time in the buffer
 				data[data_index] = octreeTime * 1000.0f; // Convert to microseconds for easier reading

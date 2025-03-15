@@ -6,6 +6,8 @@
 #include "Scene Serializer.h"
 #include "Spatial Partitioning/OctreeBounds.h"
 
+#include "../Animation/Animations.h"
+
 #include "../Core/UUID.h"
 #include "../Core/Time.h"
 #include "../Core/Input.h"
@@ -1022,11 +1024,59 @@ namespace Louron {
 				auto animator_thread_view = GetAllEntitiesWith<SkinnedMeshComponent, AnimatorComponent>();
 				for (const auto& entity_handle : animator_thread_view)
 				{
+					Entity entity = { entity_handle, this };
+					auto& animator_component = entity.GetComponent<AnimatorComponent>();
+
+					if (!animator_component.IsPlaying || animator_component.CurrentClipIndex == -1)
+						continue;
+
+					// Try and find cases to skip animation
+					switch (animator_component.CullingMode)
+					{
+						case AnimatorComponent::AnimationCullingMode::NoAnimateOffScreenContinueTimer:
+						{
+							if (m_SceneConfig.ScenePipelineType == L_RENDER_PIPELINE::FORWARD_PLUS)
+							{
+								// Check Visibility and Determine If We Should Skip Animation
+								if (auto scene_context_ref = ForwardPlusPipeline::GetSceneContext(this); scene_context_ref && scene_context_ref->Entities_OverallVisible.count(entity.GetUUID()) == 0)
+								{
+									// Retrieve Animation Clip Asset
+									std::shared_ptr<AnimationClip> animation_clip_asset = nullptr;
+
+									if (!AssetManager::IsAssetLoaded(animator_component.AnimationClipHandles[animator_component.CurrentClipIndex]))
+										continue;
+
+									animation_clip_asset = AssetManager::GetAsset<AnimationClip>(animator_component.AnimationClipHandles[animator_component.CurrentClipIndex]);
+
+									animator_component.StepAnimationTimer(animation_clip_asset);
+
+									continue;
+								}
+							}
+							break; // Cannot Get Visibility Information - Just Animate...
+						}
+
+						case AnimatorComponent::AnimationCullingMode::NoAnimateOffScreenStopTimer:
+						{
+							if (m_SceneConfig.ScenePipelineType == L_RENDER_PIPELINE::FORWARD_PLUS)
+							{
+								// Check Visibility and Determine If We Should Skip Animation
+								if (auto scene_context_ref = ForwardPlusPipeline::GetSceneContext(this); scene_context_ref && scene_context_ref->Entities_OverallVisible.count(entity.GetUUID()) == 0)
+									continue;
+							}
+							break; // Cannot Get Visibility Information - Just Animate...
+						}
+
+						// Do nothing - always animate
+						case AnimatorComponent::AnimationCullingMode::AlwaysAnimate:
+						default: break;
+					}
+
 					// Push ASYNC Futures into Vector to Update Animation States
 					futures.push_back(std::async(std::launch::async, [&, entity_handle]() -> std::unordered_map<UUID, glm::mat4>
 						{
-							auto& animator_component = animator_thread_view.get<AnimatorComponent>(entity_handle);
-							return animator_component.UpdateDeferred();
+							auto& future_animator_component = animator_thread_view.get<AnimatorComponent>(entity_handle);
+							return future_animator_component.UpdateDeferred();
 						})
 					);
 				}

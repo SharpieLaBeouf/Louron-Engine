@@ -49,6 +49,11 @@ namespace Louron
 		/// </summary>
 		std::unordered_map<UUID, glm::mat4> UpdateDeferred();
 
+		/// <summary>
+		/// Step the animation timer
+		/// </summary>
+		void StepAnimationTimer(const std::shared_ptr<AnimationClip>& animation_clip);
+
 		// --- Data of SkinnedMeshComponent Struct ---
 
 		/// <summary>
@@ -80,6 +85,15 @@ namespace Louron
 		/// Flag - should the animation be looping
 		/// </summary>
 		bool IsLooping = true;
+
+		enum class AnimationCullingMode : uint8_t
+		{
+			AlwaysAnimate = 0,					// Animations are procesed 
+			NoAnimateOffScreenContinueTimer,	// No Animations are processed - animation timer is continued
+			NoAnimateOffScreenStopTimer			// No Animations are processed - animation timer is stopped
+		};
+
+		AnimationCullingMode CullingMode = AnimationCullingMode::AlwaysAnimate;
 
 		void Serialize(YAML::Emitter& out);
 		bool Deserialize(const YAML::Node data);
