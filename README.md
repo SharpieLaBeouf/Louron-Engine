@@ -53,6 +53,7 @@ At this point there are an array of features utilised in this project:
   - Can create meshes on the fly through scripting
 - Simple Animations - can load animations and play them back during runtime (WIP)
 - Multiple render targets - e.g., multiple cameras with different viewports may render the scene
+- Thread pool job system (WIP: need to implement use of local queues, and add yielding to jobs)
 
 ## Goals
 
