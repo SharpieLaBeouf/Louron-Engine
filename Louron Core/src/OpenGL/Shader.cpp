@@ -249,8 +249,6 @@ namespace Louron {
 
 	}
 
-
-
 	void Shader::ExtractCustomUniforms(const std::string& source)
 	{
 		std::istringstream stream(source);

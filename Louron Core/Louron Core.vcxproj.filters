@@ -231,6 +231,9 @@
     <ClCompile Include="src\Scene\Components\Animator Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Jobs\Jobs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\OpenGL\Buffer.h">
@@ -2013,6 +2016,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Animation\Animations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jobs\Jobs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

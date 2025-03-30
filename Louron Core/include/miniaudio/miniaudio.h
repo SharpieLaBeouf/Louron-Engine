@@ -72524,7 +72524,7 @@ static ma_result ma_node_read_pcm_frames(ma_node* pNode, ma_uint32 outputBusInde
     float* ppFramesOut[MA_MAX_NODE_BUS_COUNT];
     ma_uint64 globalTimeBeg;
     ma_uint64 globalTimeEnd;
-    ma_uint64 startTime;
+    ma_uint64 start_time;
     ma_uint64 stopTime;
     ma_uint32 timeOffsetBeg;
     ma_uint32 timeOffsetEnd;
@@ -72559,7 +72559,7 @@ static ma_result ma_node_read_pcm_frames(ma_node* pNode, ma_uint32 outputBusInde
 
     globalTimeBeg = globalTime;
     globalTimeEnd = globalTime + frameCount;
-    startTime = ma_node_get_state_time(pNode, ma_node_state_started);
+    start_time = ma_node_get_state_time(pNode, ma_node_state_started);
     stopTime  = ma_node_get_state_time(pNode, ma_node_state_stopped);
 
     /*
@@ -72571,7 +72571,7 @@ static ma_result ma_node_read_pcm_frames(ma_node* pNode, ma_uint32 outputBusInde
     therefore need to offset it by a number of frames to accommodate. The same thing applies for
     the stop time.
     */
-    timeOffsetBeg = (globalTimeBeg < startTime) ? (ma_uint32)(globalTimeEnd - startTime) : 0;
+    timeOffsetBeg = (globalTimeBeg < start_time) ? (ma_uint32)(globalTimeEnd - start_time) : 0;
     timeOffsetEnd = (globalTimeEnd > stopTime)  ? (ma_uint32)(globalTimeEnd - stopTime)  : 0;
 
     /* Trim based on the start offset. We need to silence the start of the buffer. */

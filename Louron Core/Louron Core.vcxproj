@@ -101,6 +101,7 @@
       </DisableSpecificWarnings>
       <AdditionalIncludeDirectories>src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -116,6 +117,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Jobs\Jobs.cpp" />
     <ClCompile Include="src\OpenGL\Mesh.cpp" />
     <ClCompile Include="src\OpenGL\Query.cpp" />
     <ClCompile Include="src\OpenGL\Compute Shader Asset.cpp" />
@@ -186,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Animation\Animations.h" />
+    <ClInclude Include="src\Jobs\Jobs.h" />
     <ClInclude Include="src\OpenGL\Mesh.h" />
     <ClInclude Include="src\OpenGL\Query.h" />
     <ClInclude Include="src\Asset\Asset Manager API.h" />

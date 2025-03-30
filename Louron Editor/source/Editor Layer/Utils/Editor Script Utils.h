@@ -19,7 +19,7 @@ namespace Utils {
 		std::ofstream solution_file(solution_file_path);
 
 		if (!solution_file.is_open()) {
-			L_CORE_ERROR("Failed to Generate Scripting Solution File: {}", solution_file_path.string());
+			L_APP_ERROR("Failed to Generate Scripting Solution File: {}", solution_file_path.string());
 			return;
 		}
 
@@ -52,13 +52,13 @@ namespace Utils {
 
 		solution_file.close();
 
-		L_CORE_INFO("Scripting solution file created at: {}", solution_file_path.string());
+		L_APP_INFO("Scripting solution file created at: {}", solution_file_path.string());
 
 		// CS PROJ
 		std::ofstream cs_project_file(cs_proj_file_path);
 
 		if (!cs_project_file.is_open()) {
-			L_CORE_ERROR("Failed to Generate Scripting CS Proj File: {}", cs_proj_file_path.string());
+			L_APP_ERROR("Failed to Generate Scripting CS Proj File: {}", cs_proj_file_path.string());
 			return;
 		}
 
@@ -90,7 +90,7 @@ namespace Utils {
 
 		cs_project_file.close();
 
-		L_CORE_INFO("Scripting csproj file created at: {}", cs_proj_file_path.string());
+		L_APP_INFO("Scripting csproj file created at: {}", cs_proj_file_path.string());
 
 
 	}
@@ -106,7 +106,7 @@ namespace Utils {
 		// Load template file
 		std::ifstream template_file("Resources/Templates/Template CS Script.cs");
 		if (!template_file.is_open()) {
-			L_CORE_ERROR("Failed to open script template file.");
+			L_APP_ERROR("Failed to open script template file.");
 			return "";
 		}
 
@@ -128,7 +128,7 @@ namespace Utils {
 		std::ofstream script_file_path(file_path);
 
 		if (!script_file_path.is_open()) {
-			L_CORE_ERROR("Failed to Generate C# Script File: {}", file_path.string());
+			L_APP_ERROR("Failed to Generate C# Script File: {}", file_path.string());
 			return "";
 		}
 
@@ -137,14 +137,14 @@ namespace Utils {
 
 		script_file_path.close();
 
-		L_CORE_INFO("Scripting solution file created at: {}", file_path.string());
-		L_CORE_INFO("Compile the App Assembly to Access Script Class.");
+		L_APP_INFO("Scripting solution file created at: {}", file_path.string());
+		L_APP_INFO("Compile the App Assembly to Access Script Class.");
 		return projectName + "." + scriptName;
 	}
 
 	static bool CompileAppAssembly(const std::filesystem::path& cs_proj_file_path)
 	{
-		L_CORE_INFO("[C# Compile] Attempting to Compile C# Scripting Project: {}", cs_proj_file_path.filename().string());
+		L_APP_INFO("[C# Compile] Attempting to Compile C# Scripting Project: {}", cs_proj_file_path.filename().string());
 
 		// Construct the build command
 		std::string buildCommand = std::format("dotnet build \"{}\" -c Release", cs_proj_file_path.string());
@@ -153,12 +153,12 @@ namespace Utils {
 		int retCode = std::system(buildCommand.c_str());
 
 		if (retCode == 0) {
-			L_CORE_INFO("[C# Compile] Successfully Compiled C# Scripting Project: {}", cs_proj_file_path.filename().string());
+			L_APP_INFO("[C# Compile] Successfully Compiled C# Scripting Project: {}", cs_proj_file_path.filename().string());
 			return true;
 		}
 		else {
 			// Maybe add some error handling in here to get the compilation error reasons? IDK how to do that lol
-			L_CORE_ERROR("[C# Compile] Could Not Compile C# Scripting Project: {}", cs_proj_file_path.filename().string());
+			L_APP_ERROR("[C# Compile] Could Not Compile C# Scripting Project: {}", cs_proj_file_path.filename().string());
 			return false;
 		}
 

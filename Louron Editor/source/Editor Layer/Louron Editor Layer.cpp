@@ -89,6 +89,9 @@ void LouronEditorLayer::OnAttach()
 
 		{ "Render Stats", true },
 		{ "Profiler", true },
+		{ "JobSystemProfiler", true },
+
+		{ "Console", true },
 
 		{ "Asset Registry", false },
 
@@ -787,6 +790,7 @@ void LouronEditorLayer::OnGuiRender() {
 		DisplayContentBrowserWindow();
 		DisplayRenderStatsWindow();
 		DisplayProfilerWindow();
+		DisplayConsoleWindow();
 		DisplayAssetRegistryWindow();
 
 		DisplayProjectProperties();
@@ -1051,7 +1055,7 @@ void LouronEditorLayer::DisplaySceneViewportWindow() {
 			};
 
 			// Calculate the diagonal of the framebuffer
-			float frame_buffer_diag_size = std::sqrt(frame_buffer_size.x * frame_buffer_size.x + frame_buffer_size.y * frame_buffer_size.y);
+			float frame_buffer_diag_size = static_cast<float>(std::sqrt(frame_buffer_size.x * frame_buffer_size.x + frame_buffer_size.y * frame_buffer_size.y));
 
 			// Calculate the scaling factor for the framebuffer's diagonal
 			float scale_factor = (frame_buffer_diag_size > diag_size) ? diag_size / frame_buffer_diag_size : 1.0f;
@@ -2136,39 +2140,305 @@ void LouronEditorLayer::DisplayRenderStatsWindow() {
 
 void LouronEditorLayer::DisplayProfilerWindow() {
 
-	// Check if the window is open
-	if (!m_ActiveGUIWindows["Profiler"]) {
-		return;
+	if(m_ActiveGUIWindows["Profiler"])
+	{
+		if (ImGui::Begin("Profiler", &m_ActiveGUIWindows["Profiler"], 0)) {
+
+			static float timer = 1.0f;
+			static bool IsResultsPerFrame = true;
+			static std::map<const char*, ProfileResult> results;
+
+			ImGui::Checkbox("Toggle Results Per Frame/Per Second", &IsResultsPerFrame);
+
+			if (timer > 0.0f && !IsResultsPerFrame)
+				timer -= Time::GetDeltaTime();
+
+
+			if (timer <= 0.0f || IsResultsPerFrame) {
+				timer = 1.0f;
+				results = Profiler::Get().GetResults();
+			}
+
+			for (auto& result : results) {
+
+				char label[128];
+				strcpy_s(label, result.second.Name);
+				strcat_s(label, " %.3fms");
+
+				ImGui::Text(label, result.second.Time);
+			}
+		}
+		ImGui::End();
 	}
 
-	if (ImGui::Begin("Profiler", &m_ActiveGUIWindows["Profiler"], 0)) {
+	if (m_ActiveGUIWindows["JobSystemProfiler"])
+	{
+		if (ImGui::Begin("Job System Profiler", &m_ActiveGUIWindows["JobSystemProfiler"], ImGuiWindowFlags_NoScrollbar))
+		{
+			static std::unordered_map<std::string, ImU32> job_colour_map;
 
-		static float timer = 1.0f;
-		static bool IsResultsPerFrame = true;
-		static std::map<const char*, ProfileResult> results;
+			auto get_job_colour = [](const std::string& name) -> ImU32 {
+				auto it = job_colour_map.find(name);
+				if (it != job_colour_map.end()) return it->second;
 
-		ImGui::Checkbox("Toggle Results Per Frame/Per Second", &IsResultsPerFrame);
+				std::hash<std::string> hasher;
+				size_t hash = hasher(name);
 
-		if (timer > 0.0f && !IsResultsPerFrame)
-			timer -= Time::GetDeltaTime();
-		
-		
-		if (timer <= 0.0f || IsResultsPerFrame) {
-			timer = 1.0f;
-			results = Profiler::Get().GetResults();
+				ImU8 r = 100 + (hash & 0x5F);
+				ImU8 g = 100 + ((hash >> 8) & 0x5F);
+				ImU8 b = 100 + ((hash >> 16) & 0x5F);
+
+				ImU32 color = IM_COL32(r, g, b, 220);
+				job_colour_map[name] = color;
+				return color;
+			};
+
+			static auto profile = Louron::JobSystem::Get()->GetProfileResults(1);
+			static bool profiling_is_paused = false;
+			if (ImGui::Button(profiling_is_paused ? "Resume" : "Pause"))
+				profiling_is_paused = !profiling_is_paused;
+
+			if (Engine::Get().GetInput().GetKey(GLFW_KEY_F11))
+				profiling_is_paused = true;
+
+			if (!profiling_is_paused)
+				profile = Louron::JobSystem::Get()->GetProfileResults(1);
+
+			float total_width = ImGui::GetContentRegionAvail().x;
+			float total_height = ImGui::GetContentRegionAvail().y;
+
+			float header_width = 100.0f;
+			int num_threads = static_cast<int>(profile.thread_events.size());
+
+			float row_height = total_height / static_cast<float>(num_threads);
+			float graph_width = total_width - header_width;
+
+			ImGui::BeginChild("JobProfileGraph", ImVec2(total_width, total_height), true);
+			ImDrawList* job_draw_list = ImGui::GetWindowDrawList();
+			ImVec2 graph_pos = ImGui::GetCursorScreenPos();
+
+			// Graph border
+			job_draw_list->AddRect(graph_pos, ImVec2(graph_pos.x + total_width, graph_pos.y + total_height), IM_COL32(180, 180, 180, 255));
+
+			for (int t = 0; t < num_threads; t++)
+			{
+				float rowY = graph_pos.y + row_height * t;
+
+				// Alternating background
+				if (t % 2 == 0)
+				{
+					job_draw_list->AddRectFilled(
+						ImVec2(graph_pos.x, rowY),
+						ImVec2(graph_pos.x + total_width, rowY + row_height),
+						IM_COL32(30, 30, 30, 100)
+					);
+				}
+
+				// Thread label
+				std::string label = "Core " + std::to_string(t);
+
+				if (t == 0)
+					label = "Main Thread";
+
+				ImVec2 text_size = ImGui::CalcTextSize(label.c_str());
+				job_draw_list->AddText(
+					ImVec2(graph_pos.x + 8.0f, rowY + (row_height - text_size.y) * 0.5f),
+					IM_COL32(255, 215, 0, 255),
+					label.c_str()
+				);
+
+				// Separator line
+				job_draw_list->AddLine(
+					ImVec2(graph_pos.x, rowY),
+					ImVec2(graph_pos.x + total_width, rowY),
+					IM_COL32(60, 60, 60, 255)
+				);
+
+				// Job events
+				for (const auto& event : profile.thread_events[t])
+				{
+					float startX = graph_pos.x + header_width + static_cast<float>((event.start_time / profile.frame_duration) * graph_width);
+					float endX = graph_pos.x + header_width + static_cast<float>((event.end_time / profile.frame_duration) * graph_width);
+					float topY = rowY + 4.0f;
+					float bottomY = rowY + row_height - 4.0f;
+
+					ImVec2 job_min(startX, topY);
+					ImVec2 job_max(endX, bottomY);
+
+					// Fill color based on job name
+					ImU32 fill_colour = get_job_colour(event.name);
+
+					// Outline color based on priority
+					ImU32 outline_colour;
+					switch (event.priority)
+					{
+						case JobPriority::High:   outline_colour = IM_COL32(255, 50, 50, 255); break;     // Red
+						case JobPriority::Medium: outline_colour = IM_COL32(255, 165, 0, 255); break;     // Orange
+						case JobPriority::Low:    outline_colour = IM_COL32(0, 200, 0, 255); break;       // Green
+						default:                  outline_colour = IM_COL32(200, 200, 200, 255); break;
+					}
+
+					// Draw job block with fill + priority outline
+					job_draw_list->AddRectFilled(job_min, job_max, fill_colour, 4.0f);
+					job_draw_list->AddRect(job_min, job_max, outline_colour, 4.0f, 0, 1.0f); // Slightly thicker outline
+
+					// Label text
+					std::string label_text = event.name + " (" + std::to_string(event.end_time - event.start_time) + "ms)";
+					ImVec2 label_size = ImGui::CalcTextSize(label_text.c_str());
+
+					ImVec2 text_pos = ImVec2(
+						std::max(job_min.x + 2.0f, job_min.x + ((job_max.x - job_min.x - label_size.x) * 0.5f)),
+						job_min.y + ((job_max.y - job_min.y - label_size.y) * 0.5f)
+					);
+
+					job_draw_list->PushClipRect(job_min, job_max, true);
+					job_draw_list->AddText(text_pos, IM_COL32(0, 0, 0, 255), label_text.c_str());
+					job_draw_list->PopClipRect();
+
+					// Tooltip on hover
+					ImVec2 mouse_pos = ImGui::GetIO().MousePos;
+					if (mouse_pos.x >= job_min.x && mouse_pos.x <= job_max.x &&
+						mouse_pos.y >= job_min.y && mouse_pos.y <= job_max.y)
+					{
+						ImGui::BeginTooltip();
+						ImGui::Text("Job: %s", event.name.c_str());
+						ImGui::Text("Start: %.3f ms", event.start_time);
+						ImGui::Text("End: %.3f ms", event.end_time);
+						ImGui::Text("Duration: %.3f ms", event.end_time - event.start_time);
+						const char* priorityStr =
+							(event.priority == JobPriority::High) ? "High" :
+							(event.priority == JobPriority::Medium) ? "Medium" :
+							(event.priority == JobPriority::Low) ? "Low" : "Unknown";
+						ImGui::Text("Priority: %s", priorityStr);
+						ImGui::EndTooltip();
+					}
+				}
+
+			}
+
+			// Vertical markers for frame start and end
+			job_draw_list->AddLine(ImVec2(graph_pos.x + header_width, graph_pos.y), ImVec2(graph_pos.x + header_width, graph_pos.y + total_height), IM_COL32(255, 255, 255, 80));
+			job_draw_list->AddLine(ImVec2(graph_pos.x + total_width, graph_pos.y), ImVec2(graph_pos.x + total_width, graph_pos.y + total_height), IM_COL32(255, 255, 255, 80));
+
+			ImGui::EndChild();
+		}
+		ImGui::End();
+	}
+
+}
+
+void LouronEditorLayer::DisplayConsoleWindow()
+{
+
+	if (!m_ActiveGUIWindows["Console"])
+		return;
+
+	if (ImGui::Begin("Console", &m_ActiveGUIWindows["Console"]))
+	{
+		// --- Filtering Section ---
+		// Text filter for arbitrary substring search.
+		static ImGuiTextFilter text_filter;
+		text_filter.Draw("Text Filter");
+
+		ImGui::Separator();
+
+		// Logger filters: Toggle display for L_CORE and L_APP logs.
+		static bool show_core = true, show_app = true, show_scripting = true;
+		ImGui::Checkbox("Engine", &show_core);
+		ImGui::SameLine();
+		ImGui::Checkbox("Application", &show_app);
+		ImGui::SameLine();
+		ImGui::Checkbox("Scripting", &show_scripting);
+
+		ImGui::Separator();
+
+		// Log level filters using checkboxes.
+		static bool show_info = true, show_warn = true, show_error = true, show_critical = true;
+		ImGui::Checkbox("Info", &show_info);
+		ImGui::SameLine();
+		ImGui::Checkbox("Warn", &show_warn);
+		ImGui::SameLine();
+		ImGui::Checkbox("Error", &show_error);
+		ImGui::SameLine();
+		ImGui::Checkbox("Critical", &show_critical);
+
+		ImGui::Separator();
+
+		// Clear logs button
+		if (ImGui::Button("Clear"))
+			CustomLoggingSink::GetInstance().Clear();
+
+		// --- Scrolling Region for Logs ---
+		ImGui::BeginChild("ScrollingRegion", ImVec2(0, 0), false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+
+		const auto& logs = CustomLoggingSink::GetInstance().GetLogs();
+		for (const auto& entry : logs)
+		{
+			// Filter by logger name.
+			bool logger_pass = (entry.logger_name == "L_CORE" && show_core) || (entry.logger_name == "L_APP" && show_app) || (entry.logger_name == "L_SCRIPTS" && show_scripting);
+			if (!logger_pass)
+				continue;
+
+			// Filter by log level.
+			bool level_pass = false;
+			switch (entry.level) {
+				case spdlog::level::trace:    level_pass = false; break;
+				case spdlog::level::info:     level_pass = show_info; break;
+				case spdlog::level::warn:     level_pass = show_warn; break;
+				case spdlog::level::err:      level_pass = show_error; break;
+				case spdlog::level::critical: level_pass = show_critical; break;
+				default:                    level_pass = true; break;
+			}
+			if (!level_pass)
+				continue;
+
+			// Apply text filter.
+			if (!text_filter.PassFilter(entry.text.c_str()))
+				continue;
+
+			// Set text color based on log level.
+			ImVec4 colour;
+			switch (entry.level) 
+			{
+			case spdlog::level::info:
+				colour = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+				break;
+			case spdlog::level::warn:
+				colour = ImVec4(1.0f, 0.5f, 0.0f, 1.0f);
+				break;
+			case spdlog::level::err:
+				colour = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
+				break;
+			case spdlog::level::critical:
+				colour = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // white text
+				break;
+			default:
+				colour = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+
+			// Render log line with proper styling.
+			if (entry.level == spdlog::level::critical) {
+				// For critical logs, also change background.
+				ImGui::PushStyleColor(ImGuiCol_Text, colour);
+				// Push a semi-transparent red background.
+				ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(1.0f, 0.0f, 0.0f, 0.5f));
+				ImGui::TextUnformatted(entry.text.c_str());
+				ImGui::PopStyleColor(2);
+			}
+			else {
+				ImGui::PushStyleColor(ImGuiCol_Text, colour);
+				ImGui::TextUnformatted(entry.text.c_str());
+				ImGui::PopStyleColor();
+			}
 		}
 
-		for (auto& result : results) {
+		// Auto-scroll to the bottom if already at the bottom.
+		if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+			ImGui::SetScrollHereY(1.0f);
 
-			char label[128];
-			strcpy_s(label, result.second.Name);
-			strcat_s(label, " %.3fms");
-
-			ImGui::Text(label, result.second.Time);
-		}
+		ImGui::EndChild();
 	}
 	ImGui::End();
-
 }
 
 void LouronEditorLayer::DisplayAssetRegistryWindow() {
@@ -2177,8 +2447,6 @@ void LouronEditorLayer::DisplayAssetRegistryWindow() {
 	if (!m_ActiveGUIWindows["Asset Registry"]) {
 		return;
 	}
-
-	L_PROFILE_FUNCTION();
 
 	if (ImGui::Begin("Asset Registry", &m_ActiveGUIWindows["Asset Registry"], 0)) {
 		static char filter[128] = "";  // Buffer for the search filter
@@ -2371,7 +2639,7 @@ void LouronEditorLayer::DisplayProjectProperties() {
 			auto scenes_directory = project->GetProjectDirectory() / "Scenes";
 			if (file_path.lexically_normal().string().find(scenes_directory.lexically_normal().string()) != 0)
 			{
-				L_CORE_WARN("Scene is Not Located in Current Project ({0}): {1}", project->GetConfig().Name, file_path.string());
+				L_APP_WARN("Scene is Not Located in Current Project ({0}): {1}", project->GetConfig().Name, file_path.string());
 			}
 			else {
 				file_path = std::filesystem::relative(file_path, project->GetProjectDirectory());

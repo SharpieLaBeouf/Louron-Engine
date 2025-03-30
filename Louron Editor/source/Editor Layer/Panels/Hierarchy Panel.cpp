@@ -67,7 +67,7 @@ void HierarchyPanel::OnImGuiRender(const std::shared_ptr<Louron::Scene>& scene_r
 
 			}
 			else {
-				L_CORE_WARN("Cannot Instantiate '{}' Into Scene.", dropped_path.filename().string());
+				L_APP_WARN("Cannot Instantiate '{}' Into Scene.", dropped_path.filename().string());
 			}
 
 		}
@@ -107,9 +107,20 @@ void HierarchyPanel::OnImGuiRender(const std::shared_ptr<Louron::Scene>& scene_r
 		if (ImGui::BeginPopupContextItem())
 		{
 
-			if (ImGui::MenuItem("Create Child Entity")) {
+			if (ImGui::MenuItem("Create Child Entity")) 
+			{
 				createChildOnCurrentEntity = true;
 				parent_UUID = entity.GetUUID();
+			}
+
+			if (ImGui::MenuItem("Duplicate Entity"))
+			{
+				Louron::Engine::Get().SubmitToMainThread([entity, scene_ref = scene_ref.get()]() {
+					if (scene_ref)
+					{
+						scene_ref->DuplicateEntity(entity, {});
+					}
+				});
 			}
 
 			if (ImGui::MenuItem("Delete Entity"))

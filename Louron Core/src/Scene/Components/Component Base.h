@@ -120,6 +120,37 @@ namespace Louron
 
     > ;
 
+    using AllDuplicatableComponents = ComponentGroup <
+
+        ComponentBase,
+
+        ScriptComponent,
+        TransformComponent,
+
+        CameraComponent,
+
+        AudioListener,
+        AudioEmitter,
+
+        MeshFilterComponent,
+        MeshRendererComponent,
+
+        SkinnedMeshComponent,
+        AnimatorComponent,
+
+        LODMeshComponent,
+
+        SkyboxComponent,
+        PointLightComponent,
+        SpotLightComponent,
+        DirectionalLightComponent,
+
+        RigidbodyComponent,
+        BoxColliderComponent,
+        SphereColliderComponent
+
+    > ;
+
     #pragma endregion
 
 }

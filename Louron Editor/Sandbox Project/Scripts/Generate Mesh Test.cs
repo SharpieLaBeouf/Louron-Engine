@@ -39,7 +39,7 @@ namespace SandboxProject
 
         public void CreateMesh()
         {
-            Debug.Log("Creating Mesh?");
+            Debug.Log("Creating Mesh");
 
             meshfilter.mesh = new Mesh();
 

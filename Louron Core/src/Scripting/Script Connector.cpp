@@ -226,12 +226,13 @@ namespace Louron {
 
 	void ScriptConnector::Debug_LogMessage(int type, MonoString* message) {
 
-		switch (type) {
-			case 0:		L_CORE_INFO(ScriptingUtils::MonoStringToString(message));	break;
-			case 1:		L_CORE_WARN(ScriptingUtils::MonoStringToString(message));	break;
-			case 2:		L_CORE_ERROR(ScriptingUtils::MonoStringToString(message));	break;
-			case 3:		L_CORE_FATAL(ScriptingUtils::MonoStringToString(message));	break;
-			default:	L_CORE_INFO(ScriptingUtils::MonoStringToString(message));	break;
+		switch (type) 
+		{
+			case 0:		L_SCRIPT_INFO(ScriptingUtils::MonoStringToString(message));		break;
+			case 1:		L_SCRIPT_WARN(ScriptingUtils::MonoStringToString(message));		break;
+			case 2:		L_SCRIPT_ERROR(ScriptingUtils::MonoStringToString(message));	break;
+			case 3:		L_SCRIPT_FATAL(ScriptingUtils::MonoStringToString(message));	break;
+			default:	L_SCRIPT_INFO(ScriptingUtils::MonoStringToString(message));		break;
 		}
 	}
 

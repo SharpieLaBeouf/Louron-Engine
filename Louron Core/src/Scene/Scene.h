@@ -44,6 +44,7 @@ namespace Louron {
 	class FrameBuffer;
 	struct FrameBufferConfig;
 	class UUID;
+	class JobCounter;
 
 	enum L_RENDER_PIPELINE : uint8_t;
 
@@ -73,7 +74,7 @@ namespace Louron {
 
 		Entity InstantiatePrefab(std::shared_ptr<Prefab> prefab, std::optional<TransformComponent> transform = std::nullopt, const UUID& parent_uuid = NULL_UUID);
 
-		Entity DuplicateEntity(Entity entity);
+		Entity DuplicateEntity(Entity entity, Entity parent, std::shared_ptr<std::unordered_map<UUID, UUID>> reference_map = nullptr);
 		void DestroyEntity(const UUID& entity_uuid);
 		void DestroyEntity(Entity entity, std::unique_lock<std::mutex>* parent_lock = nullptr);
 		
@@ -172,7 +173,9 @@ namespace Louron {
 		std::shared_ptr<OctreeBounds<Entity>> m_Octree = nullptr;
 		bool m_DisplayOctree = false;
 
-		std::thread m_AnimationThread;
+		std::mutex m_BoneUpdateMutex = {};
+		std::shared_ptr<JobCounter> m_LastFrameAnimationUpdateCounter = nullptr;
+		std::unordered_map<UUID, glm::mat4> m_BoneUpdates = {};
 		std::atomic<bool> m_AnimationThreadFinished = true;
 
 		friend class Entity;

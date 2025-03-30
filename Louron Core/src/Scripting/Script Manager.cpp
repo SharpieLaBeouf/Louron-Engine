@@ -173,7 +173,7 @@ namespace Louron {
 			const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
 			int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
 
-			L_CORE_INFO("Mono Has Found The Following Script Classes: ");
+			L_SCRIPT_INFO("Mono Has Found The Following Script Classes: ");
 			for (int32_t i = 0; i < numTypes; i++)
 			{
 				uint32_t cols[MONO_TYPEDEF_SIZE];
@@ -182,7 +182,7 @@ namespace Louron {
 				const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
 				const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
 				
-				L_CORE_INFO("{}.{}", nameSpace, name);
+				L_SCRIPT_INFO("{}.{}", nameSpace, name);
 			}
 		}
 
@@ -254,7 +254,7 @@ namespace Louron {
 				MonoString* exceptionString = mono_object_to_string(messageObj, nullptr); // Convert the value to a string
 				const char* message = mono_string_to_utf8((MonoString*)messageObj);
 
-				L_CORE_INFO("Entity \"{1}\", Script \"{0}\" - Runtime Exception: \"{2}\".", m_ClassName, s_Data->SceneContext.lock()->FindEntityByUUID(entity_uuid).GetName(), message);
+				L_SCRIPT_INFO("Entity \"{1}\", Script \"{0}\" - Runtime Exception: \"{2}\".", m_ClassName, s_Data->SceneContext.lock()->FindEntityByUUID(entity_uuid).GetName(), message);
 			}
 		}
 		return object;
@@ -266,8 +266,8 @@ namespace Louron {
 #pragma region ScriptManager
 
 
-	ScriptManager::ScriptManager() {
-
+	ScriptManager::ScriptManager() 
+	{
 		L_CORE_INFO("Loading Script Manager...");
 
 		// 1. Load Mono
@@ -400,7 +400,7 @@ namespace Louron {
 			MonoObject* temporary_instance = mono_object_new(s_Data->AppDomain, mono_class);
 			if (!temporary_instance)
 			{
-				L_CORE_ERROR("Could Not Instantiate Mono Class.");
+				L_SCRIPT_ERROR("Could Not Instantiate Mono Class.");
 				continue;
 			}
 
@@ -691,7 +691,7 @@ namespace Louron {
 			}
 			else
 			{
-				L_CORE_ERROR("Could not find ScriptInstance for entity {}::{}", entity.GetUUID(), component.Scripts.at(i).first);
+				L_SCRIPT_ERROR("Could not find ScriptInstance for entity {}::{}", entity.GetUUID(), component.Scripts.at(i).first);
 			}
 		}
 	}
@@ -714,7 +714,7 @@ namespace Louron {
 			}
 			else
 			{
-				L_CORE_ERROR("Could not find ScriptInstance for entity {}::{}", entity.GetUUID(), component.Scripts.at(i).first);
+				L_SCRIPT_ERROR("Could not find ScriptInstance for entity {}::{}", entity.GetUUID(), component.Scripts.at(i).first);
 			}
 		}
 	}
@@ -742,7 +742,7 @@ namespace Louron {
 			}
 			else
 			{
-				L_CORE_ERROR("Could not find ScriptInstance for entity {}::{}", entity.GetUUID(), component.Scripts.at(i).first);
+				L_SCRIPT_ERROR("Could not find ScriptInstance for entity {}::{}", entity.GetUUID(), component.Scripts.at(i).first);
 			}
 		}
 	}
@@ -814,12 +814,12 @@ namespace Louron {
 					}
 
 					case _Collision_Type::None:
-					default: L_CORE_WARN("Invalid Collision Type!");
+					default: L_SCRIPT_WARN("Invalid Collision Type!");
 				}
 			}
 			else
 			{
-				L_CORE_WARN("Could not find ScriptInstance for entity {}::{}", entity.GetUUID(), component.Scripts.at(i).first);
+				L_SCRIPT_WARN("Could not find ScriptInstance for entity {}::{}", entity.GetUUID(), component.Scripts.at(i).first);
 			}
 		}
 	}

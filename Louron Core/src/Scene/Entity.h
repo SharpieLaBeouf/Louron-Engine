@@ -353,6 +353,18 @@ namespace Louron {
 			return entities_with_component;
 		}
 
+		template<typename T>
+		std::vector<Entity> GetComponentsInSelfAndChildren() const
+		{
+			std::vector<Entity> entities_with_component;
+
+			if (this->HasComponent<T>()) entities_with_component.push_back(*this);
+
+			auto children = this->GetComponentsInChildren<T>();
+			entities_with_component.insert(entities_with_component.end(), children.begin(), children.end());
+			return entities_with_component;
+		}
+
 		TransformComponent& GetTransform() const
 		{
 			return GetComponent<TransformComponent>();

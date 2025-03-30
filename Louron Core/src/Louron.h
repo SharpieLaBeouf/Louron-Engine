@@ -18,6 +18,8 @@
 #include "Core/File Utilities.h"
 #include "Core/Platform.h"
 
+#include "Jobs/Jobs.h"
+
 #include "OpenGL/Buffer.h"
 #include "OpenGL/Compute Shader Asset.h"
 #include "OpenGL/Material.h"

@@ -4,6 +4,7 @@
 #include "Time.h"
 #include "Logging.h"
 #include "../Debug/Profiler.h"
+#include "../Jobs/Jobs.h"
 
 #include "../Physics/Physics.h"
 #include "../Project/Project.h"
@@ -44,6 +45,9 @@ namespace Louron {
         // Renderer Init Debug VAOs
         Renderer::Init();
 
+        // Init Job System
+        JobSystem::Init();
+
         // Init Input Manager
         m_Input = std::make_unique<InputManager>();
         m_Input->Init((GLFWwindow*)m_Window->GetNativeWindow());
@@ -76,6 +80,7 @@ namespace Louron {
             L_PROFILE_SCOPE("Engine: Overall Loop");
 
             Profiler::Get().NewFrame();
+			JobSystem::Get()->BeginFrameProfile();
 
             Time::Get().UpdateTime();
 
@@ -133,6 +138,13 @@ namespace Louron {
                 m_Input->ResetScroll();
                 m_Window->OnUpdate();
             }
+
+            {
+                L_PROFILE_SCOPE("Engine: 7. Finish Jobs");
+                JobSystem::Get()->FinishJobs();
+            }
+
+            JobSystem::Get()->EndFrameProfile();
         }
 
         Audio::Shutdown();

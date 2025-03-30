@@ -100,6 +100,7 @@ private:
 
 	void DisplayRenderStatsWindow();
 	void DisplayProfilerWindow();
+	void DisplayConsoleWindow();
 	void DisplayAssetRegistryWindow();
 
 
