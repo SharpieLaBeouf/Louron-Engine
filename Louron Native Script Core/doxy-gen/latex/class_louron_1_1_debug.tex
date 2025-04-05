@@ -1,0 +1,61 @@
+\doxysection{Louron\+::Debug Class Reference}
+\hypertarget{class_louron_1_1_debug}{}\label{class_louron_1_1_debug}\index{Louron::Debug@{Louron::Debug}}
+
+
+Static \doxylink{class_louron_1_1_debug}{Debug} Methods.  
+
+
+
+
+{\ttfamily \#include $<$LDebug.\+h$>$}
+
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Log}} (const std\+::string \&message, uint8\+\_\+t log\+\_\+type=0)
+\begin{DoxyCompactList}\small\item\em Native Logging Function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Static \doxylink{class_louron_1_1_debug}{Debug} Methods. 
+
+This provides static functions for debugging purposes. This class is not meant to be instantiated, rather provides methods that are called statically. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}\index{Louron::Debug@{Louron::Debug}!Log@{Log}}
+\index{Log@{Log}!Louron::Debug@{Louron::Debug}}
+\doxysubsubsection{\texorpdfstring{Log()}{Log()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d} 
+static void Louron\+::\+Debug\+::\+Log (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{message}{, }\item[{uint8\+\_\+t}]{log\+\_\+type}{ = {\ttfamily 0}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Native Logging Function. 
+
+This will create a log in the console at runtime.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ OnCreate()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Default\ Log"{}});}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Warning\ Log"{}},\ 1);}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Error\ Log"{}},\ 2);}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Critical\ Log"{}},\ 3);}
+\DoxyCodeLine{\}\ }
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & The message to log. \\
+\hline
+{\em log\+\_\+type} & The type of log. 0 = Info, 1 = Warning, 2 = Error, 3 = Critical. This is optional and defaults to 0. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Engine Util/LDebug.\+h\end{DoxyCompactItemize}

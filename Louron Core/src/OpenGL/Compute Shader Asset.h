@@ -20,7 +20,7 @@ namespace Louron {
         ComputeBuffer(size_t element_count, size_t element_size);
         ~ComputeBuffer();
 
-        void SetData(void* data, size_t element_count, size_t element_size) const;
+        void SetData(const void* data, size_t element_count, size_t element_size) const;
         void GetData(void* output, size_t element_count, size_t element_size) const;
 
         void Release();

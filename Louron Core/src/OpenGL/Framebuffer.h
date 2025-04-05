@@ -27,7 +27,7 @@ namespace Louron {
 
 	enum class FrameBufferTexture
 	{
-		None = 0,
+		Unknown = 0,
 
 		ColourTexture,
 		DepthTexture

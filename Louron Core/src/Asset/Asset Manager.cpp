@@ -26,7 +26,7 @@ namespace Louron {
 		if (s_AssetExtensionMap.find(extension) == s_AssetExtensionMap.end())
 		{
 			L_CORE_WARN("Could not find AssetType for {0}", extension.string().c_str());
-			return AssetType::None;
+			return AssetType::Unknown;
 		}
 
 		return s_AssetExtensionMap.at(extension);
@@ -590,7 +590,7 @@ namespace Louron {
 			handle = (custom_handle == NULL_UUID) ? GenerateNewAssetHandle(meta_data.Type, meta_data.FilePath) : custom_handle;
 		}
 
-		L_CORE_ASSERT(meta_data.Type != AssetType::None, "Cannot Load Asset as MetaData Type Is NULL.");
+		L_CORE_ASSERT(meta_data.Type != AssetType::Unknown, "Cannot Load Asset as MetaData Type Is NULL.");
 
 		// Temporarily Load Asset to Load MetaData
 		if (m_LoadedAssets.count(handle) == 0)
@@ -953,7 +953,7 @@ namespace Louron {
 
 	AssetType EditorAssetManager::GetAssetType(const AssetHandle& asset_handle) const {
 		if (!IsAssetHandleValid(asset_handle))
-			return AssetType::None;
+			return AssetType::Unknown;
 
 		return m_AssetRegistry.at(asset_handle).Type;
 	}

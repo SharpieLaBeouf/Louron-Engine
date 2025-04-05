@@ -1,0 +1,389 @@
+\doxysection{Louron\+::Components\+::Rigidbody\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_rigidbody_component}{}\label{class_louron_1_1_components_1_1_rigidbody_component}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+
+
+\doxylink{class_louron_1_1_components_1_1_component}{Component} that adds physical behavior to an entity.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::Rigidbody\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_rigidbody_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345}{Force\+Mode}} \+: uint8\+\_\+t \{ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a9eb6b78a99cdb6ffd3d40d18621d9f80}{Force}}
+, \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a6b0a227bd9315bcde12dbcf6c217a9d7}{Impulse}}
+, \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345ac04e1ed2cf6965ff59bc9a87fca40ad1}{Velocity\+\_\+\+Change}}
+, \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a3b926d163371fd620b09b63219b12f52}{Acceleration}}
+ \}
+\begin{DoxyCompactList}\small\item\em Defines how forces are applied to the rigidbody. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a0c3df98f10019eed60c29876a5563190}{Get\+Mass}} () const
+\begin{DoxyCompactList}\small\item\em Gets the mass of the rigidbody. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aa0c8dbb958be2fab7de4162f1adab64a}{Get\+Drag}} () const
+\begin{DoxyCompactList}\small\item\em Gets the linear drag of the rigidbody. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aaaffcb98fa53b950a805d81171491de7}{Get\+Angular\+Drag}} () const
+\begin{DoxyCompactList}\small\item\em Gets the angular drag of the rigidbody. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a9b5b38f374a809819dcdaf1859d4ceae}{Is\+Automatic\+Centre\+Of\+Mass\+Enabled}} () const
+\begin{DoxyCompactList}\small\item\em Checks whether the automatic center of mass is enabled. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a66a2ad01efdcdd55e6d626e7508c442b}{Is\+Gravity\+Enabled}} () const
+\begin{DoxyCompactList}\small\item\em Checks whether gravity is enabled on this rigidbody. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a49e85d1bc2e9314392c22cfbfe86f201}{Is\+Kinematic\+Enabled}} () const
+\begin{DoxyCompactList}\small\item\em Checks whether the rigidbody is kinematic. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors\+::\+BVector3}} \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a7b4ca338dccaa04dfb9f4d48b09c9fe1}{Get\+Position\+Constraint}} () const
+\begin{DoxyCompactList}\small\item\em Gets the position constraint bitmask. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors\+::\+BVector3}} \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a2e71f125365f5cfded73b7e0f96dbbbd}{Get\+Rotation\+Constraint}} () const
+\begin{DoxyCompactList}\small\item\em Gets the rotation constraint bitmask. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a40af3e6f1d0837127a1cc9ad77cdc52e}{Set\+Mass}} (float mass) const
+\begin{DoxyCompactList}\small\item\em Sets the mass of the rigidbody. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aa0d5e6960ca450d35755a65b99450e05}{Set\+Drag}} (float drag) const
+\begin{DoxyCompactList}\small\item\em Sets the linear drag. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aa797f8b61f1550435115b50271a43103}{Set\+Angular\+Drag}} (float angular\+Drag) const
+\begin{DoxyCompactList}\small\item\em Sets the angular drag. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a31dc444cf29dddfc21cdce6db9578c06}{Set\+Automatic\+Centre\+Of\+Mass}} (const bool \&automatic\+Centre\+Of\+Mass) const
+\begin{DoxyCompactList}\small\item\em Enables or disables automatic center of mass calculation. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a52e6b5ddfec96cef503269bf9302f487}{Set\+Gravity}} (bool use\+Gravity) const
+\begin{DoxyCompactList}\small\item\em Enables or disables gravity for this rigidbody. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ac365eb816333ec45b8bad1127d72b789}{Set\+Kinematic}} (bool is\+Kinematic) const
+\begin{DoxyCompactList}\small\item\em Enables or disables kinematic mode. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a01ecb8a24c9d95aa1aa99ca8a0c832f3}{Set\+Position\+Constraint}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors\+::\+BVector3}} \&position\+Constraint) const
+\begin{DoxyCompactList}\small\item\em Locks movement along specific axes. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aa1b31451299688a6c594d6807d772059}{Set\+Rotation\+Constraint}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors\+::\+BVector3}} \&rotation\+Constraint) const
+\begin{DoxyCompactList}\small\item\em Locks rotation along specific axes. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a9e07b06616c85b30d17707a9d5b06bde}{Apply\+Force}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&force, \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345}{Force\+Mode}} force\+Mode=\mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a9eb6b78a99cdb6ffd3d40d18621d9f80}{Force\+Mode\+::\+Force}}) const
+\begin{DoxyCompactList}\small\item\em Applies a force to the rigidbody. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aefbcc82feb6d8b1d3c4f3aa8db396ef9}{Apply\+Torque}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&torque) const
+\begin{DoxyCompactList}\small\item\em Applies a torque to the rigidbody. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_aa3c9a961b8d487c6b7af9b378ca688f3}\label{class_louron_1_1_components_1_1_rigidbody_component_aa3c9a961b8d487c6b7af9b378ca688f3} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{class_louron_1_1_components_1_1_component}{Component} that adds physical behavior to an entity. 
+
+This component handles physics simulation properties such as mass, gravity, constraints, and force application. 
+
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!ForceMode@{ForceMode}}
+\index{ForceMode@{ForceMode}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{ForceMode}{ForceMode}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345} 
+enum class \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345}{Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Force\+Mode}} \+: uint8\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+Defines how forces are applied to the rigidbody. 
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Force@{Force}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!Force@{Force}}}\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a9eb6b78a99cdb6ffd3d40d18621d9f80}\label{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a9eb6b78a99cdb6ffd3d40d18621d9f80} 
+Force&Continuous force using mass. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Impulse@{Impulse}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!Impulse@{Impulse}}}\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a6b0a227bd9315bcde12dbcf6c217a9d7}\label{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a6b0a227bd9315bcde12dbcf6c217a9d7} 
+Impulse&Instantaneous force using mass. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Velocity\_Change@{Velocity\_Change}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!Velocity\_Change@{Velocity\_Change}}}\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345ac04e1ed2cf6965ff59bc9a87fca40ad1}\label{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345ac04e1ed2cf6965ff59bc9a87fca40ad1} 
+Velocity\+\_\+\+Change&Instantaneous force ignoring mass. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Acceleration@{Acceleration}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!Acceleration@{Acceleration}}}\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a3b926d163371fd620b09b63219b12f52}\label{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a3b926d163371fd620b09b63219b12f52} 
+Acceleration&Continuous force ignoring mass. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_a9e07b06616c85b30d17707a9d5b06bde}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!ApplyForce@{ApplyForce}}
+\index{ApplyForce@{ApplyForce}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{ApplyForce()}{ApplyForce()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_a9e07b06616c85b30d17707a9d5b06bde} 
+void Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Apply\+Force (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&}]{force}{, }\item[{\mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345}{Force\+Mode}}}]{force\+Mode}{ = {\ttfamily \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a9eb6b78a99cdb6ffd3d40d18621d9f80}{Force\+Mode\+::\+Force}}}}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Applies a force to the rigidbody. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em force} & The force vector in world space. \\
+\hline
+{\em force\+\_\+mode} & The mode to apply the force in (default = Force). \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_aefbcc82feb6d8b1d3c4f3aa8db396ef9}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!ApplyTorque@{ApplyTorque}}
+\index{ApplyTorque@{ApplyTorque}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{ApplyTorque()}{ApplyTorque()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_aefbcc82feb6d8b1d3c4f3aa8db396ef9} 
+void Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Apply\+Torque (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&}]{torque}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Applies a torque to the rigidbody. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em torque} & The torque vector in world space. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_aaaffcb98fa53b950a805d81171491de7}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!GetAngularDrag@{GetAngularDrag}}
+\index{GetAngularDrag@{GetAngularDrag}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{GetAngularDrag()}{GetAngularDrag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_aaaffcb98fa53b950a805d81171491de7} 
+float Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Get\+Angular\+Drag (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the angular drag of the rigidbody. 
+
+\begin{DoxyReturn}{Returns}
+Angular drag factor. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_aa0c8dbb958be2fab7de4162f1adab64a}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!GetDrag@{GetDrag}}
+\index{GetDrag@{GetDrag}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{GetDrag()}{GetDrag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_aa0c8dbb958be2fab7de4162f1adab64a} 
+float Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Get\+Drag (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the linear drag of the rigidbody. 
+
+\begin{DoxyReturn}{Returns}
+Drag factor. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_a0c3df98f10019eed60c29876a5563190}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!GetMass@{GetMass}}
+\index{GetMass@{GetMass}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{GetMass()}{GetMass()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_a0c3df98f10019eed60c29876a5563190} 
+float Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Get\+Mass (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the mass of the rigidbody. 
+
+\begin{DoxyReturn}{Returns}
+Mass in kilograms. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_a7b4ca338dccaa04dfb9f4d48b09c9fe1}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!GetPositionConstraint@{GetPositionConstraint}}
+\index{GetPositionConstraint@{GetPositionConstraint}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{GetPositionConstraint()}{GetPositionConstraint()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_a7b4ca338dccaa04dfb9f4d48b09c9fe1} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors\+::\+BVector3}} Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Get\+Position\+Constraint (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the position constraint bitmask. 
+
+\begin{DoxyReturn}{Returns}
+Vector indicating locked axes (true = locked). 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_a2e71f125365f5cfded73b7e0f96dbbbd}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!GetRotationConstraint@{GetRotationConstraint}}
+\index{GetRotationConstraint@{GetRotationConstraint}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{GetRotationConstraint()}{GetRotationConstraint()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_a2e71f125365f5cfded73b7e0f96dbbbd} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors\+::\+BVector3}} Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Get\+Rotation\+Constraint (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the rotation constraint bitmask. 
+
+\begin{DoxyReturn}{Returns}
+Vector indicating locked rotation axes (true = locked). 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_a9b5b38f374a809819dcdaf1859d4ceae}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!IsAutomaticCentreOfMassEnabled@{IsAutomaticCentreOfMassEnabled}}
+\index{IsAutomaticCentreOfMassEnabled@{IsAutomaticCentreOfMassEnabled}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{IsAutomaticCentreOfMassEnabled()}{IsAutomaticCentreOfMassEnabled()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_a9b5b38f374a809819dcdaf1859d4ceae} 
+bool Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Is\+Automatic\+Centre\+Of\+Mass\+Enabled (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks whether the automatic center of mass is enabled. 
+
+\begin{DoxyReturn}{Returns}
+True if automatic center of mass is used. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_a66a2ad01efdcdd55e6d626e7508c442b}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!IsGravityEnabled@{IsGravityEnabled}}
+\index{IsGravityEnabled@{IsGravityEnabled}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{IsGravityEnabled()}{IsGravityEnabled()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_a66a2ad01efdcdd55e6d626e7508c442b} 
+bool Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Is\+Gravity\+Enabled (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks whether gravity is enabled on this rigidbody. 
+
+\begin{DoxyReturn}{Returns}
+True if gravity affects the rigidbody. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_a49e85d1bc2e9314392c22cfbfe86f201}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!IsKinematicEnabled@{IsKinematicEnabled}}
+\index{IsKinematicEnabled@{IsKinematicEnabled}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{IsKinematicEnabled()}{IsKinematicEnabled()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_a49e85d1bc2e9314392c22cfbfe86f201} 
+bool Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Is\+Kinematic\+Enabled (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks whether the rigidbody is kinematic. 
+
+\begin{DoxyReturn}{Returns}
+True if the rigidbody is kinematic. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_aa797f8b61f1550435115b50271a43103}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!SetAngularDrag@{SetAngularDrag}}
+\index{SetAngularDrag@{SetAngularDrag}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{SetAngularDrag()}{SetAngularDrag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_aa797f8b61f1550435115b50271a43103} 
+void Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Set\+Angular\+Drag (\begin{DoxyParamCaption}\item[{float}]{angular\+Drag}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the angular drag. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em angular\+\_\+drag} & The new angular drag value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_a31dc444cf29dddfc21cdce6db9578c06}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!SetAutomaticCentreOfMass@{SetAutomaticCentreOfMass}}
+\index{SetAutomaticCentreOfMass@{SetAutomaticCentreOfMass}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{SetAutomaticCentreOfMass()}{SetAutomaticCentreOfMass()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_a31dc444cf29dddfc21cdce6db9578c06} 
+void Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Set\+Automatic\+Centre\+Of\+Mass (\begin{DoxyParamCaption}\item[{const bool \&}]{automatic\+Centre\+Of\+Mass}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enables or disables automatic center of mass calculation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em automatic} & True to enable automatic center of mass. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_aa0d5e6960ca450d35755a65b99450e05}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!SetDrag@{SetDrag}}
+\index{SetDrag@{SetDrag}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{SetDrag()}{SetDrag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_aa0d5e6960ca450d35755a65b99450e05} 
+void Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Set\+Drag (\begin{DoxyParamCaption}\item[{float}]{drag}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the linear drag. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em drag} & The new drag value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_a52e6b5ddfec96cef503269bf9302f487}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!SetGravity@{SetGravity}}
+\index{SetGravity@{SetGravity}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{SetGravity()}{SetGravity()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_a52e6b5ddfec96cef503269bf9302f487} 
+void Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Set\+Gravity (\begin{DoxyParamCaption}\item[{bool}]{use\+Gravity}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enables or disables gravity for this rigidbody. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em use\+\_\+gravity} & True to enable gravity. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_ac365eb816333ec45b8bad1127d72b789}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!SetKinematic@{SetKinematic}}
+\index{SetKinematic@{SetKinematic}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{SetKinematic()}{SetKinematic()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_ac365eb816333ec45b8bad1127d72b789} 
+void Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Set\+Kinematic (\begin{DoxyParamCaption}\item[{bool}]{is\+Kinematic}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enables or disables kinematic mode. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em is\+\_\+kinematic} & True to make the rigidbody kinematic. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_a40af3e6f1d0837127a1cc9ad77cdc52e}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!SetMass@{SetMass}}
+\index{SetMass@{SetMass}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{SetMass()}{SetMass()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_a40af3e6f1d0837127a1cc9ad77cdc52e} 
+void Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Set\+Mass (\begin{DoxyParamCaption}\item[{float}]{mass}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the mass of the rigidbody. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mass} & The new mass in kilograms. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_a01ecb8a24c9d95aa1aa99ca8a0c832f3}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!SetPositionConstraint@{SetPositionConstraint}}
+\index{SetPositionConstraint@{SetPositionConstraint}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{SetPositionConstraint()}{SetPositionConstraint()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_a01ecb8a24c9d95aa1aa99ca8a0c832f3} 
+void Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Set\+Position\+Constraint (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors\+::\+BVector3}} \&}]{position\+Constraint}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Locks movement along specific axes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em position\+\_\+constraint} & Boolean vector (x, y, z) where true = locked. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_rigidbody_component_aa1b31451299688a6c594d6807d772059}\index{Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}!SetRotationConstraint@{SetRotationConstraint}}
+\index{SetRotationConstraint@{SetRotationConstraint}!Louron::Components::RigidbodyComponent@{Louron::Components::RigidbodyComponent}}
+\doxysubsubsection{\texorpdfstring{SetRotationConstraint()}{SetRotationConstraint()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_rigidbody_component_aa1b31451299688a6c594d6807d772059} 
+void Louron\+::\+Components\+::\+Rigidbody\+Component\+::\+Set\+Rotation\+Constraint (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors\+::\+BVector3}} \&}]{rotation\+Constraint}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Locks rotation along specific axes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rotation\+\_\+constraint} & Boolean vector (x, y, z) where true = locked. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\end{DoxyCompactItemize}

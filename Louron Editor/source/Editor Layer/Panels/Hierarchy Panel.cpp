@@ -22,7 +22,7 @@ void HierarchyPanel::OnImGuiRender(const std::shared_ptr<Louron::Scene>& scene_r
 			std::string dropped_path_str(static_cast<const char*>(payload->Data), payload->DataSize - 1);
 			std::filesystem::path dropped_path = dropped_path_str; // Convert to path
 
-			if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::None) {
+			if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::Unknown) {
 
 				AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_path, Project::GetActiveProject()->GetAssetDirectory());
 

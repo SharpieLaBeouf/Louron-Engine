@@ -1,0 +1,190 @@
+\doxysection{Louron\+::Components\+::LODMesh\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_l_o_d_mesh_component}{}\label{class_louron_1_1_components_1_1_l_o_d_mesh_component}\index{Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}}
+
+
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access LOD mesh information.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::LODMesh\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_l_o_d_mesh_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element}{LODElement}}
+\begin{DoxyCompactList}\small\item\em A single Level of Detail (LOD) element. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_adb3e60d96a0fc550c0e1834c93f3d703}{Is\+Max\+Distance\+Over\+Far\+Plane}} () const
+\begin{DoxyCompactList}\small\item\em Determines if the maximum LOD distance should be normalised to the camera\textquotesingle{}s near-\/far plane, or a custom distance. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_ac55a44dd9e4dde219534074f90f66b3c}{Set\+Max\+Distance\+Over\+Far\+Plane}} (bool use\+\_\+max\+\_\+distance) const
+\begin{DoxyCompactList}\small\item\em Sets whether the maximum LOD distance should be normalised to the camera\textquotesingle{}s near-\/far plane, or a custom distance. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_a1495a970704479f60acd543b74c41bcc}{Get\+Max\+Distance}} () const
+\begin{DoxyCompactList}\small\item\em Gets the maximum distance at which LODs are normalised. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_a98c969a5ecb412daad2b93818f1e335c}{Set\+Max\+Distance}} (float distance) const
+\begin{DoxyCompactList}\small\item\em Sets the maximum distance at which LODs are normalised. \end{DoxyCompactList}\item 
+std\+::vector$<$ \mbox{\hyperlink{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element}{LODElement}} $>$ \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_a0c8b99aeac41ea9ffe48b0145f19f313}{Get\+LODElements}} () const
+\begin{DoxyCompactList}\small\item\em Gets all LOD elements associated with this component. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_a5f938f06573fb21cc3d2c2d77ca75870}{Set\+LODElements}} (const std\+::vector$<$ \mbox{\hyperlink{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element}{LODElement}} $>$ \&lod\+\_\+elements) const
+\begin{DoxyCompactList}\small\item\em Sets the full list of LOD elements for this component. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_l_o_d_mesh_component_a0facd8ccfb79708b62839fc6dec3cd69}\label{class_louron_1_1_components_1_1_l_o_d_mesh_component_a0facd8ccfb79708b62839fc6dec3cd69} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access LOD mesh information. 
+
+This allows the user to access data associated with a LOD mesh component. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_l_o_d_mesh_component_a0c8b99aeac41ea9ffe48b0145f19f313}\index{Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}!GetLODElements@{GetLODElements}}
+\index{GetLODElements@{GetLODElements}!Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}}
+\doxysubsubsection{\texorpdfstring{GetLODElements()}{GetLODElements()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_l_o_d_mesh_component_a0c8b99aeac41ea9ffe48b0145f19f313} 
+std\+::vector$<$ \mbox{\hyperlink{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element}{LODMesh\+Component\+::\+LODElement}} $>$ Louron\+::\+Components\+::\+LODMesh\+Component\+::\+Get\+LODElements (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+Gets all LOD elements associated with this component. 
+
+\begin{DoxyReturn}{Returns}
+Vector of LOD elements.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ lods\ =\ lod\_component.GetLODElements();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_l_o_d_mesh_component_a1495a970704479f60acd543b74c41bcc}\index{Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}!GetMaxDistance@{GetMaxDistance}}
+\index{GetMaxDistance@{GetMaxDistance}!Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}}
+\doxysubsubsection{\texorpdfstring{GetMaxDistance()}{GetMaxDistance()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_l_o_d_mesh_component_a1495a970704479f60acd543b74c41bcc} 
+float Louron\+::\+Components\+::\+LODMesh\+Component\+::\+Get\+Max\+Distance (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the maximum distance at which LODs are normalised. 
+
+\begin{DoxyReturn}{Returns}
+Maximum distance in world units.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ max\_dist\ =\ lod\_component.GetMaxDistance();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_l_o_d_mesh_component_adb3e60d96a0fc550c0e1834c93f3d703}\index{Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}!IsMaxDistanceOverFarPlane@{IsMaxDistanceOverFarPlane}}
+\index{IsMaxDistanceOverFarPlane@{IsMaxDistanceOverFarPlane}!Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}}
+\doxysubsubsection{\texorpdfstring{IsMaxDistanceOverFarPlane()}{IsMaxDistanceOverFarPlane()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_l_o_d_mesh_component_adb3e60d96a0fc550c0e1834c93f3d703} 
+bool Louron\+::\+Components\+::\+LODMesh\+Component\+::\+Is\+Max\+Distance\+Over\+Far\+Plane (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Determines if the maximum LOD distance should be normalised to the camera\textquotesingle{}s near-\/far plane, or a custom distance. 
+
+\begin{DoxyReturn}{Returns}
+True if normalised to custom distance, false if normalised within the near-\/far plane.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}\ (lod\_component.IsMaxDistanceOverFarPlane())}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Max\ distance\ exceeds\ far\ plane"{}});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_l_o_d_mesh_component_a5f938f06573fb21cc3d2c2d77ca75870}\index{Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}!SetLODElements@{SetLODElements}}
+\index{SetLODElements@{SetLODElements}!Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}}
+\doxysubsubsection{\texorpdfstring{SetLODElements()}{SetLODElements()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_l_o_d_mesh_component_a5f938f06573fb21cc3d2c2d77ca75870} 
+void Louron\+::\+Components\+::\+LODMesh\+Component\+::\+Set\+LODElements (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \mbox{\hyperlink{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element}{LODElement}} $>$ \&}]{lod\+\_\+elements}{}\end{DoxyParamCaption}) const}
+
+
+
+Sets the full list of LOD elements for this component. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lod\+\_\+elements} & Vector of LOD element structs.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{lod\_component.SetLODElements(\{\ lod\_0,\ lod\_1,\ lod\_2\ \});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_l_o_d_mesh_component_a98c969a5ecb412daad2b93818f1e335c}\index{Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}!SetMaxDistance@{SetMaxDistance}}
+\index{SetMaxDistance@{SetMaxDistance}!Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}}
+\doxysubsubsection{\texorpdfstring{SetMaxDistance()}{SetMaxDistance()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_l_o_d_mesh_component_a98c969a5ecb412daad2b93818f1e335c} 
+void Louron\+::\+Components\+::\+LODMesh\+Component\+::\+Set\+Max\+Distance (\begin{DoxyParamCaption}\item[{float}]{distance}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the maximum distance at which LODs are normalised. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em distance} & Maximum distance in world units.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{lod\_component.SetMaxDistance(150.0f);}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_l_o_d_mesh_component_ac55a44dd9e4dde219534074f90f66b3c}\index{Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}!SetMaxDistanceOverFarPlane@{SetMaxDistanceOverFarPlane}}
+\index{SetMaxDistanceOverFarPlane@{SetMaxDistanceOverFarPlane}!Louron::Components::LODMeshComponent@{Louron::Components::LODMeshComponent}}
+\doxysubsubsection{\texorpdfstring{SetMaxDistanceOverFarPlane()}{SetMaxDistanceOverFarPlane()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_l_o_d_mesh_component_ac55a44dd9e4dde219534074f90f66b3c} 
+void Louron\+::\+Components\+::\+LODMesh\+Component\+::\+Set\+Max\+Distance\+Over\+Far\+Plane (\begin{DoxyParamCaption}\item[{bool}]{use\+\_\+max\+\_\+distance}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets whether the maximum LOD distance should be normalised to the camera\textquotesingle{}s near-\/far plane, or a custom distance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em use\+\_\+max\+\_\+distance} & True if normalised to custom distance, false if normalised within the near-\/far plane.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{lod\_component.SetMaxDistanceOverFarPlane(\textcolor{keyword}{true});}
+
+\end{DoxyCode}
+ 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\item 
+ECS/LComponent.\+cpp\end{DoxyCompactItemize}

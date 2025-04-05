@@ -1,0 +1,110 @@
+\doxysection{Louron\+::Assets\+::Compute\+Shader Class Reference}
+\hypertarget{class_louron_1_1_assets_1_1_compute_shader}{}\label{class_louron_1_1_assets_1_1_compute_shader}\index{Louron::Assets::ComputeShader@{Louron::Assets::ComputeShader}}
+Inheritance diagram for Louron\+::Assets\+::Compute\+Shader\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_assets_1_1_compute_shader}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_a3bff883bd6bdf17856790a36d2f2fea9}\label{class_louron_1_1_assets_1_1_compute_shader_a3bff883bd6bdf17856790a36d2f2fea9} 
+{\bfseries Compute\+Shader} (const std\+::string \&compute\+\_\+shader\+\_\+name)
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_a66fb6f21d42b37995bc7f9bf845cea95}\label{class_louron_1_1_assets_1_1_compute_shader_a66fb6f21d42b37995bc7f9bf845cea95} 
+void {\bfseries Set\+Compute\+Shader} (const std\+::string \&compute\+\_\+shader\+\_\+name)
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_ae7b4aa42831bc4f1767fa1cad2268e9e}\label{class_louron_1_1_assets_1_1_compute_shader_ae7b4aa42831bc4f1767fa1cad2268e9e} 
+void {\bfseries Set\+Buffer} (const \mbox{\hyperlink{class_louron_1_1_assets_1_1_compute_buffer}{Compute\+Buffer}} \&buffer, uint32\+\_\+t gl\+\_\+binding\+\_\+index) const
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_a0eb9438ae39228ed2d35158406b883f0}\label{class_louron_1_1_assets_1_1_compute_shader_a0eb9438ae39228ed2d35158406b883f0} 
+void {\bfseries Dispatch} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_u_vector3}{Vectors\+::\+UVector3}} \&work\+\_\+groups=\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_u_vector3}{Vectors\+::\+UVector3}}(1, 1, 1)) const
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_aa58da0c22042dc5bbf4c993b8aa1747d}\label{class_louron_1_1_assets_1_1_compute_shader_aa58da0c22042dc5bbf4c993b8aa1747d} 
+void {\bfseries Set\+Bool} (const std\+::string \&uniform\+\_\+name, bool value) const
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_af37806029cecf0e43fe9a77694e6b280}\label{class_louron_1_1_assets_1_1_compute_shader_af37806029cecf0e43fe9a77694e6b280} 
+void {\bfseries Set\+Int} (const std\+::string \&uniform\+\_\+name, int32\+\_\+t value) const
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_a01ff5c7fe8acfaa46329f707ceb8d6a8}\label{class_louron_1_1_assets_1_1_compute_shader_a01ff5c7fe8acfaa46329f707ceb8d6a8} 
+void {\bfseries Set\+UInt} (const std\+::string \&uniform\+\_\+name, uint32\+\_\+t value) const
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_aabbed1e70a3804e4c77e525b8d6f2916}\label{class_louron_1_1_assets_1_1_compute_shader_aabbed1e70a3804e4c77e525b8d6f2916} 
+void {\bfseries Set\+Float} (const std\+::string \&uniform\+\_\+name, float value) const
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_a1ca415d7c5a0d6b2145fa292cd84b3a7}\label{class_louron_1_1_assets_1_1_compute_shader_a1ca415d7c5a0d6b2145fa292cd84b3a7} 
+void {\bfseries Set\+Vector2} (const std\+::string \&uniform\+\_\+name, \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector2}{Vectors\+::\+Vector2}} value) const
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_a0b0cbbd07d12daee4205d824c279739d}\label{class_louron_1_1_assets_1_1_compute_shader_a0b0cbbd07d12daee4205d824c279739d} 
+void {\bfseries Set\+Vector3} (const std\+::string \&uniform\+\_\+name, \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} value) const
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_a95c3fc394680abdb6a659bd3b6d1cd99}\label{class_louron_1_1_assets_1_1_compute_shader_a95c3fc394680abdb6a659bd3b6d1cd99} 
+void {\bfseries Set\+Vector4} (const std\+::string \&uniform\+\_\+name, \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} value) const
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_a3a04ef26e3509b518b8bd14b351f4e07}\label{class_louron_1_1_assets_1_1_compute_shader_a3a04ef26e3509b518b8bd14b351f4e07} 
+void {\bfseries Set\+Mat3} (const std\+::string \&uniform\+\_\+name, const \mbox{\hyperlink{struct_louron_1_1_matrices_1_1_mat3}{Matrices\+::\+Mat3}} \&value) const
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_ac77665135b13e854c37fc06b7526e7a0}\label{class_louron_1_1_assets_1_1_compute_shader_ac77665135b13e854c37fc06b7526e7a0} 
+void {\bfseries Set\+Mat4} (const std\+::string \&uniform\+\_\+name, const \mbox{\hyperlink{struct_louron_1_1_matrices_1_1_mat4}{Matrices\+::\+Mat4}} \&value) const
+\item 
+Asset\+Type \mbox{\hyperlink{class_louron_1_1_assets_1_1_compute_shader_a1d03e08b4885d68a76955118174ad159}{Get\+Asset\+Type}} () const override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_assets_1_1_asset}{Louron\+::\+Assets\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual {\bfseries operator uint32\+\_\+t} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_louron_1_1_assets_1_1_asset}{Louron\+::\+Assets\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_assets_1_1_asset_a90c728c4c626a92df280826d3adb3fcf}\label{class_louron_1_1_assets_1_1_asset_a90c728c4c626a92df280826d3adb3fcf} 
+enum class {\bfseries Asset\+Type} \+: uint8\+\_\+t \{ \newline
+{\bfseries Unknown} = 0
+, {\bfseries Scene}
+, {\bfseries Prefab}
+, {\bfseries Texture2D}
+, \newline
+{\bfseries Texture\+Cube\+Map}
+, {\bfseries Mesh}
+, {\bfseries Model\+Import}
+, {\bfseries Skeleton}
+, \newline
+{\bfseries Animation\+Clip}
+, {\bfseries Audio}
+, {\bfseries Material\+\_\+\+Standard}
+, {\bfseries Material\+\_\+\+Skybox}
+, \newline
+{\bfseries Compute\+\_\+\+Shader}
+, {\bfseries Shader}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_assets_1_1_asset}{Louron\+::\+Assets\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries Set\+Asset\+Handle} (uint32\+\_\+t asset\+\_\+handle)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_assets_1_1_asset}{Louron\+::\+Assets\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Asset\+Handle} = NULL\+\_\+\+UUID
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_assets_1_1_compute_shader_a1d03e08b4885d68a76955118174ad159}\index{Louron::Assets::ComputeShader@{Louron::Assets::ComputeShader}!GetAssetType@{GetAssetType}}
+\index{GetAssetType@{GetAssetType}!Louron::Assets::ComputeShader@{Louron::Assets::ComputeShader}}
+\doxysubsubsection{\texorpdfstring{GetAssetType()}{GetAssetType()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_assets_1_1_compute_shader_a1d03e08b4885d68a76955118174ad159} 
+Asset\+Type Louron\+::\+Assets\+::\+Compute\+Shader\+::\+Get\+Asset\+Type (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_louron_1_1_assets_1_1_asset}{Louron\+::\+Assets\+::\+Asset}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Defines/LAssets.\+h\end{DoxyCompactItemize}

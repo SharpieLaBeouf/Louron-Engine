@@ -35,7 +35,8 @@
 #include "../OpenGL/Framebuffer.h"
 
 #include "../Scripting/Script Manager.h"
-#include "../Scripting/Script Connector.h"
+#include "../Scripting/Script Register.h"
+#include "../Scripting/Script Defines.h"
 
 #include "../Project/Project.h"
 
@@ -463,7 +464,7 @@ namespace Louron {
 		}
 
 		if (m_IsRunning && entity.HasComponent<ScriptComponent>())
-			ScriptManager::OnDestroyEntity(entity);
+			ScriptManager::Get()->OnDestroyAllScripts(entity.GetUUID());
 
 		// 3. Call Physics System Remove Methods
 		if (entity.HasAnyComponent<RigidbodyComponent, SphereColliderComponent, BoxColliderComponent>()) {
@@ -611,15 +612,15 @@ namespace Louron {
 				}
 
 				// 1.d. Audio Listener
-				if (prefab_registry->has<AudioListener>(start_prefab_entity)) {
-					auto& component = prefab_registry->get<AudioListener>(start_prefab_entity);
-					instantiated_entity.AddComponent<AudioListener>(component);
+				if (prefab_registry->has<AudioListenerComponent>(start_prefab_entity)) {
+					auto& component = prefab_registry->get<AudioListenerComponent>(start_prefab_entity);
+					instantiated_entity.AddComponent<AudioListenerComponent>(component);
 				}
 
 				// 1.e. Audio Emitter
-				if (prefab_registry->has<AudioEmitter>(start_prefab_entity)) {
-					auto& component = prefab_registry->get<AudioEmitter>(start_prefab_entity);
-					instantiated_entity.AddComponent<AudioEmitter>(component);
+				if (prefab_registry->has<AudioEmitterComponent>(start_prefab_entity)) {
+					auto& component = prefab_registry->get<AudioEmitterComponent>(start_prefab_entity);
+					instantiated_entity.AddComponent<AudioEmitterComponent>(component);
 				}
 
 				// 1.f. Transform Component
@@ -822,7 +823,7 @@ namespace Louron {
 	{
 		switch (m_SceneConfig.ScenePipelineType)
 		{
-		case L_RENDER_PIPELINE::FORWARD:		ForwardPipeline::OnStartPipeline(this);	break;
+		case L_RENDER_PIPELINE::FORWARD:		ForwardPipeline::OnStartPipeline(this);			break;
 		case L_RENDER_PIPELINE::FORWARD_PLUS:	ForwardPlusPipeline::OnStartPipeline(this);		break;
 		case L_RENDER_PIPELINE::DEFERRED:		DeferredRenderPipeline::OnStartPipeline(this);	break;
 		}
@@ -856,14 +857,19 @@ namespace Louron {
 
 		// Scripting
 		{
-			ScriptManager::OnRuntimeStart(std::static_pointer_cast<Scene>(shared_from_this()));
 			// Instantiate all script entities
-
 			auto view = m_Registry.view<ScriptComponent>();
 			for (auto e : view)
 			{
 				Entity entity = { e, this };
-				ScriptManager::OnCreateEntity(entity);
+				auto& script_component = view.get<ScriptComponent>(e);
+				for (const auto& [script_name, script_active] : script_component.Scripts)
+				{
+					if (!script_active) 
+						continue;
+
+					ScriptManager::Get()->OnCreateScript(entity.GetUUID(), script_name);
+				}
 			}
 		}
 	}
@@ -873,8 +879,8 @@ namespace Louron {
 		m_IsRunning = false;
 		m_IsSimulating = false;
 
+		ScriptManager::Get()->RemoveAllScriptInstances();
 		AssetManager::ClearRuntimeAssets();
-		ScriptManager::OnRuntimeStop();
 		OnPhysicsStop();
 	}
 
@@ -1021,13 +1027,29 @@ namespace Louron {
 		{
 			L_PROFILE_SCOPE_ACCUMULATIVE("Scene - Scripts");
 
-			// See if any entities that have inactive scripts have recently become active
-			ScriptManager::CheckInactiveScriptsOnEntities();
+			// Validate and Update
+			auto view = m_Registry.view<ScriptComponent>();
+			for (auto entity_handle : view)
+			{
+				Entity entity = { entity_handle, this };
+				auto& script_component = view.get<ScriptComponent>(entity_handle);
+				for (const auto& [script_name, script_active] : script_component.Scripts)
+				{
+					// Validate Script Instance
+					if (!script_active)
+					{
+						continue;
+					}
+					else if (!ScriptManager::Get()->GetScriptClassInstance(entity.GetUUID(), script_name))
+					{
+						// Script Active in Component, but Script Instance Not Created Yet
+						ScriptManager::Get()->OnCreateScript(entity.GetUUID(), script_name);
+					}
 
-			auto script_entities = m_Registry.view<ScriptComponent>();
-			for (auto script_entity : script_entities)
-				ScriptManager::OnUpdateEntity({ script_entity, this });
-
+					// Call Update
+					ScriptManager::Get()->OnUpdateScript(entity.GetUUID(), script_name);
+				}
+			}
 		}
 
 		// Animation Update
@@ -1370,9 +1392,29 @@ namespace Louron {
 		{
 			L_PROFILE_SCOPE_ACCUMULATIVE("Scene - Scripts");
 
-			auto script_entities = m_Registry.view<ScriptComponent>();
-			for (auto script_entity : script_entities)
-				ScriptManager::OnFixedUpdateEntity({ script_entity, this });
+			// Validate and Fixed Update
+			auto view = m_Registry.view<ScriptComponent>();
+			for (auto entity_handle : view)
+			{
+				Entity entity = { entity_handle, this };
+				auto& script_component = view.get<ScriptComponent>(entity_handle);
+				for (const auto& [script_name, script_active] : script_component.Scripts)
+				{
+					// Validate Script Instance
+					if (!script_active)
+					{
+						continue;
+					}
+					else if (!ScriptManager::Get()->GetScriptClassInstance(entity.GetUUID(), script_name))
+					{
+						// Script Active in Component, but Script Instance Not Created Yet
+						ScriptManager::Get()->OnCreateScript(entity.GetUUID(), script_name);
+					}
+
+					// Call Fixed Update
+					ScriptManager::Get()->OnFixedUpdateScript(entity.GetUUID(), script_name);
+				}
+			}
 		}
 
 		// Physics
@@ -1385,12 +1427,29 @@ namespace Louron {
 			PhysicsSystem::Update(std::static_pointer_cast<Scene>(shared_from_this()));
 
 			// Handle persistent collision triggers as trigger callback is not called when contact is persistent
-			for (const auto& pair : CollisionCallback::s_ActiveTriggers) {
-				Entity triggerEntity = FindEntityByUUID(pair.first);
-				Entity otherEntity = FindEntityByUUID(pair.second);
+			for (const auto& pair : CollisionCallback::s_ActiveTriggers) 
+			{
+				Entity trigger_entity = FindEntityByUUID(pair.first);
+				Entity other_entity = FindEntityByUUID(pair.second);
 
-				if (triggerEntity && otherEntity && triggerEntity.HasComponent<ScriptComponent>()) {
-					ScriptManager::OnCollideEntity(triggerEntity, otherEntity, _Collision_Type::TriggerStay);
+				if (trigger_entity && other_entity && trigger_entity.HasComponent<ScriptComponent>()) 
+				{
+					auto& script_component = trigger_entity.GetComponent<ScriptComponent>();
+					for (const auto& [script_name, script_active] : script_component.Scripts)
+					{					
+						// Validate Script Instance
+						if (!script_active)
+						{
+							continue;
+						}
+						else if (!ScriptManager::Get()->GetScriptClassInstance(trigger_entity.GetUUID(), script_name))
+						{
+							// Script Active in Component, but Script Instance Not Created Yet
+							ScriptManager::Get()->OnCreateScript(trigger_entity.GetUUID(), script_name);
+						}
+
+						ScriptManager::Get()->OnCollideScript(trigger_entity.GetUUID(), other_entity.GetUUID(), script_name, Script_Collision_Type::TriggerStay);
+					}
 				}
 			}
 
@@ -1406,12 +1465,29 @@ namespace Louron {
 		{
 			L_PROFILE_SCOPE_ACCUMULATIVE("Scene - Scripts");
 
-			// See if any entities that have inactive scripts have recently become active
-			ScriptManager::CheckInactiveScriptsOnEntities();
+			// Validate and Fixed Update
+			auto view = m_Registry.view<ScriptComponent>();
+			for (auto entity_handle : view)
+			{
+				Entity entity = { entity_handle, this };
+				auto& script_component = view.get<ScriptComponent>(entity_handle);
+				for (const auto& [script_name, script_active] : script_component.Scripts)
+				{
+					// Validate Script Instance
+					if (!script_active)
+					{
+						continue;
+					}
+					else if (!ScriptManager::Get()->GetScriptClassInstance(entity.GetUUID(), script_name))
+					{
+						// Script Active in Component, but Script Instance Not Created Yet
+						ScriptManager::Get()->OnCreateScript(entity.GetUUID(), script_name);
+					}
 
-			auto script_entities = m_Registry.view<ScriptComponent>();
-			for (auto script_entity : script_entities)
-				ScriptManager::OnLateUpdateEntity({ script_entity, this });
+					// Call Fixed Update
+					ScriptManager::Get()->OnLateUpdateScript(entity.GetUUID(), script_name);
+				}
+			}
 		}
 
 	}

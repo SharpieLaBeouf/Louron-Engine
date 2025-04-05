@@ -60,7 +60,7 @@ namespace Louron
 		return *this;
 	}
 
-	void SubMesh::SetTriangles(uint32_t* triangles, GLuint element_count)
+	void SubMesh::SetTriangles(const uint32_t* triangles, GLuint element_count)
 	{
 		if (auto index_buffer = m_VAO->GetIndexBuffer(); index_buffer)
 		{
@@ -80,7 +80,7 @@ namespace Louron
 		return nullptr;
 	}
 
-	void SubMesh::SetVertices(float* vertices, GLuint element_count)
+	void SubMesh::SetVertices(const float* vertices, GLuint element_count)
 	{
 		bool resize_buffers = false;
 		for (auto& buffer : m_VAO->GetVertexBuffers())
@@ -118,7 +118,7 @@ namespace Louron
 		}
 	}
 
-	void SubMesh::SetNormals(float* normals, GLuint element_count)
+	void SubMesh::SetNormals(const float* normals, GLuint element_count)
 	{
 		for (auto& buffer : m_VAO->GetVertexBuffers())
 		{
@@ -132,7 +132,7 @@ namespace Louron
 		}
 	}
 
-	void SubMesh::SetTextureCoords(float* texture_coords, GLuint element_count)
+	void SubMesh::SetTextureCoords(const float* texture_coords, GLuint element_count)
 	{
 		for (auto& buffer : m_VAO->GetVertexBuffers())
 		{
@@ -146,28 +146,56 @@ namespace Louron
 		}
 	}
 
-	void SubMesh::SetTangents(float* texture_coords, GLuint element_count)
+	void SubMesh::SetTangents(const float* tangent, GLuint element_count)
 	{
 		for (auto& buffer : m_VAO->GetVertexBuffers())
 		{
 			if (buffer->GetLayout().GetElements().back().Name == "aTangent")
 			{
 				m_Modified = true;
-				buffer->SetData(texture_coords, element_count * sizeof(float));
+				buffer->SetData(tangent, element_count * sizeof(float));
 
 				break;
 			}
 		}
 	}
 
-	void SubMesh::SetBiTangents(float* texture_coords, GLuint element_count)
+	void SubMesh::SetBiTangents(const float* bitangent, GLuint element_count)
 	{
 		for (auto& buffer : m_VAO->GetVertexBuffers())
 		{
 			if (buffer->GetLayout().GetElements().back().Name == "aBitangent")
 			{
 				m_Modified = true;
-				buffer->SetData(texture_coords, element_count * sizeof(float));
+				buffer->SetData(bitangent, element_count * sizeof(float));
+
+				break;
+			}
+		}
+	}
+
+	void SubMesh::SetBoneIDs(const glm::ivec4* bone_ids, GLuint element_count)
+	{
+		for (auto& buffer : m_VAO->GetVertexBuffers())
+		{
+			if (buffer->GetLayout().GetElements().back().Name == "aBoneIDs")
+			{
+				m_Modified = true;
+				buffer->SetData(bone_ids, element_count * sizeof(glm::ivec4));
+
+				break;
+			}
+		}
+	}
+
+	void SubMesh::SetBoneWeights(const glm::vec4* bone_weights, GLuint element_count)
+	{
+		for (auto& buffer : m_VAO->GetVertexBuffers())
+		{
+			if (buffer->GetLayout().GetElements().back().Name == "aBoneWeights")
+			{
+				m_Modified = true;
+				buffer->SetData(bone_weights, element_count * sizeof(glm::vec4));
 
 				break;
 			}
@@ -241,6 +269,34 @@ namespace Louron
 			}
 		}
 		*bitangents_count = 0;
+		return nullptr;
+	}
+
+	const glm::ivec4* SubMesh::GetBoneIDs(size_t* bone_ids_count) const
+	{
+		for (auto& buffer : m_VAO->GetVertexBuffers())
+		{
+			if (buffer->GetLayout().GetElements().back().Name == "aBoneIDs")
+			{
+				*bone_ids_count = buffer->GetSize() / sizeof(float);
+				return static_cast<const glm::ivec4*>(buffer->GetData());
+			}
+		}
+		*bone_ids_count = 0;
+		return nullptr;
+	}
+
+	const glm::vec4* SubMesh::GetBoneWeights(size_t* bone_weights_count) const
+	{
+		for (auto& buffer : m_VAO->GetVertexBuffers())
+		{
+			if (buffer->GetLayout().GetElements().back().Name == "aBoneWeights")
+			{
+				*bone_weights_count = buffer->GetSize() / sizeof(float);
+				return static_cast<const glm::vec4*>(buffer->GetData());
+			}
+		}
+		*bone_weights_count = 0;
 		return nullptr;
 	}
 

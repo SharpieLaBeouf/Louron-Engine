@@ -36,8 +36,8 @@ namespace Louron
 	template ScriptComponent&				ComponentBase::GetComponent<ScriptComponent>() const;
 	template TransformComponent&			ComponentBase::GetComponent<TransformComponent>() const;
 	template CameraComponent&				ComponentBase::GetComponent<CameraComponent>() const;
-	template AudioListener&					ComponentBase::GetComponent<AudioListener>() const;
-	template AudioEmitter&					ComponentBase::GetComponent<AudioEmitter>() const;
+	template AudioListenerComponent&		ComponentBase::GetComponent<AudioListenerComponent>() const;
+	template AudioEmitterComponent&			ComponentBase::GetComponent<AudioEmitterComponent>() const;
 	template MeshFilterComponent&			ComponentBase::GetComponent<MeshFilterComponent>() const;
 	template MeshRendererComponent&			ComponentBase::GetComponent<MeshRendererComponent>() const;
 	template SkinnedMeshComponent&			ComponentBase::GetComponent<SkinnedMeshComponent>() const;
@@ -59,8 +59,8 @@ namespace Louron
 	template ScriptComponent&				ComponentBase::GetComponentInParent<ScriptComponent>() const;
 	template TransformComponent&			ComponentBase::GetComponentInParent<TransformComponent>() const;
 	template CameraComponent&				ComponentBase::GetComponentInParent<CameraComponent>() const;
-	template AudioListener&					ComponentBase::GetComponentInParent<AudioListener>() const;
-	template AudioEmitter&					ComponentBase::GetComponentInParent<AudioEmitter>() const;
+	template AudioListenerComponent&		ComponentBase::GetComponentInParent<AudioListenerComponent>() const;
+	template AudioEmitterComponent&			ComponentBase::GetComponentInParent<AudioEmitterComponent>() const;
 	template MeshFilterComponent&			ComponentBase::GetComponentInParent<MeshFilterComponent>() const;
 	template MeshRendererComponent&			ComponentBase::GetComponentInParent<MeshRendererComponent>() const;
 	template SkinnedMeshComponent&			ComponentBase::GetComponentInParent<SkinnedMeshComponent>() const;
@@ -82,8 +82,8 @@ namespace Louron
 	template ScriptComponent&				ComponentBase::GetComponentInChild<ScriptComponent>() const;
 	template TransformComponent&			ComponentBase::GetComponentInChild<TransformComponent>() const;
 	template CameraComponent&				ComponentBase::GetComponentInChild<CameraComponent>() const;
-	template AudioListener&					ComponentBase::GetComponentInChild<AudioListener>() const;
-	template AudioEmitter&					ComponentBase::GetComponentInChild<AudioEmitter>() const;
+	template AudioListenerComponent&		ComponentBase::GetComponentInChild<AudioListenerComponent>() const;
+	template AudioEmitterComponent&			ComponentBase::GetComponentInChild<AudioEmitterComponent>() const;
 	template MeshFilterComponent&			ComponentBase::GetComponentInChild<MeshFilterComponent>() const;
 	template MeshRendererComponent&			ComponentBase::GetComponentInChild<MeshRendererComponent>() const;
 	template SkinnedMeshComponent&			ComponentBase::GetComponentInChild<SkinnedMeshComponent>() const;
@@ -105,8 +105,8 @@ namespace Louron
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<ScriptComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<TransformComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<CameraComponent>() const;
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<AudioListener>() const;
-	template std::vector<Entity>			ComponentBase::GetComponentsInParents<AudioEmitter>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<AudioListenerComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<AudioEmitterComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<MeshFilterComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<MeshRendererComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<SkinnedMeshComponent>() const;
@@ -128,8 +128,8 @@ namespace Louron
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<ScriptComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<TransformComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<CameraComponent>() const;
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<AudioListener>() const;
-	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<AudioEmitter>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<AudioListenerComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<AudioEmitterComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<MeshFilterComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<MeshRendererComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<SkinnedMeshComponent>() const;

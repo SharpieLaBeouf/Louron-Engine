@@ -72,14 +72,14 @@ namespace Louron {
 		}
 
 		template <typename TAssetType>
-		static std::shared_ptr<TAssetType> GetInbuiltAsset(const std::string& inbuilt_asset_name, AssetType type = AssetType::None)
+		static std::shared_ptr<TAssetType> GetInbuiltAsset(const std::string& inbuilt_asset_name, AssetType type = AssetType::Unknown)
 		{
 			auto project_ref = Project::GetActiveProject();
 			if (!project_ref)
 				return nullptr;
 
 			AssetType expectedType = type;
-			if (expectedType == AssetType::None)
+			if (expectedType == AssetType::Unknown)
 			{
 				if constexpr (std::is_same_v<TAssetType, Texture2D>) {
 					expectedType = AssetType::Texture2D;
@@ -132,7 +132,7 @@ namespace Louron {
 		{
 			auto project_ref = Project::GetActiveProject();
 			if (!project_ref)
-				return AssetType::None;
+				return AssetType::Unknown;
 
 			return project_ref->GetAssetManager()->GetAssetType(handle);
 		}
@@ -156,13 +156,13 @@ namespace Louron {
 				return AssetType::Material_Standard; // Material is a base class that may have derived classes
 			}
 			// If TAssetType does not match any known type, return nullptr
-			return AssetType::None;
+			return AssetType::Unknown;
 		}
 
 		template <typename TAssetType>
 		static AssetHandle AddRuntimeAsset(std::shared_ptr<TAssetType> asset, const std::string& asset_name)
 		{
-			if (!asset || GetAssetTypeFromTypeName<TAssetType>() == AssetType::None)
+			if (!asset || GetAssetTypeFromTypeName<TAssetType>() == AssetType::Unknown)
 				return NULL_UUID;
 
 			auto project_ref = Project::GetActiveProject();
@@ -173,7 +173,7 @@ namespace Louron {
 			meta_data.AssetName = asset_name;
 			meta_data.Type = asset->GetType();
 
-			if (meta_data.Type == AssetType::None)
+			if (meta_data.Type == AssetType::Unknown)
 				return NULL_UUID;
 
 			AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(

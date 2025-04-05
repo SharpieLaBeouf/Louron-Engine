@@ -80,7 +80,25 @@ namespace Louron {
 		std::filesystem::path projectDirectory = outFilePath.parent_path();
 		std::filesystem::create_directories(projectDirectory / "Scenes");
 
+		// Setup Script Project Folders and API
 		std::filesystem::create_directories(projectDirectory / "Scripts/Binaries");
+		std::filesystem::create_directories(projectDirectory / "Scripts/Generated");
+		std::filesystem::create_directories(projectDirectory / "Scripts/Script Core API");
+		if (std::filesystem::exists("Resources/Script Core API"))
+		{
+			auto destination = projectDirectory / "Scripts/Script Core API";
+
+			if (std::filesystem::exists(destination))
+			{
+				std::filesystem::remove_all(destination);
+			}
+
+			std::filesystem::copy(
+				"Resources/Script Core API",
+				destination,
+				std::filesystem::copy_options::recursive
+			);
+		}
 
 		std::filesystem::create_directories(projectDirectory / "Assets/Audio");
 		std::filesystem::create_directories(projectDirectory / "Assets/Materials");
@@ -96,12 +114,10 @@ namespace Louron {
 		project->m_Config.Name = project_name;
 		project->m_Config.StartScene = "Scenes/Untitled Scene.lscene";
 		project->m_Config.AssetDirectory = "Assets/";
-		project->m_Config.AssetRegistry = "AssetRegistry.lassetreg";
-		project->m_Config.CoreScriptAssemblyPath = "Scripts/Binaries/Louron Script Core.dll"; 
 		
 		std::string tempName = project->m_Config.Name; // Create a temporary copy
 		tempName.erase(std::remove(tempName.begin(), tempName.end(), ' '), tempName.end()); // Remove spaces
-		project->m_Config.AppScriptAssemblyPath = "Scripts/Binaries/" + tempName + ".dll";
+		project->m_Config.ScriptAssemblyPath = "Scripts/Binaries/ScriptCode.dll";
 
 		// This is a new project. New projects can only be created in the editor environment.
 		// Additionally, as this is a new project, we will serialise the empty AssetManager to
@@ -175,6 +191,22 @@ namespace Louron {
 
 		project->m_ProjectFilePath = abs_project_file_path;
 		project->m_ProjectDirectory = abs_project_file_path.parent_path();
+
+		// Refresh Script Core API Each Project Load
+		std::filesystem::create_directories(project->m_ProjectDirectory / "Scripts/Binaries");
+		std::filesystem::create_directories(project->m_ProjectDirectory / "Scripts/Generated");
+		std::filesystem::create_directories(project->m_ProjectDirectory / "Scripts/Script Core API");
+		if (std::filesystem::exists("Resources/Script Core API"))
+		{
+			auto destination = project->m_ProjectDirectory / "Scripts/Script Core API";
+
+			if (std::filesystem::exists(destination))
+			{
+				std::filesystem::remove_all(destination);
+			}
+
+			std::filesystem::copy("Resources/Script Core API", destination, std::filesystem::copy_options::recursive);
+		}
 
 		project->m_AssetManager = std::make_shared<EditorAssetManager>();
 		project->GetEditorAssetManager()->InitDefaultResources();
@@ -253,7 +285,6 @@ namespace Louron {
 		auto& camera_component = camera_entity.AddComponent<CameraComponent>();
 		camera_entity.GetTransform().SetGlobalPosition({0.0f, 5.0f, 20.0f});
 		camera_entity.GetTransform().SetGlobalRotation({ -10.0f, 0.0f, 0.0f });
-		camera_component.CameraInstance = std::make_shared<SceneCamera>();
 		camera_component.Primary = true;
 
 		Entity directional_light = m_ActiveScene->CreateEntity("Directional Light");

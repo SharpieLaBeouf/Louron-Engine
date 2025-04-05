@@ -1,0 +1,20 @@
+\doxysection{E\+:/\+Coding/\+Louron/\+Louron Native Script Core/source/\+ECS/\+LEntity.\+h}
+\hypertarget{_e_1_2_coding_2_louron_2_louron_01_native_01_script_01_core_2source_2_e_c_s_2_l_entity_8h-example}{}\label{_e_1_2_coding_2_louron_2_louron_01_native_01_script_01_core_2source_2_e_c_s_2_l_entity_8h-example}Get all component\textquotesingle{}s of type T from all children entities.
+
+Get all component\textquotesingle{}s of type T from all children entities.\+This will recurisvely search downwards through the children of the current entity, and gather all components contained by child entities that hold this component.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & The type of component to get. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+T$>$ A vector of components found in child entities. If no component\textquotesingle{}s are found, an empty vector is returned.
+\end{DoxyReturn}
+auto parent\+\_\+components = Get\+Components\+In\+Parent$<$\+Rigidbody\+Component$>$(); for(auto\& component \+: parent\+\_\+components) \{ component.\+Set\+Gravity(false); // Space mode... \} @endexample
+
+
+\begin{DoxyCodeInclude}{0}
+
+\end{DoxyCodeInclude}
+ Native Script \doxylink{_l_entity_8h_source}{Core/source/\+ECS/\+LEntity.\+h} 

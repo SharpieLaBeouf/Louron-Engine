@@ -15,9 +15,9 @@ namespace Louron {
 
 	using AssetHandle = UUID;
 
-	enum class AssetType {
+	enum class AssetType : uint8_t {
 
-		None = 0,
+		Unknown = 0,
 
 		Scene,
 		Prefab,
@@ -85,7 +85,7 @@ namespace Louron {
 		/// <summary>
 		/// The Asset Type.
 		/// </summary>
-		AssetType Type = AssetType::None;
+		AssetType Type = AssetType::Unknown;
 
 		/// <summary>
 		/// Configuration of Asset Import
@@ -117,7 +117,7 @@ namespace Louron {
 		/// </summary>
 		bool IsCustomAsset = false;
 
-		operator bool() const { return Type != AssetType::None; }
+		operator bool() const { return Type != AssetType::Unknown; }
 	};
 
 }

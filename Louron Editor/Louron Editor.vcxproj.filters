@@ -30,6 +30,9 @@
     <ClCompile Include="source\Editor Layer\Panels\Content Browser Panel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\Editor Layer\Utils\Editor Script Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Editor Layer\Louron Editor Layer.h">

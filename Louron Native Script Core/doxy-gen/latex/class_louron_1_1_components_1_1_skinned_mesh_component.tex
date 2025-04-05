@@ -1,0 +1,352 @@
+\doxysection{Louron\+::Components\+::Skinned\+Mesh\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component}{}\label{class_louron_1_1_components_1_1_skinned_mesh_component}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+
+
+Represents a component for rendering and animating skinned meshes.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::Skinned\+Mesh\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_skinned_mesh_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a6eed1c2a1c84e67b17769c440b8b5288}{Is\+Active}} () const
+\begin{DoxyCompactList}\small\item\em Checks whether the skinned mesh renderer is active. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a341ea3ccd094740b47c6a25f64ce4d53}{Set\+Active}} (bool active) const
+\begin{DoxyCompactList}\small\item\em Enables or disables the skinned mesh renderer. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a061747ca8ac389798c786e75a1e96a04}{Is\+Casting\+Shadows}} () const
+\begin{DoxyCompactList}\small\item\em Checks whether the skinned mesh casts shadows. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a02b279fda1abe2a16c9b7ca8a25bf042}{Set\+Casting\+Shadows}} (bool casting\+\_\+shadows) const
+\begin{DoxyCompactList}\small\item\em Enables or disables shadow casting. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets\+::\+Static\+Mesh}} \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a8b43bd4771edf943b8fb23c8a4b53592}{Get\+Mesh\+Asset}} () const
+\begin{DoxyCompactList}\small\item\em Retrieves the skinned mesh asset. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a91d6ba95a81aa9f4d8fabad018592720}{Set\+Mesh\+Asset}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets\+::\+Static\+Mesh}} static\+\_\+mesh) const
+\begin{DoxyCompactList}\small\item\em Sets the skinned mesh asset. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_skeleton}{Assets\+::\+Skeleton}} \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a3ef577690dd792f188033136008a53d5}{Get\+Skeleton}} () const
+\begin{DoxyCompactList}\small\item\em Retrieves the skeleton asset assigned to this component. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a268a04dd474b677f2408fcdf68f3f628}{Set\+Skeleton\+Asset}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_skeleton}{Assets\+::\+Skeleton}} skeleton) const
+\begin{DoxyCompactList}\small\item\em Assigns a skeleton asset for this component. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions\+::\+Bounds\+\_\+\+AABB}} \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a1c9229586cb6b641b7c56ea21fdb53d7}{Get\+Mesh\+Bounds}} () const
+\begin{DoxyCompactList}\small\item\em Gets the axis-\/aligned bounding box for the mesh. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a6d2ef315718adbfae1360fda3cbd069b}{Set\+Mesh\+Bounds}} (const \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions\+::\+Bounds\+\_\+\+AABB}} \&bounds) const
+\begin{DoxyCompactList}\small\item\em Sets the bounding box of the mesh. \end{DoxyCompactList}\item 
+std\+::vector$<$ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} $>$ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a365ea3c775ce3e9b7b83910db3331448}{Get\+Materials}} () const
+\begin{DoxyCompactList}\small\item\em Gets the list of materials assigned to the mesh. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a15447148c470482e7f2cbe754ea02879}{Set\+Materials}} (const std\+::vector$<$ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} $>$ \&material\+\_\+vector) const
+\begin{DoxyCompactList}\small\item\em Sets the list of materials used for the skinned mesh. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_abc67348432d10c11203cfa050770fc3b}{Get\+Material}} (size\+\_\+t material\+\_\+index=size\+\_\+t(-\/1)) const
+\begin{DoxyCompactList}\small\item\em Gets a specific material at the given index. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_ad442d8ff49654d259f4bb3181571bba8}{Set\+Material}} (const \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} \&material, size\+\_\+t material\+\_\+index=size\+\_\+t(-\/1)) const
+\begin{DoxyCompactList}\small\item\em Sets a material at the given index. \end{DoxyCompactList}\item 
+std\+::unordered\+\_\+map$<$ uint32\+\_\+t, \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} $>$ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a9e57a45912febaa773bba0d190491532}{Get\+Bone\+Mapping}} () const
+\begin{DoxyCompactList}\small\item\em Gets the bone index to entity mapping for GPU skinning. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a948b586bf183be5893b2eabf93c72720}{Set\+Bone\+Mapping}} (const std\+::unordered\+\_\+map$<$ uint32\+\_\+t, \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} $>$ \&bone\+\_\+map) const
+\begin{DoxyCompactList}\small\item\em Sets the bone mapping used for GPU skinning. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_ae75f389d455e243c8cb4c95cb3965d7a}\label{class_louron_1_1_components_1_1_skinned_mesh_component_ae75f389d455e243c8cb4c95cb3965d7a} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents a component for rendering and animating skinned meshes. 
+
+This component holds a skinned mesh, skeleton, and materials, and supports GPU skinning with bone mapping. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a9e57a45912febaa773bba0d190491532}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!GetBoneMapping@{GetBoneMapping}}
+\index{GetBoneMapping@{GetBoneMapping}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{GetBoneMapping()}{GetBoneMapping()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a9e57a45912febaa773bba0d190491532} 
+std\+::unordered\+\_\+map$<$ uint32\+\_\+t, \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} $>$ Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Get\+Bone\+Mapping (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+Gets the bone index to entity mapping for GPU skinning. 
+
+\begin{DoxyReturn}{Returns}
+A map of bone index to entity (used to get transforms).
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ bone\_map\ =\ skinned\_mesh.GetBoneMapping();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_abc67348432d10c11203cfa050770fc3b}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!GetMaterial@{GetMaterial}}
+\index{GetMaterial@{GetMaterial}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{GetMaterial()}{GetMaterial()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_abc67348432d10c11203cfa050770fc3b} 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Get\+Material (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{material\+\_\+index}{ = {\ttfamily size\+\_\+t(-\/1)}}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets a specific material at the given index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em material\+\_\+index} & The material index (defaults to -\/1 = last material in material\textquotesingle{}s vector). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The material at the given index. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a365ea3c775ce3e9b7b83910db3331448}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!GetMaterials@{GetMaterials}}
+\index{GetMaterials@{GetMaterials}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{GetMaterials()}{GetMaterials()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a365ea3c775ce3e9b7b83910db3331448} 
+std\+::vector$<$ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} $>$ Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Get\+Materials (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the list of materials assigned to the mesh. 
+
+\begin{DoxyReturn}{Returns}
+A vector of material assets.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ materials\ =\ skinned\_mesh.GetMaterials();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a8b43bd4771edf943b8fb23c8a4b53592}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!GetMeshAsset@{GetMeshAsset}}
+\index{GetMeshAsset@{GetMeshAsset}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{GetMeshAsset()}{GetMeshAsset()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a8b43bd4771edf943b8fb23c8a4b53592} 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets\+::\+Static\+Mesh}} Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Get\+Mesh\+Asset (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Retrieves the skinned mesh asset. 
+
+\begin{DoxyReturn}{Returns}
+The static mesh asset used for skinning.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ mesh\ =\ skinned\_mesh.GetMeshAsset();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a1c9229586cb6b641b7c56ea21fdb53d7}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!GetMeshBounds@{GetMeshBounds}}
+\index{GetMeshBounds@{GetMeshBounds}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{GetMeshBounds()}{GetMeshBounds()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a1c9229586cb6b641b7c56ea21fdb53d7} 
+\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions\+::\+Bounds\+\_\+\+AABB}} Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Get\+Mesh\+Bounds (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the axis-\/aligned bounding box for the mesh. 
+
+\begin{DoxyReturn}{Returns}
+The bounding box of the mesh. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a3ef577690dd792f188033136008a53d5}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!GetSkeleton@{GetSkeleton}}
+\index{GetSkeleton@{GetSkeleton}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{GetSkeleton()}{GetSkeleton()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a3ef577690dd792f188033136008a53d5} 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_skeleton}{Assets\+::\+Skeleton}} Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Get\+Skeleton (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Retrieves the skeleton asset assigned to this component. 
+
+\begin{DoxyReturn}{Returns}
+The skeleton asset. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a6eed1c2a1c84e67b17769c440b8b5288}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!IsActive@{IsActive}}
+\index{IsActive@{IsActive}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{IsActive()}{IsActive()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a6eed1c2a1c84e67b17769c440b8b5288} 
+bool Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Is\+Active (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks whether the skinned mesh renderer is active. 
+
+\begin{DoxyReturn}{Returns}
+True if active, false if disabled.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}\ (skinned\_mesh.IsActive())}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Skinned\ mesh\ is\ active."{}});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a061747ca8ac389798c786e75a1e96a04}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!IsCastingShadows@{IsCastingShadows}}
+\index{IsCastingShadows@{IsCastingShadows}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{IsCastingShadows()}{IsCastingShadows()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a061747ca8ac389798c786e75a1e96a04} 
+bool Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Is\+Casting\+Shadows (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks whether the skinned mesh casts shadows. 
+
+\begin{DoxyReturn}{Returns}
+True if it casts shadows. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a341ea3ccd094740b47c6a25f64ce4d53}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!SetActive@{SetActive}}
+\index{SetActive@{SetActive}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{SetActive()}{SetActive()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a341ea3ccd094740b47c6a25f64ce4d53} 
+void Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Set\+Active (\begin{DoxyParamCaption}\item[{bool}]{active}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enables or disables the skinned mesh renderer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em active} & True to activate the renderer.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{skinned\_mesh.SetActive(\textcolor{keyword}{true});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a948b586bf183be5893b2eabf93c72720}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!SetBoneMapping@{SetBoneMapping}}
+\index{SetBoneMapping@{SetBoneMapping}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{SetBoneMapping()}{SetBoneMapping()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a948b586bf183be5893b2eabf93c72720} 
+void Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Set\+Bone\+Mapping (\begin{DoxyParamCaption}\item[{const std\+::unordered\+\_\+map$<$ uint32\+\_\+t, \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} $>$ \&}]{bone\+\_\+map}{}\end{DoxyParamCaption}) const}
+
+
+
+Sets the bone mapping used for GPU skinning. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bone\+\_\+map} & Map of bone indices to entity transforms.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{skinned\_mesh.SetBoneMapping(bone\_map);}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a02b279fda1abe2a16c9b7ca8a25bf042}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!SetCastingShadows@{SetCastingShadows}}
+\index{SetCastingShadows@{SetCastingShadows}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{SetCastingShadows()}{SetCastingShadows()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a02b279fda1abe2a16c9b7ca8a25bf042} 
+void Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Set\+Casting\+Shadows (\begin{DoxyParamCaption}\item[{bool}]{casting\+\_\+shadows}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enables or disables shadow casting. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em casting\+\_\+shadows} & True to enable shadow casting. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_ad442d8ff49654d259f4bb3181571bba8}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!SetMaterial@{SetMaterial}}
+\index{SetMaterial@{SetMaterial}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{SetMaterial()}{SetMaterial()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_ad442d8ff49654d259f4bb3181571bba8} 
+void Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Set\+Material (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} \&}]{material}{, }\item[{size\+\_\+t}]{material\+\_\+index}{ = {\ttfamily size\+\_\+t(-\/1)}}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets a material at the given index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em material} & The material to assign. \\
+\hline
+{\em material\+\_\+index} & The index at which to assign it. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a15447148c470482e7f2cbe754ea02879}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!SetMaterials@{SetMaterials}}
+\index{SetMaterials@{SetMaterials}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{SetMaterials()}{SetMaterials()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a15447148c470482e7f2cbe754ea02879} 
+void Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Set\+Materials (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} $>$ \&}]{material\+\_\+vector}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the list of materials used for the skinned mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em material\+\_\+vector} & The materials to assign. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a91d6ba95a81aa9f4d8fabad018592720}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!SetMeshAsset@{SetMeshAsset}}
+\index{SetMeshAsset@{SetMeshAsset}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{SetMeshAsset()}{SetMeshAsset()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a91d6ba95a81aa9f4d8fabad018592720} 
+void Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Set\+Mesh\+Asset (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets\+::\+Static\+Mesh}}}]{static\+\_\+mesh}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the skinned mesh asset. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em static\+\_\+mesh} & The mesh asset to assign. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a6d2ef315718adbfae1360fda3cbd069b}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!SetMeshBounds@{SetMeshBounds}}
+\index{SetMeshBounds@{SetMeshBounds}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{SetMeshBounds()}{SetMeshBounds()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a6d2ef315718adbfae1360fda3cbd069b} 
+void Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Set\+Mesh\+Bounds (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions\+::\+Bounds\+\_\+\+AABB}} \&}]{bounds}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the bounding box of the mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bounds} & The bounding box to assign. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_skinned_mesh_component_a268a04dd474b677f2408fcdf68f3f628}\index{Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}!SetSkeletonAsset@{SetSkeletonAsset}}
+\index{SetSkeletonAsset@{SetSkeletonAsset}!Louron::Components::SkinnedMeshComponent@{Louron::Components::SkinnedMeshComponent}}
+\doxysubsubsection{\texorpdfstring{SetSkeletonAsset()}{SetSkeletonAsset()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skinned_mesh_component_a268a04dd474b677f2408fcdf68f3f628} 
+void Louron\+::\+Components\+::\+Skinned\+Mesh\+Component\+::\+Set\+Skeleton\+Asset (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_louron_1_1_assets_1_1_skeleton}{Assets\+::\+Skeleton}}}]{skeleton}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Assigns a skeleton asset for this component. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em skeleton} & The skeleton asset to assign. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\item 
+ECS/LComponent.\+cpp\end{DoxyCompactItemize}

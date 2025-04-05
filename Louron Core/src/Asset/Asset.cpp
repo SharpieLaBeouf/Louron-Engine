@@ -13,7 +13,7 @@ namespace Louron {
 		std::string type_string = "AssetType::<Invalid>";
 		switch (type) {
 
-			case AssetType::None:					type_string = "AssetType::None";				 break;
+			case AssetType::Unknown:				type_string = "AssetType::Unknown";				 break;
 
 			case AssetType::Scene:					type_string = "AssetType::Scene";				 break;
 			case AssetType::Prefab:					type_string = "AssetType::Prefab";				 break;
@@ -41,7 +41,7 @@ namespace Louron {
 
 	AssetType AssetUtils::AssetTypeFromString(const std::string& assetType)
 	{
-		if (assetType == "AssetType::None")					return AssetType::None;
+		if (assetType == "AssetType::Unknown")				return AssetType::Unknown;
 
 		if (assetType == "AssetType::Scene")				return AssetType::Scene;
 		if (assetType == "AssetType::Prefab")				return AssetType::Prefab;
@@ -63,6 +63,6 @@ namespace Louron {
 		if (assetType == "AssetType::Shader")				return AssetType::Shader;
 		if (assetType == "AssetType::Compute_Shader")		return AssetType::Compute_Shader;
 
-		return AssetType::None;
+		return AssetType::Unknown;
 	}
 }

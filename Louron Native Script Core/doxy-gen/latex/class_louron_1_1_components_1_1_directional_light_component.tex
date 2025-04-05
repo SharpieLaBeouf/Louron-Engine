@@ -1,0 +1,217 @@
+\doxysection{Louron\+::Components\+::Directional\+Light\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_directional_light_component}{}\label{class_louron_1_1_components_1_1_directional_light_component}\index{Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}}
+
+
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access point light information.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::Directional\+Light\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_directional_light_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a4a835f45f7b056133b2e058d4e8e801d}{Is\+Active}} () const
+\begin{DoxyCompactList}\small\item\em Checks if the directional light is currently active. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a59e6412d46d1a2242b4addffd6a27b48}{Set\+Active}} (bool active) const
+\begin{DoxyCompactList}\small\item\em Enables or disables the directional light. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a048a3d16daf305a53b89524165890085}{Get\+Intensity}} () const
+\begin{DoxyCompactList}\small\item\em Gets the light intensity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_ac8cb02679e03e5210f991e9488f50f2a}{Set\+Intensity}} (float intensity) const
+\begin{DoxyCompactList}\small\item\em Sets the light intensity. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a742a61357d9acac72e126656d2c87dad}{Get\+Max\+Shadow\+Distance}} () const
+\begin{DoxyCompactList}\small\item\em Gets the maximum distance shadows will be rendered to from this light source in cascaded shadow maps. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a138861c93fd1aa736150b5a7b7e5d71b}{Set\+Max\+Shadow\+Distance}} (float max\+\_\+shadow\+\_\+distance) const
+\begin{DoxyCompactList}\small\item\em Sets the maximum distance shadows will be rendered to from this light source in cascaded shadow maps. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_ae8568481e4d59475cad62b193bbe5216}{Get\+Colour}} () const
+\begin{DoxyCompactList}\small\item\em Gets the light colour. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a5e2515e29323e57553eb96e3017691ca}{Set\+Colour}} (\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} colour) const
+\begin{DoxyCompactList}\small\item\em Sets the light colour. \end{DoxyCompactList}\item 
+Shadow\+Type\+Flag \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_abf7f17fac6fc498768f59f26af309829}{Get\+Shadow\+Flag}} () const
+\begin{DoxyCompactList}\small\item\em Gets the shadow flag for this light. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a70fd4ac3e0b34689299c4ca34726a91d}{Set\+Shadow\+Flag}} (Shadow\+Type\+Flag flag) const
+\begin{DoxyCompactList}\small\item\em Sets the shadow flag. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_directional_light_component_a4281a6f80deeb8d8587ff4a764b5bf94}\label{class_louron_1_1_components_1_1_directional_light_component_a4281a6f80deeb8d8587ff4a764b5bf94} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access point light information. 
+
+Allows configuration of intensity, colour, and shadowing behavior for a directional light. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_directional_light_component_ae8568481e4d59475cad62b193bbe5216}\index{Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}!GetColour@{GetColour}}
+\index{GetColour@{GetColour}!Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}}
+\doxysubsubsection{\texorpdfstring{GetColour()}{GetColour()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_directional_light_component_ae8568481e4d59475cad62b193bbe5216} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} Louron\+::\+Components\+::\+Directional\+Light\+Component\+::\+Get\+Colour (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the light colour. 
+
+\begin{DoxyReturn}{Returns}
+RGBA colour vector. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_directional_light_component_a048a3d16daf305a53b89524165890085}\index{Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}!GetIntensity@{GetIntensity}}
+\index{GetIntensity@{GetIntensity}!Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}}
+\doxysubsubsection{\texorpdfstring{GetIntensity()}{GetIntensity()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_directional_light_component_a048a3d16daf305a53b89524165890085} 
+float Louron\+::\+Components\+::\+Directional\+Light\+Component\+::\+Get\+Intensity (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the light intensity. 
+
+\begin{DoxyReturn}{Returns}
+Intensity multiplier. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_directional_light_component_a742a61357d9acac72e126656d2c87dad}\index{Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}!GetMaxShadowDistance@{GetMaxShadowDistance}}
+\index{GetMaxShadowDistance@{GetMaxShadowDistance}!Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}}
+\doxysubsubsection{\texorpdfstring{GetMaxShadowDistance()}{GetMaxShadowDistance()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_directional_light_component_a742a61357d9acac72e126656d2c87dad} 
+float Louron\+::\+Components\+::\+Directional\+Light\+Component\+::\+Get\+Max\+Shadow\+Distance (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the maximum distance shadows will be rendered to from this light source in cascaded shadow maps. 
+
+\begin{DoxyReturn}{Returns}
+Maximum distance shadows will be rendered to from this light source in cascaded shadow maps. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_directional_light_component_abf7f17fac6fc498768f59f26af309829}\index{Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}!GetShadowFlag@{GetShadowFlag}}
+\index{GetShadowFlag@{GetShadowFlag}!Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}}
+\doxysubsubsection{\texorpdfstring{GetShadowFlag()}{GetShadowFlag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_directional_light_component_abf7f17fac6fc498768f59f26af309829} 
+Shadow\+Type\+Flag Louron\+::\+Components\+::\+Directional\+Light\+Component\+::\+Get\+Shadow\+Flag (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the shadow flag for this light. 
+
+\begin{DoxyReturn}{Returns}
+Shadow casting mode. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_directional_light_component_a4a835f45f7b056133b2e058d4e8e801d}\index{Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}!IsActive@{IsActive}}
+\index{IsActive@{IsActive}!Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}}
+\doxysubsubsection{\texorpdfstring{IsActive()}{IsActive()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_directional_light_component_a4a835f45f7b056133b2e058d4e8e801d} 
+bool Louron\+::\+Components\+::\+Directional\+Light\+Component\+::\+Is\+Active (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if the directional light is currently active. 
+
+\begin{DoxyReturn}{Returns}
+True if the light is on. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_directional_light_component_a59e6412d46d1a2242b4addffd6a27b48}\index{Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}!SetActive@{SetActive}}
+\index{SetActive@{SetActive}!Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}}
+\doxysubsubsection{\texorpdfstring{SetActive()}{SetActive()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_directional_light_component_a59e6412d46d1a2242b4addffd6a27b48} 
+void Louron\+::\+Components\+::\+Directional\+Light\+Component\+::\+Set\+Active (\begin{DoxyParamCaption}\item[{bool}]{active}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enables or disables the directional light. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em active} & True to turn on the light. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_directional_light_component_a5e2515e29323e57553eb96e3017691ca}\index{Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}!SetColour@{SetColour}}
+\index{SetColour@{SetColour}!Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}}
+\doxysubsubsection{\texorpdfstring{SetColour()}{SetColour()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_directional_light_component_a5e2515e29323e57553eb96e3017691ca} 
+void Louron\+::\+Components\+::\+Directional\+Light\+Component\+::\+Set\+Colour (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}}}]{colour}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the light colour. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em colour} & RGBA colour. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_directional_light_component_ac8cb02679e03e5210f991e9488f50f2a}\index{Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}!SetIntensity@{SetIntensity}}
+\index{SetIntensity@{SetIntensity}!Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}}
+\doxysubsubsection{\texorpdfstring{SetIntensity()}{SetIntensity()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_directional_light_component_ac8cb02679e03e5210f991e9488f50f2a} 
+void Louron\+::\+Components\+::\+Directional\+Light\+Component\+::\+Set\+Intensity (\begin{DoxyParamCaption}\item[{float}]{intensity}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the light intensity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em intensity} & Intensity multiplier. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_directional_light_component_a138861c93fd1aa736150b5a7b7e5d71b}\index{Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}!SetMaxShadowDistance@{SetMaxShadowDistance}}
+\index{SetMaxShadowDistance@{SetMaxShadowDistance}!Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}}
+\doxysubsubsection{\texorpdfstring{SetMaxShadowDistance()}{SetMaxShadowDistance()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_directional_light_component_a138861c93fd1aa736150b5a7b7e5d71b} 
+void Louron\+::\+Components\+::\+Directional\+Light\+Component\+::\+Set\+Max\+Shadow\+Distance (\begin{DoxyParamCaption}\item[{float}]{max\+\_\+shadow\+\_\+distance}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the maximum distance shadows will be rendered to from this light source in cascaded shadow maps. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em float} & Maximum distance shadows will be rendered to from this light source in cascaded shadow maps. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_directional_light_component_a70fd4ac3e0b34689299c4ca34726a91d}\index{Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}!SetShadowFlag@{SetShadowFlag}}
+\index{SetShadowFlag@{SetShadowFlag}!Louron::Components::DirectionalLightComponent@{Louron::Components::DirectionalLightComponent}}
+\doxysubsubsection{\texorpdfstring{SetShadowFlag()}{SetShadowFlag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_directional_light_component_a70fd4ac3e0b34689299c4ca34726a91d} 
+void Louron\+::\+Components\+::\+Directional\+Light\+Component\+::\+Set\+Shadow\+Flag (\begin{DoxyParamCaption}\item[{Shadow\+Type\+Flag}]{flag}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the shadow flag. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em flag} & Shadow casting mode. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\end{DoxyCompactItemize}

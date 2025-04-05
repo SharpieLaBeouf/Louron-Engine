@@ -1,0 +1,120 @@
+\chapter{Louron Native Script Core API}
+\hypertarget{index}{}\label{index}\index{Louron Native Script Core API@{Louron Native Script Core API}}
+\label{index_md__r_e_a_d_m_e}%
+\Hypertarget{index_md__r_e_a_d_m_e}%
+
+
+The {\bfseries{Louron Script Core API}} is the native C++ scripting interface used to extend behavior and logic in the Louron game engine. ~\newline
+ This API enables seamless, real-\/time interaction with scene entities, engine systems, and components from within your own C++ scripts.
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md2}{}\doxysection{\texorpdfstring{Overview}{Overview}}\label{index_autotoc_md2}
+Scripts in Louron are created and managed via the {\bfseries{Editor}}, inside the {\ttfamily Scripts/} folder of your project. ~\newline
+ Each script is a C++ class that {\bfseries{inherits from {\ttfamily \doxylink{class_louron_1_1_i_script}{Louron\+::\+IScript}}}}, and is automatically compiled into a shared library that the engine loads at runtime.
+
+All script classes are tied to an entity in the scene.
+
+As {\bfseries{{\ttfamily \doxylink{class_louron_1_1_i_script}{Louron\+::\+IScript}} inherits from {\ttfamily \doxylink{class_louron_1_1_entity}{Louron\+::\+Entity}}}}, you can use all the methods and properties of an entity in your script.
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md4}{}\doxysection{\texorpdfstring{IScript Class}{IScript Class}}\label{index_autotoc_md4}
+The base interface for all user scripts is\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class\ }MyScript\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_louron_1_1_i_script}{Louron::IScript}}}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_ac292e36ddefe9e849ce35063fec83c7d}{OnCreate}}()\textcolor{keyword}{\ override\ }\{\ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a5de601b077261c3a10e4e8b50cccb1c9}{OnUpdate}}()\textcolor{keyword}{\ override\ }\{\ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a5cbac995277a26c8a25171282670fd5a}{OnLateUpdate}}()\textcolor{keyword}{\ override\ }\{\ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a256530e31abbef7f074524805c014fa9}{OnFixedUpdate}}()\textcolor{keyword}{\ override\ }\{\ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_adee1aa89d4513546cc2a63aac8802474}{OnDestroy}}()\textcolor{keyword}{\ override\ }\{\ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Collider\ Functions}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a492ac8ab0092d2d2a93253b874222eb6}{OnCollideEnter}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override\ }\{\ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a4cb9770c4440c56418af952afcc5ca66}{OnCollideStay}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override\ }\{\ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a4d1c701bf62df9ac560defe12a67f657}{OnCollideLeave}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override\ }\{\ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Collider\ Trigger\ Functions}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a6ddbf6a7085d65cc1c21124d86a2cae6}{OnTriggerEnter}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override\ }\{\ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_ac612cd978b61b76016c87f8efb6ba4b4}{OnTriggerStay}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override\ }\{\ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_ac933c2001272483d274b81c9fa8ad9db}{OnTriggerLeave}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override\ }\{\ \}}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+ These functions will be called automatically by the engine at the appropriate times.
+
+All scripts must be declared in the global namespace, otherwise the engine will not be able to find them.\hypertarget{index_autotoc_md5}{}\doxysection{\texorpdfstring{Scripting}{Scripting}}\label{index_autotoc_md5}
+\hypertarget{index_autotoc_md6}{}\doxysubsection{\texorpdfstring{Namespaces}{Namespaces}}\label{index_autotoc_md6}
+It is recommended to use the following namespace for all your scripts\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{using\ namespace\ }Louron;}
+\DoxyCodeLine{\textcolor{keyword}{using\ namespace\ }Louron::Assets;}
+\DoxyCodeLine{\textcolor{keyword}{using\ namespace\ }Louron::Components;}
+\DoxyCodeLine{\textcolor{keyword}{using\ namespace\ }Louron::Vectors;}
+\DoxyCodeLine{\textcolor{keyword}{using\ namespace\ }Louron::Matrices;}
+\DoxyCodeLine{\textcolor{keyword}{using\ namespace\ }Louron::Partitions;}
+
+\end{DoxyCode}
+ This makes it easier to access the Louron API without having to type the full namespace every time.\hypertarget{index_autotoc_md7}{}\doxysubsection{\texorpdfstring{Fields}{Fields}}\label{index_autotoc_md7}
+For any fields you want to have accessible in the editor/serialisable \& deserialisable, these must be marked with the {\ttfamily \mbox{[}\mbox{[}Exposed\+In\+Editor\mbox{]}\mbox{]}} attribute.
+
+For example\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class\ }MyScript\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_louron_1_1_i_script}{Louron::IScript}}}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ [[ExposedInEditor]]}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}\ myInt\ =\ 0;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ [[ExposedInEditor]]\ \textcolor{keywordtype}{float}\ myFloat\ =\ 0.0f;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{bool}\ [[ExposedInEditor]]\ my\_bool\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ my\_c\_string\ [[ExposedInEditor]]\ =\ \textcolor{stringliteral}{"{}Hello\ World"{}};}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ Types such as {\ttfamily std\+::string}, {\ttfamily std\+::wstring}, {\ttfamily std\+::vector}, {\ttfamily std\+::map}, {\ttfamily std\+::unordered\+\_\+map}, smart pointers, and any other types that create issues when transferred between ABI boundaries are not supported in the editor.
+
+You must use pure raw types and the ones provided through the API, such as {\ttfamily Vector3}, if you need to access fields in the editor.\hypertarget{index_autotoc_md8}{}\doxysubsection{\texorpdfstring{Other Script Instances}{Other Script Instances}}\label{index_autotoc_md8}
+You can access other script instances in the scene using the {\ttfamily Script\+Component} attached to an entity.
+
+It is your responsibility to check if the script instance is not {\ttfamily nullptr} before using it. Further, it is your responsibility to reinterpret cast the script instance to the correct type.
+
+For example\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class\ }MyScript\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_louron_1_1_i_script}{Louron::IScript}}}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ [[ExposedInEditor]]\ Entity\ other\_entity;\ \textcolor{comment}{//\ Set\ in\ editor}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{bool}\ my\_bool\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_ac292e36ddefe9e849ce35063fec83c7d}{OnCreate}}()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{//\ Get\ the\ script\ component\ of\ the\ other\ entity}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ MyScript*\ other\_script\ =\ \textcolor{keyword}{reinterpret\_cast<}MyScript*\textcolor{keyword}{>}(other\_entity.\mbox{\hyperlink{class_louron_1_1_entity_a8609d72c061abd27aa4125772a13bc8c}{GetComponent}}<ScriptComponent>().GetScriptInstance(\textcolor{stringliteral}{"{}MyScript"{}}));}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{//\ Check\ if\ the\ script\ instance\ is\ valid}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (other\_script)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Use\ the\ other\ script\ instance}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ other\_script.my\_bool\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md9}{}\doxysection{\texorpdfstring{Compiling Script Code DLL}{Compiling Script Code DLL}}\label{index_autotoc_md9}
+The editor will take care of the compilation of your script code into a shared library.
+
+Every time you modify a script, and refocus the editor, the engine will automatically compile the script code into a shared library.
+
+You can find the compiled shared library in the {\ttfamily Scripts/\+Generated} folder of your project.
+
+It is not recommended to compile the script code manually, as the editor will take care of this for you.
+
+The compiler used is clang++.exe which is distributed as a tool alongside the Game Engine.
+
+Each time the script project is recompiled, the Script Core API in the Scripts directory will be erased and reset with the one from the engine to ensure no funny business! 

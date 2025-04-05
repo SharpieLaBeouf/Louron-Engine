@@ -37,9 +37,7 @@ namespace Louron {
                 out << YAML::BeginMap;
                 out << YAML::Key << "StartScene" << config.StartScene.string();
                 out << YAML::Key << "AssetDirectory" << YAML::Value << config.AssetDirectory.string();
-                out << YAML::Key << "AssetRegistry" << YAML::Value << config.AssetRegistry.string(); // Relative to AssetDirecotry
-                out << YAML::Key << "CoreScriptModulePath" << YAML::Value << config.CoreScriptAssemblyPath.string(); // Relative to AssetDirecotry
-                out << YAML::Key << "AppScriptModulePath" << YAML::Value << config.AppScriptAssemblyPath.string(); // Relative to AssetDirecotry
+                out << YAML::Key << "AppScriptModulePath" << YAML::Value << config.ScriptAssemblyPath.string(); // Relative to AssetDirecotry
                 out << YAML::EndMap;
             }
             out << YAML::EndMap;
@@ -90,14 +88,8 @@ namespace Louron {
         if(projectConfig["AssetDirectory"])
             config.AssetDirectory = projectConfig["AssetDirectory"].as<std::string>();
 
-        if (projectConfig["AssetRegistry"])
-            config.AssetRegistry = projectConfig["AssetRegistry"].as<std::string>();
-
-        if (projectConfig["CoreScriptModulePath"])
-            config.CoreScriptAssemblyPath = projectConfig["CoreScriptModulePath"].as<std::string>();
-
         if (projectConfig["AppScriptModulePath"])
-            config.AppScriptAssemblyPath = projectConfig["AppScriptModulePath"].as<std::string>();
+            config.ScriptAssemblyPath = projectConfig["AppScriptModulePath"].as<std::string>();
 
         m_Project->SetConfig(config);
 

@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "cppStandard": "c++20"
+        }
+    ],
+    "version": 4
+}

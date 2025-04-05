@@ -1,0 +1,332 @@
+\doxysection{Louron\+::Time Class Reference}
+\hypertarget{class_louron_1_1_time}{}\label{class_louron_1_1_time}\index{Louron::Time@{Louron::Time}}
+
+
+Static \doxylink{class_louron_1_1_time}{Time} Methods.  
+
+
+
+
+{\ttfamily \#include $<$LTime.\+h$>$}
+
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static float \mbox{\hyperlink{class_louron_1_1_time_a2a1d0e28898d70d3ffb7379af679e82c}{Get\+Delta\+Time}} ()
+\begin{DoxyCompactList}\small\item\em Get the scaled delta time of the last frame. \end{DoxyCompactList}\item 
+static float \mbox{\hyperlink{class_louron_1_1_time_af40b06c0ff844cfea82d2d01d691a194}{Get\+Fixed\+Delta\+Time}} ()
+\begin{DoxyCompactList}\small\item\em Get the fixed delta time between physics updates. \end{DoxyCompactList}\item 
+static float \mbox{\hyperlink{class_louron_1_1_time_a363b011c4ec1eadf22a693929e573217}{Get\+Unscaled\+Delta\+Time}} ()
+\begin{DoxyCompactList}\small\item\em Get the unscaled delta time of the last frame. \end{DoxyCompactList}\item 
+static float \mbox{\hyperlink{class_louron_1_1_time_a6497b2b1dfaea1b734cc1398dee920ff}{Get\+Unscaled\+Fixed\+Delta\+Time}} ()
+\begin{DoxyCompactList}\small\item\em Get the unscaled fixed delta time. \end{DoxyCompactList}\item 
+static float \mbox{\hyperlink{class_louron_1_1_time_ac7689b5f740070a31bbf83e371fd0444}{Get\+Time\+Scale}} ()
+\begin{DoxyCompactList}\small\item\em Get the current time scale. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{class_louron_1_1_time_a5621ce33d4d3165a7e1356874a51c875}{Set\+Time\+Scale}} (float time\+\_\+scale)
+\begin{DoxyCompactList}\small\item\em Set the current time scale. \end{DoxyCompactList}\item 
+static int \mbox{\hyperlink{class_louron_1_1_time_ac308baa171270f24e138c1259c57df6a}{Get\+Frame\+Rate}} ()
+\begin{DoxyCompactList}\small\item\em Get the current frame rate (frames per second). \end{DoxyCompactList}\item 
+static float \mbox{\hyperlink{class_louron_1_1_time_a35998bd73205b6aa88f977acb4d89848}{Get\+Curr\+Time}} ()
+\begin{DoxyCompactList}\small\item\em Get the current time since epoch. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{class_louron_1_1_time_a9c0ddef74992a1ce85a923917698d097}{Set\+Fixed\+Delta\+Time}} (float fixed\+\_\+delta\+\_\+time=1.\+0f/60.\+0f)
+\begin{DoxyCompactList}\small\item\em Set the fixed delta time for the fixed update loops. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Static \doxylink{class_louron_1_1_time}{Time} Methods. 
+
+This provides static functions for time handling. This class is not meant to be instantiated, rather provides methods that are called statically. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_time_a35998bd73205b6aa88f977acb4d89848}\index{Louron::Time@{Louron::Time}!GetCurrTime@{GetCurrTime}}
+\index{GetCurrTime@{GetCurrTime}!Louron::Time@{Louron::Time}}
+\doxysubsubsection{\texorpdfstring{GetCurrTime()}{GetCurrTime()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_time_a35998bd73205b6aa88f977acb4d89848} 
+static float Louron\+::\+Time\+::\+Get\+Curr\+Time (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Get the current time since epoch. 
+
+This returns the current runtime in seconds since epoch. Useful for timers, animations, analytics, or time-\/based effects.
+
+Example Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ start\_time\ =\ 0.0f;}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ end\_time\ =\ 0.0f;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ OnUpdate()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (start\_time\ ==\ 0.0f)\ start\_time\ =\ \mbox{\hyperlink{class_louron_1_1_time_a35998bd73205b6aa88f977acb4d89848}{Time::GetCurrTime}}();}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ end\_time\ =\ \mbox{\hyperlink{class_louron_1_1_time_a35998bd73205b6aa88f977acb4d89848}{Time::GetCurrTime}}();}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{float}\ rudimentary\_delta\_time\ =\ end\_time\ -\/\ start\_time;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Some\ other\ code...}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ start\_time\ =\ \mbox{\hyperlink{class_louron_1_1_time_a35998bd73205b6aa88f977acb4d89848}{Time::GetCurrTime}}();}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\begin{DoxyReturn}{Returns}
+float Total time in seconds since application started. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_time_a2a1d0e28898d70d3ffb7379af679e82c}\index{Louron::Time@{Louron::Time}!GetDeltaTime@{GetDeltaTime}}
+\index{GetDeltaTime@{GetDeltaTime}!Louron::Time@{Louron::Time}}
+\doxysubsubsection{\texorpdfstring{GetDeltaTime()}{GetDeltaTime()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_time_a2a1d0e28898d70d3ffb7379af679e82c} 
+static float Louron\+::\+Time\+::\+Get\+Delta\+Time (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Get the scaled delta time of the last frame. 
+
+This returns the time in seconds between the current and previous frame, scaled by the current time scale.
+\begin{DoxyItemize}
+\item If time scale is {\ttfamily 0.\+0f}, this returns {\ttfamily 0.\+0f}.
+\item If time scale is {\ttfamily 1.\+0f}, this returns the actual frame delta time.
+\item If time scale is {\ttfamily 2.\+0f}, this returns double the delta time (i.\+e., simulating fast-\/forwarding).
+\end{DoxyItemize}
+
+Use this for gameplay elements that should respect time scaling (e.\+g., player movement, cooldowns).
+
+Example Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ timer\ =\ 5.0f;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ OnUpdate()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (timer\ >\ 0.0f)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ timer\ -\/=\ \mbox{\hyperlink{class_louron_1_1_time_a2a1d0e28898d70d3ffb7379af679e82c}{Time::GetDeltaTime}}();}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ timer\ =\ 5.0f;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Timer\ has\ finished!"{}});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\begin{DoxyReturn}{Returns}
+float Scaled delta time from the last frame. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_time_af40b06c0ff844cfea82d2d01d691a194}\index{Louron::Time@{Louron::Time}!GetFixedDeltaTime@{GetFixedDeltaTime}}
+\index{GetFixedDeltaTime@{GetFixedDeltaTime}!Louron::Time@{Louron::Time}}
+\doxysubsubsection{\texorpdfstring{GetFixedDeltaTime()}{GetFixedDeltaTime()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_time_af40b06c0ff844cfea82d2d01d691a194} 
+static float Louron\+::\+Time\+::\+Get\+Fixed\+Delta\+Time (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Get the fixed delta time between physics updates. 
+
+This returns the amount of time (in seconds) that passes between each fixed update (physics tick). The fixed timestep is independent of frame rate and is used for deterministic updates such as physics.
+
+Example Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ FixedUpdate()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ velocity\ +=\ acceleration\ *\ \mbox{\hyperlink{class_louron_1_1_time_af40b06c0ff844cfea82d2d01d691a194}{Time::GetFixedDeltaTime}}();}
+\DoxyCodeLine{\ \ \ \ position\ +=\ velocity\ *\ \mbox{\hyperlink{class_louron_1_1_time_af40b06c0ff844cfea82d2d01d691a194}{Time::GetFixedDeltaTime}}();}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\begin{DoxyReturn}{Returns}
+float Fixed delta time used in physics or fixed update loops. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_time_ac308baa171270f24e138c1259c57df6a}\index{Louron::Time@{Louron::Time}!GetFrameRate@{GetFrameRate}}
+\index{GetFrameRate@{GetFrameRate}!Louron::Time@{Louron::Time}}
+\doxysubsubsection{\texorpdfstring{GetFrameRate()}{GetFrameRate()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_time_ac308baa171270f24e138c1259c57df6a} 
+static int Louron\+::\+Time\+::\+Get\+Frame\+Rate (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Get the current frame rate (frames per second). 
+
+This returns an integer value representing how many frames are being rendered per second. It can be useful for debugging performance or displaying a simple FPS counter.
+
+Example Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ OnUpdate()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}FPS:\ "{}}\ +\ std::to\_string(\mbox{\hyperlink{class_louron_1_1_time_ac308baa171270f24e138c1259c57df6a}{Time::GetFrameRate}}()));}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\begin{DoxyReturn}{Returns}
+int Current frame rate in frames per second. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_time_ac7689b5f740070a31bbf83e371fd0444}\index{Louron::Time@{Louron::Time}!GetTimeScale@{GetTimeScale}}
+\index{GetTimeScale@{GetTimeScale}!Louron::Time@{Louron::Time}}
+\doxysubsubsection{\texorpdfstring{GetTimeScale()}{GetTimeScale()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_time_ac7689b5f740070a31bbf83e371fd0444} 
+static float Louron\+::\+Time\+::\+Get\+Time\+Scale (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Get the current time scale. 
+
+The time scale controls how fast or slow time progresses in the simulation.
+\begin{DoxyItemize}
+\item 1.\+0 means real-\/time
+\item 0.\+0 means paused
+\item \texorpdfstring{$>$}{>}1.\+0 speeds up time
+\item \texorpdfstring{$<$}{<}1.\+0 slows time down
+\end{DoxyItemize}
+
+Example Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_louron_1_1_input_a338680223bed2d8604e1b2ce3b54fbee}{Input::GetKeyDown}}(KeyCode::T))}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{float}\ scale\ =\ \mbox{\hyperlink{class_louron_1_1_time_ac7689b5f740070a31bbf83e371fd0444}{Time::GetTimeScale}}();}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Current\ Time\ Scale:\ "{}}\ +\ std::to\_string(scale));}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\begin{DoxyReturn}{Returns}
+float Current time scale multiplier. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_time_a363b011c4ec1eadf22a693929e573217}\index{Louron::Time@{Louron::Time}!GetUnscaledDeltaTime@{GetUnscaledDeltaTime}}
+\index{GetUnscaledDeltaTime@{GetUnscaledDeltaTime}!Louron::Time@{Louron::Time}}
+\doxysubsubsection{\texorpdfstring{GetUnscaledDeltaTime()}{GetUnscaledDeltaTime()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_time_a363b011c4ec1eadf22a693929e573217} 
+static float Louron\+::\+Time\+::\+Get\+Unscaled\+Delta\+Time (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Get the unscaled delta time of the last frame. 
+
+This returns the actual frame delta time in seconds, ignoring any time scaling. Useful when you need time information that is unaffected by slow-\/motion, pausing, or time manipulation.
+
+Example Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ fade\_alpha\ =\ 0.0f;}
+\DoxyCodeLine{\textcolor{keywordtype}{bool}\ is\_entity\_fading\_in\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ OnUpdate()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (is\_entity\_fading\_in)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ fade\_alpha\ +=\ \mbox{\hyperlink{class_louron_1_1_time_a363b011c4ec1eadf22a693929e573217}{Time::GetUnscaledDeltaTime}}();}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (fade\_alpha\ >\ 1.0f)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ fade\_alpha\ =\ 1.0f;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ is\_entity\_fading\_in\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\begin{DoxyReturn}{Returns}
+float Unscaled delta time from last frame. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_time_a6497b2b1dfaea1b734cc1398dee920ff}\index{Louron::Time@{Louron::Time}!GetUnscaledFixedDeltaTime@{GetUnscaledFixedDeltaTime}}
+\index{GetUnscaledFixedDeltaTime@{GetUnscaledFixedDeltaTime}!Louron::Time@{Louron::Time}}
+\doxysubsubsection{\texorpdfstring{GetUnscaledFixedDeltaTime()}{GetUnscaledFixedDeltaTime()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_time_a6497b2b1dfaea1b734cc1398dee920ff} 
+static float Louron\+::\+Time\+::\+Get\+Unscaled\+Fixed\+Delta\+Time (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Get the unscaled fixed delta time. 
+
+This returns the fixed timestep (in seconds) between physics updates, ignoring time scaling. Useful when time-\/sensitive systems must continue updating even when time scale is modified or paused.
+
+Example Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{bool}\ not\_affected\_by\_time\_scale\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ OnFixedUpdate()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (not\_affected\_by\_time\_scale)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ velocity\ +=\ acceleration\ *\ \mbox{\hyperlink{class_louron_1_1_time_a6497b2b1dfaea1b734cc1398dee920ff}{Time::GetUnscaledFixedDeltaTime}}();}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ velocity\ +=\ acceleration\ *\ \mbox{\hyperlink{class_louron_1_1_time_af40b06c0ff844cfea82d2d01d691a194}{Time::GetFixedDeltaTime}}();}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\begin{DoxyReturn}{Returns}
+float Unscaled fixed delta time between physics updates. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_time_a9c0ddef74992a1ce85a923917698d097}\index{Louron::Time@{Louron::Time}!SetFixedDeltaTime@{SetFixedDeltaTime}}
+\index{SetFixedDeltaTime@{SetFixedDeltaTime}!Louron::Time@{Louron::Time}}
+\doxysubsubsection{\texorpdfstring{SetFixedDeltaTime()}{SetFixedDeltaTime()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_time_a9c0ddef74992a1ce85a923917698d097} 
+static void Louron\+::\+Time\+::\+Set\+Fixed\+Delta\+Time (\begin{DoxyParamCaption}\item[{float}]{fixed\+\_\+delta\+\_\+time}{ = {\ttfamily 1.0f~/~60.0f}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Set the fixed delta time for the fixed update loops. 
+
+This is at default set to 1.\+0f / 60.\+0f (60Hz).
+
+This can be adjusted to change the frequency of fixed updates.
+
+
+\begin{DoxyParams}{Parameters}
+{\em fixed\+\_\+delta\+\_\+time} & New fixed delta time to set. You must ensure that you enter a valid value, typically as \textquotesingle{}1.\+0f / X\textquotesingle{}, where X is the desired frequency in Hz. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_time_a5621ce33d4d3165a7e1356874a51c875}\index{Louron::Time@{Louron::Time}!SetTimeScale@{SetTimeScale}}
+\index{SetTimeScale@{SetTimeScale}!Louron::Time@{Louron::Time}}
+\doxysubsubsection{\texorpdfstring{SetTimeScale()}{SetTimeScale()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_time_a5621ce33d4d3165a7e1356874a51c875} 
+static void Louron\+::\+Time\+::\+Set\+Time\+Scale (\begin{DoxyParamCaption}\item[{float}]{time\+\_\+scale}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Set the current time scale. 
+
+Adjusts how quickly time passes for all time-\/dependent systems. This can be used to implement slow-\/motion, pausing, or fast-\/forwarding effects.
+
+Example Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{bool}\ paused\ =\ \textcolor{keyword}{false}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ TogglePause()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_louron_1_1_input_a338680223bed2d8604e1b2ce3b54fbee}{Input::GetKeyDown}}(KeyCode::P))}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ paused\ =\ !paused;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (paused)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_time_a5621ce33d4d3165a7e1356874a51c875}{Time::SetTimeScale}}(0.0f);\ \textcolor{comment}{//\ Pause}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_time_a5621ce33d4d3165a7e1356874a51c875}{Time::SetTimeScale}}(1.0f);\ \textcolor{comment}{//\ Resume}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em time\+\_\+scale} & New time scale multiplier to set. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Engine Util/LTime.\+h\end{DoxyCompactItemize}

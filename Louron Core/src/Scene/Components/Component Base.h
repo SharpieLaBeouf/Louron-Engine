@@ -66,8 +66,8 @@ namespace Louron
     
     struct CameraComponent;
      
-    struct AudioListener;
-    struct AudioEmitter;
+    struct AudioListenerComponent;
+    struct AudioEmitterComponent;
      
     struct MeshFilterComponent;
     struct MeshRendererComponent;
@@ -98,16 +98,15 @@ namespace Louron
 
         CameraComponent,
 
-        AudioListener,
-        AudioEmitter,
+        AudioListenerComponent,
+        AudioEmitterComponent,
 
         MeshFilterComponent,
         MeshRendererComponent,
+        LODMeshComponent,
 
         SkinnedMeshComponent,
         AnimatorComponent,
-
-        LODMeshComponent,
 
         SkyboxComponent,
         PointLightComponent,
@@ -129,8 +128,8 @@ namespace Louron
 
         CameraComponent,
 
-        AudioListener,
-        AudioEmitter,
+        AudioListenerComponent,
+        AudioEmitterComponent,
 
         MeshFilterComponent,
         MeshRendererComponent,

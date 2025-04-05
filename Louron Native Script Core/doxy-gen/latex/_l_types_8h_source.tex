@@ -1,0 +1,308 @@
+\doxysection{LTypes.\+h}
+\hypertarget{_l_types_8h_source}{}\label{_l_types_8h_source}\index{Defines/LTypes.h@{Defines/LTypes.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}LVectors.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}LMatrices.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}LBounds.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{namespace\ }Louron}
+\DoxyCodeLine{00008\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keyword}{constexpr}\ uint32\_t\ NULL\_UUID\ =\ -\/1;}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_louron_1_1_transform}{Transform}}}
+\DoxyCodeLine{00012\ \ \ \ \ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ position\ \{\ 0.0f,\ 0.0f,\ 0.0f\ \};}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ rotation\ \{\ 0.0f,\ 0.0f,\ 0.0f\ \};}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ scale\ \ \ \{\ 1.0f,\ 1.0f,\ 1.0f\ \};}
+\DoxyCodeLine{00016\ \ \ \ \ \};}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_louron_1_1_vertex}{Vertex}}}
+\DoxyCodeLine{00019\ \ \ \ \ \{}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ position;}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ normal;}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector2}{Vectors::Vector2}}\ tex\_coord;}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ tangent;}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ bitangent;}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector4}{Vectors::IVector4}}\ bone\_ids\{\ -\/1,\ -\/1,\ -\/1,\ -\/1\};}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ bone\_weights\{\ 0.0f,\ 0.0f,\ 0.0f,\ 0.0f\ \};}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{struct_louron_1_1_vertex}{Vertex}}\ Zero()}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{struct_louron_1_1_vertex}{Vertex}}\{\ Vectors::Vector3::Zero(),\ Vectors::Vector3::Zero(),\ Vectors::Vector2::Zero(),\ Vectors::Vector3::Zero(),\ Vectors::Vector3::Zero()\ \};}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00033\ \ \ \ \ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{enum\ class}\ GLSLType\ :\ uint8\_t\ \{}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ Unknown,}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Bool}}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ Bool,\ BVec2,\ BVec3,\ BVec4,}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Int}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ Int,\ IVec2,\ IVec3,\ IVec4,}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Unsigned\ Int}}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ Uint,\ UVec2,\ UVec3,\ UVec4,}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Float}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ Float,\ Vec2,\ Vec3,\ Vec4,}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Double}}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ Double,\ DVec2,\ DVec3,\ DVec4,}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Matrix}}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ Mat2,\ Mat3,\ Mat4,}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Textures}}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ Sampler1D,\ Sampler1DArray,\ Sampler1DShadow,\ Sampler1DArrayShadow,}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ Sampler2D,\ Sampler2DArray,\ Sampler2DShadow,\ Sampler2DArrayShadow,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ Sampler3D,}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ SamplerCube,\ SamplerCubeArray,\ SamplerCubeShadow,\ SamplerCubeArrayShadow}
+\DoxyCodeLine{00061\ \ \ \ \ \};}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{enum\ class}\ MouseButtonCode\ :\ uint16\_t}
+\DoxyCodeLine{00064\ \ \ \ \ \{}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ Mouse\_Button\_1\ =\ 0,}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ Mouse\_Button\_2\ =\ 1,}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ Mouse\_Button\_3\ =\ 2,}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ Mouse\_Button\_4\ =\ 3,}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ Mouse\_Button\_5\ =\ 4,}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ Mouse\_Button\_6\ =\ 5,}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ Mouse\_Button\_7\ =\ 6,}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ Mouse\_Button\_8\ =\ 7,}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ Mouse\_Button\_Last\ =\ Mouse\_Button\_8,}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ Mouse\_Button\_Left\ =\ Mouse\_Button\_1,}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ Mouse\_Button\_Right\ =\ Mouse\_Button\_2,}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ Mouse\_Button\_Middle\ =\ Mouse\_Button\_3}
+\DoxyCodeLine{00077\ \ \ \ \ \};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keyword}{enum\ class}\ KeyCode\ :\ uint16\_t}
+\DoxyCodeLine{00080\ \ \ \ \ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ From\ glfw3.h}}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ Space\ =\ 32,}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ Apostrophe\ =\ 39,\ \textcolor{comment}{/*\ '\ */}}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ Comma\ =\ 44,\ \textcolor{comment}{/*\ ,\ */}}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ Minus\ =\ 45,\ \textcolor{comment}{/*\ -\/\ */}}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ Period\ =\ 46,\ \textcolor{comment}{/*\ .\ */}}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ Slash\ =\ 47,\ \textcolor{comment}{/*\ /\ */}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ D0\ =\ 48,\ \textcolor{comment}{/*\ 0\ */}}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ D1\ =\ 49,\ \textcolor{comment}{/*\ 1\ */}}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ D2\ =\ 50,\ \textcolor{comment}{/*\ 2\ */}}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ D3\ =\ 51,\ \textcolor{comment}{/*\ 3\ */}}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ D4\ =\ 52,\ \textcolor{comment}{/*\ 4\ */}}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ D5\ =\ 53,\ \textcolor{comment}{/*\ 5\ */}}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ D6\ =\ 54,\ \textcolor{comment}{/*\ 6\ */}}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ D7\ =\ 55,\ \textcolor{comment}{/*\ 7\ */}}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ D8\ =\ 56,\ \textcolor{comment}{/*\ 8\ */}}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ D9\ =\ 57,\ \textcolor{comment}{/*\ 9\ */}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ Semicolon\ =\ 59,\ \textcolor{comment}{/*\ ;\ */}}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ Equal\ =\ 61,\ \textcolor{comment}{/*\ =\ */}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ A\ =\ 65,}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ B\ =\ 66,}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ C\ =\ 67,}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ D\ =\ 68,}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ E\ =\ 69,}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ F\ =\ 70,}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ G\ =\ 71,}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ H\ =\ 72,}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ I\ =\ 73,}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ J\ =\ 74,}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ K\ =\ 75,}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ L\ =\ 76,}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ M\ =\ 77,}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ N\ =\ 78,}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ O\ =\ 79,}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ P\ =\ 80,}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ Q\ =\ 81,}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ R\ =\ 82,}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ S\ =\ 83,}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ T\ =\ 84,}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ U\ =\ 85,}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ V\ =\ 86,}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ W\ =\ 87,}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ X\ =\ 88,}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ Y\ =\ 89,}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ Z\ =\ 90,}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ LeftBracket\ =\ 91,\ \ \textcolor{comment}{/*\ [\ */}}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ Backslash\ =\ 92,\ \ \textcolor{comment}{/*\ \(\backslash\)\ */}}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ RightBracket\ =\ 93,\ \ \textcolor{comment}{/*\ ]\ */}}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ GraveAccent\ =\ 96,\ \ \textcolor{comment}{/*\ \`{}\ */}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ World1\ =\ 161,\ \textcolor{comment}{/*\ non-\/US\ \#1\ */}}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ World2\ =\ 162,\ \textcolor{comment}{/*\ non-\/US\ \#2\ */}}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Function\ keys\ */}}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ Escape\ =\ 256,}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ Enter\ =\ 257,}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ Tab\ =\ 258,}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ Backspace\ =\ 259,}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ Insert\ =\ 260,}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ Delete\ =\ 261,}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ Right\ =\ 262,}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ Left\ =\ 263,}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ Down\ =\ 264,}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ Up\ =\ 265,}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ PageUp\ =\ 266,}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ PageDown\ =\ 267,}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ Home\ =\ 268,}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ End\ =\ 269,}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ CapsLock\ =\ 280,}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ ScrollLock\ =\ 281,}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ NumLock\ =\ 282,}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ PrintScreen\ =\ 283,}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ Pause\ =\ 284,}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ F1\ =\ 290,}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ F2\ =\ 291,}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ F3\ =\ 292,}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ F4\ =\ 293,}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ F5\ =\ 294,}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ F6\ =\ 295,}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ F7\ =\ 296,}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ F8\ =\ 297,}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ F9\ =\ 298,}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ F10\ =\ 299,}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ F11\ =\ 300,}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ F12\ =\ 301,}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ F13\ =\ 302,}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ F14\ =\ 303,}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ F15\ =\ 304,}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ F16\ =\ 305,}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ F17\ =\ 306,}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ F18\ =\ 307,}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ F19\ =\ 308,}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ F20\ =\ 309,}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ F21\ =\ 310,}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ F22\ =\ 311,}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ F23\ =\ 312,}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ F24\ =\ 313,}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ F25\ =\ 314,}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Keypad\ */}}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ KP0\ =\ 320,}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ KP1\ =\ 321,}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ KP2\ =\ 322,}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ KP3\ =\ 323,}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ KP4\ =\ 324,}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ KP5\ =\ 325,}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ KP6\ =\ 326,}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ KP7\ =\ 327,}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ KP8\ =\ 328,}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ KP9\ =\ 329,}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ KPDecimal\ =\ 330,}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ KPDivide\ =\ 331,}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ KPMultiply\ =\ 332,}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ KPSubtract\ =\ 333,}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ KPAdd\ =\ 334,}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ KPEnter\ =\ 335,}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ KPEqual\ =\ 336,}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ LeftShift\ =\ 340,}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ LeftControl\ =\ 341,}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ LeftAlt\ =\ 342,}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ LeftSuper\ =\ 343,}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ RightShift\ =\ 344,}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ RightControl\ =\ 345,}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ RightAlt\ =\ 346,}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ RightSuper\ =\ 347,}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ Menu\ =\ 348}
+\DoxyCodeLine{00212\ \ \ \ \ \};}
+\DoxyCodeLine{00213\ \}}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \textcolor{keyword}{namespace\ }BackEndAPI}
+\DoxyCodeLine{00216\ \{}
+\DoxyCodeLine{00217\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/\ ENUM\ TYPES\ -\/-\/-\/}}
+\DoxyCodeLine{00218\ \ \ \ \ \textcolor{keyword}{enum\ class}\ FieldType\ :\ uint8\_t}
+\DoxyCodeLine{00219\ \ \ \ \ \{}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Inbuilt\ Types}}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ Float,}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ Double,}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ Int8,}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ Int16,}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ Int32,}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ Int64,}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ UInt8,}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ UInt16,}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ UInt32,}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ UInt64,}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ Bool,}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ CString,}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Custom\ Types}}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ Vector2,}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ Vector3,}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ Vector4,}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ UVector2,}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ UVector3,}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ UVector4,}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ IVector2,}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ IVector3,}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ IVector4,}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ DVector2,}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ DVector3,}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ DVector4,}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ BVector2,}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ BVector3,}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ BVector4,}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ Mat3,}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ Mat4,}
+\DoxyCodeLine{00254\ }
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ECS\ Types}}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ Entity,}
+\DoxyCodeLine{00257\ }
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ IDComponent,}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ TagComponent,}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ HierarchyComponent,}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ ScriptComponent,}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ TransformComponent,}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ CameraComponent,}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ AudioListenerComponent,}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ AudioEmitterComponent,}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ MeshFilterComponent,}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ MeshRendererComponent,}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ LODMeshComponent,}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ SkinnedMeshComponent,}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ AnimatorComponent,}
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ SkyboxComponent,}
+\DoxyCodeLine{00277\ }
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ PointLightComponent,}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ SpotLightComponent,}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ DirectionalLightComponent,}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ RigidbodyComponent,}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ BoxColliderComponent,}
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ SphereColliderComponent,}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ Component,}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Asset\ Types}}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ Prefab,}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ Shader,}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ ComputeShader,}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ Material,}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ Texture2D,}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ TextureCubeMap,}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ StaticMesh,}
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ AudioClip,}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ Skeleton,}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ AnimationClip,}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Unknown}}
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ Unknown}
+\DoxyCodeLine{00301\ \ \ \ \ \};}
+\DoxyCodeLine{00302\ \}}
+
+\end{DoxyCode}

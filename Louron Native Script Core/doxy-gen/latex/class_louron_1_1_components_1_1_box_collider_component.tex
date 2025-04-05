@@ -1,0 +1,185 @@
+\doxysection{Louron\+::Components\+::Box\+Collider\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_box_collider_component}{}\label{class_louron_1_1_components_1_1_box_collider_component}\index{Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}}
+
+
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access box collider information.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::Box\+Collider\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_box_collider_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_af9456a1f7be567f539dbf179f2995ddb}{Is\+Trigger}} () const
+\begin{DoxyCompactList}\small\item\em Checks if the box collider is a trigger. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{Physics\+Material}} \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_a72df89e6f517111a9fba7ba4b34b3a74}{Get\+Material}} () const
+\begin{DoxyCompactList}\small\item\em Gets the physics material used by the box collider. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_a357b5936df87732ff214488d62809ced}{Get\+Centre}} () const
+\begin{DoxyCompactList}\small\item\em Gets the center offset of the box collider. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_a2479adb394b7524f862484ad4ecf9eda}{Get\+Size}} () const
+\begin{DoxyCompactList}\small\item\em Gets the size of the box collider. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_a088f1c561410c4993c8d904c20cae9d6}{Set\+Is\+Trigger}} (bool is\+Trigger) const
+\begin{DoxyCompactList}\small\item\em Sets whether the collider is a trigger. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_abca72359efd4afa305ca63c47df60168}{Set\+Material}} (const \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{Physics\+Material}} \&material) const
+\begin{DoxyCompactList}\small\item\em Sets the physics material for this collider. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_a1713a3d14f90d49bc46686ed9f632eb2}{Set\+Centre}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&centre) const
+\begin{DoxyCompactList}\small\item\em Sets the center of the box collider. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_aba70039e9ee81b7f619a3abc5cc25e93}{Set\+Size}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&size) const
+\begin{DoxyCompactList}\small\item\em Sets the size of the box collider. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_box_collider_component_a13d2f15ef03529190e1b4efa4d032fb8}\label{class_louron_1_1_components_1_1_box_collider_component_a13d2f15ef03529190e1b4efa4d032fb8} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access box collider information. 
+
+Used to define axis-\/aligned box colliders with size, center, material and trigger settings. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_box_collider_component_a357b5936df87732ff214488d62809ced}\index{Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}!GetCentre@{GetCentre}}
+\index{GetCentre@{GetCentre}!Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}}
+\doxysubsubsection{\texorpdfstring{GetCentre()}{GetCentre()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_box_collider_component_a357b5936df87732ff214488d62809ced} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} Louron\+::\+Components\+::\+Box\+Collider\+Component\+::\+Get\+Centre (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the center offset of the box collider. 
+
+\begin{DoxyReturn}{Returns}
+A 3D vector representing the center position. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_box_collider_component_a72df89e6f517111a9fba7ba4b34b3a74}\index{Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}!GetMaterial@{GetMaterial}}
+\index{GetMaterial@{GetMaterial}!Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}}
+\doxysubsubsection{\texorpdfstring{GetMaterial()}{GetMaterial()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_box_collider_component_a72df89e6f517111a9fba7ba4b34b3a74} 
+\mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{Physics\+Material}} Louron\+::\+Components\+::\+Box\+Collider\+Component\+::\+Get\+Material (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the physics material used by the box collider. 
+
+\begin{DoxyReturn}{Returns}
+The assigned physics material. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_box_collider_component_a2479adb394b7524f862484ad4ecf9eda}\index{Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}!GetSize@{GetSize}}
+\index{GetSize@{GetSize}!Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}}
+\doxysubsubsection{\texorpdfstring{GetSize()}{GetSize()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_box_collider_component_a2479adb394b7524f862484ad4ecf9eda} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} Louron\+::\+Components\+::\+Box\+Collider\+Component\+::\+Get\+Size (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the size of the box collider. 
+
+\begin{DoxyReturn}{Returns}
+A 3D vector representing the box\textquotesingle{}s size. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_box_collider_component_af9456a1f7be567f539dbf179f2995ddb}\index{Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}!IsTrigger@{IsTrigger}}
+\index{IsTrigger@{IsTrigger}!Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}}
+\doxysubsubsection{\texorpdfstring{IsTrigger()}{IsTrigger()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_box_collider_component_af9456a1f7be567f539dbf179f2995ddb} 
+bool Louron\+::\+Components\+::\+Box\+Collider\+Component\+::\+Is\+Trigger (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if the box collider is a trigger. 
+
+\begin{DoxyReturn}{Returns}
+True if it is a trigger. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_box_collider_component_a1713a3d14f90d49bc46686ed9f632eb2}\index{Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}!SetCentre@{SetCentre}}
+\index{SetCentre@{SetCentre}!Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}}
+\doxysubsubsection{\texorpdfstring{SetCentre()}{SetCentre()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_box_collider_component_a1713a3d14f90d49bc46686ed9f632eb2} 
+void Louron\+::\+Components\+::\+Box\+Collider\+Component\+::\+Set\+Centre (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&}]{centre}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the center of the box collider. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em centre} & New center position as a 3D vector. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_box_collider_component_a088f1c561410c4993c8d904c20cae9d6}\index{Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}!SetIsTrigger@{SetIsTrigger}}
+\index{SetIsTrigger@{SetIsTrigger}!Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}}
+\doxysubsubsection{\texorpdfstring{SetIsTrigger()}{SetIsTrigger()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_box_collider_component_a088f1c561410c4993c8d904c20cae9d6} 
+void Louron\+::\+Components\+::\+Box\+Collider\+Component\+::\+Set\+Is\+Trigger (\begin{DoxyParamCaption}\item[{bool}]{is\+Trigger}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets whether the collider is a trigger. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em is\+\_\+trigger} & True to make it a trigger. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_box_collider_component_abca72359efd4afa305ca63c47df60168}\index{Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}!SetMaterial@{SetMaterial}}
+\index{SetMaterial@{SetMaterial}!Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}}
+\doxysubsubsection{\texorpdfstring{SetMaterial()}{SetMaterial()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_box_collider_component_abca72359efd4afa305ca63c47df60168} 
+void Louron\+::\+Components\+::\+Box\+Collider\+Component\+::\+Set\+Material (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{Physics\+Material}} \&}]{material}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the physics material for this collider. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em material} & The physics material to assign. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_box_collider_component_aba70039e9ee81b7f619a3abc5cc25e93}\index{Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}!SetSize@{SetSize}}
+\index{SetSize@{SetSize}!Louron::Components::BoxColliderComponent@{Louron::Components::BoxColliderComponent}}
+\doxysubsubsection{\texorpdfstring{SetSize()}{SetSize()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_box_collider_component_aba70039e9ee81b7f619a3abc5cc25e93} 
+void Louron\+::\+Components\+::\+Box\+Collider\+Component\+::\+Set\+Size (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&}]{size}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the size of the box collider. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & New size as a 3D vector. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\end{DoxyCompactItemize}

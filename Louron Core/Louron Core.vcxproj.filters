@@ -180,9 +180,6 @@
     <ClCompile Include="src\Scripting\Script Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scripting\Script Connector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="include\imguizmo\GraphEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -232,6 +229,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Jobs\Jobs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scripting\Script Defines.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scripting\Script Register.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1949,9 +1952,6 @@
     <ClInclude Include="src\Scripting\Script Manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scripting\Script Connector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Core\KeyCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2019,6 +2019,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Jobs\Jobs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scripting\Script Defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scripting\Script Register.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2472,8 +2478,6 @@
     <None Include="include\glm\out\build\x64-Debug (default)\CMakeFiles\3.18.20081302-MSVC_2\CMakeDetermineCompilerABI_CXX.bin">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="libs\mono\LICENSE" />
-    <None Include="libs\mono\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\Images\cube_texture.png">

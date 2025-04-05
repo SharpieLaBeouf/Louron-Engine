@@ -1,0 +1,335 @@
+\doxysection{Louron\+::Components\+::Camera\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_camera_component}{}\label{class_louron_1_1_components_1_1_camera_component}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+
+
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access camera information.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::Camera\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_camera_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}{Camera\+Clear\+Flags}} \+: uint8\+\_\+t \{ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749ea768b8217a5b8b9336e6c25d44c84470b}{COLOUR\+\_\+\+ONLY}} = 0
+, \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749eae3d53ff832d50102618d4fd24ca85a85}{SKYBOX}} = 1
+ \}
+\begin{DoxyCompactList}\small\item\em Defines the method by which the camera clears the screen. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}{Camera\+Clear\+Flags}} \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a3ec51c1d179a804b07485de18deacbb7}{Get\+Clear\+Flag}} () const
+\begin{DoxyCompactList}\small\item\em Gets the current clear flag mode. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_aacef352f13dcbea422d34c1d4d181b44}{Set\+Clear\+Flag}} (\mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}{Camera\+Clear\+Flags}} flag) const
+\begin{DoxyCompactList}\small\item\em Sets the clear flag mode for the camera. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a21071663aac3ea76e663b5a819418125}{Get\+Clear\+Colour}} () const
+\begin{DoxyCompactList}\small\item\em Gets the camera\textquotesingle{}s clear colour. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_aa104b287fd4c9979bee5a35283fdad49}{Set\+Clear\+Colour}} (\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} colour) const
+\begin{DoxyCompactList}\small\item\em Sets the camera\textquotesingle{}s clear colour. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_af91a2fa5df30b8a3b60edfc790d5d483}{Get\+Camera\+Depth}} () const
+\begin{DoxyCompactList}\small\item\em Gets the camera\textquotesingle{}s render depth. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a90160f5f180b6226fdd34926c5f1c52f}{Set\+Camera\+Depth}} (uint8\+\_\+t depth) const
+\begin{DoxyCompactList}\small\item\em Sets the camera\textquotesingle{}s render depth. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_afc5cfdedafc48b77f57ba8fac1e73060}{Is\+Displaying\+To\+Viewport}} () const
+\begin{DoxyCompactList}\small\item\em Checks if the camera is rendering to the main viewport. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_abf3dfce6b2dcab0cff49165a9b38a6b6}{Set\+Displaying\+To\+Viewport}} (bool display) const
+\begin{DoxyCompactList}\small\item\em Sets whether the camera should render to the main viewport. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a880a6439a005c68f24ae60743cf8b9d4}{Get\+Viewport}} () const
+\begin{DoxyCompactList}\small\item\em Gets the camera\textquotesingle{}s viewport rectangle. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a82867c2a77a67f6dda396688a12d7104}{Set\+Viewport}} (\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} viewport\+\_\+dimensions) const
+\begin{DoxyCompactList}\small\item\em Sets the camera\textquotesingle{}s viewport rectangle. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector2}{Vectors\+::\+Vector2}} \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_abce3d1a78ff6032dda5002dc24d42e5e}{Get\+Viewport\+Pos}} () const
+\begin{DoxyCompactList}\small\item\em Gets the position of the viewport. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector2}{Vectors\+::\+Vector2}} \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_aea4036a8fdf32a5028e151405bea5a5d}{Get\+Viewport\+Size}} () const
+\begin{DoxyCompactList}\small\item\em Gets the size of the viewport. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_camera_component_a835ff8fa671e679f398e1045a90cc7ae}\label{class_louron_1_1_components_1_1_camera_component_a835ff8fa671e679f398e1045a90cc7ae} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access camera information. 
+
+This allows the user to access data associated with a camera component. 
+
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!CameraClearFlags@{CameraClearFlags}}
+\index{CameraClearFlags@{CameraClearFlags}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{CameraClearFlags}{CameraClearFlags}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e} 
+enum class \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}{Louron\+::\+Components\+::\+Camera\+Component\+::\+Camera\+Clear\+Flags}} \+: uint8\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+Defines the method by which the camera clears the screen. 
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLOUR\_ONLY@{COLOUR\_ONLY}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!COLOUR\_ONLY@{COLOUR\_ONLY}}}\Hypertarget{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749ea768b8217a5b8b9336e6c25d44c84470b}\label{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749ea768b8217a5b8b9336e6c25d44c84470b} 
+COLOUR\+\_\+\+ONLY&Clear with a solid color. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SKYBOX@{SKYBOX}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!SKYBOX@{SKYBOX}}}\Hypertarget{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749eae3d53ff832d50102618d4fd24ca85a85}\label{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749eae3d53ff832d50102618d4fd24ca85a85} 
+SKYBOX&Render the skybox instead of a clear color. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_camera_component_af91a2fa5df30b8a3b60edfc790d5d483}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!GetCameraDepth@{GetCameraDepth}}
+\index{GetCameraDepth@{GetCameraDepth}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{GetCameraDepth()}{GetCameraDepth()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_af91a2fa5df30b8a3b60edfc790d5d483} 
+uint8\+\_\+t Louron\+::\+Components\+::\+Camera\+Component\+::\+Get\+Camera\+Depth (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the camera\textquotesingle{}s render depth. 
+
+Determines the render order when multiple cameras are active.
+
+\begin{DoxyReturn}{Returns}
+The depth value (lower = rendered behind, higher = rendered in-\/front).
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{uint8\_t\ depth\ =\ camera.GetCameraDepth();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_camera_component_a21071663aac3ea76e663b5a819418125}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!GetClearColour@{GetClearColour}}
+\index{GetClearColour@{GetClearColour}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{GetClearColour()}{GetClearColour()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_a21071663aac3ea76e663b5a819418125} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} Louron\+::\+Components\+::\+Camera\+Component\+::\+Get\+Clear\+Colour (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the camera\textquotesingle{}s clear colour. 
+
+\begin{DoxyReturn}{Returns}
+The RGBA colour used to clear the screen.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Vectors::Vector4\ colour\ =\ camera.GetClearColour();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_camera_component_a3ec51c1d179a804b07485de18deacbb7}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!GetClearFlag@{GetClearFlag}}
+\index{GetClearFlag@{GetClearFlag}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{GetClearFlag()}{GetClearFlag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_a3ec51c1d179a804b07485de18deacbb7} 
+\mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}{Camera\+Clear\+Flags}} Louron\+::\+Components\+::\+Camera\+Component\+::\+Get\+Clear\+Flag (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the current clear flag mode. 
+
+\begin{DoxyReturn}{Returns}
+The clear flag mode set for the camera.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}\ (camera.GetClearFlag()\ ==\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749eae3d53ff832d50102618d4fd24ca85a85}{CameraClearFlags::SKYBOX}})}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Using\ skybox\ clear."{}});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_camera_component_a880a6439a005c68f24ae60743cf8b9d4}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!GetViewport@{GetViewport}}
+\index{GetViewport@{GetViewport}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{GetViewport()}{GetViewport()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_a880a6439a005c68f24ae60743cf8b9d4} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} Louron\+::\+Components\+::\+Camera\+Component\+::\+Get\+Viewport (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the camera\textquotesingle{}s viewport rectangle. 
+
+Returns the viewport as a \doxylink{struct_louron_1_1_vectors_1_1_vector4}{Vector4}\+: (x, y, width, height).
+
+\begin{DoxyReturn}{Returns}
+The camera\textquotesingle{}s normalized viewport dimensions.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ viewport\ =\ camera.GetViewport();\ \textcolor{comment}{//\ x,\ y,\ width,\ height}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_camera_component_abce3d1a78ff6032dda5002dc24d42e5e}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!GetViewportPos@{GetViewportPos}}
+\index{GetViewportPos@{GetViewportPos}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{GetViewportPos()}{GetViewportPos()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_abce3d1a78ff6032dda5002dc24d42e5e} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector2}{Vectors\+::\+Vector2}} Louron\+::\+Components\+::\+Camera\+Component\+::\+Get\+Viewport\+Pos (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the position of the viewport. 
+
+\begin{DoxyReturn}{Returns}
+The bottom-\/left corner of the viewport in normalized screen space. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_camera_component_aea4036a8fdf32a5028e151405bea5a5d}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!GetViewportSize@{GetViewportSize}}
+\index{GetViewportSize@{GetViewportSize}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{GetViewportSize()}{GetViewportSize()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_aea4036a8fdf32a5028e151405bea5a5d} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector2}{Vectors\+::\+Vector2}} Louron\+::\+Components\+::\+Camera\+Component\+::\+Get\+Viewport\+Size (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the size of the viewport. 
+
+\begin{DoxyReturn}{Returns}
+The width and height of the viewport in normalized screen space. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_camera_component_afc5cfdedafc48b77f57ba8fac1e73060}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!IsDisplayingToViewport@{IsDisplayingToViewport}}
+\index{IsDisplayingToViewport@{IsDisplayingToViewport}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{IsDisplayingToViewport()}{IsDisplayingToViewport()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_afc5cfdedafc48b77f57ba8fac1e73060} 
+bool Louron\+::\+Components\+::\+Camera\+Component\+::\+Is\+Displaying\+To\+Viewport (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if the camera is rendering to the main viewport. 
+
+\begin{DoxyReturn}{Returns}
+True if the camera outputs to the screen, false otherwise.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}\ (camera.IsDisplayingToViewport())}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}This\ camera\ is\ shown\ on\ screen."{}});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_camera_component_a90160f5f180b6226fdd34926c5f1c52f}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!SetCameraDepth@{SetCameraDepth}}
+\index{SetCameraDepth@{SetCameraDepth}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{SetCameraDepth()}{SetCameraDepth()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_a90160f5f180b6226fdd34926c5f1c52f} 
+void Louron\+::\+Components\+::\+Camera\+Component\+::\+Set\+Camera\+Depth (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{depth}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the camera\textquotesingle{}s render depth. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em depth} & The depth value (lower = rendered behind, higher = rendered in-\/front).\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{camera.SetCameraDepth(2);}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_camera_component_aa104b287fd4c9979bee5a35283fdad49}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!SetClearColour@{SetClearColour}}
+\index{SetClearColour@{SetClearColour}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{SetClearColour()}{SetClearColour()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_aa104b287fd4c9979bee5a35283fdad49} 
+void Louron\+::\+Components\+::\+Camera\+Component\+::\+Set\+Clear\+Colour (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}}}]{colour}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the camera\textquotesingle{}s clear colour. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em colour} & The RGBA colour to use for clearing the screen. These values should be in the range \mbox{[}0.\+0f, 1.\+0f\mbox{]}.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{camera.SetClearColour(\{\ 0.2f,\ 0.3f,\ 0.4f,\ 1.0f\ \});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_camera_component_aacef352f13dcbea422d34c1d4d181b44}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!SetClearFlag@{SetClearFlag}}
+\index{SetClearFlag@{SetClearFlag}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{SetClearFlag()}{SetClearFlag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_aacef352f13dcbea422d34c1d4d181b44} 
+void Louron\+::\+Components\+::\+Camera\+Component\+::\+Set\+Clear\+Flag (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}{Camera\+Clear\+Flags}}}]{flag}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the clear flag mode for the camera. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em flag} & The clear flag to use (e.\+g., COLOUR\+\_\+\+ONLY or SKYBOX).\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{camera.SetClearFlag(\mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749ea768b8217a5b8b9336e6c25d44c84470b}{CameraClearFlags::COLOUR\_ONLY}});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_camera_component_abf3dfce6b2dcab0cff49165a9b38a6b6}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!SetDisplayingToViewport@{SetDisplayingToViewport}}
+\index{SetDisplayingToViewport@{SetDisplayingToViewport}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{SetDisplayingToViewport()}{SetDisplayingToViewport()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_abf3dfce6b2dcab0cff49165a9b38a6b6} 
+void Louron\+::\+Components\+::\+Camera\+Component\+::\+Set\+Displaying\+To\+Viewport (\begin{DoxyParamCaption}\item[{bool}]{display}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets whether the camera should render to the main viewport. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em display} & True to render to screen, false to render offscreen only.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{camera.SetDisplayingToViewport(\textcolor{keyword}{true});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_camera_component_a82867c2a77a67f6dda396688a12d7104}\index{Louron::Components::CameraComponent@{Louron::Components::CameraComponent}!SetViewport@{SetViewport}}
+\index{SetViewport@{SetViewport}!Louron::Components::CameraComponent@{Louron::Components::CameraComponent}}
+\doxysubsubsection{\texorpdfstring{SetViewport()}{SetViewport()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_camera_component_a82867c2a77a67f6dda396688a12d7104} 
+void Louron\+::\+Components\+::\+Camera\+Component\+::\+Set\+Viewport (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}}}]{viewport\+\_\+dimensions}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the camera\textquotesingle{}s viewport rectangle. 
+
+The values are normalized from 0 to 1, relative to the screen dimensions.
+
+
+\begin{DoxyParams}{Parameters}
+{\em viewport\+\_\+dimensions} & A \doxylink{struct_louron_1_1_vectors_1_1_vector4}{Vector4} of (x, y, width, height).\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{camera.SetViewport(\{\ 0.0f,\ 0.0f,\ 0.5f,\ 0.5f\ \});\ \textcolor{comment}{//\ Bottom-\/left\ quadrant}}
+
+\end{DoxyCode}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\end{DoxyCompactItemize}

@@ -49,6 +49,11 @@ namespace Louron
     class MaterialUniformBlock;
     struct MeshRendererComponent : public ComponentBase 
     {
+        MeshRendererComponent()
+        {
+            MaterialHandles.push_back({ NULL_UUID, nullptr });
+        }
+
         bool Active = true;
         std::vector<std::pair<AssetHandle, std::shared_ptr<MaterialUniformBlock>>> MaterialHandles;
 

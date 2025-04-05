@@ -339,7 +339,6 @@ namespace Louron {
 					if (camera) {
 
 						auto& entityCamera = deserializedEntity.AddComponent<CameraComponent>();
-						entityCamera.CameraInstance = std::make_shared<SceneCamera>();
 						
 						if (!entityCamera.Deserialize(camera))
 							L_CORE_WARN("Deserialisation of Camera Component Not Complete.");
@@ -488,7 +487,6 @@ namespace Louron {
 			if (!camera_entity) {
 				auto camera = scene_ref->CreateEntity("Main Camera");
 				auto& camera_component = camera.AddComponent<CameraComponent>();
-				camera_component.CameraInstance = std::make_shared<SceneCamera>();
 			}
 
 			// Calculate Overall Scene Octree

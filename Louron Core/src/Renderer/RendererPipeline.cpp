@@ -2774,6 +2774,20 @@ namespace Louron {
 				continue;
 			}
 
+			// Check if the StaticMeshAsset bounds are valid
+			if (const auto& mesh_asset = AssetManager::GetAsset<StaticMesh>(mesh_filter_component.StaticMeshHandle); mesh_asset)
+			{
+				if (mesh_asset->MeshBounds.BoundsMin.x ==  FLT_MAX || 
+					mesh_asset->MeshBounds.BoundsMin.y ==  FLT_MAX ||
+					mesh_asset->MeshBounds.BoundsMin.z ==  FLT_MAX ||
+					mesh_asset->MeshBounds.BoundsMax.x == -FLT_MAX ||
+					mesh_asset->MeshBounds.BoundsMax.y == -FLT_MAX ||
+					mesh_asset->MeshBounds.BoundsMax.z == -FLT_MAX)
+				{
+					continue;
+				}
+			}
+
 			// Check if the AABB of this MeshFilter needs to be updated
 			bool update_AABB = mesh_filter_component.AABBNeedsUpdate;
 
@@ -2814,11 +2828,6 @@ namespace Louron {
 				{
 					mesh_filter_component.OctreeNeedsUpdate = false;
 				}
-				else // If we failed, we will remove this Entity from the Scene TODO: maybe think about if we want to entirely remove from scene in this case? Or just force render it if it doesn't fit in the Octree?
-				{
-					L_CORE_WARN("Could Not Be Inserted Into Octree - Deleting Entity: {0}", mesh_filter_component.GetEntity()->GetName());
-					scene->DestroyEntity({ entity_handle, scene });
-				}
 			}
 		}
 
@@ -2831,7 +2840,20 @@ namespace Louron {
 			{
 				continue;
 			}
-
+			 
+			// Check if the StaticMeshAsset bounds are valid
+			if (const auto& mesh_asset = AssetManager::GetAsset<StaticMesh>(skinned_mesh_component.StaticMeshHandle); mesh_asset)
+			{
+				if (mesh_asset->MeshBounds.BoundsMin.x == FLT_MAX ||
+					mesh_asset->MeshBounds.BoundsMin.y == FLT_MAX ||
+					mesh_asset->MeshBounds.BoundsMin.z == FLT_MAX ||
+					mesh_asset->MeshBounds.BoundsMax.x == -FLT_MAX ||
+					mesh_asset->MeshBounds.BoundsMax.y == -FLT_MAX ||
+					mesh_asset->MeshBounds.BoundsMax.z == -FLT_MAX)
+				{
+					continue;
+				}
+			}
 			// Check if the AABB of this MeshFilter needs to be updated
 			bool update_AABB = skinned_mesh_component.AABBNeedsUpdate;
 
@@ -2871,11 +2893,6 @@ namespace Louron {
 				if (octree_ref->Update({ entity_handle, scene }, skinned_mesh_component.TransformedAABB))
 				{
 					skinned_mesh_component.OctreeNeedsUpdate = false;
-				}
-				else // If we failed, we will remove this Entity from the Scene TODO: maybe think about if we want to entirely remove from scene in this case? Or just force render it if it doesn't fit in the Octree?
-				{
-					L_CORE_WARN("Could Not Be Inserted Into Octree - Deleting Entity: {0}", skinned_mesh_component.GetEntity()->GetName());
-					scene->DestroyEntity({ entity_handle, scene });
 				}
 			}
 

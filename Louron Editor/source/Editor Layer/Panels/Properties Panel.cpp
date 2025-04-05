@@ -29,7 +29,6 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			if (ImGui::MenuItem("Add Camera Component")) {
 				if (!selected_entity.HasComponent<CameraComponent>()) {
 					auto& component = selected_entity.AddComponent<CameraComponent>();
-					component.CameraInstance = std::make_shared<SceneCamera>();
 
 					auto& frame_buffer_config = Project::GetActiveScene()->GetSceneFrameBuffer()->GetConfig();
 					component.CameraInstance->SetViewportSize(frame_buffer_config.Width, frame_buffer_config.Height);
@@ -298,7 +297,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 					ImGui::Text("Script");
 					ImGui::NextColumn();
 
-					const auto& script_classes = ScriptManager::GetEntityClasses();
+					const auto& script_classes = ScriptManager::Get()->GetAllClasses();
 					std::vector<const char*> available_scripts;
 					available_scripts.reserve(script_classes.size() + 1);
 					available_scripts.push_back(" ");
@@ -340,8 +339,8 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 					// Ensure that the script class is valid
 					// Check if has fields, if no fields, we won't display anything for fields
 					auto script_class = script_classes.find(script_name);
-					if (script_class != script_classes.end() && script_class->second && !script_class->second->GetFields().empty()) {
-
+					if (script_class != script_classes.end() && script_class->second && script_class->second && script_class->second->field_count > 0) 
+					{
 						ImGui::Dummy({ 0.0f, 5.0f });
 						ImGui::SeparatorText("Fields");
 						ImGui::Dummy({ 0.0f, 5.0f });
@@ -456,7 +455,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			ImGui::SetNextItemWidth(-1.0f);
 			auto& frame_buffer_config = scene_ref->GetSceneFrameBuffer()->GetConfig();
 			float data = glm::degrees(component.CameraInstance->GetPerspectiveVerticalFOV());
-			if (ImGui::DragFloat("##CameraFOV", &data, 0.05f, 0.1f, std::numeric_limits<float>::max(), "%.2f"))
+			if (ImGui::DragFloat("##CameraFOV", &data, 0.05f, 0.1f, FLT_MAX, "%.2f"))
 			{
 				component.CameraInstance->SetPerspectiveVerticalFOV(glm::radians(data));
 				component.CameraInstance->SetViewportSize(frame_buffer_config.Width, frame_buffer_config.Height);
@@ -470,7 +469,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
 			data = component.CameraInstance->GetPerspectiveNearClip();
-			if (ImGui::DragFloat("##CameraNear", &data, 0.05f, 0.1f, std::numeric_limits<float>::max(), "%.2f"))
+			if (ImGui::DragFloat("##CameraNear", &data, 0.05f, 0.1f, FLT_MAX, "%.2f"))
 			{
 				component.CameraInstance->SetPerspectiveNearClip(data);
 				component.CameraInstance->SetViewportSize(frame_buffer_config.Width, frame_buffer_config.Height);
@@ -484,7 +483,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
 			data = component.CameraInstance->GetPerspectiveFarClip();
-			if (ImGui::DragFloat("##CameraFar", &data, 0.05f, 0.1f, std::numeric_limits<float>::max(), "%.2f"))
+			if (ImGui::DragFloat("##CameraFar", &data, 0.05f, 0.1f, FLT_MAX, "%.2f"))
 			{
 				component.CameraInstance->SetPerspectiveFarClip(data);
 				component.CameraInstance->SetViewportSize(frame_buffer_config.Width, frame_buffer_config.Height);
@@ -741,7 +740,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 				ImGui::SameLine();
 
 				float value = component.MaxDistance;
-				if (ImGui::InputFloat("##LODMeshComponentMaxDistance", &value, 1.0f, 0.0f, "%0.2f") && value > 0.0f)
+				if (ImGui::InputFloat("##LODMeshComponentMaxDistance", &value, 1.0f, 0.0f, "%.2f") && value > 0.0f)
 					component.MaxDistance = value;
 			}
 
@@ -1750,7 +1749,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
 			float value = component.GetMass();
-			if (ImGui::DragFloat("##RB_Mass", &value, 0.05f, 0.0f, std::numeric_limits<float>::max(), "%.2f"))
+			if (ImGui::DragFloat("##RB_Mass", &value, 0.05f, 0.0f, FLT_MAX, "%.2f"))
 				component.SetMass(value);
 			ImGui::NextColumn();
 
@@ -1758,7 +1757,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
 			value = component.GetDrag();
-			if (ImGui::DragFloat("##RB_Drag", &value, 0.05f, 0.0f, std::numeric_limits<float>::max(), "%.2f"))
+			if (ImGui::DragFloat("##RB_Drag", &value, 0.05f, 0.0f, FLT_MAX, "%.2f"))
 				component.SetDrag(value);
 			ImGui::NextColumn();
 
@@ -1766,7 +1765,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
 			value = component.GetAngularDrag();
-			if (ImGui::DragFloat("##RB_Angular Drag", &value, 0.05f, 0.0f, std::numeric_limits<float>::max(), "%.2f"))
+			if (ImGui::DragFloat("##RB_Angular Drag", &value, 0.05f, 0.0f, FLT_MAX, "%.2f"))
 				component.SetAngularDrag(value);
 			ImGui::NextColumn();
 
@@ -1871,7 +1870,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
 			float value = component.GetRadius();
-			if (ImGui::DragFloat("##SC_Radius", &value, 0.05f, 0.0f, std::numeric_limits<float>::max(), "%.2f"))
+			if (ImGui::DragFloat("##SC_Radius", &value, 0.05f, 0.0f, FLT_MAX, "%.2f"))
 				component.SetRadius(value);
 			ImGui::NextColumn();
 
@@ -2031,13 +2030,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			ImGui::Text("Radius");
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
-			ImGui::DragFloat("##PointLightRadius", &component.Radius, 0.05f, 0.0f, std::numeric_limits<float>::max(), "%.2f");
+			ImGui::DragFloat("##PointLightRadius", &component.Radius, 0.05f, 0.0f, FLT_MAX, "%.2f");
 			ImGui::NextColumn();
 
 			ImGui::Text("Intensity");
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
-			ImGui::DragFloat("##PointLightIntensity", &component.Intensity, 0.05f, 0.0f, std::numeric_limits<float>::max(), "%.2f");
+			ImGui::DragFloat("##PointLightIntensity", &component.Intensity, 0.05f, 0.0f, FLT_MAX, "%.2f");
 			ImGui::NextColumn();
 
 			ImGui::Text("Colour");
@@ -2111,13 +2110,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			ImGui::Text("Range");
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
-			ImGui::DragFloat("##SpotLightRange", &component.Range, 0.5f, 0.0f, std::numeric_limits<float>::max(), "%.2f");
+			ImGui::DragFloat("##SpotLightRange", &component.Range, 0.5f, 0.0f, FLT_MAX, "%.2f");
 			ImGui::NextColumn();
 
 			ImGui::Text("Intensity");
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
-			ImGui::DragFloat("##SpotLightIntensity", &component.Intensity, 0.5f, 0.0f, std::numeric_limits<float>::max(), "%.2f");
+			ImGui::DragFloat("##SpotLightIntensity", &component.Intensity, 0.5f, 0.0f, FLT_MAX, "%.2f");
 			ImGui::NextColumn();
 
 			ImGui::Text("Colour");
@@ -2185,7 +2184,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			ImGui::Text("Intensity");
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(-1.0f);
-			ImGui::DragFloat("##DirectionalLightIntensity", &component.Intensity, 0.5f, 0.0f, std::numeric_limits<float>::max(), "%.2f");
+			ImGui::DragFloat("##DirectionalLightIntensity", &component.Intensity, 0.5f, 0.0f, FLT_MAX, "%.2f");
 			ImGui::NextColumn();
 
 			ImGui::Text("Colour");
@@ -2566,552 +2565,1443 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 }
 
 static bool modal_box_open = false;
-static ScriptFieldType modal_box_field_type = ScriptFieldType::None;
+static ScriptFieldType modal_box_field_type = ScriptFieldType::Unknown;
 static std::string modal_box_script_name = "";
 static std::string modal_box_field_name = "";
 static Entity modal_box_selected_entity{};
 
 void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity selected_entity)
 {
+	auto script_manager = ScriptManager::Get();
+
+	if (!script_manager)
+		return;
+
 	auto scene_ref = Project::GetActiveScene();
-	bool scriptClassExists = ScriptManager::EntityClassExists(script_name);
+	bool script_class_exists = script_manager->ScriptClassExists(script_name);
 
 #pragma region Display Script Fields
 
 	if (scene_ref->IsRunning()) {
 
-		if (auto instance = ScriptManager::GetEntityScriptInstance(selected_entity.GetUUID(), script_name); instance) {
+		if (auto instance = script_manager->GetScriptClassInstance(selected_entity.GetUUID(), script_name); instance) {
 
-			const auto& fields = instance->GetScriptClass()->GetFields();
+			auto script_class = instance->GetScriptClass().lock();
+
+			if (!script_class || !script_class->fields)
+				return;
+
+			auto fields = script_class->fields;
 
 			float first_coloumn_width = ImGui::GetContentRegionAvail().x * 0.35f;
 			ImGui::Columns(2, "script_field_columns", false);
 			ImGui::SetColumnWidth(-1, first_coloumn_width);
 
-			for (const auto& [name, field] : fields)
+			for (int i = 0; i < script_class->field_count; ++i)
 			{
-				switch (field.Type) {
-
-				case ScriptFieldType::ComputeShader:
+				const auto& field = fields[i];
+				switch (field.type)
 				{
+					// Inbuilt Types
+					case ScriptFieldType::Float:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
 
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
+						float data;
+						if (!instance->GetFieldValue<float>(field.name, data)) data = 0.00f;
 
-					AssetHandle data = instance->GetFieldComputeShaderValue(name);
-					std::string label = "##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type));
+						if (ImGui::DragFloat(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data, 0.01f, -FLT_MAX, FLT_MAX, "%.2f")) {
+							instance->SetFieldValue(field.name, data);
+						}
 
-					AssetMetaData meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(data);
-					std::string text = (meta_data.AssetName != "") ? meta_data.AssetName + " (Compute Shader)" : "None (Compute Shader)";
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::Double:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
 
-					char buffer[256];
-					strcpy_s(buffer, sizeof(buffer), text.c_str());
-					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
+						double data;
+						if (!instance->GetFieldValue<double>(field.name, data)) data = 0.00;
 
-					if (ImGui::BeginDragDropTarget()) {
+						if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, &data, 0.01f, nullptr, nullptr, "%.2f"))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
 
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
-							// Convert the payload data (string) back into a filesystem path
-							std::string dropped_path_str(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-							std::filesystem::path dropped_path = dropped_path_str; // Convert to path
+						ImGui::NextColumn();
+						break;
 
-							if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::None) {
+					}
+					case ScriptFieldType::Int8:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
 
-								AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_path, Project::GetActiveProject()->GetAssetDirectory());
+						int8_t data;
+						if (!instance->GetFieldValue<int8_t>(field.name, data)) data = 0;
 
-								switch (asset_type) {
+						if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S8, &data, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
 
-								case AssetType::Compute_Shader:
-								{
-									instance->SetFieldComputeShaderValue(ScriptManager::GetScriptFieldMap(selected_entity.GetUUID(), script_name).at(name), dropped_asset_handle);
+						ImGui::NextColumn();
+						break;
 
-									break;
+					}
+					case ScriptFieldType::Int16: 
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						int16_t data;
+						if (!instance->GetFieldValue<int16_t>(field.name, data)) data = 0;
+
+						if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S16, &data, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::Int32: 
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						int32_t data;
+						if (!instance->GetFieldValue<int32_t>(field.name, data)) data = 0;
+
+						if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, &data, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::Int64: 
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						int64_t data;
+						if (!instance->GetFieldValue<int64_t>(field.name, data)) data = 0;
+
+						if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S64, &data, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::UInt8:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						uint8_t data;
+						if (!instance->GetFieldValue<uint8_t>(field.name, data)) data = 0;
+
+						if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U8, &data, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+
+					}
+					case ScriptFieldType::UInt16:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						uint16_t data;
+						if (!instance->GetFieldValue<uint16_t>(field.name, data)) data = 0;
+
+						if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U16, &data, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::UInt32:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						uint32_t data;
+						if (!instance->GetFieldValue<uint32_t>(field.name, data)) data = 0;
+
+						if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, &data, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::UInt64:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						uint64_t data;
+						if (!instance->GetFieldValue<uint64_t>(field.name, data)) data = 0;
+
+						if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U64, &data, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::Bool: 
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						bool data;
+						if (!instance->GetFieldValue<bool>(field.name, data)) data = false;
+
+						if (ImGui::Checkbox(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data)) 
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::CString:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						const char* data = "";
+						if (!instance->GetFieldValue<const char*>(field.name, data)) data = "";
+
+						static char buffer[256];
+						strncpy_s(buffer, data, sizeof(buffer) - 1);
+
+						if (ImGui::InputText(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), buffer, sizeof(buffer)))
+						{
+							instance->SetFieldValue<const char*>(field.name, buffer);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+
+					// Custom Types
+					case ScriptFieldType::Vector2: 
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::vec2 data;
+						if (!instance->GetFieldValue<glm::vec2>(field.name, data)) data = {0.0f, 0.0f};
+
+						if (ImGui::DragFloat2(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data), 0.01f, -FLT_MAX, FLT_MAX, "%.2f"))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::Vector3:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::vec3 data;
+						if (!instance->GetFieldValue<glm::vec3>(field.name, data)) data = { 0.0f, 0.0f, 0.0f };
+
+						if (ImGui::DragFloat3(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data), 0.01f, -FLT_MAX, FLT_MAX, "%.2f"))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::Vector4:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::vec4 data;
+						if (!instance->GetFieldValue<glm::vec4>(field.name, data)) data = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+						if (ImGui::DragFloat4(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data), 0.01f, -FLT_MAX, FLT_MAX, "%.2f"))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+
+					case ScriptFieldType::UVector2:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::uvec2 data;
+						if (!instance->GetFieldValue<glm::uvec2>(field.name, data)) data = { 0, 0 };
+
+						if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, glm::value_ptr(data), 2, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::UVector3:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::uvec3 data;
+						if (!instance->GetFieldValue<glm::uvec3>(field.name, data)) data = { 0, 0, 0 };
+
+						if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, glm::value_ptr(data), 3, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::UVector4:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::uvec4 data;
+						if (!instance->GetFieldValue<glm::uvec4>(field.name, data)) data = { 0, 0, 0, 0 };
+
+						if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, glm::value_ptr(data), 4, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+
+					case ScriptFieldType::IVector2:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::ivec2 data;
+						if (!instance->GetFieldValue<glm::ivec2>(field.name, data)) data = { 0, 0 };
+
+						if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, glm::value_ptr(data), 2, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::IVector3:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::ivec3 data;
+						if (!instance->GetFieldValue<glm::ivec3>(field.name, data)) data = { 0, 0, 0 };
+
+						if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, glm::value_ptr(data), 3, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::IVector4:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::ivec4 data;
+						if (!instance->GetFieldValue<glm::ivec4>(field.name, data)) data = { 0, 0, 0, 0 };
+
+						if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, glm::value_ptr(data), 4, 1))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+
+					case ScriptFieldType::DVector2:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::dvec2 data;
+						if (!instance->GetFieldValue<glm::dvec2>(field.name, data)) data = { 0.00, 0.00 };
+
+						if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, glm::value_ptr(data), 2, 0.01f, nullptr, nullptr, "%.2f"))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::DVector3:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::dvec3 data;
+						if (!instance->GetFieldValue<glm::dvec3>(field.name, data)) data = { 0.00, 0.00, 0.00 };
+
+						if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, glm::value_ptr(data), 3, 0.01f, nullptr, nullptr, "%.2f"))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::DVector4:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::dvec4 data;
+						if (!instance->GetFieldValue<glm::dvec4>(field.name, data)) data = { 0.00, 0.00, 0.00, 0.00 };
+
+						if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, glm::value_ptr(data), 4, 0.01f, nullptr, nullptr, "%.2f"))
+						{
+							instance->SetFieldValue(field.name, data);
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+
+					case ScriptFieldType::BVector2:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::bvec2 data;
+						if (!instance->GetFieldValue<glm::bvec2>(field.name, data)) data = { false, false };
+
+						bool modified = false;
+						for (int i = 0; i < 2; ++i)
+						{
+							switch (i)
+							{
+								case 0: ImGui::Text("X"); break;
+								case 1: ImGui::Text("Y"); break;
+							}
+
+							ImGui::SameLine();
+
+							if (ImGui::Checkbox(std::string("##"  + std::string{field.name} + std::to_string(i).c_str() + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data[i]))
+								modified = true;
+
+							ImGui::SameLine();
+						}
+
+						if (modified)
+							instance->SetFieldValue(field.name, data);
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::BVector3:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::bvec3 data;
+						if (!instance->GetFieldValue<glm::bvec3>(field.name, data)) data = { false, false, false };
+
+						bool modified = false;
+						for (int i = 0; i < 3; ++i)
+						{
+							switch (i)
+							{
+								case 0: ImGui::Text("X"); break;
+								case 1: ImGui::Text("Y"); break;
+								case 2: ImGui::Text("Z"); break;
+							}
+
+							ImGui::SameLine();
+
+							if (ImGui::Checkbox(std::string("##" + std::string{ field.name } + std::to_string(i).c_str() + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data[i]))
+								modified = true;
+
+							ImGui::SameLine();
+						}
+
+						if (modified)
+							instance->SetFieldValue(field.name, data);
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::BVector4:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::bvec4 data;
+						if (!instance->GetFieldValue<glm::bvec4>(field.name, data)) data = { false, false, false, false };
+
+						bool modified = false;
+						for (int i = 0; i < 4; ++i)
+						{
+							switch (i)
+							{
+								case 0: ImGui::Text("X"); break;
+								case 1: ImGui::Text("Y"); break;
+								case 2: ImGui::Text("Z"); break;
+								case 3: ImGui::Text("W"); break;
+							}
+
+							ImGui::SameLine();
+
+							if(ImGui::Checkbox(std::string("##" + std::string{ field.name } + std::to_string(i).c_str() + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data[i]))
+								modified = true;
+
+							ImGui::SameLine();
+						}
+
+						if(modified)
+							instance->SetFieldValue(field.name, data);
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::Mat3:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::mat3 data;
+						if (!instance->GetFieldValue<glm::mat3>(field.name, data)) data = glm::mat3(1.0f);
+
+						bool modified = false;
+						for (int row = 0; row < 3; ++row)
+						{
+							glm::vec3 rowVec = glm::vec3(data[0][row], data[1][row], data[2][row]);
+
+							if (ImGui::DragFloat3(std::string("##" + std::string{ field.name } + "_row" + std::to_string(row)).c_str(), glm::value_ptr(rowVec), 0.01f))
+							{
+								data[0][row] = rowVec.x;
+								data[1][row] = rowVec.y;
+								data[2][row] = rowVec.z;
+								modified = true;
+							}
+						}
+
+						if (modified)
+							instance->SetFieldValue(field.name, data);
+
+						ImGui::NextColumn();
+						break;
+					}
+					case ScriptFieldType::Mat4:
+					{
+						ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+						ImGui::NextColumn();
+
+						glm::mat4 data;
+						if (!instance->GetFieldValue<glm::mat4>(field.name, data)) data = glm::mat4(1.0f);
+
+						bool modified = false;
+						for (int row = 0; row < 4; ++row)
+						{
+							glm::vec4 rowVec = glm::vec4(data[0][row], data[1][row], data[2][row], data[3][row]);
+
+							if (ImGui::DragFloat4(std::string("##" + std::string{ field.name } + "_row" + std::to_string(row)).c_str(), glm::value_ptr(rowVec), 0.01f))
+							{
+								data[0][row] = rowVec.x;
+								data[1][row] = rowVec.y;
+								data[2][row] = rowVec.z;
+								data[3][row] = rowVec.w;
+								modified = true;
+							}
+						}
+
+						if (modified)
+							instance->SetFieldValue(field.name, data);
+
+						ImGui::NextColumn();
+						break;
+					}
+
+					// ECS Types
+					case ScriptFieldType::Entity:
+
+					case ScriptFieldType::IDComponent:
+					case ScriptFieldType::TagComponent:
+					case ScriptFieldType::HierarchyComponent:
+					case ScriptFieldType::ScriptComponent:
+					case ScriptFieldType::TransformComponent:
+
+					case ScriptFieldType::CameraComponent:
+
+					case ScriptFieldType::AudioListenerComponent:
+					case ScriptFieldType::AudioEmitterComponent:
+
+					case ScriptFieldType::MeshFilterComponent:
+					case ScriptFieldType::MeshRendererComponent:
+					case ScriptFieldType::LODMeshComponent:
+
+					case ScriptFieldType::SkinnedMeshComponent:
+					case ScriptFieldType::AnimatorComponent:
+
+					case ScriptFieldType::SkyboxComponent:
+
+					case ScriptFieldType::PointLightComponent:
+					case ScriptFieldType::SpotLightComponent:
+					case ScriptFieldType::DirectionalLightComponent:
+
+					case ScriptFieldType::RigidbodyComponent:
+					case ScriptFieldType::BoxColliderComponent:
+					case ScriptFieldType::SphereColliderComponent:
+
+					case ScriptFieldType::Component:
+					{
+						ImGui::Text(field.name);
+						ImGui::NextColumn();
+
+						uint32_t data;
+						if (!instance->GetFieldValue<uint32_t>(field.name, data)) data = NULL_UUID;
+
+						std::string label = "##" + std::string{ field.name } + std::string(ScriptUtils::FieldTypeToString(field.type));
+						std::string text = (scene_ref->HasEntityByUUID(data)) ? scene_ref->FindEntityByUUID(data).GetName().c_str() : ("None (" + std::string(ScriptUtils::FieldTypeToString(field.type)) + ")");
+
+						char buffer[256];
+						strcpy_s(buffer, sizeof(buffer), text.c_str());
+						ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
+
+						if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+						{
+							modal_box_open = true;
+							modal_box_field_name = field.name;
+							modal_box_field_type = field.type;
+							modal_box_script_name = script_name;
+						}
+
+						ImGui::SameLine();
+
+						if (ImGui::Button(std::string("...##" + std::string{ field.name } + std::string(ScriptUtils::FieldTypeToString(field.type))).c_str()))
+						{
+							modal_box_open = true;
+							modal_box_field_name = field.name;
+							modal_box_field_type = field.type;
+							modal_box_script_name = script_name;
+						}
+
+						ImGui::NextColumn();
+						break;
+					}
+
+					// Asset Types
+					case ScriptFieldType::Prefab:
+					case ScriptFieldType::Shader:
+					case ScriptFieldType::ComputeShader:
+					case ScriptFieldType::Material:
+					case ScriptFieldType::Texture2D:
+					case ScriptFieldType::TextureCubeMap:
+					case ScriptFieldType::StaticMesh:
+					case ScriptFieldType::AudioClip:
+					case ScriptFieldType::Skeleton:
+					case ScriptFieldType::AnimationClip:
+					{
+						ImGui::Text(field.name);
+						ImGui::NextColumn();
+
+						uint32_t data;
+						if (!instance->GetFieldValue<uint32_t>(field.name, data)) data = NULL_UUID;
+
+						std::string label = "##" + std::string{ field.name } + std::string(ScriptUtils::FieldTypeToString(field.type));
+
+						AssetMetaData meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(data);
+						std::string text = (meta_data.AssetName != "") ? meta_data.AssetName + " (" + ScriptUtils::FieldTypeToString(field.type) +")" : "None(" + ScriptUtils::FieldTypeToString(field.type) + ")";
+
+						char buffer[256];
+						strcpy_s(buffer, sizeof(buffer), text.c_str());
+						ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
+
+						if (ImGui::BeginDragDropTarget()) 
+						{
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) 
+							{
+								// Convert the payload data (string) back into a filesystem path
+								std::string dropped_path_str(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+								std::filesystem::path dropped_path = dropped_path_str; // Convert to path
+
+								if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::Unknown) {
+
+									AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_path, Project::GetActiveProject()->GetAssetDirectory());
+
+									switch (asset_type) 
+									{
+										case AssetType::Prefab:
+										case AssetType::Shader:
+										case AssetType::Compute_Shader:
+										case AssetType::Material_Standard:
+										case AssetType::Texture2D:
+										case AssetType::TextureCubeMap:
+										case AssetType::Mesh:
+										case AssetType::ModelImport:
+										case AssetType::Audio:
+										case AssetType::Skeleton:
+										case AssetType::AnimationClip: instance->SetFieldValue(field.name, dropped_asset_handle);						break;
+
+										default:  L_APP_WARN("Cannot Set Asset Type {} to Script Prefab Field.", dropped_path.extension().string());	break;
+									}
 								}
-								default: {
-
-									L_APP_WARN("Cannot Set Asset Type {} to Script Compute Shader Field.", dropped_path.extension().string());
-									break;
-								}
-
+								else {
+									L_APP_WARN("Cannot Set Prefab {} to Script.", dropped_path.filename().string());
 								}
 
 							}
-							else {
-								L_APP_WARN("Cannot Set Compute Shader {} to Script.", dropped_path.filename().string());
-							}
-
+							ImGui::EndDragDropTarget();
 						}
-						ImGui::EndDragDropTarget();
+
+						ImGui::NextColumn();
+
+
+						break;
 					}
 
-					ImGui::NextColumn();
-
-
-					break;
 				}
-				case ScriptFieldType::Prefab:
-				{
-
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					AssetHandle data = instance->GetFieldPrefabValue(name);
-					std::string label = "##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type));
-
-					AssetMetaData meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(data);
-					std::string text = (meta_data.AssetName != "") ? meta_data.AssetName + " (Prefab)" : "None (Prefab)";
-
-					char buffer[256];
-					strcpy_s(buffer, sizeof(buffer), text.c_str());
-					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
-
-					if (ImGui::BeginDragDropTarget()) {
-
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
-							// Convert the payload data (string) back into a filesystem path
-							std::string dropped_path_str(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-							std::filesystem::path dropped_path = dropped_path_str; // Convert to path
-
-							if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::None) {
-
-								AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_path, Project::GetActiveProject()->GetAssetDirectory());
-
-								switch (asset_type) {
-
-								case AssetType::Prefab:
-								case AssetType::ModelImport:
-								{
-									instance->SetFieldPrefabValue(ScriptManager::GetScriptFieldMap(selected_entity.GetUUID(), script_name).at(name), dropped_asset_handle);
-
-									break;
-								}
-								default: {
-
-									L_APP_WARN("Cannot Set Asset Type {} to Script Prefab Field.", dropped_path.extension().string());
-									break;
-								}
-
-								}
-
-							}
-							else {
-								L_APP_WARN("Cannot Set Prefab {} to Script.", dropped_path.filename().string());
-							}
-
-						}
-						ImGui::EndDragDropTarget();
-					}
-
-					ImGui::NextColumn();
-
-
-					break;
-				}
-				case ScriptFieldType::Entity:
-				case ScriptFieldType::TransformComponent:
-				case ScriptFieldType::TagComponent:
-				case ScriptFieldType::ScriptComponent:
-				case ScriptFieldType::PointLightComponent:
-				case ScriptFieldType::SpotLightComponent:
-				case ScriptFieldType::DirectionalLightComponent:
-				case ScriptFieldType::RigidbodyComponent:
-				case ScriptFieldType::BoxColliderComponent:
-				case ScriptFieldType::SphereColliderComponent:
-				case ScriptFieldType::MeshRendererComponent:
-				case ScriptFieldType::Component:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					Louron::UUID data = (field.Type == ScriptFieldType::Entity) ? instance->GetFieldEntityValue(name) : instance->GetFieldComponentPropertyValue(name);
-					std::string label = "##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type));
-					std::string text = (scene_ref->HasEntityByUUID(data)) ? scene_ref->FindEntityByUUID(data).GetName().c_str() : ("None (" + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type)) + ")");
-
-					char buffer[256];
-					strcpy_s(buffer, sizeof(buffer), text.c_str());
-					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
-
-					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
-					{
-						modal_box_open = true;
-						modal_box_field_name = name;
-						modal_box_field_type = field.Type;
-						modal_box_script_name = script_name;
-					}
-
-					ImGui::SameLine();
-
-					if (ImGui::Button(std::string("...##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type))).c_str()))
-					{
-						modal_box_open = true;
-						modal_box_field_name = name;
-						modal_box_field_type = field.Type;
-						modal_box_script_name = script_name;
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Bool: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					bool data = instance->GetFieldValue<bool>(name);
-					if (ImGui::Checkbox(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &data)) {
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Byte: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					uint8_t data = instance->GetFieldValue<uint8_t>(name);
-					int temp = static_cast<int>(data);
-					if (ImGui::DragInt(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &temp, 1, 0, 255)) {
-						data = static_cast<uint8_t>(temp);
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Sbyte: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int8_t data = instance->GetFieldValue<int8_t>(name);
-					int temp = static_cast<int>(data);
-					if (ImGui::DragInt(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &temp, 1, -128, 127)) {
-						data = static_cast<int8_t>(temp);
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Char: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					char data = instance->GetFieldValue<char>(name);
-					char buffer[2] = { data, '\0' };
-					if (ImGui::InputText(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), buffer, sizeof(buffer))) {
-						data = buffer[0];
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Decimal:
-				case ScriptFieldType::Double: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					double data = instance->GetFieldValue<double>(name);
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_Double, &data, 0.02f, (const void*)0, (const void*)0, "%.2f")) {
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Float: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					float data = instance->GetFieldValue<float>(name);
-					if (ImGui::DragFloat(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &data, 0.02f, 0.0f, 0.0f, "%.2f")) {
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Int: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int data = instance->GetFieldValue<int>(name);
-					if (ImGui::DragInt(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &data)) {
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Uint: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					uint32_t data = instance->GetFieldValue<uint32_t>(name);
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_U32, &data)) {
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Long: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int64_t data = instance->GetFieldValue<int64_t>(name);
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_S64, &data)) {
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Ulong: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					uint64_t data = instance->GetFieldValue<uint64_t>(name);
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_U64, &data)) {
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Short: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int16_t data = instance->GetFieldValue<int16_t>(name);
-					int temp = static_cast<int>(data);
-					if (ImGui::DragInt(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &temp, 1, std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max())) {
-						data = static_cast<int16_t>(temp);
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Ushort: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					uint16_t data = instance->GetFieldValue<uint16_t>(name);
-					int temp = static_cast<int>(data);
-					if (ImGui::DragInt(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &temp, 1, 0, std::numeric_limits<uint16_t>::max())) {
-						data = static_cast<uint16_t>(temp);
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Vector2: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					glm::vec2 data = instance->GetFieldValue<glm::vec2>(name);
-					if (ImGui::DragFloat2(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data), 0.02f, 0.0f, 0.0f, "%.2f")) {
-						instance->SetFieldValue(name, data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Vector3: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					glm::vec3 data = instance->GetFieldValue<glm::vec3>(name);
-
-					std::string lower_name = name;
-					std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-
-					if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
-						lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
-					{
-						if (ImGui::ColorEdit3(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data)))
-						{
-							instance->SetFieldValue(name, data);
-						}
-					}
-					else
-					{
-						if (ImGui::DragFloat3(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data), 0.02f, 0.0f, 0.0f, "%.2f"))
-						{
-							instance->SetFieldValue(name, data);
-						}
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Vector4: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					glm::vec4 data = instance->GetFieldValue<glm::vec4>(name);
-
-					std::string lower_name = name;
-					std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-
-					if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
-						lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
-					{
-						if (ImGui::ColorEdit4(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data)))
-						{
-							instance->SetFieldValue(name, data);
-						}
-					}
-					else
-					{
-						if (ImGui::DragFloat4(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data), 0.02f, 0.0f, 0.0f, "%.2f"))
-						{
-							instance->SetFieldValue(name, data);
-						}
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				default:
-					// Placeholder for unsupported or custom types
-					break;
-				}
-
 			}
 
 			ImGui::Columns(1);
 
 		}
 	}
-	else if (scriptClassExists) {
+	else if (script_class_exists) {
 
-		std::shared_ptr<ScriptClass> entityClass = ScriptManager::GetEntityClass(script_name);
-		const auto& fields = entityClass->GetFields();
+		auto script_class = ScriptManager::Get()->GetScriptClass(script_name);
 
-		auto& entityFields = ScriptManager::GetScriptFieldMap(selected_entity.GetUUID(), script_name);
+		if (!script_class || !script_class->fields)
+			return;
+
+		auto fields = script_class->fields;
+
+		auto script_field_map = ScriptManager::Get()->GetScriptFieldMap(selected_entity.GetUUID(), script_name);
+		auto script_field_default_values_map = ScriptManager::Get()->GetScriptFieldMap(NULL_UUID, script_name);
+
+		if (!script_field_map || !script_field_default_values_map)
+			return;
 
 		float first_coloumn_width = ImGui::GetContentRegionAvail().x * 0.35f;
 		ImGui::Columns(2, "script_field_columns", false);
 		ImGui::SetColumnWidth(-1, first_coloumn_width);
 
-		for (const auto& [name, field] : fields)
+		for (int i = 0; i < script_class->field_count; i++)
 		{
-			// Field has been set in editor
-			if (entityFields.find(name) != entityFields.end())
-			{
-				ScriptFieldInstance& scriptField = entityFields.at(name);
-				switch (field.Type) {
-					
-				case ScriptFieldType::ComputeShader:
-				{
+			const auto& field = fields[i];
 
-					ImGui::Text(name.c_str());
+			bool script_field_instance_exists = script_field_map->find(field.name) != script_field_map->end();
+			bool script_field_default_value_exists = script_field_default_values_map->find(field.name) != script_field_default_values_map->end();
+
+			if (!script_field_instance_exists && !script_field_default_value_exists)
+				continue;
+
+			ScriptFieldInstance* script_field = script_field_instance_exists ? &script_field_map->at(field.name) : nullptr;
+			ScriptFieldInstance* script_default_value_field = script_field_default_value_exists ? &script_field_default_values_map->at(field.name) : nullptr;
+			switch (field.type) 
+			{
+				case ScriptFieldType::Float: 
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
 					ImGui::NextColumn();
 
-					AssetHandle data = scriptField.GetValue<AssetHandle>();
-					std::string label = "##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type));
+					float data = script_field_instance_exists ? script_field->GetValue<float>() : script_field_default_value_exists ? script_default_value_field->GetValue<float>() : 0.0f;
+					if (ImGui::DragFloat(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data, 0.01f, 0.0f, 0.0f, "%.2f")) 
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::Double: 
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-					AssetMetaData meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(data);
+					double data = script_field_instance_exists ? script_field->GetValue<double>() : script_field_default_value_exists ? script_default_value_field->GetValue<double>() : 0.00;
+					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, &data, 0.01f, nullptr, nullptr, "%.2f")) 
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::Int8:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-					std::string text = (meta_data.AssetName != "") ? meta_data.AssetName + " (Compute Shader)" : "None (Compute Shader)";
+					int8_t data = script_field_instance_exists ? script_field->GetValue<int8_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<int8_t>() : 0;
+					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S8, &data, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::Int16:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-					char buffer[256];
-					strcpy_s(buffer, sizeof(buffer), text.c_str());
-					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
+					int16_t data = script_field_instance_exists ? script_field->GetValue<int16_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<int16_t>() : 0;
+					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S16, &data, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::Int32:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-					if (ImGui::BeginDragDropTarget()) {
+					int32_t data = script_field_instance_exists ? script_field->GetValue<int32_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<int32_t>() : 0;
+					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, &data, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::Int64:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
-							// Convert the payload data (string) back into a filesystem path
-							std::string dropped_path_str(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-							std::filesystem::path dropped_path = dropped_path_str; // Convert to path
+					int64_t data = script_field_instance_exists ? script_field->GetValue<int64_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<int64_t>() : 0;
+					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S64, &data, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::UInt8:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-							if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::None) {
+					uint8_t data = script_field_instance_exists ? script_field->GetValue<uint8_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<uint8_t>() : 0;
+					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U8, &data, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::UInt16:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-								AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_path, Project::GetActiveProject()->GetAssetDirectory());
+					uint16_t data = script_field_instance_exists ? script_field->GetValue<uint16_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<uint16_t>() : 0;
+					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U16, &data, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::UInt32:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-								switch (asset_type) {
+					uint32_t data = script_field_instance_exists ? script_field->GetValue<uint32_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<uint32_t>() : 0;
+					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, &data, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::UInt64:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-									case AssetType::Compute_Shader:
-									{
-										ScriptFieldInstance& scriptField = entityFields.at(name);
-										scriptField.SetValue<AssetHandle>(dropped_asset_handle);
+					uint64_t data = script_field_instance_exists ? script_field->GetValue<uint64_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<uint64_t>() : 0;
+					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U64, &data, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::Bool: 
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-										break;
-									}
-									default: {
+					bool data = script_field_instance_exists ? script_field->GetValue<bool>() : script_field_default_value_exists ? script_default_value_field->GetValue<bool>() : false;
+					if (ImGui::Checkbox(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data)) 
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::CString:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-										L_APP_WARN("Cannot Set Asset Type {} to Script Compute Shader Field.", dropped_path.extension().string());
-										break;
-									}
+					const char* data = script_field_instance_exists ? script_field->GetCStringValue() : script_field_default_value_exists ? script_default_value_field->GetCStringValue() : "";
 
-								}
+					static char buffer[256];
+					strncpy_s(buffer, data, sizeof(buffer) - 1);
 
-							}
-							else {
-								L_APP_WARN("Cannot Set Compute Shader {} to Script.", dropped_path.filename().string());
-							}
-
-						}
-						ImGui::EndDragDropTarget();
+					if (ImGui::InputText(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), buffer, sizeof(buffer)))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetCStringValue(buffer);
 					}
 
 					ImGui::NextColumn();
-
-
 					break;
 				}
-				case ScriptFieldType::Prefab:
+				case ScriptFieldType::Vector2: 
 				{
-
-					ImGui::Text(name.c_str());
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
 					ImGui::NextColumn();
 
-					AssetHandle data = scriptField.GetValue<AssetHandle>();
-					std::string label = "##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type));
+					glm::vec2 data = script_field_instance_exists ? script_field->GetValue<glm::vec2>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::vec2>() : glm::vec2(0.0f);
+					if (ImGui::DragFloat2(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data), 0.01f, -FLT_MAX, FLT_MAX, "%.2f")) 
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::Vector3: 
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
 
-					AssetMetaData meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(data);
+					glm::vec3 data = script_field_instance_exists ? script_field->GetValue<glm::vec3>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::vec3>() : glm::vec3(0.0f);
 
-					std::string text = (meta_data.AssetName != "") ? meta_data.AssetName + " (Prefab)" : "None (Prefab)";
+					std::string lower_name = field.name;
+					std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+
+					if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
+						lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
+					{
+						if (ImGui::ColorEdit3(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data)))
+						{
+							if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+							script_field->SetValue(data);
+						}
+					}
+					else
+					{
+						if (ImGui::DragFloat3(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data), 0.01f, -FLT_MAX, FLT_MAX, "%.2f"))
+						{
+							if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+							script_field->SetValue(data);
+						}
+					}
+
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::Vector4: 
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::vec4 data = script_field_instance_exists ? script_field->GetValue<glm::vec4>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::vec4>() : glm::vec4(0.0f);
+
+					std::string lower_name = field.name;
+					std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+
+					if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
+						lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
+					{
+						if (ImGui::ColorEdit4(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data)))
+						{
+							if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+							script_field->SetValue(data);
+						}
+					}
+					else
+					{
+						if (ImGui::DragFloat4(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data), 0.01f, -FLT_MAX, FLT_MAX, "%.2f"))
+						{
+							if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+							script_field->SetValue(data);
+						}
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::UVector2: 
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::uvec2 data = script_field_instance_exists ? script_field->GetValue<glm::uvec2>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::uvec2>() : glm::uvec2(0);
+					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, glm::value_ptr(data), 2, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::UVector3: 
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::uvec3 data = script_field_instance_exists ? script_field->GetValue<glm::uvec3>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::uvec3>() : glm::uvec3(0);
+					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, glm::value_ptr(data), 3, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::UVector4: 
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::uvec4 data = script_field_instance_exists ? script_field->GetValue<glm::uvec4>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::uvec4>() : glm::uvec4(0);
+					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, glm::value_ptr(data), 4, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::IVector2: 
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::ivec2 data = script_field_instance_exists ? script_field->GetValue<glm::ivec2>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::ivec2>() : glm::ivec2(0);
+					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, glm::value_ptr(data), 2, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::IVector3: 
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::ivec3 data = script_field_instance_exists ? script_field->GetValue<glm::ivec3>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::ivec3>() : glm::ivec3(0);
+					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, glm::value_ptr(data), 3, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::IVector4: 
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::ivec4 data = script_field_instance_exists ? script_field->GetValue<glm::ivec4>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::ivec4>() : glm::ivec4(0);
+					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, glm::value_ptr(data), 4, 1))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::DVector2:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::dvec2 data = script_field_instance_exists ? script_field->GetValue<glm::dvec2>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::dvec2>() : glm::dvec2(0.00);
+					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, glm::value_ptr(data), 2, 0.01f, nullptr, nullptr, "%.2f"))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::DVector3:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::dvec3 data = script_field_instance_exists ? script_field->GetValue<glm::dvec3>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::dvec3>() : glm::dvec3(0.00);
+					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, glm::value_ptr(data), 3, 0.01f, nullptr, nullptr, "%.2f"))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::DVector4:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::dvec4 data = script_field_instance_exists ? script_field->GetValue<glm::dvec4>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::dvec4>() : glm::dvec4(0.00);
+					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, glm::value_ptr(data), 4, 0.01f, nullptr, nullptr, "%.2f"))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::BVector2:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::bvec2 data = script_field_instance_exists ? script_field->GetValue<glm::bvec2>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::bvec2>() : glm::bvec2(false);
+
+					bool modified = false;
+					for (int i = 0; i < 2; ++i)
+					{
+						switch (i)
+						{
+							case 0: ImGui::Text("X"); break;
+							case 1: ImGui::Text("Y"); break;
+						}
+
+						ImGui::SameLine();
+
+						if (ImGui::Checkbox(std::string("##" + std::string{ field.name } + std::to_string(i).c_str() + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data[i]))
+							modified = true;
+
+						ImGui::SameLine();
+					}
+
+					if (modified)
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::BVector3:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::bvec3 data = script_field_instance_exists ? script_field->GetValue<glm::bvec3>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::bvec3>() : glm::bvec3(false);
+
+					bool modified = false;
+					for (int i = 0; i < 3; ++i)
+					{
+						switch (i)
+						{
+						case 0: ImGui::Text("X"); break;
+						case 1: ImGui::Text("Y"); break;
+						case 2: ImGui::Text("Z"); break;
+						}
+
+						ImGui::SameLine();
+
+						if (ImGui::Checkbox(std::string("##" + std::string{ field.name } + std::to_string(i).c_str() + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data[i]))
+							modified = true;
+
+						ImGui::SameLine();
+					}
+
+					if (modified)
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::BVector4:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::bvec4 data = script_field_instance_exists ? script_field->GetValue<glm::bvec4>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::bvec4>() : glm::bvec4(false);
+
+					bool modified = false;
+					for (int i = 0; i < 4; ++i)
+					{
+						switch (i)
+						{
+							case 0: ImGui::Text("X"); break;
+							case 1: ImGui::Text("Y"); break;
+							case 2: ImGui::Text("Z"); break;
+							case 3: ImGui::Text("W"); break;
+						}
+
+						ImGui::SameLine();
+
+						if (ImGui::Checkbox(std::string("##" + std::string{ field.name } + std::to_string(i).c_str() + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data[i]))
+							modified = true;
+
+						ImGui::SameLine();
+					}
+
+					if (modified)
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::Mat3:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::mat3 data = script_field_instance_exists ? script_field->GetValue<glm::mat3>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::mat3>() : glm::mat3(1.0f);
+
+					bool modified = false;
+					for (int row = 0; row < 3; ++row)
+					{
+						glm::vec3 rowVec = glm::vec3(data[0][row], data[1][row], data[2][row]);
+
+						if (ImGui::DragFloat3(std::string("##" + std::string{ field.name } + "_row" + std::to_string(row)).c_str(), glm::value_ptr(rowVec), 0.01f))
+						{
+							data[0][row] = rowVec.x;
+							data[1][row] = rowVec.y;
+							data[2][row] = rowVec.z;
+							modified = true;
+						}
+					}
+
+					if (modified)
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+
+					ImGui::NextColumn();
+					break;
+				}
+				case ScriptFieldType::Mat4:
+				{
+					ImGui::Text("%s: %s", ScriptUtils::FieldTypeToString(field.type).c_str(), field.name);
+					ImGui::NextColumn();
+
+					glm::mat4 data = script_field_instance_exists ? script_field->GetValue<glm::mat4>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::mat4>() : glm::mat4(1.0f);
+
+					bool modified = false;
+					for (int row = 0; row < 4; ++row)
+					{
+						glm::vec4 rowVec = glm::vec4(data[0][row], data[1][row], data[2][row], data[3][row]);
+
+						if (ImGui::DragFloat4(std::string("##" + std::string{ field.name } + "_row" + std::to_string(row)).c_str(), glm::value_ptr(rowVec), 0.01f))
+						{
+							data[0][row] = rowVec.x;
+							data[1][row] = rowVec.y;
+							data[2][row] = rowVec.z;
+							data[3][row] = rowVec.w;
+							modified = true;
+						}
+					}
+
+					if (modified)
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						script_field->SetValue(data);
+					}
+
+					ImGui::NextColumn();
+					break;
+				}
+
+				// ECS Types
+				case ScriptFieldType::Entity:
+
+				case ScriptFieldType::IDComponent:
+				case ScriptFieldType::TagComponent:
+				case ScriptFieldType::HierarchyComponent:
+				case ScriptFieldType::ScriptComponent:
+				case ScriptFieldType::TransformComponent:
+
+				case ScriptFieldType::CameraComponent:
+
+				case ScriptFieldType::AudioListenerComponent:
+				case ScriptFieldType::AudioEmitterComponent:
+
+				case ScriptFieldType::MeshFilterComponent:
+				case ScriptFieldType::MeshRendererComponent:
+				case ScriptFieldType::LODMeshComponent:
+
+				case ScriptFieldType::SkinnedMeshComponent:
+				case ScriptFieldType::AnimatorComponent:
+
+				case ScriptFieldType::SkyboxComponent:
+
+				case ScriptFieldType::PointLightComponent:
+				case ScriptFieldType::SpotLightComponent:
+				case ScriptFieldType::DirectionalLightComponent:
+
+				case ScriptFieldType::RigidbodyComponent:
+				case ScriptFieldType::BoxColliderComponent:
+				case ScriptFieldType::SphereColliderComponent:
+
+				case ScriptFieldType::Component:
+				{
+					ImGui::Text(field.name);
+					ImGui::NextColumn();
+
+					uint32_t data = script_field_instance_exists ? script_field->GetValue<uint32_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<uint32_t>() : NULL_UUID;
+
+					std::string label = "##" + std::string{ field.name } + std::string(ScriptUtils::FieldTypeToString(field.type));
+					std::string text = (scene_ref->HasEntityByUUID(data)) ? scene_ref->FindEntityByUUID(data).GetName().c_str() : ("None (" + std::string(ScriptUtils::FieldTypeToString(field.type)) + ")");
 
 					char buffer[256];
 					strcpy_s(buffer, sizeof(buffer), text.c_str());
 					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
 
-					if (ImGui::BeginDragDropTarget()) {
+					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						modal_box_open = true;
+						modal_box_field_name = field.name;
+						modal_box_field_type = field.type;
+						modal_box_script_name = script_name;
+					}
 
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+					ImGui::SameLine();
+
+					if (ImGui::Button(std::string("...##" + std::string{ field.name } + std::string(ScriptUtils::FieldTypeToString(field.type))).c_str()))
+					{
+						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						modal_box_open = true;
+						modal_box_field_name = field.name;
+						modal_box_field_type = field.type;
+						modal_box_script_name = script_name;
+					}
+
+					ImGui::NextColumn();
+					break;
+				}
+
+				// Asset Types
+				case ScriptFieldType::Prefab:
+				case ScriptFieldType::Shader:
+				case ScriptFieldType::ComputeShader:
+				case ScriptFieldType::Material:
+				case ScriptFieldType::Texture2D:
+				case ScriptFieldType::TextureCubeMap:
+				case ScriptFieldType::StaticMesh:
+				case ScriptFieldType::AudioClip:
+				case ScriptFieldType::Skeleton:
+				case ScriptFieldType::AnimationClip:
+				{
+					ImGui::Text(field.name);
+					ImGui::NextColumn();
+
+					uint32_t data = script_field_instance_exists ? script_field->GetValue<uint32_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<uint32_t>() : NULL_UUID;
+
+					std::string label = "##" + std::string{ field.name } + std::string(ScriptUtils::FieldTypeToString(field.type));
+
+					AssetMetaData meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(data);
+					std::string text = (meta_data.AssetName != "") ? meta_data.AssetName + " (" + ScriptUtils::FieldTypeToString(field.type) + ")" : "None(" + ScriptUtils::FieldTypeToString(field.type) + ")";
+
+					char buffer[256];
+					strcpy_s(buffer, sizeof(buffer), text.c_str());
+					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
+
+					if (ImGui::BeginDragDropTarget())
+					{
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE"))
+						{
 							// Convert the payload data (string) back into a filesystem path
 							std::string dropped_path_str(static_cast<const char*>(payload->Data), payload->DataSize - 1);
 							std::filesystem::path dropped_path = dropped_path_str; // Convert to path
 
-							if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::None) {
+							if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::Unknown) {
 
 								AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_path, Project::GetActiveProject()->GetAssetDirectory());
 
-								switch (asset_type) {
-
+								switch (asset_type)
+								{
 									case AssetType::Prefab:
+									case AssetType::Shader:
+									case AssetType::Compute_Shader:
+									case AssetType::Material_Standard:
+									case AssetType::Texture2D:
+									case AssetType::TextureCubeMap:
+									case AssetType::Mesh:
 									case AssetType::ModelImport:
+									case AssetType::Audio:
+									case AssetType::Skeleton:
+									case AssetType::AnimationClip:
 									{
-										ScriptFieldInstance& scriptField = entityFields.at(name);
-										scriptField.SetValue<AssetHandle>(dropped_asset_handle);
-
+										if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+										script_field->SetValue(dropped_asset_handle);
 										break;
 									}
-									default: {
-
+									default:
+									{
 										L_APP_WARN("Cannot Set Asset Type {} to Script Prefab Field.", dropped_path.extension().string());
 										break;
 									}
-
 								}
-
 							}
-							else {
+							else 
+							{
 								L_APP_WARN("Cannot Set Prefab {} to Script.", dropped_path.filename().string());
 							}
 
@@ -3124,721 +4014,6 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 
 					break;
 				}
-				case ScriptFieldType::Entity:
-				case ScriptFieldType::TransformComponent:
-				case ScriptFieldType::TagComponent:
-				case ScriptFieldType::ScriptComponent:
-				case ScriptFieldType::PointLightComponent:
-				case ScriptFieldType::SpotLightComponent:
-				case ScriptFieldType::DirectionalLightComponent:
-				case ScriptFieldType::RigidbodyComponent:
-				case ScriptFieldType::BoxColliderComponent:
-				case ScriptFieldType::SphereColliderComponent:
-				case ScriptFieldType::MeshRendererComponent:
-				case ScriptFieldType::Component:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					Louron::UUID data = scriptField.GetValue<Louron::UUID>();
-					std::string label = "##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type));
-					std::string text = (scene_ref->HasEntityByUUID(data)) ? scene_ref->FindEntityByUUID(data).GetName().c_str() : ("None (" + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type)) + ")");
-
-					char buffer[256];
-					strcpy_s(buffer, sizeof(buffer), text.c_str());
-					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
-
-					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
-					{
-						modal_box_open = true;
-						modal_box_field_name = name;
-						modal_box_field_type = field.Type;
-						modal_box_script_name = script_name;
-					}
-
-					ImGui::SameLine();
-
-					if (ImGui::Button(std::string("...##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type))).c_str()))
-					{
-						modal_box_open = true;
-						modal_box_field_name = name;
-						modal_box_field_type = field.Type;
-						modal_box_script_name = script_name;
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Bool: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					bool data = scriptField.GetValue<bool>();
-					if (ImGui::Checkbox(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &data)) {
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Byte: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					uint8_t data = scriptField.GetValue<uint8_t>();
-					int temp = static_cast<int>(data);
-					if (ImGui::DragInt(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &temp, 1, 0, 255)) {
-						data = static_cast<uint8_t>(temp);
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Sbyte: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int8_t data = scriptField.GetValue<int8_t>();
-					int temp = static_cast<int>(data);
-					if (ImGui::DragInt(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &temp, 1, -128, 127)) {
-						data = static_cast<int8_t>(temp);
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Char: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					char data = scriptField.GetValue<char>();
-					char buffer[2] = { data, '\0' };
-					if (ImGui::InputText(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), buffer, sizeof(buffer))) {
-						scriptField.SetValue(buffer[0]);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Decimal:
-				case ScriptFieldType::Double: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					double data = scriptField.GetValue<double>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_Double, &data, 0.02f, (const void*)0, (const void*)0, "%.2f")) {
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Float: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					float data = scriptField.GetValue<float>();
-					if (ImGui::DragFloat(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &data, 0.02f, 0.0f, 0.0f, "%.2f")) {
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Int: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int data = scriptField.GetValue<int>();
-					if (ImGui::DragInt(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &data)) {
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Uint: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					uint32_t data = scriptField.GetValue<uint32_t>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_U32, &data)) {
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Long: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int64_t data = scriptField.GetValue<int64_t>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_S64, &data)) {
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Ulong: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					uint64_t data = scriptField.GetValue<uint64_t>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_U64, &data)) {
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Short: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int16_t data = scriptField.GetValue<int16_t>();
-					int temp = static_cast<int>(data);
-					if (ImGui::DragInt(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &temp, 1, std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max())) {
-						data = static_cast<int16_t>(temp);
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Ushort: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					uint16_t data = scriptField.GetValue<uint16_t>();
-					int temp = static_cast<int>(data);
-					if (ImGui::DragInt(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &temp, 1, 0, std::numeric_limits<uint16_t>::max())) {
-						data = static_cast<uint16_t>(temp);
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Vector2: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					glm::vec2 data = scriptField.GetValue<glm::vec2>();
-					if (ImGui::DragFloat2(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data), 0.02f, 0.0f, 0.0f, "%.2f")) {
-						scriptField.SetValue(data);
-					}
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Vector3: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					glm::vec3 data = scriptField.GetValue<glm::vec3>();
-
-					std::string lower_name = name;
-					std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-
-					if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
-						lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
-					{
-						if (ImGui::ColorEdit3(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data)))
-						{
-							scriptField.SetValue(data);
-						}
-					}
-					else
-					{
-						if (ImGui::DragFloat3(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data), 0.02f, 0.0f, 0.0f, "%.2f"))
-						{
-							scriptField.SetValue(data);
-						}
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Vector4: {
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					glm::vec4 data = scriptField.GetValue<glm::vec4>();
-
-					std::string lower_name = name;
-					std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-
-					if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
-						lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
-					{
-						if (ImGui::ColorEdit4(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data)))
-						{
-							scriptField.SetValue(data);
-						}
-					}
-					else
-					{
-						if (ImGui::DragFloat4(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data), 0.02f, 0.0f, 0.0f, "%.2f"))
-						{
-							scriptField.SetValue(data);
-						}
-					}
-					ImGui::NextColumn();
-					break;
-				}
-
-				default:
-					// Placeholder for unsupported or custom types
-					break;
-				}
-
-			}
-			// Field has not been edited, get default value from the ScriptFieldType
-			else
-			{
-				switch (field.Type)
-				{
-
-				case ScriptFieldType::ComputeShader:
-				{
-
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					AssetHandle data = field.GetInitialValue<AssetHandle>();
-					std::string label = "##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type));
-
-					AssetMetaData meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(data);
-
-					std::string text = (meta_data.AssetName != "") ? meta_data.AssetName + " (Compute Shader)" : "None (Compute Shader)";
-
-					char buffer[256];
-					strcpy_s(buffer, sizeof(buffer), text.c_str());
-					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
-
-					if (ImGui::BeginDragDropTarget()) {
-
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
-							
-							// Convert the payload data (string) back into a filesystem path
-							std::string dropped_path_str(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-							std::filesystem::path dropped_path = dropped_path_str; // Convert to path
-
-							if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::None) {
-
-								AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_path, Project::GetActiveProject()->GetAssetDirectory());
-
-								switch (asset_type) {
-
-									case AssetType::Compute_Shader:
-									{
-
-										ScriptFieldInstance& scriptField = entityFields[name];
-										scriptField.Field = fields.at(name);
-										scriptField.SetValue<AssetHandle>(dropped_asset_handle);
-
-										break;
-									}
-									default: {
-
-										L_APP_WARN("Cannot Set Asset Type {} to Script Compute Shader Field.", dropped_path.extension().string());
-										break;
-									}
-
-								}
-
-							}
-							else {
-								L_APP_WARN("Cannot Set Compute Shader {} to Script.", dropped_path.filename().string());
-							}
-
-						}
-						ImGui::EndDragDropTarget();
-					}
-
-					ImGui::NextColumn();
-
-
-					break;
-				}
-				case ScriptFieldType::Prefab:
-				{
-
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					AssetHandle data = field.GetInitialValue<AssetHandle>();
-					std::string label = "##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type));
-
-					AssetMetaData meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(data);
-
-					std::string text = (meta_data.AssetName != "") ? meta_data.AssetName + " (Prefab)" : "None (Prefab)";
-
-					char buffer[256];
-					strcpy_s(buffer, sizeof(buffer), text.c_str());
-					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
-
-					if (ImGui::BeginDragDropTarget()) {
-						
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
-							// Convert the payload data (string) back into a filesystem path
-							std::string dropped_path_str(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-							std::filesystem::path dropped_path = dropped_path_str; // Convert to path
-
-							if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::None) {
-
-								AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_path, Project::GetActiveProject()->GetAssetDirectory());
-
-								switch (asset_type) {
-
-									case AssetType::Prefab:
-									case AssetType::ModelImport:
-									{
-
-										ScriptFieldInstance& scriptField = entityFields[name];
-										scriptField.Field = fields.at(name);
-										scriptField.SetValue<AssetHandle>(dropped_asset_handle);
-
-										break;
-									}
-									default: {
-
-										L_APP_WARN("Cannot Set Asset Type {} to Script Prefab Field.", dropped_path.extension().string());
-										break;
-									}
-
-								}
-
-							}
-							else {
-								L_APP_WARN("Cannot Set Prefab {} to Script.", dropped_path.filename().string());
-							}
-
-						}
-						ImGui::EndDragDropTarget();
-					}
-
-					ImGui::NextColumn();
-
-
-					break;
-				}
-				case ScriptFieldType::Entity:
-				case ScriptFieldType::TransformComponent:
-				case ScriptFieldType::TagComponent:
-				case ScriptFieldType::ScriptComponent:
-				case ScriptFieldType::PointLightComponent:
-				case ScriptFieldType::SpotLightComponent:
-				case ScriptFieldType::DirectionalLightComponent:
-				case ScriptFieldType::RigidbodyComponent:
-				case ScriptFieldType::BoxColliderComponent:
-				case ScriptFieldType::SphereColliderComponent:
-				case ScriptFieldType::MeshRendererComponent:
-				case ScriptFieldType::Component:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					Louron::UUID data = field.GetInitialValue<Louron::UUID>();
-					std::string label = "##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type));
-					std::string text = (scene_ref->HasEntityByUUID(data)) ? scene_ref->FindEntityByUUID(data).GetName().c_str() : ("None (" + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type)) + ")");
-
-					char buffer[256];
-					strcpy_s(buffer, sizeof(buffer), text.c_str());
-					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
-
-					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
-					{
-						modal_box_open = true;
-						modal_box_field_name = name;
-						modal_box_field_type = field.Type;
-						modal_box_script_name = script_name;
-					}
-
-					ImGui::SameLine();
-
-					if (ImGui::Button(std::string("...##" + name + std::string(ScriptingUtils::ScriptFieldTypeToString(field.Type))).c_str()))
-					{
-						modal_box_open = true;
-						modal_box_field_name = name;
-						modal_box_field_type = field.Type;
-						modal_box_script_name = script_name;
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Bool:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					bool data = field.GetInitialValue<bool>();
-					if (ImGui::Checkbox(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &data))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<bool>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Byte:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					uint8_t data = field.GetInitialValue<uint8_t>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_U8, &data))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<uint8_t>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Sbyte:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int8_t data = field.GetInitialValue<int8_t>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_S8, &data))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<int8_t>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Char:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					char data = field.GetInitialValue<char>();
-					char buffer[2] = { data, '\0' };
-					if (ImGui::InputText(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), buffer, sizeof(buffer)))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<char>(buffer[0]);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Decimal:
-				case ScriptFieldType::Double:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					double data = field.GetInitialValue<double>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_Double, &data, 0.02f, (const void*)0, (const void*)0, "%.2f"))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<double>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Float:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					float data = field.GetInitialValue<float>();
-					if (ImGui::DragFloat(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &data, 0.02f, 0.0f, 0.0f, "%.2f"))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<float>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Int:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int data = field.GetInitialValue<int>();
-					if (ImGui::DragInt(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), &data))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<int>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Uint:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					unsigned int data = field.GetInitialValue<unsigned int>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_U32, &data))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<unsigned int>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Long:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int64_t data = field.GetInitialValue<int64_t>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_S64, &data))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<int64_t>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Ulong:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					uint64_t data = field.GetInitialValue<uint64_t>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_U64, &data))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<uint64_t>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Short:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					int16_t data = field.GetInitialValue<int16_t>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_S16, &data))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<int16_t>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Ushort:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					uint16_t data = field.GetInitialValue<uint16_t>();
-					if (ImGui::DragScalar(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), ImGuiDataType_U16, &data))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<uint16_t>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Vector2:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					glm::vec2 data = field.GetInitialValue<glm::vec2>();
-					if (ImGui::DragFloat2(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data), 0.02f, 0.0f, 0.0f, "%.2f"))
-					{
-						ScriptFieldInstance& fieldInstance = entityFields[name];
-						fieldInstance.Field = field;
-						fieldInstance.SetValue<glm::vec2>(data);
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Vector3:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					glm::vec3 data = field.GetInitialValue<glm::vec3>();
-
-					std::string lower_name = name;
-					std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-
-					if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
-						lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
-					{
-						if (ImGui::ColorEdit3(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data)))
-						{
-							ScriptFieldInstance& fieldInstance = entityFields[name];
-							fieldInstance.Field = field;
-							fieldInstance.SetValue<glm::vec3>(data);
-						}
-					}
-					else
-					{
-						if (ImGui::DragFloat3(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data), 0.02f, 0.0f, 0.0f, "%.2f"))
-						{
-							ScriptFieldInstance& fieldInstance = entityFields[name];
-							fieldInstance.Field = field;
-							fieldInstance.SetValue<glm::vec3>(data);
-						}
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				case ScriptFieldType::Vector4:
-				{
-					ImGui::Text(name.c_str());
-					ImGui::NextColumn();
-
-					glm::vec4 data = field.GetInitialValue<glm::vec4>();
-
-					std::string lower_name = name;
-					std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-
-					if (lower_name.find("rgb") != std::string::npos || lower_name.find("colour") != std::string::npos ||
-						lower_name.find("color") != std::string::npos || lower_name.find("col") != std::string::npos)
-					{
-						if (ImGui::ColorEdit4(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data)))
-						{
-							ScriptFieldInstance& fieldInstance = entityFields[name];
-							fieldInstance.Field = field;
-							fieldInstance.SetValue<glm::vec3>(data);
-						}
-					}
-					else
-					{
-						if (ImGui::DragFloat4(std::string("##" + name + ScriptingUtils::ScriptFieldTypeToString(field.Type)).c_str(), glm::value_ptr(data), 0.02f, 0.0f, 0.0f, "%.2f"))
-						{
-							ScriptFieldInstance& fieldInstance = entityFields[name];
-							fieldInstance.Field = field;
-							fieldInstance.SetValue<glm::vec3>(data);
-						}
-					}
-
-					ImGui::NextColumn();
-					break;
-				}
-				default:
-					break;
-				}
-
 			}
 		}
 
@@ -3852,7 +4027,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 void PropertiesPanel::DisplayEntitySelectionModal(Entity& selected_entity)
 {
 	auto scene_ref = Project::GetActiveScene();
-	bool scriptClassExists = ScriptManager::EntityClassExists(modal_box_script_name);
+	bool script_class_exists = ScriptManager::Get()->ScriptClassExists(modal_box_script_name);
 
 #pragma region Entity Selection w/ Component Type
 
@@ -3870,12 +4045,12 @@ void PropertiesPanel::DisplayEntitySelectionModal(Entity& selected_entity)
 
 		if (scene_ref->IsRunning()) {
 
-			if (auto instance = ScriptManager::GetEntityScriptInstance(selected_entity.GetUUID(), modal_box_script_name); instance) {
-
-				instance->SetFieldEntityValue(ScriptManager::GetScriptFieldMap(selected_entity.GetUUID(), modal_box_script_name).at(modal_box_field_name), entity.GetUUID());
+			if (auto instance = ScriptManager::Get()->GetScriptClassInstance(selected_entity.GetUUID(), modal_box_script_name); instance)
+			{
+				instance->SetFieldValue(ScriptManager::Get()->GetScriptFieldMap(selected_entity.GetUUID(), modal_box_script_name)->at(modal_box_field_name).field.name, selected_entity.GetUUID());
 
 				modal_box_open = false;
-				modal_box_field_type = ScriptFieldType::None;
+				modal_box_field_type = ScriptFieldType::Unknown;
 				modal_box_script_name = "";
 				modal_box_field_name = "";
 				modal_box_selected_entity = {};
@@ -3883,32 +4058,29 @@ void PropertiesPanel::DisplayEntitySelectionModal(Entity& selected_entity)
 			}
 
 		}
-		else if (scriptClassExists) {
+		else if (script_class_exists) 
+		{
 
-			const auto& fields = ScriptManager::GetEntityClass(modal_box_script_name)->GetFields();
-			auto& entityFields = ScriptManager::GetScriptFieldMap(selected_entity.GetUUID(), modal_box_script_name);
+			auto script_field_map = ScriptManager::Get()->GetScriptFieldMap(selected_entity.GetUUID(), modal_box_script_name);
 
-			// Field has been set in editor
-			if (entityFields.find(modal_box_field_name) != entityFields.end())
+			if (!script_field_map)
 			{
-				ScriptFieldInstance& scriptField = entityFields.at(modal_box_field_name);
-				scriptField.SetValue(entity.GetUUID());
-
 				modal_box_open = false;
-				modal_box_field_type = ScriptFieldType::None;
+				modal_box_field_type = ScriptFieldType::Unknown;
 				modal_box_script_name = "";
 				modal_box_field_name = "";
 				modal_box_selected_entity = {};
 				return;
 			}
-			// Field has not been edited, get default value from the ScriptFieldType
-			else {
-				ScriptFieldInstance& scriptField = entityFields[modal_box_field_name];
-				scriptField.Field = fields.at(modal_box_field_name);
-				scriptField.SetValue<Louron::UUID>(entity.GetUUID());
+
+			// Field has been set in editor
+			if (script_field_map->find(modal_box_field_name) != script_field_map->end())
+			{
+				ScriptFieldInstance& script_field = (*script_field_map)[modal_box_field_name];
+				script_field.SetValue(entity.GetUUID());
 
 				modal_box_open = false;
-				modal_box_field_type = ScriptFieldType::None;
+				modal_box_field_type = ScriptFieldType::Unknown;
 				modal_box_script_name = "";
 				modal_box_field_name = "";
 				modal_box_selected_entity = {};

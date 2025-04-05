@@ -1,0 +1,799 @@
+\doxysection{Louron\+::Entity Class Reference}
+\hypertarget{class_louron_1_1_entity}{}\label{class_louron_1_1_entity}\index{Louron::Entity@{Louron::Entity}}
+
+
+\doxylink{class_louron_1_1_entity}{Entity} class representing an object in the scene.  
+
+
+
+
+{\ttfamily \#include $<$LEntity.\+h$>$}
+
+Inheritance diagram for Louron\+::Entity\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_entity}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_louron_1_1_entity_a2b29469bb4593e97889dfda13e11401f}{Entity}} ()=default
+\begin{DoxyCompactList}\small\item\em Default constructor for a null entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_entity_a752d3840b87aa5ff6e2159d8c9c43b07}{operator const uint32\+\_\+t \&}} () const
+\begin{DoxyCompactList}\small\item\em Get the UUID of the entity as a uint32\+\_\+t. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_entity_adbd2cdf09806246844c124ff3379e518}{operator bool}} () const
+\begin{DoxyCompactList}\small\item\em Check if the entity is valid. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{class_louron_1_1_entity_a6e809db39e8c094e7acffb5b7ecd43ba}{Get\+Tag}} () const
+\begin{DoxyCompactList}\small\item\em Get the name of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_a97d941b3044664e1669c1c71d8523ee0}{Set\+Tag}} (const std\+::string \&tag) const
+\begin{DoxyCompactList}\small\item\em Set the name of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \mbox{\hyperlink{class_louron_1_1_entity_aa4b6e37a6b1e13a40e60d136543e4ea2}{Get\+Transform}} () const
+\begin{DoxyCompactList}\small\item\em Get the transform of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_a20259f353d26ab890a7bb0097921e95a}{Set\+Transform}} (const \mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \&transform) const
+\begin{DoxyCompactList}\small\item\em Set the transform of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_a90b7b88426192399b6761ae5cc42c33f}{Get\+Position}} () const
+\begin{DoxyCompactList}\small\item\em Get the position of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_ad5ceb346a86760a287e16a399f361ad4}{Set\+Position}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&position) const
+\begin{DoxyCompactList}\small\item\em Set the position of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_a7a983908f8afc076ad0fe625df0bf202}{Get\+Rotation}} () const
+\begin{DoxyCompactList}\small\item\em Get the rotation of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_abf63e6326d73532443e1da35decec536}{Set\+Rotation}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&rotation) const
+\begin{DoxyCompactList}\small\item\em Set the rotation of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_a91dc7b572a739270db3e56bc675900b2}{Get\+Scale}} () const
+\begin{DoxyCompactList}\small\item\em Get the scale of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_a9da657a99b1d8274a9770548eb1c9de5}{Set\+Scale}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&scale) const
+\begin{DoxyCompactList}\small\item\em Set the scale of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_acd798a66a636ead5dc27a3aa32a9997c}{Get\+Front}} () const
+\begin{DoxyCompactList}\small\item\em Get the front vector of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_af6a503159676d502cec39824bee6d2cf}{Set\+Front}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&front) const
+\begin{DoxyCompactList}\small\item\em Set the front vector of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_a14ae0ceae213e6a75933c5307ac6c763}{Get\+Up}} () const
+\begin{DoxyCompactList}\small\item\em Get the up vector of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_ac42e691631cad90717bf3c50fcc1a7d6}{Get\+Right}} () const
+\begin{DoxyCompactList}\small\item\em Get the right vector of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_a9322b035353cffb27663b249a4c567e1}{Get\+Parent}} () const
+\begin{DoxyCompactList}\small\item\em Get the parent entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_a9bd31bcc32f2a80b731cf706414cca70}{Set\+Parent}} (\mbox{\hyperlink{class_louron_1_1_entity}{Entity}} parent\+\_\+entity) const
+\begin{DoxyCompactList}\small\item\em Set the parent entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\bool \mbox{\hyperlink{class_louron_1_1_entity_a866710d63037b2a8b57e5bf860116422}{Has\+Component}} ()
+\begin{DoxyCompactList}\small\item\em Check if the entity has a component of type T. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T \mbox{\hyperlink{class_louron_1_1_entity_a47dd12137e949ebeb4c535326fe23def}{Add\+Component}} ()
+\begin{DoxyCompactList}\small\item\em Add a component of type T to the entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\void \mbox{\hyperlink{class_louron_1_1_entity_a14e1c5512e680fc5c42621706b8d215d}{Remove\+Component}} ()
+\begin{DoxyCompactList}\small\item\em Remove a component of type T from the entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T \mbox{\hyperlink{class_louron_1_1_entity_a8609d72c061abd27aa4125772a13bc8c}{Get\+Component}} ()
+\begin{DoxyCompactList}\small\item\em Get a component of type T from the entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T \mbox{\hyperlink{class_louron_1_1_entity_a94f15c13339f8ca0af90920ba1aa55b8}{Get\+Component\+In\+Parent}} ()
+\begin{DoxyCompactList}\small\item\em Try and get a component of type T from a parent entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\std\+::vector$<$ T $>$ \mbox{\hyperlink{class_louron_1_1_entity_a0aef6ee6112c279d23dd7b30423ddbec}{Get\+Components\+In\+Parent}} ()
+\begin{DoxyCompactList}\small\item\em Get all component\textquotesingle{}s of type T from all parent entities. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T \mbox{\hyperlink{class_louron_1_1_entity_a90d9333dd43db85364b39657e02df8a6}{Get\+Component\+In\+Children}} ()
+\begin{DoxyCompactList}\small\item\em Try and get a component of type T from a child entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\std\+::vector$<$ T $>$ \mbox{\hyperlink{class_louron_1_1_entity_a19b85c3c0c1f848df7c1afaacf5dd5be}{Get\+Components\+In\+Children}} ()
+\begin{DoxyCompactList}\small\item\em Get all component\textquotesingle{}s of type T from all children entities. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_ae09dc66119abb65a18e170a9e64ef10d}{Instantiate}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}} prefab)
+\begin{DoxyCompactList}\small\item\em Instantiate a prefab within the Scene. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_adbad73772d7dc0f6d0dc1f94cf1fa4a2}{Instantiate}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}} prefab, const \mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \&transform)
+\begin{DoxyCompactList}\small\item\em Instantiate a prefab within the Scene. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_a79d60c5ba2d2d78f4fc0f65b8be03d6c}{Instantiate}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}} prefab, \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} parent)
+\begin{DoxyCompactList}\small\item\em Instantiate a prefab within the Scene. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_ab369c1512ee659b1c2d7bef1efe9abfe}{Instantiate}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}} prefab, \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} parent, const \mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \&transform)
+\begin{DoxyCompactList}\small\item\em Instantiate a prefab within the Scene. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_a2cbb9d56d7d5622a705671e90c998fb0}{Create}} (const std\+::string \&name="{}Untitled Entity"{})
+\begin{DoxyCompactList}\small\item\em Create a new entity within the Scene. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{class_louron_1_1_entity_aa519fdca9c0e885bb69fa7c581bad822}{Destroy}} (\mbox{\hyperlink{class_louron_1_1_entity}{Entity}} entity)
+\begin{DoxyCompactList}\small\item\em Destroy an entity within the Scene. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_a8935ca10e7a7b7b53d7ab80faedd30a5}{Find\+By\+Name}} (const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em Find an entity by name. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_a7dc2dd8899e81cb9b61b4ce1f2d2d923}{Find\+By\+UUID}} (uint32\+\_\+t entity\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Find an entity by UUID. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_entity_ae9db65afb9ea1d4cb2cb4ba336b0c5c0}\label{class_louron_1_1_entity_ae9db65afb9ea1d4cb2cb4ba336b0c5c0} 
+{\bfseries Entity} (uint32\+\_\+t entity\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Constructor for creating an entity with a specific UUID. Protected to prevent direct instantiation, use either \doxylink{class_louron_1_1_entity_a2cbb9d56d7d5622a705671e90c998fb0}{Create()}, \doxylink{class_louron_1_1_entity_ae09dc66119abb65a18e170a9e64ef10d}{Instantiate()}, \doxylink{class_louron_1_1_entity_a8935ca10e7a7b7b53d7ab80faedd30a5}{Find\+By\+Name()}, or \doxylink{class_louron_1_1_entity_a7dc2dd8899e81cb9b61b4ce1f2d2d923}{Find\+By\+UUID()}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_entity_a7c04ca1ce72c7b83d5ff4d8257faa948}\label{class_louron_1_1_entity_a7c04ca1ce72c7b83d5ff4d8257faa948} 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID} = NULL\+\_\+\+UUID
+\begin{DoxyCompactList}\small\item\em The UUID this entity belongs to. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_entity_a86840383340461a00ddcf7b3fbf596b3}\label{class_louron_1_1_entity_a86840383340461a00ddcf7b3fbf596b3} 
+class {\bfseries Components\+::\+Component}
+\item 
+\Hypertarget{class_louron_1_1_entity_a4715a261db81390306eeb00de1b6db65}\label{class_louron_1_1_entity_a4715a261db81390306eeb00de1b6db65} 
+class {\bfseries Components\+::\+LODMesh\+Component}
+\item 
+\Hypertarget{class_louron_1_1_entity_aaaa1c6babf9eb72d488c893c2ea065fa}\label{class_louron_1_1_entity_aaaa1c6babf9eb72d488c893c2ea065fa} 
+class {\bfseries Components\+::\+Skinned\+Mesh\+Component}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{class_louron_1_1_entity}{Entity} class representing an object in the scene. 
+
+The \doxylink{class_louron_1_1_entity}{Entity} class is what all scripts inherit from. It provides a way to interact with the engine\textquotesingle{}s ECS (\doxylink{class_louron_1_1_entity}{Entity} Component System).
+
+An \doxylink{class_louron_1_1_entity}{Entity} is merely a unique identifier (UUID) that can be used to access and manipulate components associated with it.
+
+You may get Entities from instantiating Prefabs, or by using the static find method to retrieve them by name or UUID.
+
+Where there is a NULL entity, any callbacks to the engine will simply be ignored. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_louron_1_1_entity_a2b29469bb4593e97889dfda13e11401f}\index{Louron::Entity@{Louron::Entity}!Entity@{Entity}}
+\index{Entity@{Entity}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{Entity()}{Entity()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a2b29469bb4593e97889dfda13e11401f} 
+Louron\+::\+Entity\+::\+Entity (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+Default constructor for a null entity. 
+
+In order to create an \doxylink{class_louron_1_1_entity}{Entity} within the scene, you must use either \doxylink{class_louron_1_1_entity_a2cbb9d56d7d5622a705671e90c998fb0}{Create()}, \doxylink{class_louron_1_1_entity_ae09dc66119abb65a18e170a9e64ef10d}{Instantiate()}, \doxylink{class_louron_1_1_entity_a8935ca10e7a7b7b53d7ab80faedd30a5}{Find\+By\+Name()}, or \doxylink{class_louron_1_1_entity_a7dc2dd8899e81cb9b61b4ce1f2d2d923}{Find\+By\+UUID()}. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_entity_a47dd12137e949ebeb4c535326fe23def}\index{Louron::Entity@{Louron::Entity}!AddComponent@{AddComponent}}
+\index{AddComponent@{AddComponent}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{AddComponent()}{AddComponent()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a47dd12137e949ebeb4c535326fe23def} 
+template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ \\
+T Louron\+::\+Entity\+::\+Add\+Component (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add a component of type T to the entity. 
+
+You can only use this function on components that inherit from \doxylink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & The type of component to add. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+T The component added to the entity. If the component already exists, it will return the existing component.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\mbox{\hyperlink{class_louron_1_1_entity_ae9db65afb9ea1d4cb2cb4ba336b0c5c0}{Entity}}\ other\_entity\ =\ \mbox{\hyperlink{class_louron_1_1_entity_a8935ca10e7a7b7b53d7ab80faedd30a5}{Entity::FindByName}}(\textcolor{stringliteral}{"{}Other\ Entity"{}});}
+\DoxyCodeLine{RigidbodyComponent\ rigidbody\ =\ other\_entity.AddComponent<RigidbodyComponent>();}
+\DoxyCodeLine{rigidbody.SetMass(10.0f);}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_entity_a2cbb9d56d7d5622a705671e90c998fb0}\index{Louron::Entity@{Louron::Entity}!Create@{Create}}
+\index{Create@{Create}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a2cbb9d56d7d5622a705671e90c998fb0} 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} Louron\+::\+Entity\+::\+Create (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name}{ = {\ttfamily "{}Untitled~Entity"{}}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Create a new entity within the Scene. 
+
+Create an empty entity with no components.
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The name of the new entity. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{class_louron_1_1_entity}{Entity} The new entity created. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_aa519fdca9c0e885bb69fa7c581bad822}\index{Louron::Entity@{Louron::Entity}!Destroy@{Destroy}}
+\index{Destroy@{Destroy}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{Destroy()}{Destroy()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_aa519fdca9c0e885bb69fa7c581bad822} 
+static void Louron\+::\+Entity\+::\+Destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_louron_1_1_entity}{Entity}}}]{entity}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Destroy an entity within the Scene. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em entity\+\_\+id} & The entity to destroy. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_entity_a8935ca10e7a7b7b53d7ab80faedd30a5}\index{Louron::Entity@{Louron::Entity}!FindByName@{FindByName}}
+\index{FindByName@{FindByName}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{FindByName()}{FindByName()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a8935ca10e7a7b7b53d7ab80faedd30a5} 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} Louron\+::\+Entity\+::\+Find\+By\+Name (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Find an entity by name. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The name of the entity to find. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{class_louron_1_1_entity}{Entity} The entity found by name. Null entity returned otherwise. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a7dc2dd8899e81cb9b61b4ce1f2d2d923}\index{Louron::Entity@{Louron::Entity}!FindByUUID@{FindByUUID}}
+\index{FindByUUID@{FindByUUID}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{FindByUUID()}{FindByUUID()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a7dc2dd8899e81cb9b61b4ce1f2d2d923} 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} Louron\+::\+Entity\+::\+Find\+By\+UUID (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{entity\+\_\+id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Find an entity by UUID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em entity\+\_\+id} & The UUID of the entity to find. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{class_louron_1_1_entity}{Entity} The entity found by UUID. Null entity returned otherwise. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a8609d72c061abd27aa4125772a13bc8c}\index{Louron::Entity@{Louron::Entity}!GetComponent@{GetComponent}}
+\index{GetComponent@{GetComponent}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetComponent()}{GetComponent()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a8609d72c061abd27aa4125772a13bc8c} 
+template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ \\
+T Louron\+::\+Entity\+::\+Get\+Component (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get a component of type T from the entity. 
+
+You can only use this function on components that inherit from \doxylink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & The type of component to get. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+T The component found in the entity. If no component is found, a null component is returned.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{RigidbodyComponent\ rigidbody\ =\ \mbox{\hyperlink{class_louron_1_1_entity_a8609d72c061abd27aa4125772a13bc8c}{GetComponent<RigidbodyComponent>}}();}
+\DoxyCodeLine{rigidbody.SetKinematic(\textcolor{keyword}{true});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_entity_a90d9333dd43db85364b39657e02df8a6}\index{Louron::Entity@{Louron::Entity}!GetComponentInChildren@{GetComponentInChildren}}
+\index{GetComponentInChildren@{GetComponentInChildren}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetComponentInChildren()}{GetComponentInChildren()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a90d9333dd43db85364b39657e02df8a6} 
+template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ \\
+T Louron\+::\+Entity\+::\+Get\+Component\+In\+Children (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Try and get a component of type T from a child entity. 
+
+This will recurisvely search downwards through the children of the current entity for a child entity which holds this component.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & The type of component to get. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+T The component found in the child entity. If no component is found, a null component is returned.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{RigidbodyComponent\ rigidbody\ =\ \mbox{\hyperlink{class_louron_1_1_entity_a90d9333dd43db85364b39657e02df8a6}{GetComponentInChildren<RigidbodyComponent>}}();}
+\DoxyCodeLine{rigidbody.SetGravity(\textcolor{keyword}{false});\ \textcolor{comment}{//\ Space\ mode...}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_entity_a94f15c13339f8ca0af90920ba1aa55b8}\index{Louron::Entity@{Louron::Entity}!GetComponentInParent@{GetComponentInParent}}
+\index{GetComponentInParent@{GetComponentInParent}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetComponentInParent()}{GetComponentInParent()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a94f15c13339f8ca0af90920ba1aa55b8} 
+template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ \\
+T Louron\+::\+Entity\+::\+Get\+Component\+In\+Parent (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Try and get a component of type T from a parent entity. 
+
+This will recurisvely search upwards to the root of the scene for a parent entity which holds this component.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & The type of component to get. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+T The component found in the parent entity. If no component is found, a null component is returned.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{RigidbodyComponent\ rigidbody\ =\ \mbox{\hyperlink{class_louron_1_1_entity_a94f15c13339f8ca0af90920ba1aa55b8}{GetComponentInParent<RigidbodyComponent>}}();}
+\DoxyCodeLine{rigidbody.SetGravity(\textcolor{keyword}{false});\ \textcolor{comment}{//\ Space\ mode...}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_entity_a19b85c3c0c1f848df7c1afaacf5dd5be}\index{Louron::Entity@{Louron::Entity}!GetComponentsInChildren@{GetComponentsInChildren}}
+\index{GetComponentsInChildren@{GetComponentsInChildren}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetComponentsInChildren()}{GetComponentsInChildren()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a19b85c3c0c1f848df7c1afaacf5dd5be} 
+template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ \\
+std\+::vector$<$ T $>$ Louron\+::\+Entity\+::\+Get\+Components\+In\+Children (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get all component\textquotesingle{}s of type T from all children entities. 
+
+This will recurisvely search downwards through the children of the current entity, and gather all components contained by child entities that hold this component.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & The type of component to get. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+T$>$ A vector of components found in child entities. If no component\textquotesingle{}s are found, an empty vector is returned.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ child\_components\ =\ \mbox{\hyperlink{class_louron_1_1_entity_a19b85c3c0c1f848df7c1afaacf5dd5be}{GetComponentsInChildren<RigidbodyComponent>}}();}
+\DoxyCodeLine{\textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\&\ component\ :\ child\_components)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ component.SetGravity(\textcolor{keyword}{false});\ \textcolor{comment}{//\ Space\ mode...}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_entity_a0aef6ee6112c279d23dd7b30423ddbec}\index{Louron::Entity@{Louron::Entity}!GetComponentsInParent@{GetComponentsInParent}}
+\index{GetComponentsInParent@{GetComponentsInParent}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetComponentsInParent()}{GetComponentsInParent()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a0aef6ee6112c279d23dd7b30423ddbec} 
+template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ \\
+std\+::vector$<$ T $>$ Louron\+::\+Entity\+::\+Get\+Components\+In\+Parent (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get all component\textquotesingle{}s of type T from all parent entities. 
+
+This will recurisvely search upwards to the root of the scene, and gather all components contained by parent entities that hold this component.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & The type of component to get. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+T$>$ A vector of components found in the parent entities. If no component\textquotesingle{}s are found, an empty vector is returned.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ parent\_components\ =\ \mbox{\hyperlink{class_louron_1_1_entity_a0aef6ee6112c279d23dd7b30423ddbec}{GetComponentsInParent<RigidbodyComponent>}}();}
+\DoxyCodeLine{\textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\&\ component\ :\ parent\_components)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ component.SetGravity(\textcolor{keyword}{false});\ \textcolor{comment}{//\ Space\ mode...}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_entity_acd798a66a636ead5dc27a3aa32a9997c}\index{Louron::Entity@{Louron::Entity}!GetFront@{GetFront}}
+\index{GetFront@{GetFront}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetFront()}{GetFront()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_acd798a66a636ead5dc27a3aa32a9997c} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} Louron\+::\+Entity\+::\+Get\+Front (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the front vector of the entity. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3} The front vector of the entity. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a9322b035353cffb27663b249a4c567e1}\index{Louron::Entity@{Louron::Entity}!GetParent@{GetParent}}
+\index{GetParent@{GetParent}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetParent()}{GetParent()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a9322b035353cffb27663b249a4c567e1} 
+\mbox{\hyperlink{class_louron_1_1_entity}{Entity}} Louron\+::\+Entity\+::\+Get\+Parent (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the parent entity. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{class_louron_1_1_entity}{Entity} The parent entity. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a90b7b88426192399b6761ae5cc42c33f}\index{Louron::Entity@{Louron::Entity}!GetPosition@{GetPosition}}
+\index{GetPosition@{GetPosition}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetPosition()}{GetPosition()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a90b7b88426192399b6761ae5cc42c33f} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} Louron\+::\+Entity\+::\+Get\+Position (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the position of the entity. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3} The position of the entity. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_ac42e691631cad90717bf3c50fcc1a7d6}\index{Louron::Entity@{Louron::Entity}!GetRight@{GetRight}}
+\index{GetRight@{GetRight}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetRight()}{GetRight()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_ac42e691631cad90717bf3c50fcc1a7d6} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} Louron\+::\+Entity\+::\+Get\+Right (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the right vector of the entity. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3} The right vector of the entity. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a7a983908f8afc076ad0fe625df0bf202}\index{Louron::Entity@{Louron::Entity}!GetRotation@{GetRotation}}
+\index{GetRotation@{GetRotation}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetRotation()}{GetRotation()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a7a983908f8afc076ad0fe625df0bf202} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} Louron\+::\+Entity\+::\+Get\+Rotation (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the rotation of the entity. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3} The rotation of the entity. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a91dc7b572a739270db3e56bc675900b2}\index{Louron::Entity@{Louron::Entity}!GetScale@{GetScale}}
+\index{GetScale@{GetScale}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetScale()}{GetScale()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a91dc7b572a739270db3e56bc675900b2} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} Louron\+::\+Entity\+::\+Get\+Scale (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the scale of the entity. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3} The scale of the entity. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a6e809db39e8c094e7acffb5b7ecd43ba}\index{Louron::Entity@{Louron::Entity}!GetTag@{GetTag}}
+\index{GetTag@{GetTag}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetTag()}{GetTag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a6e809db39e8c094e7acffb5b7ecd43ba} 
+std\+::string Louron\+::\+Entity\+::\+Get\+Tag (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the name of the entity. 
+
+\begin{DoxyReturn}{Returns}
+std\+::string The name of the entity. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_aa4b6e37a6b1e13a40e60d136543e4ea2}\index{Louron::Entity@{Louron::Entity}!GetTransform@{GetTransform}}
+\index{GetTransform@{GetTransform}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetTransform()}{GetTransform()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_aa4b6e37a6b1e13a40e60d136543e4ea2} 
+\mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} Louron\+::\+Entity\+::\+Get\+Transform (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the transform of the entity. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{struct_louron_1_1_transform}{Transform} The transform of the entity. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a14ae0ceae213e6a75933c5307ac6c763}\index{Louron::Entity@{Louron::Entity}!GetUp@{GetUp}}
+\index{GetUp@{GetUp}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{GetUp()}{GetUp()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a14ae0ceae213e6a75933c5307ac6c763} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} Louron\+::\+Entity\+::\+Get\+Up (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the up vector of the entity. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3} The up vector of the entity. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a866710d63037b2a8b57e5bf860116422}\index{Louron::Entity@{Louron::Entity}!HasComponent@{HasComponent}}
+\index{HasComponent@{HasComponent}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{HasComponent()}{HasComponent()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a866710d63037b2a8b57e5bf860116422} 
+template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ \\
+bool Louron\+::\+Entity\+::\+Has\+Component (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Check if the entity has a component of type T. 
+
+You can only use this function on components that inherit from \doxylink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & The type of component to check for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool True if the entity has the component, false otherwise.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}\ (other\_entity.HasComponent<RigidbodyComponent>())}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ RigidbodyComponent\ rigidbody\ =\ other\_entity.GetComponent<RigidbodyComponent>();}
+\DoxyCodeLine{\ \ \ \ rigidbody.SetMass(10.0f);}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_entity_ae09dc66119abb65a18e170a9e64ef10d}\index{Louron::Entity@{Louron::Entity}!Instantiate@{Instantiate}}
+\index{Instantiate@{Instantiate}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{Instantiate()}{Instantiate()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_ae09dc66119abb65a18e170a9e64ef10d} 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} Louron\+::\+Entity\+::\+Instantiate (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}}}]{prefab}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Instantiate a prefab within the Scene. 
+
+Create a new entity from a prefab.
+
+The prefab must be valid.
+
+The new entity will be placed at the origin of the world with no rotation, and a default scale of 1.\+0f.
+
+
+\begin{DoxyParams}{Parameters}
+{\em prefab} & The prefab to instantiate. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{class_louron_1_1_entity}{Entity} The new entity created from the prefab. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_adbad73772d7dc0f6d0dc1f94cf1fa4a2}\index{Louron::Entity@{Louron::Entity}!Instantiate@{Instantiate}}
+\index{Instantiate@{Instantiate}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{Instantiate()}{Instantiate()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_adbad73772d7dc0f6d0dc1f94cf1fa4a2} 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} Louron\+::\+Entity\+::\+Instantiate (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}}}]{prefab}{, }\item[{const \mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \&}]{transform}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Instantiate a prefab within the Scene. 
+
+Create a new entity from a prefab with a transform in world space.
+
+The prefab must be valid.
+
+The new entity will be placed at the transform in world space (NOT LOCAL SPACE).
+
+
+\begin{DoxyParams}{Parameters}
+{\em prefab} & The prefab to instantiate. \\
+\hline
+{\em transform} & The transform to place the new entity at in World Space. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{class_louron_1_1_entity}{Entity} The new entity created from the prefab. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a79d60c5ba2d2d78f4fc0f65b8be03d6c}\index{Louron::Entity@{Louron::Entity}!Instantiate@{Instantiate}}
+\index{Instantiate@{Instantiate}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{Instantiate()}{Instantiate()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a79d60c5ba2d2d78f4fc0f65b8be03d6c} 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} Louron\+::\+Entity\+::\+Instantiate (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}}}]{prefab}{, }\item[{\mbox{\hyperlink{class_louron_1_1_entity}{Entity}}}]{parent}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Instantiate a prefab within the Scene. 
+
+Create a new entity from a prefab with a Parent.
+
+The prefab must be valid.
+
+The new entity will be placed at the origin relative to the parent.
+
+
+\begin{DoxyParams}{Parameters}
+{\em prefab} & The prefab to instantiate. \\
+\hline
+{\em parent} & The parent entity to attach the new entity to. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{class_louron_1_1_entity}{Entity} The new entity created from the prefab. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_ab369c1512ee659b1c2d7bef1efe9abfe}\index{Louron::Entity@{Louron::Entity}!Instantiate@{Instantiate}}
+\index{Instantiate@{Instantiate}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{Instantiate()}{Instantiate()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_ab369c1512ee659b1c2d7bef1efe9abfe} 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} Louron\+::\+Entity\+::\+Instantiate (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}}}]{prefab}{, }\item[{\mbox{\hyperlink{class_louron_1_1_entity}{Entity}}}]{parent}{, }\item[{const \mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \&}]{transform}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Instantiate a prefab within the Scene. 
+
+Create a new entity from a prefab with a parent and a local transform.
+
+The prefab must be valid.
+
+The new entity will be placed at the transform in local space relative to the parent (NOT WORLD SPACE).
+
+
+\begin{DoxyParams}{Parameters}
+{\em prefab} & The prefab to instantiate. \\
+\hline
+{\em parent} & The parent entity to attach the new entity to. \\
+\hline
+{\em transform} & The transform to place the new entity at in local space relative to parent. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{class_louron_1_1_entity}{Entity} The new entity created from the prefab. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_adbd2cdf09806246844c124ff3379e518}\index{Louron::Entity@{Louron::Entity}!operator bool@{operator bool}}
+\index{operator bool@{operator bool}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{operator bool()}{operator bool()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_adbd2cdf09806246844c124ff3379e518} 
+Louron\+::\+Entity\+::operator bool (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Check if the entity is valid. 
+
+This will check in the Scene if the entity is still valid. \begin{DoxyReturn}{Returns}
+bool True if the entity is valid, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a752d3840b87aa5ff6e2159d8c9c43b07}\index{Louron::Entity@{Louron::Entity}!operator const uint32\_t \&@{operator const uint32\_t \&}}
+\index{operator const uint32\_t \&@{operator const uint32\_t \&}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{operator const uint32\_t \&()}{operator const uint32\_t \&()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a752d3840b87aa5ff6e2159d8c9c43b07} 
+Louron\+::\+Entity\+::operator const uint32\+\_\+t \& (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the UUID of the entity as a uint32\+\_\+t. 
+
+\begin{DoxyReturn}{Returns}
+uint32\+\_\+t The UUID of the entity. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_entity_a14e1c5512e680fc5c42621706b8d215d}\index{Louron::Entity@{Louron::Entity}!RemoveComponent@{RemoveComponent}}
+\index{RemoveComponent@{RemoveComponent}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{RemoveComponent()}{RemoveComponent()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a14e1c5512e680fc5c42621706b8d215d} 
+template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ \\
+void Louron\+::\+Entity\+::\+Remove\+Component (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Remove a component of type T from the entity. 
+
+You can only use this function on components that inherit from \doxylink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}.
+
+Attempts to remove a component from an entity.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & The type of component to remove.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}\ (player\_health\ <=\ 0.0f)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_entity_a14e1c5512e680fc5c42621706b8d215d}{RemoveComponent<RigidbodyComponent>}}();}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_entity_af6a503159676d502cec39824bee6d2cf}\index{Louron::Entity@{Louron::Entity}!SetFront@{SetFront}}
+\index{SetFront@{SetFront}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{SetFront()}{SetFront()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_af6a503159676d502cec39824bee6d2cf} 
+void Louron\+::\+Entity\+::\+Set\+Front (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&}]{front}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the front vector of the entity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em front} & The new front vector of the entity. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_entity_a9bd31bcc32f2a80b731cf706414cca70}\index{Louron::Entity@{Louron::Entity}!SetParent@{SetParent}}
+\index{SetParent@{SetParent}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{SetParent()}{SetParent()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a9bd31bcc32f2a80b731cf706414cca70} 
+void Louron\+::\+Entity\+::\+Set\+Parent (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_louron_1_1_entity}{Entity}}}]{parent\+\_\+entity}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the parent entity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent\+\_\+entity} & The new parent entity. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_entity_ad5ceb346a86760a287e16a399f361ad4}\index{Louron::Entity@{Louron::Entity}!SetPosition@{SetPosition}}
+\index{SetPosition@{SetPosition}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{SetPosition()}{SetPosition()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_ad5ceb346a86760a287e16a399f361ad4} 
+void Louron\+::\+Entity\+::\+Set\+Position (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&}]{position}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the position of the entity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em position} & The new position of the entity. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_entity_abf63e6326d73532443e1da35decec536}\index{Louron::Entity@{Louron::Entity}!SetRotation@{SetRotation}}
+\index{SetRotation@{SetRotation}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{SetRotation()}{SetRotation()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_abf63e6326d73532443e1da35decec536} 
+void Louron\+::\+Entity\+::\+Set\+Rotation (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&}]{rotation}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the rotation of the entity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rotation} & The new rotation of the entity. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_entity_a9da657a99b1d8274a9770548eb1c9de5}\index{Louron::Entity@{Louron::Entity}!SetScale@{SetScale}}
+\index{SetScale@{SetScale}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{SetScale()}{SetScale()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a9da657a99b1d8274a9770548eb1c9de5} 
+void Louron\+::\+Entity\+::\+Set\+Scale (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&}]{scale}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the scale of the entity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em scale} & The new scale of the entity. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_entity_a97d941b3044664e1669c1c71d8523ee0}\index{Louron::Entity@{Louron::Entity}!SetTag@{SetTag}}
+\index{SetTag@{SetTag}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{SetTag()}{SetTag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a97d941b3044664e1669c1c71d8523ee0} 
+void Louron\+::\+Entity\+::\+Set\+Tag (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{tag}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the name of the entity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tag} & The new name of the entity. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_entity_a20259f353d26ab890a7bb0097921e95a}\index{Louron::Entity@{Louron::Entity}!SetTransform@{SetTransform}}
+\index{SetTransform@{SetTransform}!Louron::Entity@{Louron::Entity}}
+\doxysubsubsection{\texorpdfstring{SetTransform()}{SetTransform()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_entity_a20259f353d26ab890a7bb0097921e95a} 
+void Louron\+::\+Entity\+::\+Set\+Transform (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \&}]{transform}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the transform of the entity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em transform} & The new transform of the entity. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LEntity.\+h\end{DoxyCompactItemize}

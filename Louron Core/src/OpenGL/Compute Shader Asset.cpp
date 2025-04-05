@@ -26,7 +26,7 @@ namespace Louron {
         Release();
     }
 
-    void ComputeBuffer::SetData(void* data, size_t element_count, size_t element_size) const
+    void ComputeBuffer::SetData(const void* data, size_t element_count, size_t element_size) const
     {
         if (m_IsReleased) 
             return;

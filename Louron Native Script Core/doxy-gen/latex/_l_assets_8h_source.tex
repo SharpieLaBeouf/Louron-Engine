@@ -1,0 +1,396 @@
+\doxysection{LAssets.\+h}
+\hypertarget{_l_assets_8h_source}{}\label{_l_assets_8h_source}\index{Defines/LAssets.h@{Defines/LAssets.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}../Defines/LTypes.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}../Engine\ Callbacks.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{namespace\ }Louron}
+\DoxyCodeLine{00007\ \{}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keyword}{namespace\ }Components\ }
+\DoxyCodeLine{00010\ \ \ \ \ \{}
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component}{MeshFilterComponent}};}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component}{MeshRendererComponent}};}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component}{SkinnedMeshComponent}};}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_skybox_component}{SkyboxComponent}};}
+\DoxyCodeLine{00015\ \ \ \ \ \}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{namespace\ }Assets}
+\DoxyCodeLine{00018\ \ \ \ \ \{}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }Asset}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ AssetType\ :\ uint8\_t\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Unknown\ =\ 0,}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Scene,}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Prefab,}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Texture2D,}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ TextureCubeMap,}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Mesh,}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ModelImport,}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Skeleton,}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ AnimationClip,}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Audio,}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Material\_Standard,}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Material\_Skybox,}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Compute\_Shader,}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Shader}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ Asset()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \string~Asset()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ AssetType::Unknown;\ \}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keyword}{operator}\ uint32\_t()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_AssetHandle;\ \}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetAssetHandle(uint32\_t\ asset\_handle)\ \{\ m\_AssetHandle\ =\ asset\_handle;\ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ m\_AssetHandle\ =\ NULL\_UUID;}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }Prefab\ :\ \textcolor{keyword}{public}\ Asset}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ AssetType::Prefab;\ \}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }Texture2D\ :\ \textcolor{keyword}{public}\ Asset}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }MaterialUniformBlock;}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ Texture2D(\textcolor{keywordtype}{bool}\ create\_new)\ \{\};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ TextureFormat\ :\ uint8\_t}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ RED\_8\ =\ 0,}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ RED\_GREEN\_BLUE\_8,}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ RED\_GREEN\_BLUE\_ALPHA\_8,}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ BLUE\_GREEN\_RED\_ALPHA\_8\ \textcolor{comment}{//\ Embedded\ Assimp\ Textures}}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ TextureProperty\ :\ uint8\_t}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Wrap\_Repeat\ =\ 1U\ <<\ 0,}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Wrap\_Mirror\ =\ 1U\ <<\ 1,}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Wrap\_ClampEdge\ =\ 1U\ <<\ 2,}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Wrap\_ClampBorder\ =\ 1U\ <<\ 3,}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Filter\_Linear\ =\ 1U\ <<\ 4,}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Filter\_Nearest\ =\ 1U\ <<\ 5,}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Anisotropy\_Enabled\ =\ 1U\ <<\ 6,}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Default\ =\ Wrap\_Repeat\ |\ Filter\_Linear\ |\ Anisotropy\_Enabled,}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ Texture2D()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ Texture2D(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_u_vector2}{Vectors::UVector2}}\&\ size,\ TextureFormat\ internal\_format)\ \{\ m\_AssetHandle\ =\ ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(uint32\_t,\ uint32\_t,\ TextureFormat),\ Texture2D\_Create,\ size.x,\ size.y,\ internal\_format);\ \}}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ Texture2D(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\ data,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_u_vector2}{Vectors::UVector2}}\&\ size,\ TextureFormat\ internal\_format,\ TextureFormat\ data\_format)\ \{\ m\_AssetHandle\ =\ ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(\textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*,\ uint32\_t,\ uint32\_t,\ TextureFormat,\ TextureFormat),\ Texture2D\_CreateWithData,\ data,\ size.x,\ size.y,\ internal\_format,\ data\_format);\ \}}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ Texture2D(\textcolor{keyword}{const}\ std::vector<Vectors::UVector4>\&\ data,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_u_vector2}{Vectors::UVector2}}\&\ size)\ \{\ m\_AssetHandle\ =\ ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(\textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*,\ uint32\_t,\ uint32\_t,\ TextureFormat,\ TextureFormat),\ Texture2D\_CreateWithData,\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\textcolor{keyword}{>}(data.data()),\ size.x,\ size.y,\ TextureFormat::RED\_GREEN\_BLUE\_ALPHA\_8,\ TextureFormat::RED\_GREEN\_BLUE\_ALPHA\_8);\ \}}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetPixel(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\&\ colour,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector2}{Vectors::IVector2}}\&\ pixel\_coord)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\&,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector2}{Vectors::IVector2}}\&),\ Texture2D\_SetPixel,\ m\_AssetHandle,\ colour,\ pixel\_coord);\ \}}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetPixelData(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\ pixel\_data,\ \textcolor{keywordtype}{size\_t}\ pixel\_data\_size,\ TextureFormat\ pixel\_data\_format)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*,\ \textcolor{keywordtype}{size\_t},\ TextureFormat),\ Texture2D\_SetPixelData,\ m\_AssetHandle,\ pixel\_data,\ pixel\_data\_size,\ pixel\_data\_format);\ \}}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetPixelData(\textcolor{keyword}{const}\ std::vector<Vectors::UVector4>\&\ pixel\_data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*,\ \textcolor{keywordtype}{size\_t},\ TextureFormat),\ Texture2D\_SetPixelData,\ m\_AssetHandle,\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\textcolor{keyword}{>}(pixel\_data.data()),\ pixel\_data.size()\ *\ 4,\ TextureFormat::RED\_GREEN\_BLUE\_ALPHA\_8);\ \}}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SubmitTextureChanges()\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t),\ Texture2D\_SubmitTextureChanges,\ m\_AssetHandle);\ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ Destroy()\ \{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t),\ Texture2D\_Destroy,\ m\_AssetHandle);\ m\_AssetHandle\ =\ NULL\_UUID;\ \}}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ AssetType::Texture2D;\ \}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }TextureCubeMap\ :\ \textcolor{keyword}{public}\ Asset}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ AssetType::TextureCubeMap;\ \}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }StaticMesh\ :\ \textcolor{keyword}{public}\ Asset}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component}{Components::MeshFilterComponent}};}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component}{Components::SkinnedMeshComponent}};}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ StaticMesh(\textcolor{keywordtype}{bool}\ create\_new)\ \{\};}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ StaticMesh()\ \{\ m\_AssetHandle\ =\ ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(),\ Mesh\_CreateNewMesh);\ \}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ Destroy()\ \{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t),\ Mesh\_Destroy,\ m\_AssetHandle);\ m\_AssetHandle\ =\ NULL\_UUID;\ \}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SubmitChanges(\textcolor{keywordtype}{bool}\ clear\_cpu\_data)\ \{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ Mesh\_,\ m\_AssetHandle,\ clear\_cpu\_data);\ \}}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ CopyBufferDataToCPU()\ \{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t),\ Mesh\_CopyBufferDataToCPU,\ m\_AssetHandle);\ \}}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ ClearBufferDataFromCPU()\ \{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t),\ Mesh\_ClearBufferDataFromCPU,\ m\_AssetHandle);\ \}}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetVertices(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ data,\ \textcolor{keywordtype}{size\_t}\ data\_size)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetVertices,\ m\_AssetHandle,\ data,\ data\_size);\ \}}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetVertices(\textcolor{keyword}{const}\ std::vector<float>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetVertices,\ m\_AssetHandle,\ data.data(),\ data.size());\ \}}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetVertices(\textcolor{keyword}{const}\ std::vector<Vectors::Vector3>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetVertices,\ m\_AssetHandle,\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{float}*\textcolor{keyword}{>}(data.data()),\ data.size()\ *\ 3);\ \}}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetNormals(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ data,\ \textcolor{keywordtype}{size\_t}\ data\_size)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetNormals,\ m\_AssetHandle,\ data,\ data\_size);\ \}}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetNormals(\textcolor{keyword}{const}\ std::vector<float>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetNormals,\ m\_AssetHandle,\ data.data(),\ data.size());\ \}}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetNormals(\textcolor{keyword}{const}\ std::vector<Vectors::Vector3>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetNormals,\ m\_AssetHandle,\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{float}*\textcolor{keyword}{>}(data.data()),\ data.size()\ *\ 3);\ \}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetTextureCoords(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ data,\ \textcolor{keywordtype}{size\_t}\ data\_size)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetTextureCoords,\ m\_AssetHandle,\ data,\ data\_size);\ \}}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetTextureCoords(\textcolor{keyword}{const}\ std::vector<float>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetTextureCoords,\ m\_AssetHandle,\ data.data(),\ data.size());\ \}}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetTextureCoords(\textcolor{keyword}{const}\ std::vector<Vectors::Vector2>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetTextureCoords,\ m\_AssetHandle,\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{float}*\textcolor{keyword}{>}(data.data()),\ data.size()\ *\ 2);\ \}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetTangents(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ data,\ \textcolor{keywordtype}{size\_t}\ data\_size)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetTangents,\ m\_AssetHandle,\ data,\ data\_size);\ \}}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetTangents(\textcolor{keyword}{const}\ std::vector<float>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetTangents,\ m\_AssetHandle,\ data.data(),\ data.size());\ \}}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetTangents(\textcolor{keyword}{const}\ std::vector<Vectors::Vector3>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetTangents,\ m\_AssetHandle,\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{float}*\textcolor{keyword}{>}(data.data()),\ data.size()\ *\ 3);\ \}}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBitangents(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ data,\ \textcolor{keywordtype}{size\_t}\ data\_size)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetBitangents,\ m\_AssetHandle,\ data,\ data\_size);\ \}}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBitangents(\textcolor{keyword}{const}\ std::vector<float>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetBitangents,\ m\_AssetHandle,\ data.data(),\ data.size());\ \}}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBitangents(\textcolor{keyword}{const}\ std::vector<Vectors::Vector3>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetBitangents,\ m\_AssetHandle,\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{float}*\textcolor{keyword}{>}(data.data()),\ data.size()\ *\ 3);\ \}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBoneIDs(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector4}{Vectors::IVector4}}*\ data,\ \textcolor{keywordtype}{size\_t}\ data\_size)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector4}{Vectors::IVector4}}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetBoneIDs,\ m\_AssetHandle,\ data,\ data\_size);\ \}}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBoneIDs(\textcolor{keyword}{const}\ std::vector<Vectors::IVector4>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector4}{Vectors::IVector4}}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetBoneIDs,\ m\_AssetHandle,\ data.data(),\ data.size());\ \}}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBoneWeights(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}*\ data,\ \textcolor{keywordtype}{size\_t}\ data\_size)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetBoneWeights,\ m\_AssetHandle,\ data,\ data\_size);\ \}}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBoneWeights(\textcolor{keyword}{const}\ std::vector<Vectors::Vector4>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetBoneWeights,\ m\_AssetHandle,\ data.data(),\ data.size());\ \}}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetVertexes(\textcolor{keyword}{const}\ std::vector<Vertex>\&\ vertexes)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vertex}{Vertex}}*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetVertexes,\ m\_AssetHandle,\ vertexes.data(),\ vertexes.size());\ \}}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ GetVertices(\textcolor{keywordtype}{size\_t}*\ data\_size)\textcolor{keyword}{\ const\ }\{\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ data\ =\ \textcolor{keyword}{nullptr};\ \ \ \ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}**,\ \textcolor{keywordtype}{size\_t}*),\ Mesh\_GetVertices,\ m\_AssetHandle,\ \&data,\ data\_size);\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ data;\ \}}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ GetNormals(\textcolor{keywordtype}{size\_t}*\ data\_size)\textcolor{keyword}{\ const\ }\{\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ data\ =\ \textcolor{keyword}{nullptr};\ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}**,\ \textcolor{keywordtype}{size\_t}*),\ Mesh\_GetNormals,\ m\_AssetHandle,\ \&data,\ data\_size);\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ data;\ \}}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ GetTextureCoords(\textcolor{keywordtype}{size\_t}*\ data\_size)\textcolor{keyword}{\ const\ }\{\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ data\ =\ \textcolor{keyword}{nullptr};\ \ \ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}**,\ \textcolor{keywordtype}{size\_t}*),\ Mesh\_GetTextureCoords,\ m\_AssetHandle,\ \&data,\ data\_size);\ \ \ \textcolor{keywordflow}{return}\ data;\ \}}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ GetTangents(\textcolor{keywordtype}{size\_t}*\ data\_size)\textcolor{keyword}{\ const\ }\{\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ data\ =\ \textcolor{keyword}{nullptr};\ \ \ \ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}**,\ \textcolor{keywordtype}{size\_t}*),\ Mesh\_GetTangents,\ m\_AssetHandle,\ \&data,\ data\_size);\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ data;\ \}}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ GetBitangents(\textcolor{keywordtype}{size\_t}*\ data\_size)\textcolor{keyword}{\ const\ }\{\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ data\ =\ \textcolor{keyword}{nullptr};\ \ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}**,\ \textcolor{keywordtype}{size\_t}*),\ Mesh\_GetBitangents,\ m\_AssetHandle,\ \&data,\ data\_size);\ \ \ \ \ \ \textcolor{keywordflow}{return}\ data;\ \}}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector4}{Vectors::IVector4}}*\ GetBoneIDs(\textcolor{keywordtype}{size\_t}*\ data\_size)\textcolor{keyword}{\ const\ }\{\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector4}{Vectors::IVector4}}*\ data\ =\ \textcolor{keyword}{nullptr};\ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector4}{Vectors::IVector4}}**,\ \textcolor{keywordtype}{size\_t}*),\ Mesh\_GetBoneIDs,\ m\_AssetHandle,\ \&data,\ data\_size);\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ data;\ \}}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}*\ GetBoneWeights(\textcolor{keywordtype}{size\_t}*\ data\_size)\textcolor{keyword}{\ const\ }\{\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}*\ data\ =\ \textcolor{keyword}{nullptr};\ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}**,\ \textcolor{keywordtype}{size\_t}*),\ Mesh\_GetBoneWeights,\ m\_AssetHandle,\ \&data,\ data\_size);\ \ \textcolor{keywordflow}{return}\ data;\ \}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetTriangles(\textcolor{keyword}{const}\ uint32\_t*\ data,\ \textcolor{keywordtype}{size\_t}\ data\_size)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ uint32\_t*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetTriangles,\ m\_AssetHandle,\ data,\ data\_size);\ \}}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetTriangles(\textcolor{keyword}{const}\ std::vector<uint32\_t>\&\ data)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ uint32\_t*,\ \textcolor{keywordtype}{size\_t}),\ Mesh\_SetTriangles,\ m\_AssetHandle,\ data.data(),\ data.size());\ \}}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t*\ GetTriangles(\textcolor{keywordtype}{size\_t}*\ data\_size)\textcolor{keyword}{\ const\ }\{\ \textcolor{keyword}{const}\ uint32\_t*\ data\ =\ \textcolor{keyword}{nullptr};\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ uint32\_t**,\ \textcolor{keywordtype}{size\_t}*),\ Mesh\_GetTriangles,\ m\_AssetHandle,\ \&data,\ data\_size);\ \ \ \ \textcolor{keywordflow}{return}\ data;\ \}}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ RecalculateNormals()\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t),\ Mesh\_RecalculateNormals,\ m\_AssetHandle);\ \}}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ AssetType::Mesh;\ \}}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }Skeleton\ :\ \textcolor{keyword}{public}\ Asset}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component}{Components::SkinnedMeshComponent}};}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ AssetType::Skeleton;\ \}}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00207\ }
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }AnimationClip\ :\ \textcolor{keyword}{public}\ Asset}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ AssetType::AnimationClip;\ \}}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }Audio\ :\ \textcolor{keyword}{public}\ Asset}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \ \ \ \ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ AssetType::Audio;\ \}}
+\DoxyCodeLine{00223\ }
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_assets_1_1_skybox_material}{SkyboxMaterial}}\ :\ \textcolor{keyword}{public}\ Asset}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_skybox_component}{Components::SkyboxComponent}};}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ AssetType::Material\_Skybox;\ \}}
+\DoxyCodeLine{00233\ }
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }ComputeBuffer}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00238\ }
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00240\ }
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \ \ \ \ ComputeBuffer()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ \ \ ComputeBuffer(\textcolor{keywordtype}{size\_t}\ element\_count,\ \textcolor{keywordtype}{size\_t}\ element\_size)\ \{\ Create(element\_count,\ element\_size);\ \};}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \ \ \ \ \string~ComputeBuffer()\ \{\ \textcolor{keywordflow}{if}\ (m\_Handle)\ Release();\ \}}
+\DoxyCodeLine{00244\ }
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ Create(\textcolor{keywordtype}{size\_t}\ element\_count,\ \textcolor{keywordtype}{size\_t}\ element\_size)\ \{\ \textcolor{keywordflow}{if}\ (m\_Handle)\ Release();\ m\_Handle\ =\ ENGINE\_SAFE\_CALL\_RET\_PTR(\textcolor{keywordtype}{void}*,\ \textcolor{keywordtype}{void}*\ (*)(\textcolor{keywordtype}{size\_t},\ \textcolor{keywordtype}{size\_t}),\ ComputeBuffer\_Create,\ element\_count,\ element\_size);\ \}}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ Release()\ \{\ \textcolor{keywordflow}{if}\ (m\_Handle)\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}*\ (*)(\textcolor{keywordtype}{void}*),\ ComputeBuffer\_Release,\ m\_Handle);\ m\_Handle\ =\ \textcolor{keyword}{nullptr};\ \}}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetData(\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ data,\ \textcolor{keywordtype}{size\_t}\ element\_count,\ \textcolor{keywordtype}{size\_t}\ size\_of\_elements)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*,\ \textcolor{keywordtype}{size\_t},\ \textcolor{keywordtype}{size\_t}),\ ComputeBuffer\_SetData,\ m\_Handle,\ data,\ element\_count,\ size\_of\_elements);\ \}}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ GetData(\textcolor{keywordtype}{void}*\ output,\ \textcolor{keywordtype}{size\_t}\ element\_count,\ \textcolor{keywordtype}{size\_t}\ size\_of\_elements)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keywordtype}{void}*,\ \textcolor{keywordtype}{size\_t},\ \textcolor{keywordtype}{size\_t}),\ ComputeBuffer\_GetData,\ m\_Handle,\ output,\ element\_count,\ size\_of\_elements);\ \}}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}*\ m\_Handle\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }ComputeShader;}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00258\ }
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }ComputeShader\ :\ \textcolor{keyword}{public}\ Asset}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \ \ \ \ ComputeShader()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \ \ \ \ ComputeShader(\textcolor{keyword}{const}\ std::string\&\ compute\_shader\_name)\ \{\ m\_AssetHandle\ =\ ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*),\ ComputeShader\_GetShaderByName,\ compute\_shader\_name.c\_str());\ \}}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetComputeShader(\textcolor{keyword}{const}\ std::string\&\ compute\_shader\_name)\ \{\ m\_AssetHandle\ =\ ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*),\ ComputeShader\_GetShaderByName,\ compute\_shader\_name.c\_str());\ \}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBuffer(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_compute_buffer}{ComputeBuffer}}\&\ buffer,\ uint32\_t\ gl\_binding\_index)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{void}*,\ uint32\_t),\ ComputeShader\_SetBuffer,\ m\_AssetHandle,\ buffer.m\_Handle,\ gl\_binding\_index);\ \}}
+\DoxyCodeLine{00269\ }
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ Dispatch(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_u_vector3}{Vectors::UVector3}}\&\ work\_groups\ =\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_u_vector3}{Vectors::UVector3}}(1,\ 1,\ 1))\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint32\_t,\ uint32\_t,\ uint32\_t),\ ComputeShader\_Dispatch,\ m\_AssetHandle,\ work\_groups.x,\ work\_groups.y,\ work\_groups.z);\ \}}
+\DoxyCodeLine{00271\ }
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBool(\textcolor{keyword}{const}\ std::string\&\ uniform\_name,\ \textcolor{keywordtype}{bool}\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ \textcolor{keywordtype}{bool}),\ ComputeShader\_SetBool,\ m\_AssetHandle,\ uniform\_name.c\_str(),\ value);\ \}}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetInt(\textcolor{keyword}{const}\ std::string\&\ uniform\_name,\ int32\_t\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ int32\_t),\ ComputeShader\_SetBool,\ m\_AssetHandle,\ uniform\_name.c\_str(),\ value);\ \}}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetUInt(\textcolor{keyword}{const}\ std::string\&\ uniform\_name,\ uint32\_t\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ uint32\_t),\ ComputeShader\_SetBool,\ m\_AssetHandle,\ uniform\_name.c\_str(),\ value);\ \}}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetFloat(\textcolor{keyword}{const}\ std::string\&\ uniform\_name,\ \textcolor{keywordtype}{float}\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ \textcolor{keywordtype}{float}),\ ComputeShader\_SetBool,\ m\_AssetHandle,\ uniform\_name.c\_str(),\ value);\ \}}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetVector2(\textcolor{keyword}{const}\ std::string\&\ uniform\_name,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector2}{Vectors::Vector2}}\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector2}{Vectors::Vector2}}),\ ComputeShader\_SetBool,\ m\_AssetHandle,\ uniform\_name.c\_str(),\ value);\ \}}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetVector3(\textcolor{keyword}{const}\ std::string\&\ uniform\_name,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}),\ ComputeShader\_SetBool,\ m\_AssetHandle,\ uniform\_name.c\_str(),\ value);\ \}}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetVector4(\textcolor{keyword}{const}\ std::string\&\ uniform\_name,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}),\ ComputeShader\_SetBool,\ m\_AssetHandle,\ uniform\_name.c\_str(),\ value);\ \}}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetMat3(\textcolor{keyword}{const}\ std::string\&\ uniform\_name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_matrices_1_1_mat3}{Matrices::Mat3}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*),\ ComputeShader\_SetMat3,\ m\_AssetHandle,\ uniform\_name.c\_str(),\ value.Data());\ \}}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetMat4(\textcolor{keyword}{const}\ std::string\&\ uniform\_name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_matrices_1_1_mat4}{Matrices::Mat4}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*),\ ComputeShader\_SetMat4,\ m\_AssetHandle,\ uniform\_name.c\_str(),\ value.Data());\ \}}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \ \ \ \ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ AssetType::Compute\_Shader;\ \}}
+\DoxyCodeLine{00283\ }
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00285\ }
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }Shader\ :\ \textcolor{keyword}{public}\ Asset}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }Material;}
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \ \ \ \ Shader(uint32\_t\ asset\_handle)\ \{\ m\_AssetHandle\ =\ asset\_handle;\ \}}
+\DoxyCodeLine{00291\ }
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00293\ }
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \ \ \ \ Shader()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \ \ \ \ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ AssetType::Shader;\ \}}
+\DoxyCodeLine{00297\ }
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00299\ }
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }MaterialUniformBlock}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00302\ }
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00304\ }
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \ \ \ \ MaterialUniformBlock()\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00306\ \ \ \ \ \ \ \ \ \ \ \ \ MaterialUniformBlock(\textcolor{keyword}{const}\ MaterialUniformBlock\&)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ \ \ \ \ MaterialUniformBlock(MaterialUniformBlock\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \ \ \ \ MaterialUniformBlock\&\ operator=(\textcolor{keyword}{const}\ MaterialUniformBlock\&)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \ \ \ \ MaterialUniformBlock\&\ operator=(MaterialUniformBlock\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00310\ }
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Bool\ types}}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBool(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keywordtype}{bool}\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::Bool,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBVec2(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector2}{Vectors::BVector2}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::BVec2,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00314\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBVec3(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors::BVector3}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::BVec3,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetBVec4(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector4}{Vectors::BVector4}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::BVec4,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Int\ types}}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetInt(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keywordtype}{int}\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::Int,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetIVec2(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector2}{Vectors::IVector2}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::IVec2,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetIVec3(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector3}{Vectors::IVector3}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::IVec3,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetIVec4(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_i_vector4}{Vectors::IVector4}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::IVec4,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00322\ }
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Unsigned\ Int\ types}}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetUInt(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ uint32\_t\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::Uint,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetUVec2(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_u_vector2}{Vectors::UVector2}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::UVec2,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetUVec3(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_u_vector3}{Vectors::UVector3}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::UVec3,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetUVec4(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_u_vector4}{Vectors::UVector4}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::UVec4,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00328\ }
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Float\ types}}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetFloat(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keywordtype}{float}\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::Float,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetVec2(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector2}{Vectors::Vector2}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::Vec2,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetVec3(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::Vec3,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetVec4(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::Vec4,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00334\ }
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Double\ types}}
+\DoxyCodeLine{00336\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetDouble(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keywordtype}{double}\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::Double,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetDVec2(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_d_vector2}{Vectors::DVector2}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::DVec2,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetDVec3(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_d_vector3}{Vectors::DVector3}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::DVec3,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00339\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetDVec4(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_d_vector4}{Vectors::DVector4}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::DVec4,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00340\ }
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Matrix\ types}}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetMat3(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_matrices_1_1_mat3}{Matrices::Mat3}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::Mat3,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetMat4(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_matrices_1_1_mat4}{Matrices::Mat4}}\&\ value)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ GLSLType,\ \textcolor{keywordtype}{void}*),\ MaterialUniformBlock\_SetUniform,\ m\_Handle,\ name,\ GLSLType::Mat4,\ (\textcolor{keywordtype}{void}*)\&value);\ \}}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetTexture(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ GLSLType\ sampler\_type,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_texture2_d}{Texture2D}}\&\ texture)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00346\ }
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ OverrideAlbedoMap(\mbox{\hyperlink{class_louron_1_1_assets_1_1_texture2_d}{Texture2D}}\ albedo\_texture)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ uint32\_t),\ MaterialUniformBlock\_OverrideAlbedoMap,\ m\_Handle,\ albedo\_texture.m\_AssetHandle);\ \}}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ OverrideMetallicMap(\mbox{\hyperlink{class_louron_1_1_assets_1_1_texture2_d}{Texture2D}}\ metallic\_texture)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ uint32\_t),\ MaterialUniformBlock\_OverrideMetallicMap,\ m\_Handle,\ metallic\_texture.m\_AssetHandle);\ \}}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ OverrideNormalMap(\mbox{\hyperlink{class_louron_1_1_assets_1_1_texture2_d}{Texture2D}}\ normal\_texture)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ uint32\_t),\ MaterialUniformBlock\_OverrideNormalMap,\ m\_Handle,\ normal\_texture.m\_AssetHandle);\ \}}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ OverrideAlbedoTint(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\&\ colour)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\&),\ MaterialUniformBlock\_OverrideAlbedoTint,\ m\_Handle,\ colour);\ \}}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ OverrideMetallic(\textcolor{keywordtype}{float}\ metallic\_factor)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keywordtype}{float}),\ MaterialUniformBlock\_OverrideRoughness,\ m\_Handle,\ metallic\_factor);\ \}}
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ OverrideRoughness(\textcolor{keywordtype}{float}\ roughness\_factor)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{void}*,\ \textcolor{keywordtype}{float}),\ MaterialUniformBlock\_OverrideRoughness,\ m\_Handle,\ roughness\_factor);\ \}}
+\DoxyCodeLine{00353\ }
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00355\ }
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ \ \ \ \ MaterialUniformBlock(\textcolor{keywordtype}{void}*\ handle)\ :\ m\_Handle(handle)\ \{\}}
+\DoxyCodeLine{00357\ }
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}*\ m\_Handle\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00359\ }
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }Material;}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component}{Components::MeshRendererComponent}};}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component}{Components::SkinnedMeshComponent}};}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }Material\ :\ \textcolor{keyword}{public}\ Asset}
+\DoxyCodeLine{00366\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00367\ }
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00369\ }
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component}{Components::MeshRendererComponent}};}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component}{Components::SkinnedMeshComponent}};}
+\DoxyCodeLine{00372\ }
+\DoxyCodeLine{00373\ \ \ \ \ \ \ \ \ \ \ \ \ Material(\textcolor{keywordtype}{bool}\ create\_new)\ \{\};}
+\DoxyCodeLine{00374\ }
+\DoxyCodeLine{00375\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00376\ }
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ \ \ \ \ Material()\ \{\ m\_AssetHandle\ =\ ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*),\ Material\_Create,\ \textcolor{stringliteral}{"{}New\ Material"{}});\ \}}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ \ \ \ \ Material(\textcolor{keyword}{const}\ std::string\&\ material\_name)\ \{\ m\_AssetHandle\ =\ ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*),\ Material\_Create,\ material\_name.c\_str());\ \}}
+\DoxyCodeLine{00379\ }
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetShader(\textcolor{keyword}{const}\ Shader\&\ shader)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint32\_t),\ Material\_SetShader,\ m\_AssetHandle,\ shader.m\_AssetHandle);\ \}}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \ \ \ \ \ \ Shader\ GetShader()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Shader(ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(uint32\_t),\ Material\_GetShader,\ m\_AssetHandle));\ \}}
+\DoxyCodeLine{00382\ }
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ Destroy()\ \{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t),\ Material\_Destroy,\ m\_AssetHandle);\ m\_AssetHandle\ =\ NULL\_UUID;\ \}}
+\DoxyCodeLine{00384\ }
+\DoxyCodeLine{00385\ \ \ \ \ \ \ \ \ \ \ \ \ AssetType\ GetAssetType()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ AssetType::Material\_Standard;\ \}}
+\DoxyCodeLine{00386\ }
+\DoxyCodeLine{00387\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00388\ \ \ \ \ \}}
+\DoxyCodeLine{00389\ }
+\DoxyCodeLine{00390\ \}}
+
+\end{DoxyCode}

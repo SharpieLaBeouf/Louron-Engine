@@ -1,7 +1,5 @@
 Project Name: Sandbox Project
 Project Config:
-  StartScene: Scenes\Skeleton Testing.lscene
+  StartScene: Scenes\Native Script Testing.lscene
   AssetDirectory: Assets\
-  AssetRegistry: AssetRegistry.lassetreg
-  CoreScriptModulePath: Scripts\Binaries\Louron Script Core.dll
-  AppScriptModulePath: Scripts\Binaries\SandboxProject.dll
+  AppScriptModulePath: Scripts\Binaries\ScriptCode.dll

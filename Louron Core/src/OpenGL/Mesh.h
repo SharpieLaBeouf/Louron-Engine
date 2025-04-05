@@ -31,7 +31,7 @@ namespace Louron
 		/// locally before uploading to GPU.
 		/// </summary>
 		/// <param name="element_count">This is the total count of FLOAT's in the data, NOT total count of vertices.</param>
-		void SetTriangles(uint32_t* triangles, GLuint element_count);
+		void SetTriangles(const uint32_t* triangles, GLuint element_count);
 
 		const GLuint* GetTriangles(size_t* triangle_count) const;
 
@@ -40,41 +40,57 @@ namespace Louron
 		/// locally before uploading to GPU.
 		/// </summary>
 		/// <param name="element_count">This is the total count of FLOAT's in the data, NOT total count of vertices.</param>
-		void SetVertices(float* vertices, GLuint element_count);
+		void SetVertices(const float* vertices, GLuint element_count);
 
 		/// <summary>
 		/// This will set the normals of the mesh
 		/// locally before uploading to GPU.
 		/// </summary>
 		/// <param name="element_count">This is the total count of FLOAT's in the data, NOT total count of vertices.</param>
-		void SetNormals(float* normals, GLuint element_count);
+		void SetNormals(const float* normals, GLuint element_count);
 
 		/// <summary>
 		/// This will set the texture coords of the mesh
 		/// locally before uploading to GPU.
 		/// </summary>
 		/// <param name="element_count">This is the total count of FLOAT's in the data, NOT total count of vertices.</param>
-		void SetTextureCoords(float* texture_coords, GLuint element_count);
+		void SetTextureCoords(const float* texture_coords, GLuint element_count);
 
 		/// <summary>
 		/// This will set the tangents of the mesh
 		/// locally before uploading to GPU.
 		/// </summary>
 		/// <param name="element_count">This is the total count of FLOAT's in the data, NOT total count of vertices.</param>
-		void SetTangents(float* texture_coords, GLuint element_count);
+		void SetTangents(const float* tangents, GLuint element_count);
 
 		/// <summary>
 		/// This will set the bi-tangents of the mesh
 		/// locally before uploading to GPU.
 		/// </summary>
 		/// <param name="element_count">This is the total count of FLOAT's in the data, NOT total count of vertices.</param>
-		void SetBiTangents(float* texture_coords, GLuint element_count);
+		void SetBiTangents(const float* bitangents, GLuint element_count);
+
+		/// <summary>
+		/// This will set the bone IDs of the mesh
+		/// locally before uploading to GPU.
+		/// </summary>
+		/// <param name="element_count">This is the total count of ID's in the data, not the total count of vertices.</param>
+		void SetBoneIDs(const glm::ivec4* bone_ids, GLuint element_count);
+
+		/// <summary>
+		/// This will set the bone weights of the mesh
+		/// locally before uploading to GPU.
+		/// </summary>
+		/// <param name="element_count">This is the total count of weight's in the data, not the total count of vertices.</param>
+		void SetBoneWeights(const glm::vec4* bone_weights, GLuint element_count);
 
 		const float* GetVertices(size_t* vertice_count) const;
 		const float* GetNormals(size_t* normals_count) const;
 		const float* GetTextureCoords(size_t* tex_coords_count) const;
 		const float* GetTangents(size_t* tangents_count) const;
 		const float* GetBiTangents(size_t* bitangents_count) const;
+		const glm::ivec4* GetBoneIDs(size_t* bone_ids_count) const;
+		const glm::vec4* GetBoneWeights(size_t* bone_weights_count) const;
 
 		void RecalculateNormals();
 

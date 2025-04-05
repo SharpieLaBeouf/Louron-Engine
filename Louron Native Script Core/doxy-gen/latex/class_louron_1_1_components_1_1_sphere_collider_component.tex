@@ -1,0 +1,185 @@
+\doxysection{Louron\+::Components\+::Sphere\+Collider\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_sphere_collider_component}{}\label{class_louron_1_1_components_1_1_sphere_collider_component}\index{Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}}
+
+
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access sphere collider information.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::Sphere\+Collider\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_sphere_collider_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_ac14c243e3be4a5ad89834373d0942bf7}{Is\+Trigger}} () const
+\begin{DoxyCompactList}\small\item\em Checks if the sphere collider is a trigger. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{Physics\+Material}} \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_ab5ed902b51b69a3734f780f943dec365}{Get\+Material}} () const
+\begin{DoxyCompactList}\small\item\em Gets the physics material used by the sphere collider. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_a4a4364875b60ae04f82d739871e6d0eb}{Get\+Centre}} () const
+\begin{DoxyCompactList}\small\item\em Gets the center offset of the sphere collider. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_a9de7e482f4cd1d1da276e391ae84fe74}{Get\+Radius}} () const
+\begin{DoxyCompactList}\small\item\em Gets the radius of the sphere collider. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_a6a4056fae9a8f598ed9b5ff763abc099}{Set\+Is\+Trigger}} (bool is\+Trigger) const
+\begin{DoxyCompactList}\small\item\em Sets whether the collider is a trigger. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_ac7dc62661c1e18719ed090d124b4cd6d}{Set\+Material}} (const \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{Physics\+Material}} \&material) const
+\begin{DoxyCompactList}\small\item\em Sets the physics material for this collider. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_a00e7f14c2f6120c308e151185c8dd93e}{Set\+Centre}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&centre) const
+\begin{DoxyCompactList}\small\item\em Sets the center of the sphere collider. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_a0b8585814ce6fa94b2cbb9270aa1658e}{Set\+Radius}} (float radius) const
+\begin{DoxyCompactList}\small\item\em Sets the radius of the sphere collider. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_sphere_collider_component_a0f021eed37821d5713f862681978c761}\label{class_louron_1_1_components_1_1_sphere_collider_component_a0f021eed37821d5713f862681978c761} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access sphere collider information. 
+
+Used to define spherical colliders with center, radius, material and trigger settings. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_sphere_collider_component_a4a4364875b60ae04f82d739871e6d0eb}\index{Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}!GetCentre@{GetCentre}}
+\index{GetCentre@{GetCentre}!Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}}
+\doxysubsubsection{\texorpdfstring{GetCentre()}{GetCentre()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_sphere_collider_component_a4a4364875b60ae04f82d739871e6d0eb} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} Louron\+::\+Components\+::\+Sphere\+Collider\+Component\+::\+Get\+Centre (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the center offset of the sphere collider. 
+
+\begin{DoxyReturn}{Returns}
+A 3D vector representing the center position. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_sphere_collider_component_ab5ed902b51b69a3734f780f943dec365}\index{Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}!GetMaterial@{GetMaterial}}
+\index{GetMaterial@{GetMaterial}!Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}}
+\doxysubsubsection{\texorpdfstring{GetMaterial()}{GetMaterial()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_sphere_collider_component_ab5ed902b51b69a3734f780f943dec365} 
+\mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{Physics\+Material}} Louron\+::\+Components\+::\+Sphere\+Collider\+Component\+::\+Get\+Material (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the physics material used by the sphere collider. 
+
+\begin{DoxyReturn}{Returns}
+The assigned physics material. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_sphere_collider_component_a9de7e482f4cd1d1da276e391ae84fe74}\index{Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}!GetRadius@{GetRadius}}
+\index{GetRadius@{GetRadius}!Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}}
+\doxysubsubsection{\texorpdfstring{GetRadius()}{GetRadius()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_sphere_collider_component_a9de7e482f4cd1d1da276e391ae84fe74} 
+float Louron\+::\+Components\+::\+Sphere\+Collider\+Component\+::\+Get\+Radius (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the radius of the sphere collider. 
+
+\begin{DoxyReturn}{Returns}
+Radius as a float. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_sphere_collider_component_ac14c243e3be4a5ad89834373d0942bf7}\index{Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}!IsTrigger@{IsTrigger}}
+\index{IsTrigger@{IsTrigger}!Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}}
+\doxysubsubsection{\texorpdfstring{IsTrigger()}{IsTrigger()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_sphere_collider_component_ac14c243e3be4a5ad89834373d0942bf7} 
+bool Louron\+::\+Components\+::\+Sphere\+Collider\+Component\+::\+Is\+Trigger (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if the sphere collider is a trigger. 
+
+\begin{DoxyReturn}{Returns}
+True if it is a trigger. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_sphere_collider_component_a00e7f14c2f6120c308e151185c8dd93e}\index{Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}!SetCentre@{SetCentre}}
+\index{SetCentre@{SetCentre}!Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}}
+\doxysubsubsection{\texorpdfstring{SetCentre()}{SetCentre()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_sphere_collider_component_a00e7f14c2f6120c308e151185c8dd93e} 
+void Louron\+::\+Components\+::\+Sphere\+Collider\+Component\+::\+Set\+Centre (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&}]{centre}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the center of the sphere collider. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em centre} & New center position as a 3D vector. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_sphere_collider_component_a6a4056fae9a8f598ed9b5ff763abc099}\index{Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}!SetIsTrigger@{SetIsTrigger}}
+\index{SetIsTrigger@{SetIsTrigger}!Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}}
+\doxysubsubsection{\texorpdfstring{SetIsTrigger()}{SetIsTrigger()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_sphere_collider_component_a6a4056fae9a8f598ed9b5ff763abc099} 
+void Louron\+::\+Components\+::\+Sphere\+Collider\+Component\+::\+Set\+Is\+Trigger (\begin{DoxyParamCaption}\item[{bool}]{is\+Trigger}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets whether the collider is a trigger. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em is\+\_\+trigger} & True to make it a trigger. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_sphere_collider_component_ac7dc62661c1e18719ed090d124b4cd6d}\index{Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}!SetMaterial@{SetMaterial}}
+\index{SetMaterial@{SetMaterial}!Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}}
+\doxysubsubsection{\texorpdfstring{SetMaterial()}{SetMaterial()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_sphere_collider_component_ac7dc62661c1e18719ed090d124b4cd6d} 
+void Louron\+::\+Components\+::\+Sphere\+Collider\+Component\+::\+Set\+Material (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{Physics\+Material}} \&}]{material}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the physics material for this collider. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em material} & The physics material to assign. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_sphere_collider_component_a0b8585814ce6fa94b2cbb9270aa1658e}\index{Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}!SetRadius@{SetRadius}}
+\index{SetRadius@{SetRadius}!Louron::Components::SphereColliderComponent@{Louron::Components::SphereColliderComponent}}
+\doxysubsubsection{\texorpdfstring{SetRadius()}{SetRadius()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_sphere_collider_component_a0b8585814ce6fa94b2cbb9270aa1658e} 
+void Louron\+::\+Components\+::\+Sphere\+Collider\+Component\+::\+Set\+Radius (\begin{DoxyParamCaption}\item[{float}]{radius}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the radius of the sphere collider. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em radius} & New radius as a float. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\end{DoxyCompactItemize}

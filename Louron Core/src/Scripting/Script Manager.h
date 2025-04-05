@@ -1,419 +1,96 @@
 #pragma once
 
 // Louron Core Headers
-#include "../Scene/Scene.h"
+#include "../Core/Platform.h"
+#include "Script Defines.h"
 
 // C++ Standard Library Headers
+#include <memory>
 #include <string>
-#include <map>
+#include <format>
+#include <iostream>
+#include <filesystem>
+#include <unordered_map>
+
+#ifdef L_PLATFORM_WINDOWS
+#include <Windows.h>
+#else
+#include <dlfcn.h>
+#endif
 
 // External Vendor Library Headers
-#include <mono/jit/jit.h>
-#include <mono/metadata/assembly.h>
-
-namespace Louron {
-
-	class Entity;
-
-#pragma region Script Fields
-
-	enum class ScriptFieldType
-	{
-		None = 0,
-		Bool,
-		Byte,
-		Sbyte,
-		Char,
-		Decimal,
-		Double,
-		Float,
-		Int,
-		Uint,
-		Long,
-		Ulong,
-		Short,
-		Ushort,
-		Vector2,
-		Vector3,
-		Vector4,
-		Entity,
-		TransformComponent,
-		TagComponent,
-		ScriptComponent,
-		PointLightComponent,
-		SpotLightComponent,
-		DirectionalLightComponent,
-		RigidbodyComponent,
-		BoxColliderComponent,
-		SphereColliderComponent,
-		MeshFilterComponent,
-		MeshRendererComponent,
-		Component,
-		Prefab,
-		ComputeShader
-	};
-
-	struct ScriptField
-	{
-
-	public:
-
-		ScriptFieldType Type;
-		std::string Name;
-
-		MonoClassField* ClassField;
-
-		ScriptField() : Type(ScriptFieldType::None), Name(""), ClassField(nullptr) { }
-
-		ScriptField(ScriptFieldType type, std::string name, MonoClassField* classField) :Type(type), Name(name), ClassField(classField) { }
-
-		~ScriptField() {
-			if (m_Buffer)
-				delete[] m_Buffer;
-		}
-
-		template<typename T>
-		T GetInitialValue() const
-		{
-			static_assert(sizeof(T) <= 16, "Type too large!");
-			if(!m_Buffer)
-				return T();
-			return *(T*)m_Buffer;
-		}
-		
-	private:
-
-		char* m_Buffer = nullptr;
-
-		void SetInitialValue(const char* value);
-
-		friend class ScriptManager;
-
-	};
-
-	struct ScriptFieldInstance
-	{
-		ScriptField Field;
-
-		ScriptFieldInstance()
-		{
-			memset(m_Buffer, 0, sizeof(m_Buffer));
-		}
-
-		template<typename T>
-		T GetValue()
-		{
-			static_assert(sizeof(T) <= 16, "Type too large!");
-			return *(T*)m_Buffer;
-		}
-
-		template<typename T>
-		void SetValue(T value)
-		{
-			static_assert(sizeof(T) <= 16, "Type too large!");
-			memcpy(m_Buffer, &value, sizeof(T));
-		}
 
-	private:
-		uint8_t m_Buffer[16];
 
-		friend class ScriptManager;
-		friend class ScriptInstance;
-	};
-	// Key is name of field - value is ScriptFieldInstance
-	using ScriptFieldMap = std::unordered_map<std::string, ScriptFieldInstance>;
+namespace Louron
+{
 
-#pragma endregion
+    class Scene;
 
-#pragma region Script Class and Instances
+    class ScriptManager
+    {
 
-	class ScriptClass {
+    public:
 
-	public:
-		ScriptClass() = default;
-		ScriptClass(const std::string& classNamespace, const std::string& className, bool core_assembly = false);
+        using ScriptFieldMap = std::unordered_map<std::string, ScriptFieldInstance>;
 
-		MonoObject* Instantiate();
-		MonoMethod* GetMethod(const std::string& name, int parameterCount);
-		MonoObject* InvokeMethod(MonoObject* instance, MonoMethod* method, void** params = nullptr, const UUID& entity_uuid = NULL_UUID);
+        static ScriptManager* Get();
 
-		const std::unordered_map<std::string, ScriptField>& GetFields() const { return m_Fields; }
+        static bool Init(const std::filesystem::path& path);
+        static void Shutdown();
 
-		MonoClass* GetMonoClass() { return m_MonoClass; }
+        void RemoveAllScriptInstances();
+        void RemoveAllScriptFields();
 
-	private:
-		std::string m_ClassNamespace;
-		std::string m_ClassName;
+        void FreeAssembly();
+        bool ReloadAssembly(const std::filesystem::path& path);
 
-		MonoClass* m_MonoClass = nullptr;
+        // --------------------------------------
+        //                Getters
+        // --------------------------------------
+        const auto& GetAllClasses() const { return m_ScriptClasses; }
+        std::shared_ptr<ScriptClass> GetScriptClass(const std::string& name);
 
-		std::unordered_map<std::string, ScriptField> m_Fields;
+        ScriptClassInstance* GetScriptClassInstance(uint32_t entity_uuid, const std::string& script_name);
+        ScriptFieldInstance* GetScriptFieldInstance(uint32_t entity_uuid, const std::string& script_name, const std::string& field_name);
+        ScriptFieldMap* GetScriptFieldMap(uint32_t entity_uuid, const std::string& script_name);
 
-		friend class ScriptManager;
+        void AddDummyScriptClass(const std::string& script_name);
 
-	};
+        bool ScriptClassExists(const std::string& script_name);
 
-	enum class _Collider_Type : uint8_t {
-		None = 0,
-		Box_Collider,
-		Sphere_Collider,
-		Capsule_Collider,
-		Mesh_Collider
-	};
+        // --------------------------------------
+        //      Script Interface Functions
+        // --------------------------------------
+        void OnCreateScript(uint32_t entity_uuid, const std::string& script_name);
+        void OnDestroyScript(uint32_t entity_uuid, const std::string& script_name);
+        void OnDestroyAllScripts(uint32_t entity_uuid);
 
-	enum class _Collision_Type : uint8_t {
-		None = 0,
-		CollideEnter,
-		CollideStay,
-		CollideLeave,
-		TriggerEnter,
-		TriggerStay,
-		TriggerLeave
-	};
+        void OnUpdateScript(uint32_t entity_uuid, const std::string& script_name);
+        void OnLateUpdateScript(uint32_t entity_uuid, const std::string& script_name);
+        void OnFixedUpdateScript(uint32_t entity_uuid, const std::string& script_name);
 
-	struct _Collider {
-		_Collider_Type type;
-		uint32_t other_collider_uuid;
-	};
+        void OnCollideScript(uint32_t entity_uuid, uint32_t other_uuid, const std::string& script_name, Script_Collision_Type collision_type);
 
-	class ScriptInstance {
+    private:
 
-	public:
+        bool LoadAssembly(const std::filesystem::path& path);
 
-		ScriptInstance(std::shared_ptr<ScriptClass> class_ref, Entity entity);
+        bool CreateInstance(uint32_t entity_uuid, const std::string& script_name);
 
-		void InvokeOnCreate();
-		void InvokeOnUpdate();
-		void InvokeOnFixedUpdate();
-		void InvokeOnLateUpdate();
-		void InvokeOnDestroy();
+        // KEY = script_name, VALUE = script class
+        std::unordered_map<std::string, std::shared_ptr<ScriptClass>> m_ScriptClasses;
+        // KEY = uuid + script_name, VALUE = script class instance
+        std::unordered_map<std::string, std::unique_ptr<ScriptClassInstance>> m_ScriptInstances;
+        // KEY = uuid + script_name, VALUE = script field map
+        std::unordered_map<std::string, ScriptFieldMap> m_ScriptFieldInstances;
 
-		void InvokeOnCollideEnter(void** other_collider_param);
-		void InvokeOnCollideStay(void** other_collider_param);
-		void InvokeOnCollideLeave(void** other_collider_param);
+        HMODULE m_DLL = nullptr;
+        void (*m_LoadScripts)() = nullptr;
+        const ScriptClass* (*m_GetScriptTypes)(size_t*) = nullptr;
 
-		void InvokeOnTriggerEnter(void** other_collider_param);
-		void InvokeOnTriggerStay(void** other_collider_param);
-		void InvokeOnTriggerLeave(void** other_collider_param);
+        Scene* scene_ref = nullptr;
 
-		std::shared_ptr<ScriptClass> GetScriptClass() { return m_ScriptClass; }
-		MonoObject* GetManagedObject() { return m_Instance; }
-
-		template<typename T>
-		T GetFieldValue(const std::string& name)
-		{
-			static_assert(sizeof(T) <= 16, "Type too large!");
-
-			bool success = GetFieldValueInternal(name, s_FieldValueBuffer);
-			if (!success)
-				return T();
-
-			return *(T*)s_FieldValueBuffer;
-		}
-
-		template<typename T>
-		void SetFieldValue(const std::string& name, T value)
-		{
-			static_assert(sizeof(T) <= 16, "Type too large!");
-
-			SetFieldValueInternal(name, &value);
-		}
-
-		void SetFieldEntityValue(const ScriptFieldInstance& field_instance, UUID value);
-		UUID GetFieldEntityValue(const std::string& field_name);
-
-		void SetFieldComponentPropertyValue(const ScriptFieldInstance& field_instance, UUID value);
-		UUID GetFieldComponentPropertyValue(const std::string& field_name);
-
-		void SetFieldPrefabValue(const ScriptFieldInstance& field_instance, AssetHandle value);
-		AssetHandle GetFieldPrefabValue(const std::string& field_name);
-
-		void SetFieldComputeShaderValue(const ScriptFieldInstance& field_instance, AssetHandle value);
-		AssetHandle GetFieldComputeShaderValue(const std::string& field_name);
-
-	private:
-
-		bool GetFieldValueInternal(const std::string& name, void* buffer);
-		bool SetFieldValueInternal(const std::string& name, const void* value);
-
-	private:
-
-		std::shared_ptr<ScriptClass> m_ScriptClass;
-
-		MonoObject* m_Instance = nullptr;
-
-		MonoMethod* m_Constructor = nullptr;
-
-		MonoMethod* m_OnCreateMethod = nullptr;
-		MonoMethod* m_OnUpdateMethod = nullptr;
-		MonoMethod* m_OnFixedUpdateMethod = nullptr;
-		MonoMethod* m_OnLateUpdateMethod = nullptr;
-		MonoMethod* m_OnDestroyMethod = nullptr;
-
-		MonoMethod* m_OnCollideEnterMethod = nullptr;
-		MonoMethod* m_OnCollideStayMethod = nullptr;
-		MonoMethod* m_OnCollideLeaveMethod = nullptr;
-
-		MonoMethod* m_OnTriggerEnterMethod = nullptr;
-		MonoMethod* m_OnTriggerStayMethod = nullptr;
-		MonoMethod* m_OnTriggerLeaveMethod = nullptr;
-
-		UUID m_EntityUUID = NULL_UUID;
-
-		inline static char s_FieldValueBuffer[16];
-
-		friend class ScriptManager;
-		friend struct ScriptFieldInstance;
-	};
-
-#pragma endregion
-
-	class ScriptManager {
-
-	public:
-
-		static void Init();
-		static void Shutdown();
-		static ScriptManager& Get();
-
-		static bool LoadAssembly(const std::filesystem::path& filepath);
-		static bool LoadAppAssembly(const std::filesystem::path& filepath);
-
-		static void ReloadAssembly();
-
-		static void OnRuntimeStart(std::shared_ptr<Scene> scene);
-		static void OnRuntimeStop();
-
-		static Scene* GetSceneContext();
-
-		static bool EntityClassExists(const std::string& fullClassName);
-		static ScriptFieldMap& GetScriptFieldMap(UUID entity_uuid, const std::string& script_name);
-
-		static void OnCreateEntity(Entity entity);
-		static void OnCreateEntityScript(Entity entity, const std::string& script_name);
-		static void OnDestroyEntity(Entity entity);
-
-		static void OnUpdateEntity(Entity entity);
-		static void OnFixedUpdateEntity(Entity entity);
-		static void OnLateUpdateEntity(Entity entity);
-		static void OnCollideEntity(Entity entity, Entity other_entity, _Collision_Type collision_type);
-
-		static void CheckInactiveScriptsOnEntities();
-
-		static std::shared_ptr<ScriptClass> GetEntityClass(const std::string& name);
-		static const std::unordered_map<std::string, std::shared_ptr<ScriptClass>>& GetEntityClasses();
-		static void AddEntityClass(const std::string& entity_class_full_name, std::shared_ptr<ScriptClass> script_class); // Must be "{NameSpace}.{ClassName}"
-
-		static MonoImage* GetCoreAssemblyImage();
-
-		static std::shared_ptr<ScriptInstance> GetEntityScriptInstance(UUID entityID, const std::string& script_name);
-
-		static void SetAppAssemblyPath(const std::filesystem::path& file_path);
-
-	private:
-
-		static void LoadAssemblyClasses(MonoAssembly* assembly);
-
-		ScriptManager();
-		~ScriptManager();
-
-		// Delete copy assignment and move assignment constructors
-		ScriptManager(const ScriptManager&) = delete;
-		ScriptManager(ScriptManager&&) = delete;
-
-		// Delete copy assignment and move assignment operators
-		ScriptManager& operator=(const ScriptManager&) = delete;
-		ScriptManager& operator=(ScriptManager&&) = delete;
-
-
-
-	};
-
-	namespace ScriptingUtils {
-
-		inline const char* ScriptFieldTypeToString(ScriptFieldType fieldType)
-		{
-			switch (fieldType)
-			{
-				case ScriptFieldType::None:							return "None";
-				case ScriptFieldType::Bool:							return "Bool";
-				case ScriptFieldType::Byte:							return "Byte";
-				case ScriptFieldType::Sbyte:						return "Sbyte";
-				case ScriptFieldType::Char:							return "Char";
-				case ScriptFieldType::Decimal:						return "Decimal";
-				case ScriptFieldType::Double:						return "Double";
-				case ScriptFieldType::Float:						return "Float";
-				case ScriptFieldType::Int:							return "Int";
-				case ScriptFieldType::Uint:							return "Uint";
-				case ScriptFieldType::Long:							return "Long";
-				case ScriptFieldType::Ulong:						return "Ulong";
-				case ScriptFieldType::Short:						return "Short";
-				case ScriptFieldType::Ushort:						return "Ushort";
-				case ScriptFieldType::Vector2:						return "Vector2";
-				case ScriptFieldType::Vector3:						return "Vector3";
-				case ScriptFieldType::Vector4:						return "Vector4";
-				case ScriptFieldType::Entity:						return "Entity";
-				case ScriptFieldType::TransformComponent:			return "TransformComponent";
-				case ScriptFieldType::TagComponent:					return "TagComponent";
-				case ScriptFieldType::ScriptComponent:				return "ScriptComponent";
-				case ScriptFieldType::PointLightComponent:			return "PointLightComponent";
-				case ScriptFieldType::SpotLightComponent:			return "SpotLightComponent";
-				case ScriptFieldType::DirectionalLightComponent:	return "DirectionalLightComponent";
-				case ScriptFieldType::RigidbodyComponent:			return "RigidbodyComponent";
-				case ScriptFieldType::BoxColliderComponent:			return "BoxColliderComponent";
-				case ScriptFieldType::SphereColliderComponent:		return "SphereColliderComponent";
-				case ScriptFieldType::MeshFilterComponent:			return "MeshFilterComponent";
-				case ScriptFieldType::MeshRendererComponent:		return "MeshRendererComponent";
-				case ScriptFieldType::Component:					return "Component";
-				case ScriptFieldType::Prefab:						return "Prefab";
-				case ScriptFieldType::ComputeShader:				return "ComputeShader";
-			}
-			L_CORE_ASSERT(false, "Unknown ScriptFieldType");
-			return "None";
-		}
-
-
-
-		inline ScriptFieldType ScriptFieldTypeFromString(std::string_view fieldType)
-		{
-			if (fieldType == "None")						return ScriptFieldType::None;
-			if (fieldType == "Bool")						return ScriptFieldType::Bool;
-			if (fieldType == "Byte")						return ScriptFieldType::Byte;
-			if (fieldType == "Sbyte")						return ScriptFieldType::Sbyte;
-			if (fieldType == "Char")						return ScriptFieldType::Char;
-			if (fieldType == "Decimal")						return ScriptFieldType::Decimal;
-			if (fieldType == "Double")						return ScriptFieldType::Double;
-			if (fieldType == "Float")						return ScriptFieldType::Float;
-			if (fieldType == "Int")							return ScriptFieldType::Int;
-			if (fieldType == "Uint")						return ScriptFieldType::Uint;
-			if (fieldType == "Long")						return ScriptFieldType::Long;
-			if (fieldType == "Ulong")						return ScriptFieldType::Ulong;
-			if (fieldType == "Short")						return ScriptFieldType::Short;
-			if (fieldType == "Ushort")						return ScriptFieldType::Ushort;
-			if (fieldType == "Vector2")						return ScriptFieldType::Vector2;
-			if (fieldType == "Vector3")						return ScriptFieldType::Vector3;
-			if (fieldType == "Vector4")						return ScriptFieldType::Vector4;
-			if (fieldType == "Entity")						return ScriptFieldType::Entity;
-			if (fieldType == "TransformComponent")			return ScriptFieldType::TransformComponent;
-			if (fieldType == "TagComponent")				return ScriptFieldType::TagComponent;
-			if (fieldType == "ScriptComponent")				return ScriptFieldType::ScriptComponent;
-			if (fieldType == "PointLightComponent")			return ScriptFieldType::PointLightComponent;
-			if (fieldType == "SpotLightComponent")			return ScriptFieldType::SpotLightComponent;
-			if (fieldType == "DirectionalLightComponent")	return ScriptFieldType::DirectionalLightComponent;
-			if (fieldType == "RigidbodyComponent")			return ScriptFieldType::RigidbodyComponent;
-			if (fieldType == "BoxColliderComponent")		return ScriptFieldType::BoxColliderComponent;
-			if (fieldType == "SphereColliderComponent")		return ScriptFieldType::SphereColliderComponent;
-			if (fieldType == "MeshFilterComponent")			return ScriptFieldType::MeshFilterComponent;
-			if (fieldType == "MeshRendererComponent")		return ScriptFieldType::MeshRendererComponent;
-			if (fieldType == "Component")					return ScriptFieldType::Component;
-			if (fieldType == "Prefab")						return ScriptFieldType::Prefab;
-			if (fieldType == "ComputeShader")				return ScriptFieldType::ComputeShader;
-
-			L_CORE_ASSERT(false, "Unknown ScriptFieldType");
-			return ScriptFieldType::None;
-		}
-
-
-	}
+        static ScriptManager* s_Instance;
+    };
 
 }

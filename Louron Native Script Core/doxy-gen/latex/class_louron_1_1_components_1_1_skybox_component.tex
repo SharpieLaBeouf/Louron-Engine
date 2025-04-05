@@ -1,0 +1,99 @@
+\doxysection{Louron\+::Components\+::Skybox\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_skybox_component}{}\label{class_louron_1_1_components_1_1_skybox_component}\index{Louron::Components::SkyboxComponent@{Louron::Components::SkyboxComponent}}
+
+
+Represents a skybox component that renders an environment background.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::Skybox\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_skybox_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_skybox_material}{Assets\+::\+Skybox\+Material}} \mbox{\hyperlink{class_louron_1_1_components_1_1_skybox_component_a7029423eb788cf2320773727d1c52dd9}{Get\+Skybox\+Material\+Asset}} () const
+\begin{DoxyCompactList}\small\item\em Gets the skybox material asset assigned to this component. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_skybox_component_ae2ee92dae11f864780f86e54c310cab1}{Set\+Skybox\+Material\+Asset}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_skybox_material}{Assets\+::\+Skybox\+Material}} skybox\+\_\+material) const
+\begin{DoxyCompactList}\small\item\em Sets the skybox material asset for this component. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_skybox_component_ab6d541c478af21ebabd3e10404c7cb31}\label{class_louron_1_1_components_1_1_skybox_component_ab6d541c478af21ebabd3e10404c7cb31} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents a skybox component that renders an environment background. 
+
+This component should be attached to an entity responsible for skybox rendering. It uses a cube map material. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_skybox_component_a7029423eb788cf2320773727d1c52dd9}\index{Louron::Components::SkyboxComponent@{Louron::Components::SkyboxComponent}!GetSkyboxMaterialAsset@{GetSkyboxMaterialAsset}}
+\index{GetSkyboxMaterialAsset@{GetSkyboxMaterialAsset}!Louron::Components::SkyboxComponent@{Louron::Components::SkyboxComponent}}
+\doxysubsubsection{\texorpdfstring{GetSkyboxMaterialAsset()}{GetSkyboxMaterialAsset()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skybox_component_a7029423eb788cf2320773727d1c52dd9} 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_skybox_material}{Assets\+::\+Skybox\+Material}} Louron\+::\+Components\+::\+Skybox\+Component\+::\+Get\+Skybox\+Material\+Asset (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the skybox material asset assigned to this component. 
+
+\begin{DoxyReturn}{Returns}
+A reference to the assigned skybox material.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ skybox\_material\ =\ skybox\_component.GetSkyboxMaterialAsset();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_skybox_component_ae2ee92dae11f864780f86e54c310cab1}\index{Louron::Components::SkyboxComponent@{Louron::Components::SkyboxComponent}!SetSkyboxMaterialAsset@{SetSkyboxMaterialAsset}}
+\index{SetSkyboxMaterialAsset@{SetSkyboxMaterialAsset}!Louron::Components::SkyboxComponent@{Louron::Components::SkyboxComponent}}
+\doxysubsubsection{\texorpdfstring{SetSkyboxMaterialAsset()}{SetSkyboxMaterialAsset()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_skybox_component_ae2ee92dae11f864780f86e54c310cab1} 
+void Louron\+::\+Components\+::\+Skybox\+Component\+::\+Set\+Skybox\+Material\+Asset (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_louron_1_1_assets_1_1_skybox_material}{Assets\+::\+Skybox\+Material}}}]{skybox\+\_\+material}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the skybox material asset for this component. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em skybox\+\_\+material} & The material to assign.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{skybox\_component.SetSkyboxMaterialAsset(my\_skybox\_material);}
+
+\end{DoxyCode}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\end{DoxyCompactItemize}

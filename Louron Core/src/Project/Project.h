@@ -27,16 +27,9 @@ namespace Louron {
 		// Needs to be absolute path!
 		// This path is where all Project and Scene Assets are stored
 		std::filesystem::path AssetDirectory;
-		
-		// This path should be Relative to the ProjectConfig::AssetDirectory
-		std::filesystem::path AssetRegistry;
 
-		// This is an absolute path of where the CoreScriptAssembly is
-		std::filesystem::path CoreScriptAssemblyPath;
-
-		// Needs to be absolute path!
-		// This is a relative path of where the AppScriptAssembly is
-		std::filesystem::path AppScriptAssemblyPath;
+		// Relative Path in Project of Game's Script Core DLL
+		std::filesystem::path ScriptAssemblyPath;
 	};
 
 	class Project {

@@ -1,0 +1,104 @@
+\doxysection{Louron\+::Rigidbody\+Component Class Reference}
+\hypertarget{class_louron_1_1_rigidbody_component}{}\label{class_louron_1_1_rigidbody_component}\index{Louron::RigidbodyComponent@{Louron::RigidbodyComponent}}
+Inheritance diagram for Louron\+::Rigidbody\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_rigidbody_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a52ad7d63ff8a0cc5ebd003cc65da7d28}\label{class_louron_1_1_rigidbody_component_a52ad7d63ff8a0cc5ebd003cc65da7d28} 
+enum class {\bfseries Force\+Mode} \+: uint8\+\_\+t \{ {\bfseries Force}
+, {\bfseries Impulse}
+, {\bfseries Velocity\+\_\+\+Change}
+, {\bfseries Acceleration}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_ae4ab289c4d17958e4e9f8aa9fefff90b}\label{class_louron_1_1_rigidbody_component_ae4ab289c4d17958e4e9f8aa9fefff90b} 
+float {\bfseries Get\+Mass} () const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a13fec644a0a08d19b437012f5b855e68}\label{class_louron_1_1_rigidbody_component_a13fec644a0a08d19b437012f5b855e68} 
+float {\bfseries Get\+Drag} () const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a68669514cfa2a15c552dd553759ecb44}\label{class_louron_1_1_rigidbody_component_a68669514cfa2a15c552dd553759ecb44} 
+float {\bfseries Get\+Angular\+Drag} () const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a207671b0af366bb8f7f2354dc172ee81}\label{class_louron_1_1_rigidbody_component_a207671b0af366bb8f7f2354dc172ee81} 
+bool {\bfseries Is\+Automatic\+Centre\+Of\+Mass\+Enabled} () const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a3ef461d05a2dc299840bcbea5d11418d}\label{class_louron_1_1_rigidbody_component_a3ef461d05a2dc299840bcbea5d11418d} 
+bool {\bfseries Is\+Gravity\+Enabled} () const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_add756836498edbcb622e70c0aca1f6e7}\label{class_louron_1_1_rigidbody_component_add756836498edbcb622e70c0aca1f6e7} 
+bool {\bfseries Is\+Kinematic\+Enabled} () const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a7844d8eff21e5fcf732cbe8b25acc9ae}\label{class_louron_1_1_rigidbody_component_a7844d8eff21e5fcf732cbe8b25acc9ae} 
+\mbox{\hyperlink{struct_louron_1_1_b_vector3}{BVector3}} {\bfseries Get\+Position\+Constraint} () const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_aeba3f7100c601ec08ef8844b7ec9acbd}\label{class_louron_1_1_rigidbody_component_aeba3f7100c601ec08ef8844b7ec9acbd} 
+\mbox{\hyperlink{struct_louron_1_1_b_vector3}{BVector3}} {\bfseries Get\+Rotation\+Constraint} () const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_ac2e3b5fbe6245120ae34d8bc920bb590}\label{class_louron_1_1_rigidbody_component_ac2e3b5fbe6245120ae34d8bc920bb590} 
+void {\bfseries Set\+Mass} (float mass) const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_af133f3ceb967dc69c29eebc0a9031b1f}\label{class_louron_1_1_rigidbody_component_af133f3ceb967dc69c29eebc0a9031b1f} 
+void {\bfseries Set\+Drag} (float drag) const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a2fe2d8bb3ce779f5127b8334a3688ce6}\label{class_louron_1_1_rigidbody_component_a2fe2d8bb3ce779f5127b8334a3688ce6} 
+void {\bfseries Set\+Angular\+Drag} (float angular\+Drag) const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a91a534096c7210968747b5944ed08439}\label{class_louron_1_1_rigidbody_component_a91a534096c7210968747b5944ed08439} 
+void {\bfseries Set\+Automatic\+Centre\+Of\+Mass} (const bool \&automatic\+Centre\+Of\+Mass) const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a8d2f81a12ee4c5d836bfb1f4a2bfd313}\label{class_louron_1_1_rigidbody_component_a8d2f81a12ee4c5d836bfb1f4a2bfd313} 
+void {\bfseries Set\+Gravity} (bool use\+Gravity) const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_ad573e30541c296dabef37aa49333e4ed}\label{class_louron_1_1_rigidbody_component_ad573e30541c296dabef37aa49333e4ed} 
+void {\bfseries Set\+Kinematic} (bool is\+Kinematic) const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a25cafdf2b0938a3c7923bbb9c0bacd15}\label{class_louron_1_1_rigidbody_component_a25cafdf2b0938a3c7923bbb9c0bacd15} 
+void {\bfseries Set\+Position\+Constraint} (const \mbox{\hyperlink{struct_louron_1_1_b_vector3}{BVector3}} \&position\+Constraint) const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a4d1bf66a6ada088e50103649df8c46b4}\label{class_louron_1_1_rigidbody_component_a4d1bf66a6ada088e50103649df8c46b4} 
+void {\bfseries Set\+Rotation\+Constraint} (const \mbox{\hyperlink{struct_louron_1_1_b_vector3}{BVector3}} \&rotation\+Constraint) const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a4afedb69d4d36aa782a9596373e022e3}\label{class_louron_1_1_rigidbody_component_a4afedb69d4d36aa782a9596373e022e3} 
+void {\bfseries Apply\+Force} (const \mbox{\hyperlink{struct_louron_1_1_vector3}{Vector3}} \&force, Force\+Mode force\+Mode=Force\+Mode\+::\+Force) const
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a08eacbc38ed2a5a25fdd7f5f769bfc70}\label{class_louron_1_1_rigidbody_component_a08eacbc38ed2a5a25fdd7f5f769bfc70} 
+void {\bfseries Apply\+Torque} (const \mbox{\hyperlink{struct_louron_1_1_vector3}{Vector3}} \&torque) const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_rigidbody_component_a8546ffd4fc556b7da643ecfa85c55eb2}\label{class_louron_1_1_rigidbody_component_a8546ffd4fc556b7da643ecfa85c55eb2} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_component}{Louron\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_component}{Louron\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_component}{Louron\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\end{DoxyCompactItemize}

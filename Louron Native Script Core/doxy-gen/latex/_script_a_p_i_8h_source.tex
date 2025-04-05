@@ -1,0 +1,105 @@
+\doxysection{Script\+API.\+h}
+\hypertarget{_script_a_p_i_8h_source}{}\label{_script_a_p_i_8h_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cstddef>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}Engine\ Callbacks.h"{}}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}Defines/LAssets.h"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}Defines/LBounds.h"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}Defines/LMath.h"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}Defines/LTypes.h"{}}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}Defines/LVectors.h"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}Defines/LMatrices.h"{}}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}ECS/LEntity.h"{}}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}ECS/LComponent.h"{}}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}Engine\ Util/LDebug.h"{}}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ "{}Engine\ Util/LInput.h"{}}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ "{}Engine\ Util/LTime.h"{}}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{namespace\ }Louron}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{enum\ class}\ ColliderType\ :\ uint8\_t}
+\DoxyCodeLine{00027\ \ \ \ \ \{}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ Unknown\ =\ 0,}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ Box\_Collider,}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ Sphere\_Collider,}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ Capsule\_Collider,}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ Mesh\_Collider}
+\DoxyCodeLine{00033\ \ \ \ \ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_louron_1_1_collider}{Collider}}}
+\DoxyCodeLine{00041\ \ \ \ \ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ ColliderType\ \mbox{\hyperlink{struct_louron_1_1_collider_aee73d515f9b2bef30864d89d233b8a16}{type}};}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_entity}{Entity}}\ \mbox{\hyperlink{struct_louron_1_1_collider_abd6f9b755648890582fe4f358f203333}{entity}};}
+\DoxyCodeLine{00055\ \ \ \ \ \};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_i_script}{IScript}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_louron_1_1_entity}{Louron::Entity}}}
+\DoxyCodeLine{00077\ \ \ \ \ \{}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_ac292e36ddefe9e849ce35063fec83c7d}{OnCreate}}()\ \{\};}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_adee1aa89d4513546cc2a63aac8802474}{OnDestroy}}()\ \{\};}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a5de601b077261c3a10e4e8b50cccb1c9}{OnUpdate}}()\ \{\};}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a5cbac995277a26c8a25171282670fd5a}{OnLateUpdate}}()\ \{\};}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a256530e31abbef7f074524805c014fa9}{OnFixedUpdate}}()\ \{\};}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a492ac8ab0092d2d2a93253b874222eb6}{OnCollideEnter}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_collider}{Louron::Collider}}\&\ other)\ \{\};}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a4cb9770c4440c56418af952afcc5ca66}{OnCollideStay}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_collider}{Louron::Collider}}\&\ other)\ \{\};}
+\DoxyCodeLine{00238\ }
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a4d1c701bf62df9ac560defe12a67f657}{OnCollideLeave}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_collider}{Louron::Collider}}\&\ other)\ \{\};}
+\DoxyCodeLine{00259\ }
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a6ddbf6a7085d65cc1c21124d86a2cae6}{OnTriggerEnter}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_collider}{Louron::Collider}}\&\ other)\ \{\};}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_ac612cd978b61b76016c87f8efb6ba4b4}{OnTriggerStay}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_collider}{Louron::Collider}}\&\ other)\ \{\};}
+\DoxyCodeLine{00297\ }
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_ac933c2001272483d274b81c9fa8ad9db}{OnTriggerLeave}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_collider}{Louron::Collider}}\&\ other)\ \{\};}
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t\&\ GetEntityID()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_louron_1_1_entity_a7c04ca1ce72c7b83d5ff4d8257faa948}{m\_EntityID}};\ \}}
+\DoxyCodeLine{00318\ }
+\DoxyCodeLine{00319\ \ \ \ \ \};}
+\DoxyCodeLine{00320\ \}}
+\DoxyCodeLine{00321\ }
+\DoxyCodeLine{00322\ \textcolor{keyword}{namespace\ }BackEndAPI}
+\DoxyCodeLine{00323\ \{}
+\DoxyCodeLine{00324\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/\ DATA\ STRUCTURES\ -\/-\/-\/}}
+\DoxyCodeLine{00325\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_back_end_a_p_i_1_1_field_info}{FieldInfo}}}
+\DoxyCodeLine{00326\ \ \ \ \ \{}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name\ =\ \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ offset\ =\ 0;}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ BackEndAPI::FieldType\ type\ =\ BackEndAPI::FieldType::Unknown;}
+\DoxyCodeLine{00330\ \ \ \ \ \};}
+\DoxyCodeLine{00331\ }
+\DoxyCodeLine{00332\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_back_end_a_p_i_1_1_script_type_info}{ScriptTypeInfo}}}
+\DoxyCodeLine{00333\ \ \ \ \ \{}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name;}
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ field\_count;}
+\DoxyCodeLine{00336\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_back_end_a_p_i_1_1_field_info}{FieldInfo}}*\ fields;}
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}*\ (*factory\_function)(uint32\_t);}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ \ \ void(*release\_function)(uint32\_t);}
+\DoxyCodeLine{00339\ \ \ \ \ \};}
+\DoxyCodeLine{00340\ \}}
+\DoxyCodeLine{00341\ }
+\DoxyCodeLine{00342\ \textcolor{comment}{//\ -\/-\/-\/\ EXPORTED\ FUNCTIONS\ FROM\ DLL\ -\/-\/-\/}}
+\DoxyCodeLine{00343\ SCRIPT\_API\ \textcolor{keywordtype}{void}\ LoadScripts();}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00345\ SCRIPT\_API\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_back_end_a_p_i_1_1_script_type_info}{BackEndAPI::ScriptTypeInfo}}*\ GetScriptTypes(\textcolor{keywordtype}{size\_t}*\ count);}
+\DoxyCodeLine{00346\ SCRIPT\_API\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}**\ GetScriptNames(\textcolor{keywordtype}{size\_t}*\ count);}
+\DoxyCodeLine{00347\ }
+\DoxyCodeLine{00348\ \textcolor{keyword}{inline}\ std::unordered\_map<std::string,\ std::unique\_ptr<Louron::IScript>>\ s\_ScriptInstanceMap;}
+
+\end{DoxyCode}

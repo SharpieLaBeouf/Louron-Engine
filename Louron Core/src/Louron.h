@@ -63,5 +63,6 @@
 #include "Debug/Assert.h"
 #include "Debug/Profiler.h"
 
-#include "Scripting/Script Connector.h"
 #include "Scripting/Script Manager.h"
+#include "Scripting/Script Register.h"
+#include "Scripting/Script Defines.h"

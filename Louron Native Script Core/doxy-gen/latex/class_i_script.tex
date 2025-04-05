@@ -1,0 +1,129 @@
+\doxysection{IScript Class Reference}
+\hypertarget{class_i_script}{}\label{class_i_script}\index{IScript@{IScript}}
+Inheritance diagram for IScript\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_i_script}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_i_script_aa99539acc680a4e594c934860f3ac744}\label{class_i_script_aa99539acc680a4e594c934860f3ac744} 
+virtual void {\bfseries On\+Create} ()
+\item 
+\Hypertarget{class_i_script_a765b0d851d6ed53a31d0b86e6e8aa9c1}\label{class_i_script_a765b0d851d6ed53a31d0b86e6e8aa9c1} 
+virtual void {\bfseries On\+Destroy} ()
+\item 
+\Hypertarget{class_i_script_a6793fc9c8032a768d42196701314ff3f}\label{class_i_script_a6793fc9c8032a768d42196701314ff3f} 
+virtual void {\bfseries On\+Update} ()
+\item 
+\Hypertarget{class_i_script_a70f2b37fc44c1e10c2bb7d03fe421547}\label{class_i_script_a70f2b37fc44c1e10c2bb7d03fe421547} 
+virtual void {\bfseries On\+Late\+Update} ()
+\item 
+\Hypertarget{class_i_script_ad530f5bbd215d922c43740f1e034acfb}\label{class_i_script_ad530f5bbd215d922c43740f1e034acfb} 
+virtual void {\bfseries On\+Fixed\+Update} ()
+\item 
+\Hypertarget{class_i_script_a968a073c5df8e68c3ba78a8dea598baf}\label{class_i_script_a968a073c5df8e68c3ba78a8dea598baf} 
+virtual void {\bfseries On\+Collide\+Enter} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\item 
+\Hypertarget{class_i_script_aa31fad34fe550d3ab025444208aca13c}\label{class_i_script_aa31fad34fe550d3ab025444208aca13c} 
+virtual void {\bfseries On\+Collide\+Stay} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\item 
+\Hypertarget{class_i_script_a6b5cb15413e2110c4ae9c14b662eeb3d}\label{class_i_script_a6b5cb15413e2110c4ae9c14b662eeb3d} 
+virtual void {\bfseries On\+Collide\+Leave} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\item 
+\Hypertarget{class_i_script_a66cdafa74331efc11593e65ffb12e731}\label{class_i_script_a66cdafa74331efc11593e65ffb12e731} 
+virtual void {\bfseries On\+Trigger\+Enter} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\item 
+\Hypertarget{class_i_script_a265a7ad5174e7b6e59cc6b8cd7f846bf}\label{class_i_script_a265a7ad5174e7b6e59cc6b8cd7f846bf} 
+virtual void {\bfseries On\+Trigger\+Stay} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\item 
+\Hypertarget{class_i_script_a7aa2e5aa7717683852d5d5519c61f5e1}\label{class_i_script_a7aa2e5aa7717683852d5d5519c61f5e1} 
+virtual void {\bfseries On\+Trigger\+Leave} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\item 
+\Hypertarget{class_i_script_a3423aeb0281029516440be44be35f797}\label{class_i_script_a3423aeb0281029516440be44be35f797} 
+const uint32\+\_\+t \& {\bfseries Get\+Entity\+ID} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_entity}{Louron\+::\+Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries operator const uint32\+\_\+t \&} () const
+\item 
+{\bfseries operator bool} () const
+\item 
+std\+::string {\bfseries Get\+Tag} () const
+\item 
+void {\bfseries Set\+Tag} (const std\+::string \&tag) const
+\item 
+\mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} {\bfseries Get\+Transform} () const
+\item 
+void {\bfseries Set\+Transform} (const \mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \&transform) const
+\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} {\bfseries Get\+Position} () const
+\item 
+void {\bfseries Set\+Position} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&position) const
+\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} {\bfseries Get\+Rotation} () const
+\item 
+void {\bfseries Set\+Rotation} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&rotation) const
+\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} {\bfseries Get\+Scale} () const
+\item 
+void {\bfseries Set\+Scale} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&scale) const
+\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} {\bfseries Get\+Front} () const
+\item 
+void {\bfseries Set\+Front} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&front) const
+\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} {\bfseries Get\+Up} () const
+\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} {\bfseries Get\+Right} () const
+\item 
+\mbox{\hyperlink{class_louron_1_1_entity}{Entity}} {\bfseries Get\+Parent} () const
+\item 
+void {\bfseries Set\+Parent} (\mbox{\hyperlink{class_louron_1_1_entity}{Entity}} parent\+\_\+entity) const
+\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\bool {\bfseries Has\+Component} ()
+\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T {\bfseries Add\+Component} ()
+\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\void {\bfseries Remove\+Component} ()
+\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T {\bfseries Get\+Component} ()
+\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T {\bfseries Get\+Component\+In\+Parent} ()
+\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\std\+::vector$<$ T $>$ {\bfseries Get\+Components\+In\+Parent} ()
+\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T {\bfseries Get\+Component\+In\+Children} ()
+\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\std\+::vector$<$ T $>$ {\bfseries Get\+Components\+In\+Children} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_entity}{Louron\+::\+Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} {\bfseries Instantiate} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}} prefab)
+\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} {\bfseries Instantiate} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}} prefab, const \mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \&transform=\{\})
+\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} {\bfseries Instantiate} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}} prefab, \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} parent)
+\item 
+static void {\bfseries Destroy} (uint32\+\_\+t entity\+\_\+id)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_entity}{Louron\+::\+Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Entity} (uint32\+\_\+t entity\+\_\+id)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_entity}{Louron\+::\+Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID} = NULL\+\_\+\+UUID
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Script\+API.\+h\end{DoxyCompactItemize}

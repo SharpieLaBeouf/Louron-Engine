@@ -1,0 +1,71 @@
+Scene Name: Native Script Testing
+Scene Asset Directory: E:\Coding\Louron\Louron Editor\Sandbox Project\Assets
+Scene Pipeline Type: 1
+Entities:
+  - Entity: 1292938957
+    TagComponent:
+      Tag: Main Camera
+    HierarchyComponent:
+      Parent: 4294967295
+      Children:
+        []
+    TransformComponent:
+      Translation: [0, 5, 20]
+      Rotation: [-10, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        Projection Type: Perspective
+        FOV: 60.0000038
+        Near: 0.00999999978
+        Far: 1000
+      Primary: true
+      DisplayToMainViewport: true
+      ClearFlag: Colour
+      ClearColour: [0.176400006, 0.329400003, 0.560699999, 1]
+      CameraViewport: [0, 0, 1, 1]
+    CameraDepth: "\x00"
+  - Entity: 1152598300
+    TagComponent:
+      Tag: Directional Light
+    HierarchyComponent:
+      Parent: 4294967295
+      Children:
+        []
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [-30, 150, 0]
+      Scale: [1, 1, 1]
+    DirectionalLightComponent:
+      Active: true
+      Colour: [1, 1, 1, 1]
+      Intensity: 1
+      Shadow Type: None
+      Max Shadow Visible Distance: 1
+  - Entity: 1734684518
+    TagComponent:
+      Tag: Script Test
+    HierarchyComponent:
+      Parent: 4294967295
+      Children:
+        []
+    ScriptComponent:
+      Script_1:
+        Active: true
+        Script Name: NativeTestScript
+        Fields:
+          - Name: shader
+            Type: ComputeShader
+            Data: 3300982327
+          - Name: bc
+            Type: BoxColliderComponent
+            Data: 1734684518
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    BoxColliderComponent:
+      IsTrigger: false
+      Centre: [0, 0, 0]
+      Size: [1, 1, 1]
+      MaterialProperties: [0.600000024, 0.600000024, 0]

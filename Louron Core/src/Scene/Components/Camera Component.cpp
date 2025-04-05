@@ -40,6 +40,7 @@ namespace Louron
         config.RenderToScreen = false;
         config.Samples = 4;
 
+        CameraInstance = std::make_shared<SceneCamera>();
         CameraFramebuffer = std::make_unique<FrameBuffer>(config);
     }
 

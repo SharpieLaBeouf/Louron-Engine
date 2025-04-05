@@ -1,0 +1,77 @@
+\doxysection{LBounds.\+h}
+\hypertarget{_l_bounds_8h_source}{}\label{_l_bounds_8h_source}\index{Defines/LBounds.h@{Defines/LBounds.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}LMath.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}LVectors.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <array>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{namespace\ }Louron}
+\DoxyCodeLine{00009\ \{}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keyword}{namespace\ }Partitions}
+\DoxyCodeLine{00012\ \ \ \ \ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ IntersectionResult\ :\ uint8\_t}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \ \ \ \ DoesNotContain,}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \ \ \ \ Intersects,}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \ \ \ \ Contains}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___sphere}{Bounds\_Sphere}};}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Bounds\_AABB}};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Bounds\_AABB}}}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ Min;}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ Max;}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ Center()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ (Min\ +\ Max)\ *\ 0.5f;\ \}}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ Size()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Max\ -\/\ Min;\ \}}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ MaxExtent()\textcolor{keyword}{\ const\ }\{\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ extent\ =\ (Max\ -\/\ Min)\ *\ 0.5f;\ \textcolor{keywordflow}{return}\ extent.Length();\ \}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ IntersectionResult\ Contains(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___sphere}{Bounds\_Sphere}}\&\ sphere,\ \textcolor{keywordtype}{float}\ looseness\ =\ 1.0f)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ IntersectionResult\ Contains(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Bounds\_AABB}}\&\ other,\ \textcolor{keywordtype}{float}\ looseness\ =\ 1.0f)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___sphere}{Bounds\_Sphere}}}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ Centre;}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ Radius;}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ IntersectionResult\ Contains(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___sphere}{Bounds\_Sphere}}\&\ other,\ \textcolor{keywordtype}{float}\ looseness\ =\ 1.0f)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ IntersectionResult\ Contains(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Bounds\_AABB}}\&\ aabb,\ \textcolor{keywordtype}{float}\ looseness\ =\ 1.0f)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_frustum}{Frustum}}}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_frustum_1_1_plane}{Plane}}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ Normal;}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ Distance;}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ Normalise()\ \{}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ length\ =\ Normal.Length();}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Normal\ =\ Normal\ /\ length;}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Distance\ /=\ length;}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ DistanceToPoint(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\&\ point)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00059\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Vectors::Vector3::Dot(Normal,\ point)\ +\ Distance;}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ std::array<Plane,\ 6>\ Planes\{\};}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ IntersectionResult\ Contains(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Bounds\_AABB}}\&\ bounds);}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ IntersectionResult\ Contains(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___sphere}{Bounds\_Sphere}}\&\ bounds);}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \}}
+\DoxyCodeLine{00071\ \}}
+
+\end{DoxyCode}

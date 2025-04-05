@@ -1,0 +1,829 @@
+\doxysection{LVectors.\+h}
+\hypertarget{_l_vectors_8h_source}{}\label{_l_vectors_8h_source}\index{Defines/LVectors.h@{Defines/LVectors.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}LMath.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{namespace\ }Louron\ \{}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{keyword}{namespace\ }Vectors\ \{}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\ \ \ \ \#pragma\ region\ Vector\ 2}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }Vector2}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ x,\ y;}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector2\ Zero()\ \{\ \textcolor{keywordflow}{return}\ Vector2(0.0f);\ \}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2(\textcolor{keywordtype}{float}\ scalar)\ :\ x(scalar),\ y(scalar)\ \{\}}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y)\ :\ x(x),\ y(y)\ \{\}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ Length()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ std::sqrt(x\ *\ x\ +\ y\ *\ y);\ \}}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ LengthSquared()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ *\ x\ +\ y\ *\ y;\ \}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2\ Normalise()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ len\ =\ Length();}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ len\ >\ 0\ ?\ (*this)\ *\ (1.0f\ /\ len)\ :\ Zero();}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector2\ Normalise(\textcolor{keyword}{const}\ Vector2\&\ v)\ \{\ \textcolor{keywordflow}{return}\ v.Normalise();\ \}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ Dot(\textcolor{keyword}{const}\ Vector2\&\ a,\ \textcolor{keyword}{const}\ Vector2\&\ b)\ \{\ \textcolor{keywordflow}{return}\ a.x\ *\ b.x\ +\ a.y\ *\ b.y;\ \}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ Cross(\textcolor{keyword}{const}\ Vector2\&\ a,\ \textcolor{keyword}{const}\ Vector2\&\ b)}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ a.x\ *\ b.y\ -\/\ a.y\ *\ b.x;}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ Distance(\textcolor{keyword}{const}\ Vector2\&\ a,\ \textcolor{keyword}{const}\ Vector2\&\ b)\ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ dx\ =\ a.x\ -\/\ b.x,\ dy\ =\ a.y\ -\/\ b.y;}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::sqrt(dx\ *\ dx\ +\ dy\ *\ dy);}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector2\ Lerp(\textcolor{keywordtype}{float}\ t,\ \textcolor{keyword}{const}\ Vector2\&\ a,\ \textcolor{keyword}{const}\ Vector2\&\ b)\ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Vector2(LMath::Lerp(t,\ a.x,\ b.x),\ LMath::Lerp(t,\ a.y,\ b.y));}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector2\ Slerp(\textcolor{keywordtype}{float}\ t,\ \textcolor{keyword}{const}\ Vector2\&\ a,\ \textcolor{keyword}{const}\ Vector2\&\ b)\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Vector2\ na\ =\ Normalise(a),\ nb\ =\ Normalise(b);}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ dot\ =\ LMath::Clamp(Vector2::Dot(na,\ nb),\ -\/1.0f,\ 1.0f);}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ theta\ =\ std::acos(dot)\ *\ t;}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Vector2\ relVec\ =\ Normalise(nb\ -\/\ na\ *\ dot);}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ na\ *\ std::cos(theta)\ +\ relVec\ *\ std::sin(theta);}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector2\ Clamp(\textcolor{keyword}{const}\ Vector2\&\ value,\ \textcolor{keyword}{const}\ Vector2\&\ min,\ \textcolor{keyword}{const}\ Vector2\&\ max)}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Vector2(}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::max(min.x,\ std::min(value.x,\ max.x)),}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::max(min.y,\ std::min(value.y,\ max.y))}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00072\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2\ operator+(\textcolor{keyword}{const}\ Vector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector2(x\ +\ v.x,\ y\ +\ v.y);\ \}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2\ operator+(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector2(x\ +\ s,\ y\ +\ s);\ \}}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2\ operator-\/(\textcolor{keyword}{const}\ Vector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector2(x\ -\/\ v.x,\ y\ -\/\ v.y);\ \}}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2\ operator-\/(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector2(x\ -\/\ s,\ y\ -\/\ s);\ \}}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2\ operator*(\textcolor{keyword}{const}\ Vector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector2(x\ *\ v.x,\ y\ *\ v.y);\ \}}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2\ operator*(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector2(x\ *\ s,\ y\ *\ s);\ \}}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2\ operator/(\textcolor{keyword}{const}\ Vector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector2(x\ /\ v.x,\ y\ /\ v.y);\ \}}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ Vector2\ operator/(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector2(x\ /\ s,\ y\ /\ s);\ \}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ Vector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y;\ \}}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ Vector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00093\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}Vector2("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }IVector2}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ int32\_t\ x,\ y;}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ IVector2\ Zero()\ \{\ \textcolor{keywordflow}{return}\ IVector2(0);\ \}}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ IVector2()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ IVector2(\textcolor{keywordtype}{int}\ scalar)\ :\ x(scalar),\ y(scalar)\ \{\}}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ IVector2(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y)\ :\ x(x),\ y(y)\ \{\}}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ int32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ int32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00119\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ IVector2\ operator+(\textcolor{keyword}{const}\ IVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector2(x\ +\ v.x,\ y\ +\ v.y);\ \}}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ IVector2\ operator-\/(\textcolor{keyword}{const}\ IVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector2(x\ -\/\ v.x,\ y\ -\/\ v.y);\ \}}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ IVector2\ operator*(\textcolor{keyword}{const}\ IVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector2(x\ *\ v.x,\ y\ *\ v.y);\ \}}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ IVector2\ operator/(\textcolor{keyword}{const}\ IVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector2(x\ /\ v.x,\ y\ /\ v.y);\ \}}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ IVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y;\ \}}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ IVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00135\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}IVector2("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }UVector2}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ x,\ y;}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ UVector2\ Zero()\ \{\ \textcolor{keywordflow}{return}\ UVector2(0);\ \}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ UVector2()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ UVector2(uint32\_t\ scalar)\ :\ x(scalar),\ y(scalar)\ \{\}}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ UVector2(uint32\_t\ x,\ uint32\_t\ y)\ :\ x(x),\ y(y)\ \{\}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00161\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ UVector2\ operator+(\textcolor{keyword}{const}\ UVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector2(x\ +\ v.x,\ y\ +\ v.y);\ \}}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ UVector2\ operator-\/(\textcolor{keyword}{const}\ UVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector2(x\ -\/\ v.x,\ y\ -\/\ v.y);\ \}}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \ \ \ \ UVector2\ operator*(\textcolor{keyword}{const}\ UVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector2(x\ *\ v.x,\ y\ *\ v.y);\ \}}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ \ \ UVector2\ operator/(\textcolor{keyword}{const}\ UVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector2(x\ /\ v.x,\ y\ /\ v.y);\ \}}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ UVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y;\ \}}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ UVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00177\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}UVector2("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }DVector2}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ x,\ y;}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ DVector2\ Zero()\ \{\ \textcolor{keywordflow}{return}\ DVector2(0.0);\ \}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ DVector2()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ DVector2(\textcolor{keywordtype}{double}\ scalar)\ :\ x(scalar),\ y(scalar)\ \{\}}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ DVector2(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y)\ :\ x(x),\ y(y)\ \{\}}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00203\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ DVector2\ operator+(\textcolor{keyword}{const}\ DVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector2(x\ +\ v.x,\ y\ +\ v.y);\ \}}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ DVector2\ operator-\/(\textcolor{keyword}{const}\ DVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector2(x\ -\/\ v.x,\ y\ -\/\ v.y);\ \}}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ DVector2\ operator*(\textcolor{keyword}{const}\ DVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector2(x\ *\ v.x,\ y\ *\ v.y);\ \}}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ DVector2\ operator/(\textcolor{keyword}{const}\ DVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector2(x\ /\ v.x,\ y\ /\ v.y);\ \}}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ DVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y;\ \}}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ DVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00219\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}DVector2("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }BVector2}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ x,\ y;}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BVector2\ Zero()\ \{\ \textcolor{keywordflow}{return}\ BVector2(\textcolor{keyword}{false});\ \}}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ BVector2()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ BVector2(\textcolor{keywordtype}{bool}\ scalar)\ :\ x(scalar),\ y(scalar)\ \{\}}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ BVector2(\textcolor{keywordtype}{bool}\ x,\ \textcolor{keywordtype}{bool}\ y)\ :\ x(x),\ y(y)\ \{\}}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00245\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ BVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y;\ \}}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ BVector2\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00257\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}BVector2("{}}\ <<\ (x\ ?\ \textcolor{stringliteral}{"{}True"{}}\ :\ \textcolor{stringliteral}{"{}False"{}})\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ (y\ ?\ \textcolor{stringliteral}{"{}True"{}}\ :\ \textcolor{stringliteral}{"{}False"{}})\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \textcolor{preprocessor}{\ \ \ \ \#pragma\ endregion}}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \textcolor{preprocessor}{\ \ \ \ \#pragma\ region\ Vector3}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }Vector3}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ x,\ y,\ z;}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector3\ Zero()\ \{\ \textcolor{keywordflow}{return}\ Vector3(0.0f);\ \}}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3(\textcolor{keywordtype}{float}\ scalar)\ :\ x(scalar),\ y(scalar),\ z(scalar)\ \{\}}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z)\ :\ x(x),\ y(y),\ z(z)\ \{\}}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ Length()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ std::sqrt(x\ *\ x\ +\ y\ *\ y\ +\ z\ *\ z);\ \}}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ LengthSquared()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ *\ x\ +\ y\ *\ y\ +\ z\ *\ z;\ \}}
+\DoxyCodeLine{00279\ }
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3\ Normalise()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ len\ =\ Length();}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ len\ >\ 0\ ?\ (*this)\ *\ (1.0f\ /\ len)\ :\ Zero();}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00284\ }
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector3\ Normalise(\textcolor{keyword}{const}\ Vector3\&\ v)\ \{\ \textcolor{keywordflow}{return}\ v.Normalise();\ \}}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ Dot(\textcolor{keyword}{const}\ Vector3\&\ a,\ \textcolor{keyword}{const}\ Vector3\&\ b)\ \{\ \textcolor{keywordflow}{return}\ a.x\ *\ b.x\ +\ a.y\ *\ b.y\ +\ a.z\ *\ b.z;\ \}}
+\DoxyCodeLine{00288\ }
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector3\ Cross(\textcolor{keyword}{const}\ Vector3\&\ a,\ \textcolor{keyword}{const}\ Vector3\&\ b)\ \{}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Vector3(}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ a.y\ *\ b.z\ -\/\ a.z\ *\ b.y,}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ a.z\ *\ b.x\ -\/\ a.x\ *\ b.z,}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ a.x\ *\ b.y\ -\/\ a.y\ *\ b.x}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ Distance(\textcolor{keyword}{const}\ Vector3\&\ a,\ \textcolor{keyword}{const}\ Vector3\&\ b)\ \{}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ dx\ =\ a.x\ -\/\ b.x,\ dy\ =\ a.y\ -\/\ b.y,\ dz\ =\ a.z\ -\/\ b.z;}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::sqrt(dx\ *\ dx\ +\ dy\ *\ dy\ +\ dz\ *\ dz);}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00300\ }
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector3\ Lerp(\textcolor{keywordtype}{float}\ t,\ \textcolor{keyword}{const}\ Vector3\&\ a,\ \textcolor{keyword}{const}\ Vector3\&\ b)\ \{}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Vector3(LMath::Lerp(t,\ a.x,\ b.x),\ LMath::Lerp(t,\ a.y,\ b.y),\ LMath::Lerp(t,\ a.z,\ b.z));}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00304\ }
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector3\ Slerp(\textcolor{keywordtype}{float}\ t,\ \textcolor{keyword}{const}\ Vector3\&\ a,\ \textcolor{keyword}{const}\ Vector3\&\ b)}
+\DoxyCodeLine{00306\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Vector3\ na\ =\ Normalise(a),\ nb\ =\ Normalise(b);}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ dot\ =\ LMath::Clamp(Vector3::Dot(na,\ nb),\ -\/1.0f,\ 1.0f);}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ theta\ =\ std::acos(dot)\ *\ t;}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Vector3\ relVec\ =\ Normalise(nb\ -\/\ na\ *\ dot);}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ na\ *\ std::cos(theta)\ +\ relVec\ *\ std::sin(theta);}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector3\ Clamp(\textcolor{keyword}{const}\ Vector3\&\ value,\ \textcolor{keyword}{const}\ Vector3\&\ min,\ \textcolor{keyword}{const}\ Vector3\&\ max)}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Vector3(}
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::max(min.x,\ std::min(value.x,\ max.x)),}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::max(min.y,\ std::min(value.y,\ max.y)),}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::max(min.z,\ std::min(value.z,\ max.z))}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00322\ }
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00332\ }
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00334\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00336\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00339\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00342\ }
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3\ operator+(\textcolor{keyword}{const}\ Vector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3(x\ +\ v.x,\ y\ +\ v.y,\ z\ +\ v.z);\ \}}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3\ operator+(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3(x\ +\ s,\ y\ +\ s,\ z\ +\ s);\ \}}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3\ operator-\/(\textcolor{keyword}{const}\ Vector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3(x\ -\/\ v.x,\ y\ -\/\ v.y,\ z\ -\/\ v.z);\ \}}
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3\ operator-\/(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3(x\ -\/\ s,\ y\ -\/\ s,\ z\ -\/\ s);\ \}}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3\ operator*(\textcolor{keyword}{const}\ Vector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3(x\ *\ v.x,\ y\ *\ v.y,\ z\ *\ v.z);\ \}}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3\ operator*(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3(x\ *\ s,\ y\ *\ s,\ z\ *\ s);\ \}}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3\ operator/(\textcolor{keyword}{const}\ Vector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3(x\ /\ v.x,\ y\ /\ v.y,\ z\ /\ v.z);\ \}}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3\ operator/(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3(x\ /\ s,\ y\ /\ s,\ z\ /\ s);\ \}}
+\DoxyCodeLine{00351\ }
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ Vector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y\ \&\&\ z\ ==\ v.z;\ \}}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ Vector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00354\ }
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00356\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}Vector3("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(z)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00359\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00362\ }
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }IVector3}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ \ \ \ \ int32\_t\ x,\ y,\ z;}
+\DoxyCodeLine{00366\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ IVector3\ Zero()\ \{\ \textcolor{keywordflow}{return}\ IVector3(0);\ \}}
+\DoxyCodeLine{00367\ }
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \ \ \ \ \ \ IVector3()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ \ \ \ \ IVector3(\textcolor{keywordtype}{int}\ scalar)\ :\ x(scalar),\ y(scalar),\ z(scalar)\ \{\}}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ \ \ \ \ IVector3(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keywordtype}{int}\ z)\ :\ x(x),\ y(y),\ z(z)\ \{\}}
+\DoxyCodeLine{00371\ }
+\DoxyCodeLine{00372\ \ \ \ \ \ \ \ \ \ \ \ \ int32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00373\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00374\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00375\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00381\ }
+\DoxyCodeLine{00382\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ int32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00383\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00385\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00386\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00387\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00388\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00389\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00390\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00391\ }
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ \ \ \ \ IVector3\ operator+(\textcolor{keyword}{const}\ IVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector3(x\ +\ v.x,\ y\ +\ v.y,\ z\ +\ v.z);\ \}}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ \ \ \ \ \ IVector3\ operator-\/(\textcolor{keyword}{const}\ IVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector3(x\ -\/\ v.x,\ y\ -\/\ v.y,\ z\ -\/\ v.z);\ \}}
+\DoxyCodeLine{00394\ \ \ \ \ \ \ \ \ \ \ \ \ IVector3\ operator*(\textcolor{keyword}{const}\ IVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector3(x\ *\ v.x,\ y\ *\ v.y,\ z\ *\ v.z);\ \}}
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \ \ \ \ \ \ IVector3\ operator/(\textcolor{keyword}{const}\ IVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector3(x\ /\ v.x,\ y\ /\ v.y,\ z\ /\ v.z);\ \}}
+\DoxyCodeLine{00396\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ IVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y\ \&\&\ z\ ==\ v.z;\ \}}
+\DoxyCodeLine{00397\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ IVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00398\ }
+\DoxyCodeLine{00399\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00400\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00401\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00402\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}IVector3("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(z)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00403\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00406\ }
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }UVector3}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ x,\ y,\ z;}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ UVector3\ Zero()\ \{\ \textcolor{keywordflow}{return}\ UVector3(0);\ \}}
+\DoxyCodeLine{00411\ }
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ \ \ \ \ UVector3()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ \ \ \ \ UVector3(uint32\_t\ scalar)\ :\ x(scalar),\ y(scalar),\ z(scalar)\ \{\}}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ \ \ \ \ \ \ UVector3(uint32\_t\ x,\ uint32\_t\ y,\ uint32\_t\ z)\ :\ x(x),\ y(y),\ z(z)\ \{\}}
+\DoxyCodeLine{00415\ }
+\DoxyCodeLine{00416\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00417\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00420\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00421\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00422\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00423\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00424\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00425\ }
+\DoxyCodeLine{00426\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00427\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00428\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00429\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00430\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00431\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00432\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00435\ }
+\DoxyCodeLine{00436\ \ \ \ \ \ \ \ \ \ \ \ \ UVector3\ operator+(\textcolor{keyword}{const}\ UVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector3(x\ +\ v.x,\ y\ +\ v.y,\ z\ +\ v.z);\ \}}
+\DoxyCodeLine{00437\ \ \ \ \ \ \ \ \ \ \ \ \ UVector3\ operator-\/(\textcolor{keyword}{const}\ UVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector3(x\ -\/\ v.x,\ y\ -\/\ v.y,\ z\ -\/\ v.z);\ \}}
+\DoxyCodeLine{00438\ \ \ \ \ \ \ \ \ \ \ \ \ UVector3\ operator*(\textcolor{keyword}{const}\ UVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector3(x\ *\ v.x,\ y\ *\ v.y,\ z\ *\ v.z);\ \}}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ \ \ \ \ UVector3\ operator/(\textcolor{keyword}{const}\ UVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector3(x\ /\ v.x,\ y\ /\ v.y,\ z\ /\ v.z);\ \}}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ UVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y\ \&\&\ z\ ==\ v.z;\ \}}
+\DoxyCodeLine{00441\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ UVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00442\ }
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00444\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00445\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00446\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}UVector3("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(z)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00449\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00450\ }
+\DoxyCodeLine{00451\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }DVector3}
+\DoxyCodeLine{00452\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00453\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ x,\ y,\ z;}
+\DoxyCodeLine{00454\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ DVector3\ Zero()\ \{\ \textcolor{keywordflow}{return}\ DVector3(0.0);\ \}}
+\DoxyCodeLine{00455\ }
+\DoxyCodeLine{00456\ \ \ \ \ \ \ \ \ \ \ \ \ DVector3()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \ \ \ \ \ \ DVector3(\textcolor{keywordtype}{double}\ scalar)\ :\ x(scalar),\ y(scalar),\ z(scalar)\ \{\}}
+\DoxyCodeLine{00458\ \ \ \ \ \ \ \ \ \ \ \ \ DVector3(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y,\ \textcolor{keywordtype}{double}\ z)\ :\ x(x),\ y(y),\ z(z)\ \{\}}
+\DoxyCodeLine{00459\ }
+\DoxyCodeLine{00460\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00461\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00462\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00463\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00464\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00465\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00466\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00467\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00468\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00469\ }
+\DoxyCodeLine{00470\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00471\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00472\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00474\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00476\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00477\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00478\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00479\ }
+\DoxyCodeLine{00480\ \ \ \ \ \ \ \ \ \ \ \ \ DVector3\ operator+(\textcolor{keyword}{const}\ DVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector3(x\ +\ v.x,\ y\ +\ v.y,\ z\ +\ v.z);\ \}}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \ \ \ \ \ \ DVector3\ operator-\/(\textcolor{keyword}{const}\ DVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector3(x\ -\/\ v.x,\ y\ -\/\ v.y,\ z\ -\/\ v.z);\ \}}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ \ \ \ \ DVector3\ operator*(\textcolor{keyword}{const}\ DVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector3(x\ *\ v.x,\ y\ *\ v.y,\ z\ *\ v.z);\ \}}
+\DoxyCodeLine{00483\ \ \ \ \ \ \ \ \ \ \ \ \ DVector3\ operator/(\textcolor{keyword}{const}\ DVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector3(x\ /\ v.x,\ y\ /\ v.y,\ z\ /\ v.z);\ \}}
+\DoxyCodeLine{00484\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ DVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y\ \&\&\ z\ ==\ v.z;\ \}}
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ DVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00486\ }
+\DoxyCodeLine{00487\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00488\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00489\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00490\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}DVector3("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(z)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00492\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00493\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00494\ }
+\DoxyCodeLine{00495\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }BVector3}
+\DoxyCodeLine{00496\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00497\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ x,\ y,\ z;}
+\DoxyCodeLine{00498\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BVector3\ Zero()\ \{\ \textcolor{keywordflow}{return}\ BVector3(\textcolor{keyword}{false});\ \}}
+\DoxyCodeLine{00499\ }
+\DoxyCodeLine{00500\ \ \ \ \ \ \ \ \ \ \ \ \ BVector3()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00501\ \ \ \ \ \ \ \ \ \ \ \ \ BVector3(\textcolor{keywordtype}{bool}\ scalar)\ :\ x(scalar),\ y(scalar),\ z(scalar)\ \{\}}
+\DoxyCodeLine{00502\ \ \ \ \ \ \ \ \ \ \ \ \ BVector3(\textcolor{keywordtype}{bool}\ x,\ \textcolor{keywordtype}{bool}\ y,\ \textcolor{keywordtype}{bool}\ z)\ :\ x(x),\ y(y),\ z(z)\ \{\}}
+\DoxyCodeLine{00503\ }
+\DoxyCodeLine{00504\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00505\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00506\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00507\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00508\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00510\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00511\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00512\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00513\ }
+\DoxyCodeLine{00514\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00515\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00516\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00519\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00520\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00521\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00522\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00523\ }
+\DoxyCodeLine{00524\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ BVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y\ \&\&\ z\ ==\ v.z;\ \}}
+\DoxyCodeLine{00525\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ BVector3\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00526\ }
+\DoxyCodeLine{00527\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00528\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00529\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00530\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}BVector3("{}}\ <<\ (x\ ?\ \textcolor{stringliteral}{"{}True"{}}\ :\ \textcolor{stringliteral}{"{}False"{}})\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ (y\ ?\ \textcolor{stringliteral}{"{}True"{}}\ :\ \textcolor{stringliteral}{"{}False"{}})\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ (z\ ?\ \textcolor{stringliteral}{"{}True"{}}\ :\ \textcolor{stringliteral}{"{}False"{}})\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00531\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00532\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00533\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00534\ }
+\DoxyCodeLine{00535\ }
+\DoxyCodeLine{00536\ \textcolor{preprocessor}{\ \ \ \ \#pragma\ endregion}}
+\DoxyCodeLine{00537\ }
+\DoxyCodeLine{00538\ \textcolor{preprocessor}{\ \ \ \ \#pragma\ region\ Vector4}}
+\DoxyCodeLine{00539\ }
+\DoxyCodeLine{00540\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }Vector4}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00542\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ x,\ y,\ z,\ w;}
+\DoxyCodeLine{00543\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector4\ Zero()\ \{\ \textcolor{keywordflow}{return}\ Vector4(0.0f);\ \}}
+\DoxyCodeLine{00544\ }
+\DoxyCodeLine{00545\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4(\textcolor{keywordtype}{float}\ scalar)\ :\ x(scalar),\ y(scalar),\ z(scalar),\ w(scalar)\ \{\}}
+\DoxyCodeLine{00547\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z,\ \textcolor{keywordtype}{float}\ w)\ :\ x(x),\ y(y),\ z(z),\ w(w)\ \{\}}
+\DoxyCodeLine{00548\ }
+\DoxyCodeLine{00549\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ Length()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ std::sqrt(x\ *\ x\ +\ y\ *\ y\ +\ z\ *\ z\ +\ w\ *\ w);\ \}}
+\DoxyCodeLine{00550\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ LengthSquared()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ *\ x\ +\ y\ *\ y\ +\ z\ *\ z\ +\ w\ *\ w;\ \}}
+\DoxyCodeLine{00551\ }
+\DoxyCodeLine{00552\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4\ Normalise()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00553\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ len\ =\ Length();}
+\DoxyCodeLine{00554\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ len\ >\ 0\ ?\ (*this)\ *\ (1.0f\ /\ len)\ :\ Zero();}
+\DoxyCodeLine{00555\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00556\ }
+\DoxyCodeLine{00557\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector4\ Normalise(\textcolor{keyword}{const}\ Vector4\&\ v)\ \{\ \textcolor{keywordflow}{return}\ v.Normalise();\ \}}
+\DoxyCodeLine{00558\ }
+\DoxyCodeLine{00559\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ Dot(\textcolor{keyword}{const}\ Vector4\&\ a,\ \textcolor{keyword}{const}\ Vector4\&\ b)\ \{\ \textcolor{keywordflow}{return}\ a.x\ *\ b.x\ +\ a.y\ *\ b.y\ +\ a.z\ *\ b.z\ +\ a.w\ *\ b.w;\ \}}
+\DoxyCodeLine{00560\ }
+\DoxyCodeLine{00561\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector4\ Cross(\textcolor{keyword}{const}\ Vector4\&\ a,\ \textcolor{keyword}{const}\ Vector4\&\ b)\ \{}
+\DoxyCodeLine{00562\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Vector4(}
+\DoxyCodeLine{00563\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ a.y\ *\ b.z\ -\/\ a.z\ *\ b.y,}
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ a.z\ *\ b.x\ -\/\ a.x\ *\ b.z,}
+\DoxyCodeLine{00565\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ a.x\ *\ b.y\ -\/\ a.y\ *\ b.x,}
+\DoxyCodeLine{00566\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.0f}
+\DoxyCodeLine{00567\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00568\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00569\ }
+\DoxyCodeLine{00570\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ Distance(\textcolor{keyword}{const}\ Vector4\&\ a,\ \textcolor{keyword}{const}\ Vector4\&\ b)\ \{}
+\DoxyCodeLine{00571\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ dx\ =\ a.x\ -\/\ b.x,\ dy\ =\ a.y\ -\/\ b.y,\ dz\ =\ a.z\ -\/\ b.z,\ dw\ =\ a.w\ -\/\ b.w;}
+\DoxyCodeLine{00572\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::sqrt(dx\ *\ dx\ +\ dy\ *\ dy\ +\ dz\ *\ dz\ +\ dw\ *\ dw);}
+\DoxyCodeLine{00573\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00574\ }
+\DoxyCodeLine{00575\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector4\ Lerp(\textcolor{keywordtype}{float}\ t,\ \textcolor{keyword}{const}\ Vector4\&\ a,\ \textcolor{keyword}{const}\ Vector4\&\ b)\ \{}
+\DoxyCodeLine{00576\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Vector4(LMath::Lerp(t,\ a.x,\ b.x),\ LMath::Lerp(t,\ a.y,\ b.y),\ LMath::Lerp(t,\ a.z,\ b.z),\ LMath::Lerp(t,\ a.w,\ b.w));}
+\DoxyCodeLine{00577\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00578\ }
+\DoxyCodeLine{00579\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector4\ Slerp(\textcolor{keywordtype}{float}\ t,\ \textcolor{keyword}{const}\ Vector4\&\ a,\ \textcolor{keyword}{const}\ Vector4\&\ b)\ \{}
+\DoxyCodeLine{00580\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Vector4\ na\ =\ Normalise(a),\ nb\ =\ Normalise(b);}
+\DoxyCodeLine{00581\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ dot\ =\ LMath::Clamp(Vector4::Dot(na,\ nb),\ -\/1.0f,\ 1.0f);}
+\DoxyCodeLine{00582\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ theta\ =\ std::acos(dot)\ *\ t;}
+\DoxyCodeLine{00583\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Vector4\ relVec\ =\ Normalise(nb\ -\/\ na\ *\ dot);}
+\DoxyCodeLine{00584\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ na\ *\ std::cos(theta)\ +\ relVec\ *\ std::sin(theta);}
+\DoxyCodeLine{00585\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00586\ }
+\DoxyCodeLine{00587\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Vector4\ Clamp(\textcolor{keyword}{const}\ Vector4\&\ value,\ \textcolor{keyword}{const}\ Vector4\&\ min,\ \textcolor{keyword}{const}\ Vector4\&\ max)}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00589\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Vector4(}
+\DoxyCodeLine{00590\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::max(min.x,\ std::min(value.x,\ max.x)),}
+\DoxyCodeLine{00591\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::max(min.y,\ std::min(value.y,\ max.y)),}
+\DoxyCodeLine{00592\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::max(min.z,\ std::min(value.z,\ max.z)),}
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::max(min.w,\ std::min(value.w,\ max.w))}
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00595\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00596\ }
+\DoxyCodeLine{00597\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00598\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00599\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00601\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00603\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 3:\ \textcolor{keywordflow}{return}\ w;}
+\DoxyCodeLine{00604\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00605\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00606\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00607\ }
+\DoxyCodeLine{00608\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00609\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00610\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00611\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00612\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00613\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00614\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 3:\ \textcolor{keywordflow}{return}\ w;}
+\DoxyCodeLine{00615\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00616\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00617\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00618\ }
+\DoxyCodeLine{00619\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4\ operator+(\textcolor{keyword}{const}\ Vector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector4(x\ +\ v.x,\ y\ +\ v.y,\ z\ +\ v.z,\ w\ +\ v.w);\ \}}
+\DoxyCodeLine{00620\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4\ operator+(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector4(x\ +\ s,\ y\ +\ s,\ z\ +\ s,\ w\ +\ s);\ \}}
+\DoxyCodeLine{00621\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4\ operator-\/(\textcolor{keyword}{const}\ Vector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector4(x\ -\/\ v.x,\ y\ -\/\ v.y,\ z\ -\/\ v.z,\ w\ -\/\ v.w);\ \}}
+\DoxyCodeLine{00622\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4\ operator-\/(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector4(x\ -\/\ s,\ y\ -\/\ s,\ z\ -\/\ s,\ w\ -\/\ s);\ \}}
+\DoxyCodeLine{00623\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4\ operator*(\textcolor{keyword}{const}\ Vector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector4(x\ *\ v.x,\ y\ *\ v.y,\ z\ *\ v.z,\ w\ *\ v.w);\ \}}
+\DoxyCodeLine{00624\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4\ operator*(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector4(x\ *\ s,\ y\ *\ s,\ z\ *\ s,\ w\ *\ s);\ \}}
+\DoxyCodeLine{00625\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4\ operator/(\textcolor{keyword}{const}\ Vector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector4(x\ /\ v.x,\ y\ /\ v.y,\ z\ /\ v.z,\ w\ /\ v.w);\ \}}
+\DoxyCodeLine{00626\ \ \ \ \ \ \ \ \ \ \ \ \ Vector4\ operator/(\textcolor{keywordtype}{float}\ s)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector4(x\ /\ s,\ y\ /\ s,\ z\ /\ s,\ w\ /\ s);\ \}}
+\DoxyCodeLine{00627\ }
+\DoxyCodeLine{00628\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ Vector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y\ \&\&\ z\ ==\ v.z\ \&\&\ w\ ==\ v.w;\ \}}
+\DoxyCodeLine{00629\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ Vector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00630\ }
+\DoxyCodeLine{00631\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00632\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00633\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00634\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}Vector4("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(z)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(w)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00635\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00636\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00637\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00638\ }
+\DoxyCodeLine{00639\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }IVector4}
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ \ \ \ \ int32\_t\ x,\ y,\ z,\ w;}
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ IVector4\ Zero()\ \{\ \textcolor{keywordflow}{return}\ IVector4(0);\ \}}
+\DoxyCodeLine{00643\ }
+\DoxyCodeLine{00644\ \ \ \ \ \ \ \ \ \ \ \ \ IVector4()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00645\ \ \ \ \ \ \ \ \ \ \ \ \ IVector4(\textcolor{keywordtype}{int}\ scalar)\ :\ x(scalar),\ y(scalar),\ z(scalar),\ w(scalar)\ \{\}}
+\DoxyCodeLine{00646\ \ \ \ \ \ \ \ \ \ \ \ \ IVector4(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keywordtype}{int}\ z,\ \textcolor{keywordtype}{int}\ w)\ :\ x(x),\ y(y),\ z(z),\ w(w)\ \{\}}
+\DoxyCodeLine{00647\ }
+\DoxyCodeLine{00648\ \ \ \ \ \ \ \ \ \ \ \ \ int32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00649\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00650\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00651\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00652\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00653\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 3:\ \textcolor{keywordflow}{return}\ w;}
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00657\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00658\ }
+\DoxyCodeLine{00659\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ int32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00660\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00661\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00662\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00663\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00664\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 3:\ \textcolor{keywordflow}{return}\ w;}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00668\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00669\ }
+\DoxyCodeLine{00670\ \ \ \ \ \ \ \ \ \ \ \ \ IVector4\ operator+(\textcolor{keyword}{const}\ IVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector4(x\ +\ v.x,\ y\ +\ v.y,\ z\ +\ v.z,\ w\ +\ v.w);\ \}}
+\DoxyCodeLine{00671\ \ \ \ \ \ \ \ \ \ \ \ \ IVector4\ operator-\/(\textcolor{keyword}{const}\ IVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector4(x\ -\/\ v.x,\ y\ -\/\ v.y,\ z\ -\/\ v.z,\ w\ -\/\ v.w);\ \}}
+\DoxyCodeLine{00672\ \ \ \ \ \ \ \ \ \ \ \ \ IVector4\ operator*(\textcolor{keyword}{const}\ IVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector4(x\ *\ v.x,\ y\ *\ v.y,\ z\ *\ v.z,\ w\ *\ v.w);\ \}}
+\DoxyCodeLine{00673\ \ \ \ \ \ \ \ \ \ \ \ \ IVector4\ operator/(\textcolor{keyword}{const}\ IVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ IVector4(x\ /\ v.x,\ y\ /\ v.y,\ z\ /\ v.z,\ w\ /\ v.w);\ \}}
+\DoxyCodeLine{00674\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ IVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y\ \&\&\ z\ ==\ v.z\ \&\&\ w\ ==\ v.w;\ \}}
+\DoxyCodeLine{00675\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ IVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00676\ }
+\DoxyCodeLine{00677\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00678\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00679\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00680\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}IVector4("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(z)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(w)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00681\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00682\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00683\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00684\ }
+\DoxyCodeLine{00685\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }UVector4}
+\DoxyCodeLine{00686\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00687\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ x,\ y,\ z,\ w;}
+\DoxyCodeLine{00688\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ UVector4\ Zero()\ \{\ \textcolor{keywordflow}{return}\ UVector4(0);\ \}}
+\DoxyCodeLine{00689\ }
+\DoxyCodeLine{00690\ \ \ \ \ \ \ \ \ \ \ \ \ UVector4()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00691\ \ \ \ \ \ \ \ \ \ \ \ \ UVector4(uint32\_t\ scalar)\ :\ x(scalar),\ y(scalar),\ z(scalar),\ w(scalar)\ \{\}}
+\DoxyCodeLine{00692\ \ \ \ \ \ \ \ \ \ \ \ \ UVector4(uint32\_t\ x,\ uint32\_t\ y,\ uint32\_t\ z,\ uint32\_t\ w)\ :\ x(x),\ y(y),\ z(z),\ w(w)\ \{\}}
+\DoxyCodeLine{00693\ }
+\DoxyCodeLine{00694\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00695\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00696\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00697\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00698\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00699\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00700\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 3:\ \textcolor{keywordflow}{return}\ w;}
+\DoxyCodeLine{00701\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00702\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00703\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00704\ }
+\DoxyCodeLine{00705\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00706\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00707\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00708\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00709\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00710\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00711\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 3:\ \textcolor{keywordflow}{return}\ w;}
+\DoxyCodeLine{00712\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00713\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00714\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00715\ }
+\DoxyCodeLine{00716\ \ \ \ \ \ \ \ \ \ \ \ \ UVector4\ operator+(\textcolor{keyword}{const}\ UVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector4(x\ +\ v.x,\ y\ +\ v.y,\ z\ +\ v.z,\ w\ +\ v.w);\ \}}
+\DoxyCodeLine{00717\ \ \ \ \ \ \ \ \ \ \ \ \ UVector4\ operator-\/(\textcolor{keyword}{const}\ UVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector4(x\ -\/\ v.x,\ y\ -\/\ v.y,\ z\ -\/\ v.z,\ w\ -\/\ v.w);\ \}}
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \ \ \ \ \ \ UVector4\ operator*(\textcolor{keyword}{const}\ UVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector4(x\ *\ v.x,\ y\ *\ v.y,\ z\ *\ v.z,\ w\ *\ v.w);\ \}}
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \ \ \ \ \ \ UVector4\ operator/(\textcolor{keyword}{const}\ UVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ UVector4(x\ /\ v.x,\ y\ /\ v.y,\ z\ /\ v.z,\ w\ /\ v.w);\ \}}
+\DoxyCodeLine{00720\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ UVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y\ \&\&\ z\ ==\ v.z\ \&\&\ w\ ==\ v.w;\ \}}
+\DoxyCodeLine{00721\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ UVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00722\ }
+\DoxyCodeLine{00723\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00724\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00725\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00726\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}UVector4("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(z)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(w)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00727\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00728\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00729\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00730\ }
+\DoxyCodeLine{00731\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }DVector4}
+\DoxyCodeLine{00732\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00733\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ x,\ y,\ z,\ w;}
+\DoxyCodeLine{00734\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ DVector4\ Zero()\ \{\ \textcolor{keywordflow}{return}\ DVector4(0.0);\ \}}
+\DoxyCodeLine{00735\ }
+\DoxyCodeLine{00736\ \ \ \ \ \ \ \ \ \ \ \ \ DVector4()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00737\ \ \ \ \ \ \ \ \ \ \ \ \ DVector4(\textcolor{keywordtype}{double}\ scalar)\ :\ x(scalar),\ y(scalar),\ z(scalar),\ w(scalar)\ \{\}}
+\DoxyCodeLine{00738\ \ \ \ \ \ \ \ \ \ \ \ \ DVector4(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y,\ \textcolor{keywordtype}{double}\ z,\ \textcolor{keywordtype}{double}\ w)\ :\ x(x),\ y(y),\ z(z),\ w(w)\ \{\}}
+\DoxyCodeLine{00739\ }
+\DoxyCodeLine{00740\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00741\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00742\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00743\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00744\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00745\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00746\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 3:\ \textcolor{keywordflow}{return}\ w;}
+\DoxyCodeLine{00747\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00748\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00749\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00750\ }
+\DoxyCodeLine{00751\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00752\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00753\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00754\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00755\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00756\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00757\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 3:\ \textcolor{keywordflow}{return}\ w;}
+\DoxyCodeLine{00758\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00759\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00760\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00761\ }
+\DoxyCodeLine{00762\ \ \ \ \ \ \ \ \ \ \ \ \ DVector4\ operator+(\textcolor{keyword}{const}\ DVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector4(x\ +\ v.x,\ y\ +\ v.y,\ z\ +\ v.z,\ w\ +\ v.w);\ \}}
+\DoxyCodeLine{00763\ \ \ \ \ \ \ \ \ \ \ \ \ DVector4\ operator-\/(\textcolor{keyword}{const}\ DVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector4(x\ -\/\ v.x,\ y\ -\/\ v.y,\ z\ -\/\ v.z,\ w\ -\/\ v.w);\ \}}
+\DoxyCodeLine{00764\ \ \ \ \ \ \ \ \ \ \ \ \ DVector4\ operator*(\textcolor{keyword}{const}\ DVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector4(x\ *\ v.x,\ y\ *\ v.y,\ z\ *\ v.z,\ w\ *\ v.w);\ \}}
+\DoxyCodeLine{00765\ \ \ \ \ \ \ \ \ \ \ \ \ DVector4\ operator/(\textcolor{keyword}{const}\ DVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ DVector4(x\ /\ v.x,\ y\ /\ v.y,\ z\ /\ v.z,\ w\ /\ v.w);\ \}}
+\DoxyCodeLine{00766\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ DVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y\ \&\&\ z\ ==\ v.z\ \&\&\ w\ ==\ v.w;\ \}}
+\DoxyCodeLine{00767\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ DVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00768\ }
+\DoxyCodeLine{00769\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00770\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00771\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00772\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}DVector4("{}}\ <<\ std::to\_string(x)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(y)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(z)\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ std::to\_string(w)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00773\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00774\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00775\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00776\ }
+\DoxyCodeLine{00777\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }BVector4}
+\DoxyCodeLine{00778\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00779\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ x,\ y,\ z,\ w;}
+\DoxyCodeLine{00780\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BVector4\ Zero()\ \{\ \textcolor{keywordflow}{return}\ BVector4(\textcolor{keyword}{false});\ \}}
+\DoxyCodeLine{00781\ }
+\DoxyCodeLine{00782\ \ \ \ \ \ \ \ \ \ \ \ \ BVector4()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00783\ \ \ \ \ \ \ \ \ \ \ \ \ BVector4(\textcolor{keywordtype}{bool}\ scalar)\ :\ x(scalar),\ y(scalar),\ z(scalar),\ w(scalar)\ \{\}}
+\DoxyCodeLine{00784\ \ \ \ \ \ \ \ \ \ \ \ \ BVector4(\textcolor{keywordtype}{bool}\ x,\ \textcolor{keywordtype}{bool}\ y,\ \textcolor{keywordtype}{bool}\ z,\ \textcolor{keywordtype}{bool}\ w)\ :\ x(x),\ y(y),\ z(z),\ w(w)\ \{\}}
+\DoxyCodeLine{00785\ }
+\DoxyCodeLine{00786\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\&\ operator[](\textcolor{keywordtype}{int}\ index)}
+\DoxyCodeLine{00787\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00788\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00789\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00790\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00791\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00792\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 3:\ \textcolor{keywordflow}{return}\ w;}
+\DoxyCodeLine{00793\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00794\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00795\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00796\ }
+\DoxyCodeLine{00797\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\&\ operator[](\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00798\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00799\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (index)\ \{}
+\DoxyCodeLine{00800\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00801\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ y;}
+\DoxyCodeLine{00802\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ z;}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 3:\ \textcolor{keywordflow}{return}\ w;}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00805\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00806\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00807\ }
+\DoxyCodeLine{00808\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ BVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ v.x\ \&\&\ y\ ==\ v.y\ \&\&\ z\ ==\ v.z\ \&\&\ w\ ==\ v.w;\ \}}
+\DoxyCodeLine{00809\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ BVector4\&\ v)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ v);\ \}}
+\DoxyCodeLine{00810\ }
+\DoxyCodeLine{00811\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ ToString()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00812\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00813\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00814\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ oss\ <<\ \textcolor{stringliteral}{"{}BVector4("{}}\ <<\ (x\ ?\ \textcolor{stringliteral}{"{}True"{}}\ :\ \textcolor{stringliteral}{"{}False"{}})\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ (y\ ?\ \textcolor{stringliteral}{"{}True"{}}\ :\ \textcolor{stringliteral}{"{}False"{}})\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ (z\ ?\ \textcolor{stringliteral}{"{}True"{}}\ :\ \textcolor{stringliteral}{"{}False"{}})\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ (w\ ?\ \textcolor{stringliteral}{"{}True"{}}\ :\ \textcolor{stringliteral}{"{}False"{}})\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00815\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oss.str();}
+\DoxyCodeLine{00816\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00817\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00818\ }
+\DoxyCodeLine{00819\ \textcolor{preprocessor}{\ \ \ \ \#pragma\ endregion}}
+\DoxyCodeLine{00820\ }
+\DoxyCodeLine{00821\ \ \ \ \ \}}
+\DoxyCodeLine{00822\ }
+\DoxyCodeLine{00823\ \}}
+
+\end{DoxyCode}

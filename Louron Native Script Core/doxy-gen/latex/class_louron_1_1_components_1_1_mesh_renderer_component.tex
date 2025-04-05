@@ -1,0 +1,364 @@
+\doxysection{Louron\+::Components\+::Mesh\+Renderer\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component}{}\label{class_louron_1_1_components_1_1_mesh_renderer_component}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+
+
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access mesh renderer information.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::Mesh\+Renderer\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_mesh_renderer_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a0c42c12d3626a652c34f27b4c16d5028}{Is\+Active}} () const
+\begin{DoxyCompactList}\small\item\em Checks if this renderer is active. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a3e5d4439dbcc0b30eaf3719325aad9cb}{Set\+Active}} (bool active) const
+\begin{DoxyCompactList}\small\item\em Enables or disables the mesh renderer. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a54c846df927edbfe89aee92129bd7c71}{Is\+Casting\+Shadows}} () const
+\begin{DoxyCompactList}\small\item\em Checks if the renderer casts shadows. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_af340a2447731ceeded9c93216ed9292c}{Set\+Casting\+Shadows}} (bool casting\+\_\+shadows) const
+\begin{DoxyCompactList}\small\item\em Enables or disables shadow casting for this renderer. \end{DoxyCompactList}\item 
+std\+::vector$<$ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} $>$ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a030a1d39d36cc98bf4924d96e7149b0d}{Get\+Materials}} () const
+\begin{DoxyCompactList}\small\item\em Gets all materials currently assigned to the renderer. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a55adda720f78444d3681c63a953bfc9f}{Set\+Materials}} (const std\+::vector$<$ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} $>$ \&material\+\_\+vector) const
+\begin{DoxyCompactList}\small\item\em Sets all materials for this mesh renderer. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a52b3ffa409ff4198d231f2abe56f0eab}{Get\+Material}} (size\+\_\+t material\+\_\+index=size\+\_\+t(-\/1)) const
+\begin{DoxyCompactList}\small\item\em Gets a specific material by index. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_ad318a9f6e5790188451ee4a641d9e6a4}{Set\+Material}} (const \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} \&material, size\+\_\+t material\+\_\+index=size\+\_\+t(-\/1)) const
+\begin{DoxyCompactList}\small\item\em Sets a specific material at the given index. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_ab4be560da2dcc05e33572f81ffef6093}{Enable\+Uniform\+Block}} (size\+\_\+t material\+\_\+index) const
+\begin{DoxyCompactList}\small\item\em Enables the material uniform block at a given index. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a76d9f636ec7f3bc9eb46d21733f423fa}{Disable\+Uniform\+Block}} (size\+\_\+t material\+\_\+index) const
+\begin{DoxyCompactList}\small\item\em Disables the material uniform block at a given index. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_ad6ae2727f5329f2fad4044a612040109}{Enable\+All\+Uniform\+Blocks}} () const
+\begin{DoxyCompactList}\small\item\em Enables all material uniform blocks. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a49e9c050948f558cf211031d11e6a28d}{Disable\+All\+Uniform\+Blocks}} () const
+\begin{DoxyCompactList}\small\item\em Disables all material uniform blocks. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_material_uniform_block}{Assets\+::\+Material\+Uniform\+Block}} \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a26195470b9b18ca0500556dfd76b8e2f}{Get\+Uniform\+Block}} (uint32\+\_\+t material\+\_\+index=-\/1) const
+\begin{DoxyCompactList}\small\item\em Retrieves the uniform block for the given material index. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_adecdddbfaeb751388c6ba83d202d3c16}\label{class_louron_1_1_components_1_1_mesh_renderer_component_adecdddbfaeb751388c6ba83d202d3c16} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access mesh renderer information. 
+
+This allows the user to access data associated with a mesh renderer component. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_a49e9c050948f558cf211031d11e6a28d}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!DisableAllUniformBlocks@{DisableAllUniformBlocks}}
+\index{DisableAllUniformBlocks@{DisableAllUniformBlocks}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{DisableAllUniformBlocks()}{DisableAllUniformBlocks()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_a49e9c050948f558cf211031d11e6a28d} 
+void Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Disable\+All\+Uniform\+Blocks (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Disables all material uniform blocks. 
+
+The uniform block is used to pass data to the shader for rendering.
+
+For instance, you have a material asset which many objects use, but you want to set a particular uniform for just this one object without affecting the rest of the objects.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mesh\_renderer.DisableAllUniformBlocks();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_a76d9f636ec7f3bc9eb46d21733f423fa}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!DisableUniformBlock@{DisableUniformBlock}}
+\index{DisableUniformBlock@{DisableUniformBlock}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{DisableUniformBlock()}{DisableUniformBlock()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_a76d9f636ec7f3bc9eb46d21733f423fa} 
+void Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Disable\+Uniform\+Block (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{material\+\_\+index}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Disables the material uniform block at a given index. 
+
+The uniform block is used to pass data to the shader for rendering.
+
+For instance, you have a material asset which many objects use, but you want to set a particular uniform for just this one object without affecting the rest of the objects.
+
+
+\begin{DoxyParams}{Parameters}
+{\em material\+\_\+index} & Index of the material whose uniform block to disable.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mesh\_renderer.DisableUniformBlock(0);}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_ad6ae2727f5329f2fad4044a612040109}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!EnableAllUniformBlocks@{EnableAllUniformBlocks}}
+\index{EnableAllUniformBlocks@{EnableAllUniformBlocks}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{EnableAllUniformBlocks()}{EnableAllUniformBlocks()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_ad6ae2727f5329f2fad4044a612040109} 
+void Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Enable\+All\+Uniform\+Blocks (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enables all material uniform blocks. 
+
+The uniform block is used to pass data to the shader for rendering.
+
+For instance, you have a material asset which many objects use, but you want to set a particular uniform for just this one object without affecting the rest of the objects.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mesh\_renderer.EnableAllUniformBlocks();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_ab4be560da2dcc05e33572f81ffef6093}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!EnableUniformBlock@{EnableUniformBlock}}
+\index{EnableUniformBlock@{EnableUniformBlock}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{EnableUniformBlock()}{EnableUniformBlock()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_ab4be560da2dcc05e33572f81ffef6093} 
+void Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Enable\+Uniform\+Block (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{material\+\_\+index}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enables the material uniform block at a given index. 
+
+The uniform block is used to pass data to the shader for rendering.
+
+For instance, you have a material asset which many objects use, but you want to set a particular uniform for just this one object without affecting the rest of the objects.
+
+
+\begin{DoxyParams}{Parameters}
+{\em material\+\_\+index} & Index of the material whose uniform block to enable.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mesh\_renderer.EnableUniformBlock(0);}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_a52b3ffa409ff4198d231f2abe56f0eab}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!GetMaterial@{GetMaterial}}
+\index{GetMaterial@{GetMaterial}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{GetMaterial()}{GetMaterial()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_a52b3ffa409ff4198d231f2abe56f0eab} 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Get\+Material (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{material\+\_\+index}{ = {\ttfamily size\+\_\+t(-\/1)}}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets a specific material by index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em material\+\_\+index} & Index of the material (defaults to -\/1 = back of the material vector on the component). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The material at the specified index.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ last\_mat\_in\_renderer\ =\ mesh\_renderer.GetMaterial();}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ first\_mat\_in\_renderer\ =\ mesh\_renderer.GetMaterial(0);}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_a030a1d39d36cc98bf4924d96e7149b0d}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!GetMaterials@{GetMaterials}}
+\index{GetMaterials@{GetMaterials}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{GetMaterials()}{GetMaterials()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_a030a1d39d36cc98bf4924d96e7149b0d} 
+std\+::vector$<$ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} $>$ Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Get\+Materials (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets all materials currently assigned to the renderer. 
+
+\begin{DoxyReturn}{Returns}
+A vector of material asset handles.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ materials\ =\ mesh\_renderer.GetMaterials();}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordflow}{for}(\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ material\ :\ materials)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Material\ ID:\ "{}}\ +\ std::to\_string((uint32\_t)material));}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_a26195470b9b18ca0500556dfd76b8e2f}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!GetUniformBlock@{GetUniformBlock}}
+\index{GetUniformBlock@{GetUniformBlock}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{GetUniformBlock()}{GetUniformBlock()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_a26195470b9b18ca0500556dfd76b8e2f} 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_material_uniform_block}{Assets\+::\+Material\+Uniform\+Block}} Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Get\+Uniform\+Block (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{material\+\_\+index}{ = {\ttfamily -\/1}}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Retrieves the uniform block for the given material index. 
+
+The uniform block is used to pass data to the shader for rendering.
+
+For instance, you have a material asset which many objects use, but you want to set a particular uniform for just this one object without affecting the rest of the objects.
+
+
+\begin{DoxyParams}{Parameters}
+{\em material\+\_\+index} & The index of the material (defaults to -\/1, meaning the last material in the mesh renderer\textquotesingle{}s materials). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The uniform block associated with the material.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ block\ =\ mesh\_renderer.GetUniformBlock();}
+\DoxyCodeLine{block.SetFloat(\textcolor{stringliteral}{"{}alpha\_fade\_factor"{}},\ 0.5f);\ \textcolor{comment}{//\ Ghostly!}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_a0c42c12d3626a652c34f27b4c16d5028}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!IsActive@{IsActive}}
+\index{IsActive@{IsActive}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{IsActive()}{IsActive()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_a0c42c12d3626a652c34f27b4c16d5028} 
+bool Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Is\+Active (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if this renderer is active. 
+
+\begin{DoxyReturn}{Returns}
+True if the renderer is enabled, false otherwise.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}\ (mesh\_renderer.IsActive())}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Renderer\ is\ enabled"{}});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_a54c846df927edbfe89aee92129bd7c71}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!IsCastingShadows@{IsCastingShadows}}
+\index{IsCastingShadows@{IsCastingShadows}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{IsCastingShadows()}{IsCastingShadows()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_a54c846df927edbfe89aee92129bd7c71} 
+bool Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Is\+Casting\+Shadows (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if the renderer casts shadows. 
+
+\begin{DoxyReturn}{Returns}
+True if shadow casting is enabled.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}\ (mesh\_renderer.IsCastingShadows())}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Casting\ shadows!"{}});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_a3e5d4439dbcc0b30eaf3719325aad9cb}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!SetActive@{SetActive}}
+\index{SetActive@{SetActive}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{SetActive()}{SetActive()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_a3e5d4439dbcc0b30eaf3719325aad9cb} 
+void Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Set\+Active (\begin{DoxyParamCaption}\item[{bool}]{active}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enables or disables the mesh renderer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em active} & Set to true to activate, false to disable.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mesh\_renderer.SetActive(\textcolor{keyword}{true});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_af340a2447731ceeded9c93216ed9292c}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!SetCastingShadows@{SetCastingShadows}}
+\index{SetCastingShadows@{SetCastingShadows}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{SetCastingShadows()}{SetCastingShadows()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_af340a2447731ceeded9c93216ed9292c} 
+void Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Set\+Casting\+Shadows (\begin{DoxyParamCaption}\item[{bool}]{casting\+\_\+shadows}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enables or disables shadow casting for this renderer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em casting\+\_\+shadows} & True to enable shadow casting.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mesh\_renderer.SetCastingShadows(\textcolor{keyword}{false});}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_ad318a9f6e5790188451ee4a641d9e6a4}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!SetMaterial@{SetMaterial}}
+\index{SetMaterial@{SetMaterial}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{SetMaterial()}{SetMaterial()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_ad318a9f6e5790188451ee4a641d9e6a4} 
+void Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Set\+Material (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} \&}]{material}{, }\item[{size\+\_\+t}]{material\+\_\+index}{ = {\ttfamily size\+\_\+t(-\/1)}}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets a specific material at the given index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em material} & The material to assign. \\
+\hline
+{\em material\+\_\+index} & Index of the slot to assign to (defaults to -\/1 = back of the material vector on the component).\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mesh\_renderer.SetMaterial(new\_material);}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_renderer_component_a55adda720f78444d3681c63a953bfc9f}\index{Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}!SetMaterials@{SetMaterials}}
+\index{SetMaterials@{SetMaterials}!Louron::Components::MeshRendererComponent@{Louron::Components::MeshRendererComponent}}
+\doxysubsubsection{\texorpdfstring{SetMaterials()}{SetMaterials()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_renderer_component_a55adda720f78444d3681c63a953bfc9f} 
+void Louron\+::\+Components\+::\+Mesh\+Renderer\+Component\+::\+Set\+Materials (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets\+::\+Material}} $>$ \&}]{material\+\_\+vector}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets all materials for this mesh renderer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em material\+\_\+vector} & The new list of materials to assign.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mesh\_renderer.SetMaterials(\{\ material1,\ material2\ \});}
+
+\end{DoxyCode}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\end{DoxyCompactItemize}

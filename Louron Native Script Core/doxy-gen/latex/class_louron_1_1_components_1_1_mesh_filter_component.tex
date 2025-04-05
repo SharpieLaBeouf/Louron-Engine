@@ -1,0 +1,165 @@
+\doxysection{Louron\+::Components\+::Mesh\+Filter\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_mesh_filter_component}{}\label{class_louron_1_1_components_1_1_mesh_filter_component}\index{Louron::Components::MeshFilterComponent@{Louron::Components::MeshFilterComponent}}
+
+
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access mesh filter information.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::Mesh\+Filter\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_mesh_filter_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets\+::\+Static\+Mesh}} \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component_ad4944c25f09b184cdaf734a97002cb2b}{Get\+Mesh\+Asset}} () const
+\begin{DoxyCompactList}\small\item\em Gets the static mesh asset assigned to this entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component_a2b2e5b5f292d64b2120a56ffb30cc0a3}{Set\+Mesh\+Asset}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets\+::\+Static\+Mesh}} static\+\_\+mesh) const
+\begin{DoxyCompactList}\small\item\em Sets the static mesh asset for this entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions\+::\+Bounds\+\_\+\+AABB}} \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component_aea62eb2724c034c984e256876dab9013}{Get\+Mesh\+Bounds}} () const
+\begin{DoxyCompactList}\small\item\em Gets the axis-\/aligned bounding box (AABB) of the mesh. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component_a538116881d0212fe4a68f08c1d82a5c5}{Set\+Mesh\+Bounds}} (const \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions\+::\+Bounds\+\_\+\+AABB}} \&bounds) const
+\begin{DoxyCompactList}\small\item\em Sets the bounding box of the mesh manually. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets\+::\+Static\+Mesh}} \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component_aad3cb4f458345afe315711cc975ba315}{Copy\+And\+Set\+Mesh\+Asset}} () const
+\begin{DoxyCompactList}\small\item\em Creates and sets a deep copy of the current mesh asset. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_mesh_filter_component_ab569ff7431f435ebd1c3a660710fbc45}\label{class_louron_1_1_components_1_1_mesh_filter_component_ab569ff7431f435ebd1c3a660710fbc45} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access mesh filter information. 
+
+This allows the user to access data associated with a mesh filter component. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_mesh_filter_component_aad3cb4f458345afe315711cc975ba315}\index{Louron::Components::MeshFilterComponent@{Louron::Components::MeshFilterComponent}!CopyAndSetMeshAsset@{CopyAndSetMeshAsset}}
+\index{CopyAndSetMeshAsset@{CopyAndSetMeshAsset}!Louron::Components::MeshFilterComponent@{Louron::Components::MeshFilterComponent}}
+\doxysubsubsection{\texorpdfstring{CopyAndSetMeshAsset()}{CopyAndSetMeshAsset()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_filter_component_aad3cb4f458345afe315711cc975ba315} 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets\+::\+Static\+Mesh}} Louron\+::\+Components\+::\+Mesh\+Filter\+Component\+::\+Copy\+And\+Set\+Mesh\+Asset (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates and sets a deep copy of the current mesh asset. 
+
+\begin{DoxyReturn}{Returns}
+A new instance of the Static\+Mesh asset.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This is useful when you want to modify the mesh without affecting other entities using the original.
+\end{DoxyNote}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{StaticMesh\ unique\_mesh\ =\ mesh\_filter.CopyAndSetMeshAsset();}
+\DoxyCodeLine{uniqueMesh.SetVertices(...);}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_filter_component_ad4944c25f09b184cdaf734a97002cb2b}\index{Louron::Components::MeshFilterComponent@{Louron::Components::MeshFilterComponent}!GetMeshAsset@{GetMeshAsset}}
+\index{GetMeshAsset@{GetMeshAsset}!Louron::Components::MeshFilterComponent@{Louron::Components::MeshFilterComponent}}
+\doxysubsubsection{\texorpdfstring{GetMeshAsset()}{GetMeshAsset()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_filter_component_ad4944c25f09b184cdaf734a97002cb2b} 
+\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets\+::\+Static\+Mesh}} Louron\+::\+Components\+::\+Mesh\+Filter\+Component\+::\+Get\+Mesh\+Asset (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the static mesh asset assigned to this entity. 
+
+\begin{DoxyReturn}{Returns}
+A handle-\/wrapped Static\+Mesh asset used for rendering.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Assets::StaticMesh\ mesh\ =\ mesh\_filter.GetMeshAsset();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_filter_component_aea62eb2724c034c984e256876dab9013}\index{Louron::Components::MeshFilterComponent@{Louron::Components::MeshFilterComponent}!GetMeshBounds@{GetMeshBounds}}
+\index{GetMeshBounds@{GetMeshBounds}!Louron::Components::MeshFilterComponent@{Louron::Components::MeshFilterComponent}}
+\doxysubsubsection{\texorpdfstring{GetMeshBounds()}{GetMeshBounds()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_filter_component_aea62eb2724c034c984e256876dab9013} 
+\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions\+::\+Bounds\+\_\+\+AABB}} Louron\+::\+Components\+::\+Mesh\+Filter\+Component\+::\+Get\+Mesh\+Bounds (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the axis-\/aligned bounding box (AABB) of the mesh. 
+
+\begin{DoxyReturn}{Returns}
+The bounding box that encompasses the mesh.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Bounds\_AABB\ bounds\ =\ mesh\_filter.GetMeshBounds();}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_filter_component_a2b2e5b5f292d64b2120a56ffb30cc0a3}\index{Louron::Components::MeshFilterComponent@{Louron::Components::MeshFilterComponent}!SetMeshAsset@{SetMeshAsset}}
+\index{SetMeshAsset@{SetMeshAsset}!Louron::Components::MeshFilterComponent@{Louron::Components::MeshFilterComponent}}
+\doxysubsubsection{\texorpdfstring{SetMeshAsset()}{SetMeshAsset()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_filter_component_a2b2e5b5f292d64b2120a56ffb30cc0a3} 
+void Louron\+::\+Components\+::\+Mesh\+Filter\+Component\+::\+Set\+Mesh\+Asset (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets\+::\+Static\+Mesh}}}]{static\+\_\+mesh}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the static mesh asset for this entity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em static\+\_\+mesh} & The mesh asset to assign to this component.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mesh\_filter.SetMeshAsset(myMesh);}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_components_1_1_mesh_filter_component_a538116881d0212fe4a68f08c1d82a5c5}\index{Louron::Components::MeshFilterComponent@{Louron::Components::MeshFilterComponent}!SetMeshBounds@{SetMeshBounds}}
+\index{SetMeshBounds@{SetMeshBounds}!Louron::Components::MeshFilterComponent@{Louron::Components::MeshFilterComponent}}
+\doxysubsubsection{\texorpdfstring{SetMeshBounds()}{SetMeshBounds()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_mesh_filter_component_a538116881d0212fe4a68f08c1d82a5c5} 
+void Louron\+::\+Components\+::\+Mesh\+Filter\+Component\+::\+Set\+Mesh\+Bounds (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions\+::\+Bounds\+\_\+\+AABB}} \&}]{bounds}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the bounding box of the mesh manually. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bounds} & The new axis-\/aligned bounding box to assign.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mesh\_filter.SetMeshBounds(\{Vector3(-\/1.0f),\ Vector3(1.0f)\});}
+
+\end{DoxyCode}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\end{DoxyCompactItemize}

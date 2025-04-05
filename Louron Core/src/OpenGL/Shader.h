@@ -17,7 +17,7 @@
 
 namespace Louron {
 
-	enum class GLSLType {
+	enum class GLSLType : uint8_t {
 		Unknown,
 
 		// Bool

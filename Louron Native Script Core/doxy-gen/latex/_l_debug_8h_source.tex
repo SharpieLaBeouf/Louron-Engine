@@ -1,0 +1,31 @@
+\doxysection{LDebug.\+h}
+\hypertarget{_l_debug_8h_source}{}\label{_l_debug_8h_source}\index{Engine Util/LDebug.h@{Engine Util/LDebug.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}../Engine\ Callbacks.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{namespace\ }Louron}
+\DoxyCodeLine{00006\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{class\ }Debug}
+\DoxyCodeLine{00015\ \ \ \ \ \{}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ Debug()\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ instantiation\ of\ this\ class}}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ Debug(\textcolor{keyword}{const}\ Debug\&)\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ copying}}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ Debug\&\ operator=(\textcolor{keyword}{const}\ Debug\&)\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ assignment}}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ Debug(Debug\&\&)\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ moving}}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ Debug\&\ operator=(Debug\&\&)\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ move\ assignment}}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \string~Debug()\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ destruction}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Log}}(\textcolor{keyword}{const}\ std::string\&\ message,\ uint8\_t\ log\_type\ =\ 0)}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*,\ uint8\_t),\ Debug\_NativeLogMessage,\ message.c\_str(),\ log\_type);}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \};}
+\DoxyCodeLine{00050\ \}}
+
+\end{DoxyCode}

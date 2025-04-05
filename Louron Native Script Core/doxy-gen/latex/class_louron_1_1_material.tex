@@ -1,0 +1,92 @@
+\doxysection{Louron\+::Material Class Reference}
+\hypertarget{class_louron_1_1_material}{}\label{class_louron_1_1_material}\index{Louron::Material@{Louron::Material}}
+Inheritance diagram for Louron\+::Material\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_material}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_material_a68b68fdf2776ea09ce62464369c7a725}\label{class_louron_1_1_material_a68b68fdf2776ea09ce62464369c7a725} 
+{\bfseries Material} (const std\+::string \&material\+\_\+name)
+\item 
+\Hypertarget{class_louron_1_1_material_a2487dded775dddecd4dc25614c32e0e6}\label{class_louron_1_1_material_a2487dded775dddecd4dc25614c32e0e6} 
+void {\bfseries Set\+Shader} (const \mbox{\hyperlink{class_louron_1_1_shader}{Shader}} \&shader) const
+\item 
+\Hypertarget{class_louron_1_1_material_a9533666606957e23496dcb107cb99a97}\label{class_louron_1_1_material_a9533666606957e23496dcb107cb99a97} 
+\mbox{\hyperlink{class_louron_1_1_shader}{Shader}} {\bfseries Get\+Shader} () const
+\item 
+\Hypertarget{class_louron_1_1_material_ade6f2326e80ff3575ca2e70788c859ed}\label{class_louron_1_1_material_ade6f2326e80ff3575ca2e70788c859ed} 
+void {\bfseries Destroy} ()
+\item 
+Asset\+Type \mbox{\hyperlink{class_louron_1_1_material_abb85edcaf8a225996f51ada8054d0ce2}{Get\+Asset\+Type}} () const override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_asset}{Louron\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual {\bfseries operator uint32\+\_\+t} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_material_a23e268634ac75068f0bc3a39b4f4d614}\label{class_louron_1_1_material_a23e268634ac75068f0bc3a39b4f4d614} 
+class {\bfseries Components\+::\+Mesh\+Renderer\+Component}
+\item 
+\Hypertarget{class_louron_1_1_material_aaaa1c6babf9eb72d488c893c2ea065fa}\label{class_louron_1_1_material_aaaa1c6babf9eb72d488c893c2ea065fa} 
+class {\bfseries Components\+::\+Skinned\+Mesh\+Component}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_louron_1_1_asset}{Louron\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_asset_a9717c7b9d15e372cbe93514f1f8ab57e}\label{class_louron_1_1_asset_a9717c7b9d15e372cbe93514f1f8ab57e} 
+enum class {\bfseries Asset\+Type} \+: uint8\+\_\+t \{ \newline
+{\bfseries Unknown} = 0
+, {\bfseries Scene}
+, {\bfseries Prefab}
+, {\bfseries Texture2D}
+, \newline
+{\bfseries Texture\+Cube\+Map}
+, {\bfseries Mesh}
+, {\bfseries Model\+Import}
+, {\bfseries Skeleton}
+, \newline
+{\bfseries Animation\+Clip}
+, {\bfseries Audio}
+, {\bfseries Material\+\_\+\+Standard}
+, {\bfseries Material\+\_\+\+Skybox}
+, \newline
+{\bfseries Compute\+\_\+\+Shader}
+, {\bfseries Shader}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_asset}{Louron\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries Set\+Asset\+Handle} (uint32\+\_\+t asset\+\_\+handle)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_asset}{Louron\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Asset\+Handle} = NULL\+\_\+\+UUID
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_material_abb85edcaf8a225996f51ada8054d0ce2}\index{Louron::Material@{Louron::Material}!GetAssetType@{GetAssetType}}
+\index{GetAssetType@{GetAssetType}!Louron::Material@{Louron::Material}}
+\doxysubsubsection{\texorpdfstring{GetAssetType()}{GetAssetType()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_material_abb85edcaf8a225996f51ada8054d0ce2} 
+Asset\+Type Louron\+::\+Material\+::\+Get\+Asset\+Type (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_louron_1_1_asset}{Louron\+::\+Asset}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Defines/LAssets.\+h\end{DoxyCompactItemize}

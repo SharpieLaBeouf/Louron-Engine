@@ -1,0 +1,58 @@
+\doxysection{Louron\+::Asset Class Reference}
+\hypertarget{class_louron_1_1_asset}{}\label{class_louron_1_1_asset}\index{Louron::Asset@{Louron::Asset}}
+Inheritance diagram for Louron\+::Asset\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=12.000000cm]{class_louron_1_1_asset}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_asset_a9717c7b9d15e372cbe93514f1f8ab57e}\label{class_louron_1_1_asset_a9717c7b9d15e372cbe93514f1f8ab57e} 
+enum class {\bfseries Asset\+Type} \+: uint8\+\_\+t \{ \newline
+{\bfseries Unknown} = 0
+, {\bfseries Scene}
+, {\bfseries Prefab}
+, {\bfseries Texture2D}
+, \newline
+{\bfseries Texture\+Cube\+Map}
+, {\bfseries Mesh}
+, {\bfseries Model\+Import}
+, {\bfseries Skeleton}
+, \newline
+{\bfseries Animation\+Clip}
+, {\bfseries Audio}
+, {\bfseries Material\+\_\+\+Standard}
+, {\bfseries Material\+\_\+\+Skybox}
+, \newline
+{\bfseries Compute\+\_\+\+Shader}
+, {\bfseries Shader}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_asset_a83668faa040bb82ef55fa315124cc2c8}\label{class_louron_1_1_asset_a83668faa040bb82ef55fa315124cc2c8} 
+virtual Asset\+Type {\bfseries Get\+Asset\+Type} () const
+\item 
+\Hypertarget{class_louron_1_1_asset_a2ddbfd2ae65acfc5d03f486425123d79}\label{class_louron_1_1_asset_a2ddbfd2ae65acfc5d03f486425123d79} 
+virtual {\bfseries operator uint32\+\_\+t} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_asset_ae9736f9cced799fc5bb30d316875c1b5}\label{class_louron_1_1_asset_ae9736f9cced799fc5bb30d316875c1b5} 
+void {\bfseries Set\+Asset\+Handle} (uint32\+\_\+t asset\+\_\+handle)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_asset_a4f8dd7125449fcedf051fd512c7240ee}\label{class_louron_1_1_asset_a4f8dd7125449fcedf051fd512c7240ee} 
+uint32\+\_\+t {\bfseries m\+\_\+\+Asset\+Handle} = NULL\+\_\+\+UUID
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Defines/LAssets.\+h\end{DoxyCompactItemize}

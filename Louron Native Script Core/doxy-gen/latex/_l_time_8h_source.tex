@@ -1,0 +1,43 @@
+\doxysection{LTime.\+h}
+\hypertarget{_l_time_8h_source}{}\label{_l_time_8h_source}\index{Engine Util/LTime.h@{Engine Util/LTime.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}../Engine\ Callbacks.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{namespace\ }Louron}
+\DoxyCodeLine{00006\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{class\ }Time}
+\DoxyCodeLine{00015\ \ \ \ \ \{}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ Time()\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ instantiation\ of\ this\ class}}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ Time(\textcolor{keyword}{const}\ Time\&)\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ copying}}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ Time\&\ operator=(\textcolor{keyword}{const}\ Time\&)\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ assignment}}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ Time(Time\&\&)\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ moving}}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ Time\&\ operator=(Time\&\&)\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ move\ assignment}}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \string~Time()\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ Prevent\ destruction}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_time_a2a1d0e28898d70d3ffb7379af679e82c}{GetDeltaTime}}()\ \{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(),\ Time\_GetDeltaTime);\ \}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_time_af40b06c0ff844cfea82d2d01d691a194}{GetFixedDeltaTime}}()\ \{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(),\ Time\_GetFixedDeltaTime);\ \}}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_time_a363b011c4ec1eadf22a693929e573217}{GetUnscaledDeltaTime}}()\ \{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(),\ Time\_GetUnscaledDeltaTime);\ \}}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_time_a6497b2b1dfaea1b734cc1398dee920ff}{GetUnscaledFixedDeltaTime}}()\ \{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(),\ Time\_GetUnscaledFixedDeltaTime);\ \}}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_time_ac7689b5f740070a31bbf83e371fd0444}{GetTimeScale}}()\ \{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(),\ Time\_GetTimeScale);\ \}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_time_a5621ce33d4d3165a7e1356874a51c875}{SetTimeScale}}(\textcolor{keywordtype}{float}\ time\_scale)\ \{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(\textcolor{keywordtype}{float}),\ Time\_SetTimeScale,\ time\_scale);\ \}}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_louron_1_1_time_ac308baa171270f24e138c1259c57df6a}{GetFrameRate}}()\ \{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{int},\ \textcolor{keywordtype}{int}(*)(),\ Time\_GetFrameRate);\ \}}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_time_a35998bd73205b6aa88f977acb4d89848}{GetCurrTime}}()\ \{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(),\ Time\_GetCurrTime);\ \}}
+\DoxyCodeLine{00228\ }
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_time_a9c0ddef74992a1ce85a923917698d097}{SetFixedDeltaTime}}(\textcolor{keywordtype}{float}\ fixed\_delta\_time\ =\ 1.0f\ /\ 60.0f)\ \{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{float}(*)(\textcolor{keywordtype}{float}),\ Time\_SetFixedDeltaTime,\ fixed\_delta\_time);\ \}}
+\DoxyCodeLine{00239\ }
+\DoxyCodeLine{00240\ \ \ \ \ \};}
+\DoxyCodeLine{00241\ \}}
+
+\end{DoxyCode}

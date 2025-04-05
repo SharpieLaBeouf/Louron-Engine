@@ -20,6 +20,8 @@ namespace Louron
     class SceneCamera;
     struct CameraComponent : public ComponentBase {
 
+        // TODO: Add bool Active = true;
+
         std::shared_ptr<SceneCamera> CameraInstance = nullptr;
 
         bool Primary = false;

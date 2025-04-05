@@ -1,0 +1,110 @@
+\doxysection{Louron\+::Components\+::Script\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_script_component}{}\label{class_louron_1_1_components_1_1_script_component}\index{Louron::Components::ScriptComponent@{Louron::Components::ScriptComponent}}
+
+
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access script information.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::Script\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_script_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_louron_1_1_i_script}{IScript}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_louron_1_1_components_1_1_script_component_a2a8bf661a06c298523854745d9de0b13}{Get\+Script\+Instance}} (const std\+::string \&script\+\_\+name) const
+\begin{DoxyCompactList}\small\item\em Get the instance of the script. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_script_component_ada53bd21b1cdfdf2cd88277e91dc0bb2}\label{class_louron_1_1_components_1_1_script_component_ada53bd21b1cdfdf2cd88277e91dc0bb2} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access script information. 
+
+This allows the user to access data associated with a script component. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_script_component_a2a8bf661a06c298523854745d9de0b13}\index{Louron::Components::ScriptComponent@{Louron::Components::ScriptComponent}!GetScriptInstance@{GetScriptInstance}}
+\index{GetScriptInstance@{GetScriptInstance}!Louron::Components::ScriptComponent@{Louron::Components::ScriptComponent}}
+\doxysubsubsection{\texorpdfstring{GetScriptInstance()}{GetScriptInstance()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_script_component_a2a8bf661a06c298523854745d9de0b13} 
+\mbox{\hyperlink{class_louron_1_1_i_script}{IScript}} \texorpdfstring{$\ast$}{*} Louron\+::\+Components\+::\+Script\+Component\+::\+Get\+Script\+Instance (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{script\+\_\+name}{}\end{DoxyParamCaption}) const}
+
+
+
+Get the instance of the script. 
+
+If this \doxylink{class_louron_1_1_components_1_1_script_component}{Script\+Component} contains an active script with the specified name, this will return the instance of the script.
+
+This is useful for inter-\/script between various systems and required behaviours.
+
+The caller is responsible for casting this to the correct \doxylink{class_louron_1_1_i_script}{IScript} type.
+
+
+\begin{DoxyParams}{Parameters}
+{\em script\+\_\+name} & The name of the script to get. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+IScript\texorpdfstring{$\ast$}{*} The instance of the script. If no script is found, this will return nullptr.
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{//\ One\ Entity\ Contains\ Both\ a\ ScriptOne\ and\ ScriptTwo}}
+\DoxyCodeLine{\textcolor{comment}{//\ Script\ One\ Will\ Initialise,\ Then\ Script\ Two\ Will\ Set\ the\ bool\ to\ true.}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{class\ }ScriptOne\ :\ \textcolor{keyword}{public}\ IScript\ \{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{\ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{bool}\ my\_bool\ =\ \textcolor{keyword}{false};\ \ \ \ \ }
+\DoxyCodeLine{}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{class\ }ScriptTwo\ :\ \textcolor{keyword}{public}\ IScript\ \{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ OnCreate()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ ScriptOne*\ script\_one\ =\ \textcolor{keyword}{reinterpret\_cast<}ScriptOne*\textcolor{keyword}{>}(GetComponent<ScriptComponent>().GetScriptInstance(\textcolor{stringliteral}{"{}ScriptOne"{}}));}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(script\_one)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ script\_one-\/>my\_bool\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+ 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\item 
+ECS/LComponent.\+cpp\end{DoxyCompactItemize}

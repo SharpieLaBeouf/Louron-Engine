@@ -28,7 +28,7 @@ namespace Louron {
 		glm::vec4 bone_weights{};
 	};
 
-	enum class ShaderDataType { None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool };
+	enum class ShaderDataType { Unknown = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool };
 	static GLuint ShaderDataTypeSize(ShaderDataType type);
 
 	struct BufferElement {

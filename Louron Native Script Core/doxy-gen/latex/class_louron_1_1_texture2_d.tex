@@ -1,0 +1,124 @@
+\doxysection{Louron\+::Texture2D Class Reference}
+\hypertarget{class_louron_1_1_texture2_d}{}\label{class_louron_1_1_texture2_d}\index{Louron::Texture2D@{Louron::Texture2D}}
+Inheritance diagram for Louron\+::Texture2D\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_texture2_d}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_texture2_d_a14243d5e76c79f395b219d35c823be60}\label{class_louron_1_1_texture2_d_a14243d5e76c79f395b219d35c823be60} 
+enum {\bfseries Texture\+Format} \+: uint8\+\_\+t \{ {\bfseries RED\+\_\+8} = 0
+, {\bfseries RED\+\_\+\+GREEN\+\_\+\+BLUE\+\_\+8}
+, {\bfseries RED\+\_\+\+GREEN\+\_\+\+BLUE\+\_\+\+ALPHA\+\_\+8}
+, {\bfseries BLUE\+\_\+\+GREEN\+\_\+\+RED\+\_\+\+ALPHA\+\_\+8}
+ \}
+\item 
+\Hypertarget{class_louron_1_1_texture2_d_ab816a9ae9dec1898c33036dd26b37f81}\label{class_louron_1_1_texture2_d_ab816a9ae9dec1898c33036dd26b37f81} 
+enum {\bfseries Texture\+Property} \+: uint8\+\_\+t \{ \newline
+{\bfseries Wrap\+\_\+\+Repeat} = 1U \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 0
+, {\bfseries Wrap\+\_\+\+Mirror} = 1U \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 1
+, {\bfseries Wrap\+\_\+\+Clamp\+Edge} = 1U \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 2
+, {\bfseries Wrap\+\_\+\+Clamp\+Border} = 1U \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 3
+, \newline
+{\bfseries Filter\+\_\+\+Linear} = 1U \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 4
+, {\bfseries Filter\+\_\+\+Nearest} = 1U \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 5
+, {\bfseries Anisotropy\+\_\+\+Enabled} = 1U \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 6
+, {\bfseries Default} = Wrap\+\_\+\+Repeat \texorpdfstring{$\vert$}{|} Filter\+\_\+\+Linear \texorpdfstring{$\vert$}{|} Anisotropy\+\_\+\+Enabled
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_louron_1_1_asset}{Louron\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_asset_a9717c7b9d15e372cbe93514f1f8ab57e}\label{class_louron_1_1_asset_a9717c7b9d15e372cbe93514f1f8ab57e} 
+enum class {\bfseries Asset\+Type} \+: uint8\+\_\+t \{ \newline
+{\bfseries Unknown} = 0
+, {\bfseries Scene}
+, {\bfseries Prefab}
+, {\bfseries Texture2D}
+, \newline
+{\bfseries Texture\+Cube\+Map}
+, {\bfseries Mesh}
+, {\bfseries Model\+Import}
+, {\bfseries Skeleton}
+, \newline
+{\bfseries Animation\+Clip}
+, {\bfseries Audio}
+, {\bfseries Material\+\_\+\+Standard}
+, {\bfseries Material\+\_\+\+Skybox}
+, \newline
+{\bfseries Compute\+\_\+\+Shader}
+, {\bfseries Shader}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_texture2_d_acc623cdca1dbe9ca730133094de21c4d}\label{class_louron_1_1_texture2_d_acc623cdca1dbe9ca730133094de21c4d} 
+{\bfseries Texture2D} (const \mbox{\hyperlink{struct_louron_1_1_u_vector2}{UVector2}} \&size, Texture\+Format internal\+\_\+format)
+\item 
+\Hypertarget{class_louron_1_1_texture2_d_ae3ebead597c85d10f51b7ed53b6fc3bf}\label{class_louron_1_1_texture2_d_ae3ebead597c85d10f51b7ed53b6fc3bf} 
+{\bfseries Texture2D} (unsigned char \texorpdfstring{$\ast$}{*}data, const \mbox{\hyperlink{struct_louron_1_1_u_vector2}{UVector2}} \&size, Texture\+Format internal\+\_\+format, Texture\+Format data\+\_\+format)
+\item 
+\Hypertarget{class_louron_1_1_texture2_d_a15b21dc635312a0be08b43dee89635de}\label{class_louron_1_1_texture2_d_a15b21dc635312a0be08b43dee89635de} 
+{\bfseries Texture2D} (const std\+::vector$<$ \mbox{\hyperlink{struct_louron_1_1_u_vector4}{UVector4}} $>$ \&data, const \mbox{\hyperlink{struct_louron_1_1_u_vector2}{UVector2}} \&size)
+\item 
+\Hypertarget{class_louron_1_1_texture2_d_af6ce07fd7db5887d47290ebea761e638}\label{class_louron_1_1_texture2_d_af6ce07fd7db5887d47290ebea761e638} 
+void {\bfseries Set\+Pixel} (const \mbox{\hyperlink{struct_louron_1_1_vector4}{Vector4}} \&colour, const \mbox{\hyperlink{struct_louron_1_1_i_vector2}{IVector2}} \&pixel\+\_\+coord) const
+\item 
+\Hypertarget{class_louron_1_1_texture2_d_ab1659ecd09277744296c995fe1d3e214}\label{class_louron_1_1_texture2_d_ab1659ecd09277744296c995fe1d3e214} 
+void {\bfseries Set\+Pixel\+Data} (unsigned char \texorpdfstring{$\ast$}{*}pixel\+\_\+data, size\+\_\+t pixel\+\_\+data\+\_\+size, Texture\+Format pixel\+\_\+data\+\_\+format) const
+\item 
+\Hypertarget{class_louron_1_1_texture2_d_aa768d29afc842f51758936cf2236debb}\label{class_louron_1_1_texture2_d_aa768d29afc842f51758936cf2236debb} 
+void {\bfseries Set\+Pixel\+Data} (const std\+::vector$<$ \mbox{\hyperlink{struct_louron_1_1_u_vector4}{UVector4}} $>$ \&pixel\+\_\+data) const
+\item 
+\Hypertarget{class_louron_1_1_texture2_d_a9c46c50222cdff3d85782b737e50bf53}\label{class_louron_1_1_texture2_d_a9c46c50222cdff3d85782b737e50bf53} 
+void {\bfseries Submit\+Texture\+Changes} () const
+\item 
+\Hypertarget{class_louron_1_1_texture2_d_a2fc826409f8bb511e67d867050384207}\label{class_louron_1_1_texture2_d_a2fc826409f8bb511e67d867050384207} 
+void {\bfseries Destroy} ()
+\item 
+Asset\+Type \mbox{\hyperlink{class_louron_1_1_texture2_d_adf7b2ccd1d31a1d41359a8b43912ebda}{Get\+Asset\+Type}} () const override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_asset}{Louron\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual {\bfseries operator uint32\+\_\+t} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_texture2_d_a34d4980979b5fcc00020017aba350a0b}\label{class_louron_1_1_texture2_d_a34d4980979b5fcc00020017aba350a0b} 
+class {\bfseries Material\+Uniform\+Block}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_asset}{Louron\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries Set\+Asset\+Handle} (uint32\+\_\+t asset\+\_\+handle)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_asset}{Louron\+::\+Asset}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Asset\+Handle} = NULL\+\_\+\+UUID
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_texture2_d_adf7b2ccd1d31a1d41359a8b43912ebda}\index{Louron::Texture2D@{Louron::Texture2D}!GetAssetType@{GetAssetType}}
+\index{GetAssetType@{GetAssetType}!Louron::Texture2D@{Louron::Texture2D}}
+\doxysubsubsection{\texorpdfstring{GetAssetType()}{GetAssetType()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_texture2_d_adf7b2ccd1d31a1d41359a8b43912ebda} 
+Asset\+Type Louron\+::\+Texture2\+D\+::\+Get\+Asset\+Type (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_louron_1_1_asset}{Louron\+::\+Asset}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Defines/LAssets.\+h\end{DoxyCompactItemize}

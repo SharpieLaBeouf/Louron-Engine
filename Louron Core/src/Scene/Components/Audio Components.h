@@ -6,12 +6,12 @@ namespace Louron
 {
 
     // TODO: Implement Audio Components
-    struct AudioListener : public ComponentBase
+    struct AudioListenerComponent : public ComponentBase
     {
 
     };
 
-    struct AudioEmitter : public ComponentBase
+    struct AudioEmitterComponent : public ComponentBase
     {
 
     };

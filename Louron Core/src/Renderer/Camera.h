@@ -14,7 +14,7 @@ namespace Louron {
 
 	enum class Camera_Type {
 
-		None = 0,
+		Unknown = 0,
 		SceneCamera,
 		EditorCamera
 
@@ -42,7 +42,7 @@ namespace Louron {
 		glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
 		glm::mat4 m_Projection = glm::mat4(1.0f);
 
-		Camera_Type m_CameraType = Camera_Type::None;
+		Camera_Type m_CameraType = Camera_Type::Unknown;
 
 	};
 

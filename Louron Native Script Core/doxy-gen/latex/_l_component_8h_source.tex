@@ -1,0 +1,532 @@
+\doxysection{LComponent.\+h}
+\hypertarget{_l_component_8h_source}{}\label{_l_component_8h_source}\index{ECS/LComponent.h@{ECS/LComponent.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}../Engine\ Callbacks.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}../Defines/LAssets.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}../Defines/LTypes.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{namespace\ }Louron}
+\DoxyCodeLine{00010\ \{}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_i_script}{IScript}};}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_entity}{Entity}};}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{namespace\ }Components}
+\DoxyCodeLine{00015\ \ \ \ \ \{}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }Component}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \ \ \ \ Component()\ :\ m\_EntityID(NULL\_UUID)\ \{\ \}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::Unknown;\ \}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ \ Component(uint32\_t\ entity\_uuid)\ :\ m\_EntityID(entity\_uuid)\ \{\}}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetEntity(uint32\_t\ entity\_uuid)\ \{\ m\_EntityID\ =\ entity\_uuid;\ \}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ m\_EntityID;}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }Entity;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_script_component}{ScriptComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_i_script}{IScript}}*\ \mbox{\hyperlink{class_louron_1_1_components_1_1_script_component_a2a8bf661a06c298523854745d9de0b13}{GetScriptInstance}}(\textcolor{keyword}{const}\ std::string\&\ script\_name)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::ScriptComponent;\ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component}{CameraComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}{CameraClearFlags}}\ :\ uint8\_t\ \{}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749ea768b8217a5b8b9336e6c25d44c84470b}{COLOUR\_ONLY}}\ =\ 0,\ \ }
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749eae3d53ff832d50102618d4fd24ca85a85}{SKYBOX}}\ =\ 1\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}{CameraClearFlags}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a3ec51c1d179a804b07485de18deacbb7}{GetClearFlag}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}{CameraClearFlags}},\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}{CameraClearFlags}}(*)(uint32\_t),\ CameraComponent\_GetClearFlag,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_aacef352f13dcbea422d34c1d4d181b44}{SetClearFlag}}(\mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a2ad5e661a16ee3696125c769a904749e}{CameraClearFlags}}\ flag)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint8\_t),\ CameraComponent\_SetClearFlag,\ m\_EntityID,\ \textcolor{keyword}{static\_cast<}uint8\_t\textcolor{keyword}{>}(flag));\ \}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a21071663aac3ea76e663b5a819418125}{GetClearColour}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}},\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}(*)(uint32\_t),\ CameraComponent\_GetClearColour,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_aa104b287fd4c9979bee5a35283fdad49}{SetClearColour}}(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ colour)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\&),\ CameraComponent\_SetClearColour,\ m\_EntityID,\ colour);\ \}}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \ \ \ \ uint8\_t\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_af91a2fa5df30b8a3b60edfc790d5d483}{GetCameraDepth}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(uint8\_t,\ uint8\_t(*)(uint32\_t),\ CameraComponent\_GetCameraDepth,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a90160f5f180b6226fdd34926c5f1c52f}{SetCameraDepth}}(uint8\_t\ depth)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint8\_t),\ CameraComponent\_SetCameraDepth,\ m\_EntityID,\ depth);\ \}}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_afc5cfdedafc48b77f57ba8fac1e73060}{IsDisplayingToViewport}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ CameraComponent\_GetDisplayingToViewport,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_abf3dfce6b2dcab0cff49165a9b38a6b6}{SetDisplayingToViewport}}(\textcolor{keywordtype}{bool}\ display)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ CameraComponent\_SetDisplayingToViewport,\ m\_EntityID,\ display);\ \}}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a880a6439a005c68f24ae60743cf8b9d4}{GetViewport}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}},\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}(*)(uint32\_t),\ CameraComponent\_GetViewport,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a82867c2a77a67f6dda396688a12d7104}{SetViewport}}(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ viewport\_dimensions)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\&),\ CameraComponent\_SetViewport,\ m\_EntityID,\ viewport\_dimensions);\ \}}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector2}{Vectors::Vector2}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_abce3d1a78ff6032dda5002dc24d42e5e}{GetViewportPos}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keyword}{auto}\ viewport\ =\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a880a6439a005c68f24ae60743cf8b9d4}{GetViewport}}();\ \textcolor{keywordflow}{return}\ \{\ viewport.x,\ viewport.y\ \};\ \}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector2}{Vectors::Vector2}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_aea4036a8fdf32a5028e151405bea5a5d}{GetViewportSize}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keyword}{auto}\ viewport\ =\ \mbox{\hyperlink{class_louron_1_1_components_1_1_camera_component_a880a6439a005c68f24ae60743cf8b9d4}{GetViewport}}();\ \textcolor{keywordflow}{return}\ \{\ viewport.z,\ viewport.w\ \};\ \}}
+\DoxyCodeLine{00238\ }
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ TODO:\ Implement\ FrameBuffer,\ Getting\ Camera\ FrameBuffer,\ Blitting\ FrameBuffers,\ Writing\ to\ FrameBuffers,\ Reading\ from\ FrameBuffers,\ etc.}}
+\DoxyCodeLine{00240\ }
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::CameraComponent;\ \}}
+\DoxyCodeLine{00242\ }
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00244\ }
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_audio_listener_component}{AudioListenerComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00254\ }
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ TODO:\ Implement}}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::AudioListenerComponent;\ \}}
+\DoxyCodeLine{00258\ }
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_audio_emitter_component}{AudioEmitterComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ TODO:\ Implement}}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::AudioEmitterComponent;\ \}}
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component}{MeshFilterComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00284\ }
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets::StaticMesh}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component_ad4944c25f09b184cdaf734a97002cb2b}{GetMeshAsset}}()\textcolor{keyword}{\ const\ }\{\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets::StaticMesh}}\ asset\ =\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets::StaticMesh}}(\textcolor{keyword}{false});\ asset.SetAssetHandle(ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(uint32\_t),\ MeshFilterComponent\_GetMeshAssetHandle,\ m\_EntityID));\ \textcolor{keywordflow}{return}\ asset;\ \}}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component_a2b2e5b5f292d64b2120a56ffb30cc0a3}{SetMeshAsset}}(\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets::StaticMesh}}\ static\_mesh)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint32\_t),\ MeshFilterComponent\_SetMeshAssetHandle,\ m\_EntityID,\ static\_mesh.operator\ uint32\_t());\ \}}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions::Bounds\_AABB}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component_aea62eb2724c034c984e256876dab9013}{GetMeshBounds}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions::Bounds\_AABB}},\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions::Bounds\_AABB}}(*)(uint32\_t),\ MeshFilterComponent\_GetMeshBounds,\ m\_EntityID);\ \ \}}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component_a538116881d0212fe4a68f08c1d82a5c5}{SetMeshBounds}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions::Bounds\_AABB}}\&\ bounds)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions::Bounds\_AABB}}\&),\ MeshFilterComponent\_SetMeshBounds,\ m\_EntityID,\ bounds);\ \}}
+\DoxyCodeLine{00330\ }
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets::StaticMesh}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_filter_component_aad3cb4f458345afe315711cc975ba315}{CopyAndSetMeshAsset}}()\textcolor{keyword}{\ const\ }\{\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets::StaticMesh}}\ asset\ =\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets::StaticMesh}}(\textcolor{keyword}{false});\ asset.SetAssetHandle(ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(uint32\_t),\ MeshFilterComponent\_CopyMesh,\ m\_EntityID));\ \textcolor{keywordflow}{return}\ asset;\ \}}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::MeshFilterComponent;\ \}}
+\DoxyCodeLine{00346\ }
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00348\ }
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component}{MeshRendererComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00358\ }
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a0c42c12d3626a652c34f27b4c16d5028}{IsActive}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ MeshRendererComponent\_GetIsActive,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00370\ }
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a3e5d4439dbcc0b30eaf3719325aad9cb}{SetActive}}(\textcolor{keywordtype}{bool}\ active)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ MeshRendererComponent\_SetIsActive,\ m\_EntityID,\ active);\ \}}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a54c846df927edbfe89aee92129bd7c71}{IsCastingShadows}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ MeshRendererComponent\_GetIsCastingShadows,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00393\ }
+\DoxyCodeLine{00403\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_af340a2447731ceeded9c93216ed9292c}{SetCastingShadows}}(\textcolor{keywordtype}{bool}\ casting\_shadows)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ MeshRendererComponent\_SetCastingShadows,\ m\_EntityID,\ casting\_shadows);\ \}}
+\DoxyCodeLine{00404\ }
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<Assets::Material>\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a030a1d39d36cc98bf4924d96e7149b0d}{GetMaterials}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00420\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00421\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<Assets::Material>\ material\_vector\{\};}
+\DoxyCodeLine{00422\ }
+\DoxyCodeLine{00423\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ material\_count\ =\ 0;}
+\DoxyCodeLine{00424\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{size\_t}*),\ MeshRendererComponent\_GetAllMaterialsCount,\ m\_EntityID,\ \&material\_count);}
+\DoxyCodeLine{00425\ }
+\DoxyCodeLine{00426\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (material\_count\ >\ 0)}
+\DoxyCodeLine{00427\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00428\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::unique\_ptr<uint32\_t[]>\ material\_array(\textcolor{keyword}{new}\ uint32\_t[material\_count]);}
+\DoxyCodeLine{00429\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint32\_t*,\ \textcolor{keywordtype}{size\_t}),\ MeshRendererComponent\_GetAllMaterialsCopy,\ m\_EntityID,\ material\_array.get(),\ material\_count);}
+\DoxyCodeLine{00430\ }
+\DoxyCodeLine{00431\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ material\_count;\ ++i)}
+\DoxyCodeLine{00432\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}\ material\ =\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}(\textcolor{keyword}{false});}
+\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ material.m\_AssetHandle\ =\ material\_array[i];}
+\DoxyCodeLine{00435\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ material\_vector.emplace\_back(material);}
+\DoxyCodeLine{00436\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00437\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00438\ }
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ material\_vector;}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00441\ }
+\DoxyCodeLine{00451\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a55adda720f78444d3681c63a953bfc9f}{SetMaterials}}(\textcolor{keyword}{const}\ std::vector<Assets::Material>\&\ material\_vector)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00452\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00453\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Can't\ reinterpret\_cast\ to\ const\ uint32\_t*\ as\ there\ are\ vtable*'s\ that\ may\ lead\ to\ incorrect\ data\ alignment}}
+\DoxyCodeLine{00454\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<uint32\_t>\ material\_array;}
+\DoxyCodeLine{00455\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ material\_array.reserve(material\_vector.size());}
+\DoxyCodeLine{00456\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ mat\ :\ material\_vector)}
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ material\_array.push\_back((uint32\_t)mat);}
+\DoxyCodeLine{00458\ }
+\DoxyCodeLine{00459\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ uint32\_t*,\ \textcolor{keywordtype}{size\_t}),\ MeshRendererComponent\_SetAllMaterials,\ m\_EntityID,\ material\_array.data(),\ material\_vector.size());}
+\DoxyCodeLine{00460\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00461\ }
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a52b3ffa409ff4198d231f2abe56f0eab}{GetMaterial}}(\textcolor{keywordtype}{size\_t}\ material\_index\ =\ \textcolor{keywordtype}{size\_t}(-\/1))\textcolor{keyword}{\ const\ }\{\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}\ mat\ =\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}(\textcolor{keyword}{false});\ mat.m\_AssetHandle\ =\ ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(uint32\_t,\ \textcolor{keywordtype}{size\_t}),\ MeshRendererComponent\_GetMaterial,\ m\_EntityID,\ material\_index);\ \textcolor{keywordflow}{return}\ mat;\ \}}
+\DoxyCodeLine{00474\ }
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_ad318a9f6e5790188451ee4a641d9e6a4}{SetMaterial}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}\&\ material,\ \textcolor{keywordtype}{size\_t}\ material\_index\ =\ \textcolor{keywordtype}{size\_t}(-\/1))\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{size\_t},\ uint32\_t),\ MeshRendererComponent\_SetMaterial,\ m\_EntityID,\ material\_index,\ material.m\_AssetHandle);\ \}}
+\DoxyCodeLine{00486\ }
+\DoxyCodeLine{00500\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_ab4be560da2dcc05e33572f81ffef6093}{EnableUniformBlock}}(\textcolor{keywordtype}{size\_t}\ material\_index)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{size\_t}),\ MeshRendererComponent\_EnableUniformBlock,\ m\_EntityID,\ material\_index);\ \}}
+\DoxyCodeLine{00501\ }
+\DoxyCodeLine{00515\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a76d9f636ec7f3bc9eb46d21733f423fa}{DisableUniformBlock}}(\textcolor{keywordtype}{size\_t}\ material\_index)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{size\_t}),\ MeshRendererComponent\_DisableUniformBlock,\ m\_EntityID,\ material\_index);\ \}}
+\DoxyCodeLine{00516\ }
+\DoxyCodeLine{00517\ }
+\DoxyCodeLine{00529\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_ad6ae2727f5329f2fad4044a612040109}{EnableAllUniformBlocks}}()\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t),\ MeshRendererComponent\_EnableAllUniformBlocks,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00530\ }
+\DoxyCodeLine{00542\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a49e9c050948f558cf211031d11e6a28d}{DisableAllUniformBlocks}}()\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t),\ MeshRendererComponent\_DisableAllUniformBlocks,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00543\ }
+\DoxyCodeLine{00544\ }
+\DoxyCodeLine{00560\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material_uniform_block}{Assets::MaterialUniformBlock}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_mesh_renderer_component_a26195470b9b18ca0500556dfd76b8e2f}{GetUniformBlock}}(uint32\_t\ material\_index\ =\ -\/1)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material_uniform_block}{Assets::MaterialUniformBlock}}(ENGINE\_SAFE\_CALL\_RET\_PTR(\textcolor{keywordtype}{void}*,\ \textcolor{keywordtype}{void}*(*)(uint32\_t,\ uint32\_t),\ MeshRendererComponent\_GetUniformBlock,\ m\_EntityID,\ material\_index));\ \}}
+\DoxyCodeLine{00561\ }
+\DoxyCodeLine{00562\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::MeshRendererComponent;\ \}}
+\DoxyCodeLine{00563\ }
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00565\ }
+\DoxyCodeLine{00571\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component}{LODMeshComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00572\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00573\ }
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00575\ }
+\DoxyCodeLine{00581\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element}{LODElement}}}
+\DoxyCodeLine{00582\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element_a07e9ac9db72cb80e2fca5397108c6c7e}{DistanceThresholdNormalised}};}
+\DoxyCodeLine{00589\ }
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<Entity>\ \mbox{\hyperlink{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element_a8dff5dd8d8e7c908ddec1da5239b1969}{MeshRendererEntities}};}
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00595\ }
+\DoxyCodeLine{00596\ }
+\DoxyCodeLine{00607\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_adb3e60d96a0fc550c0e1834c93f3d703}{IsMaxDistanceOverFarPlane}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ LODMeshComponent\_GetUseMaxDistanceOverFarPlane,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00608\ }
+\DoxyCodeLine{00618\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_ac55a44dd9e4dde219534074f90f66b3c}{SetMaxDistanceOverFarPlane}}(\textcolor{keywordtype}{bool}\ use\_max\_distance)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ LODMeshComponent\_SetMaxDistanceOverFarPlane,\ m\_EntityID,\ use\_max\_distance);\ \}}
+\DoxyCodeLine{00619\ }
+\DoxyCodeLine{00629\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_a1495a970704479f60acd543b74c41bcc}{GetMaxDistance}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ LODMeshComponent\_GetMaxDistance,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00630\ }
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_a98c969a5ecb412daad2b93818f1e335c}{SetMaxDistance}}(\textcolor{keywordtype}{float}\ distance)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ LODMeshComponent\_SetMaxDistance,\ m\_EntityID,\ distance);\ \}}
+\DoxyCodeLine{00641\ }
+\DoxyCodeLine{00651\ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<LODElement>\ \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_a0c8b99aeac41ea9ffe48b0145f19f313}{GetLODElements}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00652\ }
+\DoxyCodeLine{00662\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_l_o_d_mesh_component_a5f938f06573fb21cc3d2c2d77ca75870}{SetLODElements}}(\textcolor{keyword}{const}\ std::vector<LODElement>\&\ lod\_elements)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00663\ }
+\DoxyCodeLine{00664\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::LODMeshComponent;\ \}}
+\DoxyCodeLine{00665\ }
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00667\ }
+\DoxyCodeLine{00673\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component}{SkinnedMeshComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00674\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00675\ }
+\DoxyCodeLine{00676\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00677\ }
+\DoxyCodeLine{00688\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a6eed1c2a1c84e67b17769c440b8b5288}{IsActive}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ SkinnedMeshComponent\_GetIsActive,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00689\ }
+\DoxyCodeLine{00699\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a341ea3ccd094740b47c6a25f64ce4d53}{SetActive}}(\textcolor{keywordtype}{bool}\ active)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ SkinnedMeshComponent\_SetIsActive,\ m\_EntityID,\ active);\ \}}
+\DoxyCodeLine{00700\ }
+\DoxyCodeLine{00706\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a061747ca8ac389798c786e75a1e96a04}{IsCastingShadows}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ SkinnedMeshComponent\_GetIsCastingShadows,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00712\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a02b279fda1abe2a16c9b7ca8a25bf042}{SetCastingShadows}}(\textcolor{keywordtype}{bool}\ casting\_shadows)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ SkinnedMeshComponent\_SetCastingShadows,\ m\_EntityID,\ casting\_shadows);\ \}}
+\DoxyCodeLine{00713\ }
+\DoxyCodeLine{00723\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets::StaticMesh}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a8b43bd4771edf943b8fb23c8a4b53592}{GetMeshAsset}}()\textcolor{keyword}{\ const\ }\{\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets::StaticMesh}}\ asset\ =\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets::StaticMesh}}(\textcolor{keyword}{false});\ asset.SetAssetHandle(ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(uint32\_t),\ SkinnedMeshComponent\_GetMeshAssetHandle,\ m\_EntityID));\ \textcolor{keywordflow}{return}\ asset;\ \}}
+\DoxyCodeLine{00724\ }
+\DoxyCodeLine{00725\ }
+\DoxyCodeLine{00731\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a91d6ba95a81aa9f4d8fabad018592720}{SetMeshAsset}}(\mbox{\hyperlink{class_louron_1_1_assets_1_1_static_mesh}{Assets::StaticMesh}}\ static\_mesh)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint32\_t),\ SkinnedMeshComponent\_SetMeshAssetHandle,\ m\_EntityID,\ static\_mesh.operator\ uint32\_t());\ \}}
+\DoxyCodeLine{00732\ }
+\DoxyCodeLine{00738\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_assets_1_1_skeleton}{Assets::Skeleton}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a3ef577690dd792f188033136008a53d5}{GetSkeleton}}()\textcolor{keyword}{\ const\ }\{\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_skeleton}{Assets::Skeleton}}\ asset\ =\ \{\};\ asset.SetAssetHandle(ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(uint32\_t),\ SkinnedMeshComponent\_GetSkeletonAssetHandle,\ m\_EntityID));\ \textcolor{keywordflow}{return}\ asset;\ \}}
+\DoxyCodeLine{00739\ }
+\DoxyCodeLine{00745\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a268a04dd474b677f2408fcdf68f3f628}{SetSkeletonAsset}}(\mbox{\hyperlink{class_louron_1_1_assets_1_1_skeleton}{Assets::Skeleton}}\ skeleton)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint32\_t),\ SkinnedMeshComponent\_SetSkeletonAssetHandle,\ m\_EntityID,\ skeleton.operator\ uint32\_t());\ \}}
+\DoxyCodeLine{00746\ }
+\DoxyCodeLine{00752\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions::Bounds\_AABB}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a1c9229586cb6b641b7c56ea21fdb53d7}{GetMeshBounds}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions::Bounds\_AABB}},\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions::Bounds\_AABB}}(*)(uint32\_t),\ SkinnedMeshComponent\_GetMeshBounds,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00753\ }
+\DoxyCodeLine{00759\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a6d2ef315718adbfae1360fda3cbd069b}{SetMeshBounds}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions::Bounds\_AABB}}\&\ bounds)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_partitions_1_1_bounds___a_a_b_b}{Partitions::Bounds\_AABB}}\&),\ SkinnedMeshComponent\_SetMeshBounds,\ m\_EntityID,\ bounds);\ \}}
+\DoxyCodeLine{00760\ }
+\DoxyCodeLine{00770\ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<Assets::Material>\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a365ea3c775ce3e9b7b83910db3331448}{GetMaterials}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00771\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00772\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<Assets::Material>\ material\_vector\{\};}
+\DoxyCodeLine{00773\ }
+\DoxyCodeLine{00774\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ material\_count\ =\ 0;}
+\DoxyCodeLine{00775\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{size\_t}*),\ SkinnedMeshComponent\_GetAllMaterialsCount,\ m\_EntityID,\ \&material\_count);}
+\DoxyCodeLine{00776\ }
+\DoxyCodeLine{00777\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (material\_count\ >\ 0)}
+\DoxyCodeLine{00778\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00779\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::unique\_ptr<uint32\_t[]>\ material\_array(\textcolor{keyword}{new}\ uint32\_t[material\_count]);}
+\DoxyCodeLine{00780\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint32\_t*,\ \textcolor{keywordtype}{size\_t}),\ SkinnedMeshComponent\_GetAllMaterialsCopy,\ m\_EntityID,\ material\_array.get(),\ material\_count);}
+\DoxyCodeLine{00781\ }
+\DoxyCodeLine{00782\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ material\_count;\ ++i)}
+\DoxyCodeLine{00783\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00784\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}\ material\ =\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}(\textcolor{keyword}{false});}
+\DoxyCodeLine{00785\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ material.m\_AssetHandle\ =\ material\_array[i];}
+\DoxyCodeLine{00786\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ material\_vector.emplace\_back(material);}
+\DoxyCodeLine{00787\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00788\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00789\ }
+\DoxyCodeLine{00790\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ material\_vector;}
+\DoxyCodeLine{00791\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00792\ }
+\DoxyCodeLine{00798\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a15447148c470482e7f2cbe754ea02879}{SetMaterials}}(\textcolor{keyword}{const}\ std::vector<Assets::Material>\&\ material\_vector)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00799\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00800\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Can't\ reinterpret\_cast\ to\ const\ uint32\_t*\ as\ there\ are\ vtable*'s\ that\ may\ lead\ to\ incorrect\ data\ alignment}}
+\DoxyCodeLine{00801\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<uint32\_t>\ handles;}
+\DoxyCodeLine{00802\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ handles.reserve(material\_vector.size());}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ mat\ :\ material\_vector)}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ handles.push\_back((uint32\_t)mat);}
+\DoxyCodeLine{00805\ }
+\DoxyCodeLine{00806\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ uint32\_t*,\ \textcolor{keywordtype}{size\_t}),\ SkinnedMeshComponent\_SetAllMaterials,\ m\_EntityID,\ handles.data(),\ material\_vector.size());}
+\DoxyCodeLine{00807\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00808\ }
+\DoxyCodeLine{00815\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_abc67348432d10c11203cfa050770fc3b}{GetMaterial}}(\textcolor{keywordtype}{size\_t}\ material\_index\ =\ \textcolor{keywordtype}{size\_t}(-\/1))\textcolor{keyword}{\ const\ }\{\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}\ mat\ =\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}(\textcolor{keyword}{false});\ mat.m\_AssetHandle\ =\ ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(uint32\_t,\ \textcolor{keywordtype}{size\_t}),\ SkinnedMeshComponent\_GetMaterial,\ m\_EntityID,\ material\_index);\ \textcolor{keywordflow}{return}\ mat;\ \}}
+\DoxyCodeLine{00816\ }
+\DoxyCodeLine{00823\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_ad442d8ff49654d259f4bb3181571bba8}{SetMaterial}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_material}{Assets::Material}}\&\ material,\ \textcolor{keywordtype}{size\_t}\ material\_index\ =\ \textcolor{keywordtype}{size\_t}(-\/1))\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{size\_t},\ uint32\_t),\ SkinnedMeshComponent\_SetMaterial,\ m\_EntityID,\ material\_index,\ material.m\_AssetHandle);\ \}}
+\DoxyCodeLine{00824\ }
+\DoxyCodeLine{00834\ \ \ \ \ \ \ \ \ \ \ \ \ std::unordered\_map<uint32\_t,\ Entity>\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a9e57a45912febaa773bba0d190491532}{GetBoneMapping}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00835\ }
+\DoxyCodeLine{00845\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skinned_mesh_component_a948b586bf183be5893b2eabf93c72720}{SetBoneMapping}}(\textcolor{keyword}{const}\ std::unordered\_map<uint32\_t,\ Entity>\&\ bone\_map)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00846\ }
+\DoxyCodeLine{00847\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::SkinnedMeshComponent;\ \}}
+\DoxyCodeLine{00848\ }
+\DoxyCodeLine{00849\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00850\ }
+\DoxyCodeLine{00856\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_animator_component}{AnimatorComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00857\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00858\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Leaving\ this\ for\ now\ as\ I\ need\ to\ rethink\ the\ animation\ system}}
+\DoxyCodeLine{00859\ }
+\DoxyCodeLine{00860\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00861\ }
+\DoxyCodeLine{00862\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::AnimatorComponent;\ \}}
+\DoxyCodeLine{00863\ }
+\DoxyCodeLine{00864\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00865\ }
+\DoxyCodeLine{00871\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_skybox_component}{SkyboxComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00872\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00873\ }
+\DoxyCodeLine{00874\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00875\ }
+\DoxyCodeLine{00885\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_assets_1_1_skybox_material}{Assets::SkyboxMaterial}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skybox_component_a7029423eb788cf2320773727d1c52dd9}{GetSkyboxMaterialAsset}}()\textcolor{keyword}{\ const\ }\{\ \mbox{\hyperlink{class_louron_1_1_assets_1_1_skybox_material}{Assets::SkyboxMaterial}}\ asset\ =\ \{\};\ asset.SetAssetHandle(ENGINE\_SAFE\_CALL\_RET(uint32\_t,\ uint32\_t(*)(uint32\_t),\ SkyboxComponent\_GetSkyboxMaterialAssetHandle,\ m\_EntityID));\ \textcolor{keywordflow}{return}\ asset;\ \}}
+\DoxyCodeLine{00886\ }
+\DoxyCodeLine{00896\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_skybox_component_ae2ee92dae11f864780f86e54c310cab1}{SetSkyboxMaterialAsset}}(\mbox{\hyperlink{class_louron_1_1_assets_1_1_skybox_material}{Assets::SkyboxMaterial}}\ skybox\_material)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint32\_t),\ SkyboxComponent\_SetSkyboxMaterialAssetHandle,\ m\_EntityID,\ skybox\_material.operator\ uint32\_t());\ \}}
+\DoxyCodeLine{00897\ }
+\DoxyCodeLine{00898\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::SkyboxComponent;\ \}}
+\DoxyCodeLine{00899\ }
+\DoxyCodeLine{00900\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00901\ }
+\DoxyCodeLine{00902\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ ShadowTypeFlag\ :\ uint8\_t}
+\DoxyCodeLine{00903\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00904\ \ \ \ \ \ \ \ \ \ \ \ \ NoShadows\ =\ 0,}
+\DoxyCodeLine{00905\ \ \ \ \ \ \ \ \ \ \ \ \ HardShadows\ =\ 1,}
+\DoxyCodeLine{00906\ \ \ \ \ \ \ \ \ \ \ \ \ SoftShadows\ =\ 2,}
+\DoxyCodeLine{00907\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00908\ }
+\DoxyCodeLine{00914\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_point_light_component}{PointLightComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00915\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00916\ }
+\DoxyCodeLine{00917\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00918\ }
+\DoxyCodeLine{00923\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_point_light_component_ae2df4a0655e755fa5531d0179433ccc9}{IsActive}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ PointLightComponent\_GetIsActive,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00924\ }
+\DoxyCodeLine{00929\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_point_light_component_a7b93d358888b21ac09492b7c43092271}{SetActive}}(\textcolor{keywordtype}{bool}\ active)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ PointLightComponent\_SetIsActive,\ m\_EntityID,\ active);\ \}}
+\DoxyCodeLine{00930\ }
+\DoxyCodeLine{00935\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_point_light_component_a69f6f11e2b639d2204595f20686daca7}{GetRadius}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ PointLightComponent\_GetRadius,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00936\ }
+\DoxyCodeLine{00941\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_point_light_component_a7f66132451a3d388d8098e6b6f9b9f2b}{SetRadius}}(\textcolor{keywordtype}{float}\ radius)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ PointLightComponent\_SetRadius,\ m\_EntityID,\ radius);\ \}}
+\DoxyCodeLine{00942\ }
+\DoxyCodeLine{00947\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_point_light_component_aeddbc4fe8270b4fe1d5bd9d917627f8a}{GetIntensity}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ PointLightComponent\_GetIntensity,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00948\ }
+\DoxyCodeLine{00953\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_point_light_component_aa96ea393c7aeaff6660e4a3f7a72a0cc}{SetIntensity}}(\textcolor{keywordtype}{float}\ intensity)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ PointLightComponent\_SetIntensity,\ m\_EntityID,\ intensity);\ \}}
+\DoxyCodeLine{00954\ }
+\DoxyCodeLine{00959\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_point_light_component_a20a721c4b9e9a957dad2a7fd1e0ad8b9}{GetColour}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}},\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}(*)(uint32\_t),\ PointLightComponent\_GetColour,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00960\ }
+\DoxyCodeLine{00965\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_point_light_component_abd95838aa01459c008ad7638995f368b}{SetColour}}(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ colour)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\&),\ PointLightComponent\_SetColour,\ m\_EntityID,\ colour);\ \}}
+\DoxyCodeLine{00966\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00971\ \ \ \ \ \ \ \ \ \ \ \ \ ShadowTypeFlag\ \mbox{\hyperlink{class_louron_1_1_components_1_1_point_light_component_ac07c6a5edf1973b840950b7b72d05c3e}{GetShadowFlag}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(ShadowTypeFlag,\ ShadowTypeFlag(*)(uint32\_t),\ PointLightComponent\_GetShadowFlag,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00972\ }
+\DoxyCodeLine{00977\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_point_light_component_af805bb55f555c52dc763838c28996cbd}{SetShadowFlag}}(ShadowTypeFlag\ flag)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint8\_t),\ PointLightComponent\_SetShadowFlag,\ m\_EntityID,\ \textcolor{keyword}{static\_cast<}uint8\_t\textcolor{keyword}{>}(flag));\ \}}
+\DoxyCodeLine{00978\ }
+\DoxyCodeLine{00979\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::PointLightComponent;\ \}}
+\DoxyCodeLine{00980\ }
+\DoxyCodeLine{00981\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00982\ }
+\DoxyCodeLine{00988\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component}{SpotLightComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{00989\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00990\ }
+\DoxyCodeLine{00991\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00992\ }
+\DoxyCodeLine{00997\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_ac886fc18df74d460760e2f28934d8d81}{IsActive}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ SpotLightComponent\_GetIsActive,\ m\_EntityID);\ \}}
+\DoxyCodeLine{00998\ }
+\DoxyCodeLine{01003\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_a2c0d84d48514cb89dacbdde66966c85e}{SetActive}}(\textcolor{keywordtype}{bool}\ active)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ SpotLightComponent\_SetIsActive,\ m\_EntityID,\ active);\ \}}
+\DoxyCodeLine{01004\ }
+\DoxyCodeLine{01009\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_a3b46212be3e0fbae31640e112c97e85f}{GetRange}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ SpotLightComponent\_GetRange,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01010\ }
+\DoxyCodeLine{01015\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_a5c0cce157ddd8f69b1f4bf5755c4d0e8}{SetRange}}(\textcolor{keywordtype}{float}\ range)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ SpotLightComponent\_SetRange,\ m\_EntityID,\ range);\ \}}
+\DoxyCodeLine{01016\ }
+\DoxyCodeLine{01021\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_aa7634e194ce9e2f57720eefa49db714f}{GetAngle}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ SpotLightComponent\_GetAngle,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01022\ }
+\DoxyCodeLine{01027\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_aa78b02dd94379bb7c932cb505fde42da}{SetAngle}}(\textcolor{keywordtype}{float}\ angle)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ SpotLightComponent\_SetAngle,\ m\_EntityID,\ angle);\ \}}
+\DoxyCodeLine{01028\ }
+\DoxyCodeLine{01033\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_aed14acf96676fa5777a7a3b6a8e4184d}{GetIntensity}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ SpotLightComponent\_GetIntensity,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01034\ }
+\DoxyCodeLine{01039\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_ad950872e0ae114d95dd0125462af775d}{SetIntensity}}(\textcolor{keywordtype}{float}\ intensity)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ SpotLightComponent\_SetIntensity,\ m\_EntityID,\ intensity);\ \}}
+\DoxyCodeLine{01040\ }
+\DoxyCodeLine{01045\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_aa93cfe3f965e7e1d4078f327974003a3}{GetColour}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}},\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}(*)(uint32\_t),\ SpotLightComponent\_GetColour,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01046\ }
+\DoxyCodeLine{01051\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_a1bcbc4e7cde5c7c68c5a28b0ece8ec3a}{SetColour}}(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ colour)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\&),\ SpotLightComponent\_SetColour,\ m\_EntityID,\ colour);\ \}}
+\DoxyCodeLine{01052\ }
+\DoxyCodeLine{01057\ \ \ \ \ \ \ \ \ \ \ \ \ ShadowTypeFlag\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_af1fd35f221dd10f9cfb0ea227d96a8a0}{GetShadowFlag}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(ShadowTypeFlag,\ ShadowTypeFlag(*)(uint32\_t),\ SpotLightComponent\_GetShadowFlag,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01058\ }
+\DoxyCodeLine{01063\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_a653f533ed57b0c7c4dda957b497edc2c}{SetShadowFlag}}(ShadowTypeFlag\ flag)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint8\_t),\ SpotLightComponent\_SetShadowFlag,\ m\_EntityID,\ \textcolor{keyword}{static\_cast<}uint8\_t\textcolor{keyword}{>}(flag));\ \}}
+\DoxyCodeLine{01064\ }
+\DoxyCodeLine{01065\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::SpotLightComponent;\ \}}
+\DoxyCodeLine{01066\ }
+\DoxyCodeLine{01067\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01068\ }
+\DoxyCodeLine{01074\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component}{DirectionalLightComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{01075\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01076\ }
+\DoxyCodeLine{01077\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01078\ }
+\DoxyCodeLine{01083\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a4a835f45f7b056133b2e058d4e8e801d}{IsActive}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ DirectionalLightComponent\_GetIsActive,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01084\ }
+\DoxyCodeLine{01089\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a59e6412d46d1a2242b4addffd6a27b48}{SetActive}}(\textcolor{keywordtype}{bool}\ active)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ DirectionalLightComponent\_SetIsActive,\ m\_EntityID,\ active);\ \}}
+\DoxyCodeLine{01090\ }
+\DoxyCodeLine{01095\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a048a3d16daf305a53b89524165890085}{GetIntensity}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ DirectionalLightComponent\_GetIntensity,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01096\ }
+\DoxyCodeLine{01101\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_ac8cb02679e03e5210f991e9488f50f2a}{SetIntensity}}(\textcolor{keywordtype}{float}\ intensity)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ DirectionalLightComponent\_SetIntensity,\ m\_EntityID,\ intensity);\ \}}
+\DoxyCodeLine{01102\ }
+\DoxyCodeLine{01107\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a742a61357d9acac72e126656d2c87dad}{GetMaxShadowDistance}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ DirectionalLightComponent\_GetMaxShadowDistance,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01108\ }
+\DoxyCodeLine{01113\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a138861c93fd1aa736150b5a7b7e5d71b}{SetMaxShadowDistance}}(\textcolor{keywordtype}{float}\ max\_shadow\_distance)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ DirectionalLightComponent\_SetMaxShadowDistance,\ m\_EntityID,\ max\_shadow\_distance);\ \}}
+\DoxyCodeLine{01114\ }
+\DoxyCodeLine{01119\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_ae8568481e4d59475cad62b193bbe5216}{GetColour}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}},\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}(*)(uint32\_t),\ DirectionalLightComponent\_GetColour,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01120\ }
+\DoxyCodeLine{01125\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a5e2515e29323e57553eb96e3017691ca}{SetColour}}(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\ colour)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors::Vector4}}\&),\ DirectionalLightComponent\_SetColour,\ m\_EntityID,\ colour);\ \}}
+\DoxyCodeLine{01126\ }
+\DoxyCodeLine{01131\ \ \ \ \ \ \ \ \ \ \ \ \ ShadowTypeFlag\ \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_abf7f17fac6fc498768f59f26af309829}{GetShadowFlag}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(ShadowTypeFlag,\ ShadowTypeFlag(*)(uint32\_t),\ DirectionalLightComponent\_GetShadowFlag,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01132\ }
+\DoxyCodeLine{01137\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_directional_light_component_a70fd4ac3e0b34689299c4ca34726a91d}{SetShadowFlag}}(ShadowTypeFlag\ flag)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ uint8\_t),\ DirectionalLightComponent\_SetShadowFlag,\ m\_EntityID,\ \textcolor{keyword}{static\_cast<}uint8\_t\textcolor{keyword}{>}(flag));\ \}}
+\DoxyCodeLine{01138\ }
+\DoxyCodeLine{01139\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::DirectionalLightComponent;\ \}}
+\DoxyCodeLine{01140\ }
+\DoxyCodeLine{01141\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01142\ }
+\DoxyCodeLine{01143\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{PhysicsMaterial}}}
+\DoxyCodeLine{01144\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01145\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ dynamic\_friction;}
+\DoxyCodeLine{01146\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ static\_friction;}
+\DoxyCodeLine{01147\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ bounciness;}
+\DoxyCodeLine{01148\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01149\ }
+\DoxyCodeLine{01155\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component}{RigidbodyComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{01156\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01157\ }
+\DoxyCodeLine{01158\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01159\ }
+\DoxyCodeLine{01164\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a0c3df98f10019eed60c29876a5563190}{GetMass}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ RigidbodyComponent\_GetMass,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01165\ }
+\DoxyCodeLine{01170\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aa0c8dbb958be2fab7de4162f1adab64a}{GetDrag}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ RigidbodyComponent\_GetDrag,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01171\ }
+\DoxyCodeLine{01176\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aaaffcb98fa53b950a805d81171491de7}{GetAngularDrag}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ RigidbodyComponent\_GetAngularDrag,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01177\ }
+\DoxyCodeLine{01182\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a9b5b38f374a809819dcdaf1859d4ceae}{IsAutomaticCentreOfMassEnabled}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ RigidbodyComponent\_GetAutomaticCentreOfMass,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01183\ }
+\DoxyCodeLine{01188\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a66a2ad01efdcdd55e6d626e7508c442b}{IsGravityEnabled}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ RigidbodyComponent\_GetUseGravity,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01189\ }
+\DoxyCodeLine{01194\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a49e85d1bc2e9314392c22cfbfe86f201}{IsKinematicEnabled}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ RigidbodyComponent\_GetIsKinematic,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01195\ }
+\DoxyCodeLine{01200\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors::BVector3}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a7b4ca338dccaa04dfb9f4d48b09c9fe1}{GetPositionConstraint}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors::BVector3}},\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors::BVector3}}(*)(uint32\_t),\ RigidbodyComponent\_GetPositionConstraint,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01201\ }
+\DoxyCodeLine{01206\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors::BVector3}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a2e71f125365f5cfded73b7e0f96dbbbd}{GetRotationConstraint}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors::BVector3}},\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors::BVector3}}(*)(uint32\_t),\ RigidbodyComponent\_GetRotationConstraint,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01207\ }
+\DoxyCodeLine{01212\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a40af3e6f1d0837127a1cc9ad77cdc52e}{SetMass}}(\textcolor{keywordtype}{float}\ mass)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ RigidbodyComponent\_SetMass,\ m\_EntityID,\ mass);\ \}}
+\DoxyCodeLine{01213\ }
+\DoxyCodeLine{01218\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aa0d5e6960ca450d35755a65b99450e05}{SetDrag}}(\textcolor{keywordtype}{float}\ drag)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ RigidbodyComponent\_SetDrag,\ m\_EntityID,\ drag);\ \}}
+\DoxyCodeLine{01219\ }
+\DoxyCodeLine{01224\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aa797f8b61f1550435115b50271a43103}{SetAngularDrag}}(\textcolor{keywordtype}{float}\ angularDrag)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ RigidbodyComponent\_SetAngularDrag,\ m\_EntityID,\ angularDrag);\ \}}
+\DoxyCodeLine{01225\ }
+\DoxyCodeLine{01230\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a31dc444cf29dddfc21cdce6db9578c06}{SetAutomaticCentreOfMass}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\&\ automaticCentreOfMass)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ RigidbodyComponent\_SetAutomaticCentreOfMass,\ m\_EntityID,\ automaticCentreOfMass);\ \}}
+\DoxyCodeLine{01231\ }
+\DoxyCodeLine{01236\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a52e6b5ddfec96cef503269bf9302f487}{SetGravity}}(\textcolor{keywordtype}{bool}\ useGravity)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ RigidbodyComponent\_SetUseGravity,\ m\_EntityID,\ useGravity);\ \}}
+\DoxyCodeLine{01237\ }
+\DoxyCodeLine{01242\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ac365eb816333ec45b8bad1127d72b789}{SetKinematic}}(\textcolor{keywordtype}{bool}\ isKinematic)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ RigidbodyComponent\_SetIsKinematic,\ m\_EntityID,\ isKinematic);\ \}}
+\DoxyCodeLine{01243\ }
+\DoxyCodeLine{01248\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a01ecb8a24c9d95aa1aa99ca8a0c832f3}{SetPositionConstraint}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors::BVector3}}\&\ positionConstraint)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors::BVector3}}),\ RigidbodyComponent\_SetPositionConstraint,\ m\_EntityID,\ positionConstraint);\ \}}
+\DoxyCodeLine{01249\ }
+\DoxyCodeLine{01254\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aa1b31451299688a6c594d6807d772059}{SetRotationConstraint}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors::BVector3}}\&\ rotationConstraint)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_b_vector3}{Vectors::BVector3}}),\ RigidbodyComponent\_SetRotationConstraint,\ m\_EntityID,\ rotationConstraint);\ \}}
+\DoxyCodeLine{01255\ }
+\DoxyCodeLine{01259\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345}{ForceMode}}\ :\ uint8\_t}
+\DoxyCodeLine{01260\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01261\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a9eb6b78a99cdb6ffd3d40d18621d9f80}{Force}},\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01262\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a6b0a227bd9315bcde12dbcf6c217a9d7}{Impulse}},\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01263\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345ac04e1ed2cf6965ff59bc9a87fca40ad1}{Velocity\_Change}},\ \ \ }
+\DoxyCodeLine{01264\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a3b926d163371fd620b09b63219b12f52}{Acceleration}}\ \ \ \ \ \ \ }
+\DoxyCodeLine{01265\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01266\ }
+\DoxyCodeLine{01272\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_a9e07b06616c85b30d17707a9d5b06bde}{ApplyForce}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\&\ force,\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345}{ForceMode}}\ forceMode\ =\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_ad5618f19a63002642349167c85ac5345a9eb6b78a99cdb6ffd3d40d18621d9f80}{ForceMode::Force}})\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}},\ uint8\_t),\ RigidbodyComponent\_ApplyForce,\ m\_EntityID,\ force,\ \textcolor{keyword}{static\_cast<}uint8\_t\textcolor{keyword}{>}(forceMode));\ \}}
+\DoxyCodeLine{01273\ }
+\DoxyCodeLine{01278\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_rigidbody_component_aefbcc82feb6d8b1d3c4f3aa8db396ef9}{ApplyTorque}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\&\ torque)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}),\ RigidbodyComponent\_ApplyTorque,\ m\_EntityID,\ torque);\ \}}
+\DoxyCodeLine{01279\ }
+\DoxyCodeLine{01280\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::RigidbodyComponent;\ \}}
+\DoxyCodeLine{01281\ }
+\DoxyCodeLine{01282\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01283\ }
+\DoxyCodeLine{01289\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component}{BoxColliderComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{01290\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01291\ }
+\DoxyCodeLine{01292\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01293\ }
+\DoxyCodeLine{01298\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_af9456a1f7be567f539dbf179f2995ddb}{IsTrigger}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ BoxColliderComponent\_GetIsTrigger,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01299\ }
+\DoxyCodeLine{01304\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{PhysicsMaterial}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_a72df89e6f517111a9fba7ba4b34b3a74}{GetMaterial}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{PhysicsMaterial}},\ \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{PhysicsMaterial}}(*)(uint32\_t),\ BoxColliderComponent\_GetMaterial,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01305\ }
+\DoxyCodeLine{01310\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_a357b5936df87732ff214488d62809ced}{GetCentre}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}},\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}(*)(uint32\_t),\ BoxColliderComponent\_GetCentre,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01311\ }
+\DoxyCodeLine{01316\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_a2479adb394b7524f862484ad4ecf9eda}{GetSize}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}},\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}(*)(uint32\_t),\ BoxColliderComponent\_GetSize,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01317\ }
+\DoxyCodeLine{01322\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_a088f1c561410c4993c8d904c20cae9d6}{SetIsTrigger}}(\textcolor{keywordtype}{bool}\ isTrigger)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ BoxColliderComponent\_SetIsTrigger,\ m\_EntityID,\ isTrigger);\ \}}
+\DoxyCodeLine{01323\ }
+\DoxyCodeLine{01328\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_abca72359efd4afa305ca63c47df60168}{SetMaterial}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{PhysicsMaterial}}\&\ material)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{PhysicsMaterial}}),\ BoxColliderComponent\_SetMaterial,\ m\_EntityID,\ material);\ \}}
+\DoxyCodeLine{01329\ }
+\DoxyCodeLine{01334\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_a1713a3d14f90d49bc46686ed9f632eb2}{SetCentre}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\&\ centre)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}),\ BoxColliderComponent\_SetCentre,\ m\_EntityID,\ centre);\ \}}
+\DoxyCodeLine{01335\ }
+\DoxyCodeLine{01340\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_box_collider_component_aba70039e9ee81b7f619a3abc5cc25e93}{SetSize}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\&\ size)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}),\ BoxColliderComponent\_SetSize,\ m\_EntityID,\ size);\ \}}
+\DoxyCodeLine{01341\ }
+\DoxyCodeLine{01342\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::BoxColliderComponent;\ \}}
+\DoxyCodeLine{01343\ }
+\DoxyCodeLine{01344\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01345\ }
+\DoxyCodeLine{01351\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component}{SphereColliderComponent}}\ :\ \textcolor{keyword}{public}\ Component}
+\DoxyCodeLine{01352\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01353\ }
+\DoxyCodeLine{01354\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01355\ }
+\DoxyCodeLine{01360\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_ac14c243e3be4a5ad89834373d0942bf7}{IsTrigger}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{bool},\ \textcolor{keywordtype}{bool}(*)(uint32\_t),\ SphereColliderComponent\_GetIsTrigger,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01361\ }
+\DoxyCodeLine{01366\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{PhysicsMaterial}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_ab5ed902b51b69a3734f780f943dec365}{GetMaterial}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{PhysicsMaterial}},\ \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{PhysicsMaterial}}(*)(uint32\_t),\ SphereColliderComponent\_GetMaterial,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01367\ }
+\DoxyCodeLine{01372\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_a4a4364875b60ae04f82d739871e6d0eb}{GetCentre}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}},\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}(*)(uint32\_t),\ SphereColliderComponent\_GetCentre,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01373\ }
+\DoxyCodeLine{01378\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_a9de7e482f4cd1d1da276e391ae84fe74}{GetRadius}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ ENGINE\_SAFE\_CALL\_RET(\textcolor{keywordtype}{float},\ \textcolor{keywordtype}{float}(*)(uint32\_t),\ SphereColliderComponent\_GetRadius,\ m\_EntityID);\ \}}
+\DoxyCodeLine{01379\ }
+\DoxyCodeLine{01384\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_a6a4056fae9a8f598ed9b5ff763abc099}{SetIsTrigger}}(\textcolor{keywordtype}{bool}\ isTrigger)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{bool}),\ SphereColliderComponent\_SetIsTrigger,\ m\_EntityID,\ isTrigger);\ \}}
+\DoxyCodeLine{01385\ }
+\DoxyCodeLine{01390\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_ac7dc62661c1e18719ed090d124b4cd6d}{SetMaterial}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{PhysicsMaterial}}\&\ material)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \mbox{\hyperlink{struct_louron_1_1_components_1_1_physics_material}{PhysicsMaterial}}),\ SphereColliderComponent\_SetMaterial,\ m\_EntityID,\ material);\ \}}
+\DoxyCodeLine{01391\ }
+\DoxyCodeLine{01396\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_a00e7f14c2f6120c308e151185c8dd93e}{SetCentre}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}\&\ centre)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors::Vector3}}),\ SphereColliderComponent\_SetCentre,\ m\_EntityID,\ centre);\ \}}
+\DoxyCodeLine{01397\ }
+\DoxyCodeLine{01402\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_components_1_1_sphere_collider_component_a0b8585814ce6fa94b2cbb9270aa1658e}{SetRadius}}(\textcolor{keywordtype}{float}\ radius)\textcolor{keyword}{\ const\ }\{\ ENGINE\_SAFE\_CALL\_VOID(\textcolor{keywordtype}{void}(*)(uint32\_t,\ \textcolor{keywordtype}{float}),\ SphereColliderComponent\_SetRadius,\ m\_EntityID,\ radius);\ \}}
+\DoxyCodeLine{01403\ }
+\DoxyCodeLine{01404\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ BackEndAPI::FieldType\ GetType()\ \{\ \textcolor{keywordflow}{return}\ BackEndAPI::FieldType::SphereColliderComponent;\ \}}
+\DoxyCodeLine{01405\ }
+\DoxyCodeLine{01406\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01407\ }
+\DoxyCodeLine{01408\ }
+\DoxyCodeLine{01409\ \ \ \ \ \}}
+\DoxyCodeLine{01410\ \}}
+
+\end{DoxyCode}

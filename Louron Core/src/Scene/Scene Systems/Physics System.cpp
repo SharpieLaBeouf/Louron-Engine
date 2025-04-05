@@ -298,6 +298,8 @@ namespace Louron {
 					if (!rb_ref.m_DeferredForce.empty()) {
 						for (const auto& action : rb_ref.m_DeferredForce) {
 							PxVec3 force = { action.force.x, action.force.y, action.force.z };
+							if (rb_ref.IsKinematicEnabled()) // Cannot apply force Whilst Kinematic
+								continue;
 							rb_ref.GetActor()->AddForce(force, action.forceMode);
 						}
 						rb_ref.m_DeferredForce.clear();
@@ -305,6 +307,8 @@ namespace Louron {
 					if (!rb_ref.m_DeferredTorque.empty()) {
 						for (const auto& action : rb_ref.m_DeferredTorque) {
 							PxVec3 torque = { action.torque.x, action.torque.y, action.torque.z };
+							if (rb_ref.IsKinematicEnabled()) // Cannot apply torque Whilst Kinematic
+								continue;
 							rb_ref.GetActor()->AddTorque(torque);
 						}
 						rb_ref.m_DeferredTorque.clear();

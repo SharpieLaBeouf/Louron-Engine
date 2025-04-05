@@ -1,0 +1,83 @@
+\doxysection{Engine Callbacks.\+h}
+\hypertarget{_engine_01_callbacks_8h_source}{}\label{_engine_01_callbacks_8h_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#ifdef\ \_WIN32}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#define\ SCRIPT\_API\ extern\ "{}C"{}\ \_\_declspec(dllexport)}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#define\ SCRIPT\_API\ extern\ "{}C"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#pragma\ region\ EngineCallbackAPI}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{namespace\ }EngineCallbackAPI}
+\DoxyCodeLine{00016\ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{inline}\ std::unordered\_map<std::string,\ void*>\ s\_FunctionMap;}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ RegisterFunction(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keywordtype}{void}*\ fn)}
+\DoxyCodeLine{00020\ \ \ \ \ \{}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ s\_FunctionMap[name]\ =\ fn;}
+\DoxyCodeLine{00022\ \ \ \ \ \}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{inline}\ T\ GetFunction(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name)}
+\DoxyCodeLine{00026\ \ \ \ \ \{}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ it\ =\ s\_FunctionMap.find(name);}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ assert(it\ !=\ s\_FunctionMap.end()\ \&\&\ \textcolor{stringliteral}{"{}Function\ not\ registered"{}});}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{reinterpret\_cast<}T\textcolor{keyword}{>}(it-\/>second);}
+\DoxyCodeLine{00030\ \ \ \ \ \}}
+\DoxyCodeLine{00031\ \}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ SCRIPT\_API\ \textcolor{keywordtype}{void}\ RegisterHostFunction(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keywordtype}{void}*\ fn);}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ Calls\ a\ registered\ engine\ function\ without\ safety\ check.}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#define\ ENGINE\_CALL\_TYPED(fn\_ptr\_type,\ name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\ \ \ \ (reinterpret\_cast<fn\_ptr\_type>(EngineCallbackAPI::s\_FunctionMap[\#name])(\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ Safe\ call\ for\ functions\ returning\ a\ non-\/pointer\ type.}}
+\DoxyCodeLine{00040\ \textcolor{comment}{//\ Requires\ the\ return\ type\ and\ the\ full\ function\ pointer\ signature.}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#define\ ENGINE\_SAFE\_CALL\_RET(ret\_type,\ fn\_ptr\_type,\ name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\ \ \ \ ([\&]()\ -\/>\ ret\_type\ \{\ \(\backslash\)}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (EngineCallbackAPI::s\_FunctionMap.count(\#name))\ \(\backslash\)}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ return\ reinterpret\_cast<fn\_ptr\_type>(EngineCallbackAPI::s\_FunctionMap[\#name])(\_\_VA\_ARGS\_\_);\ \(\backslash\)}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ std::cerr\ <<\ "{}[SCRIPT\ DLL]\ ENGINE\_SAFE\_CALL\_RET\ failed:\ Function\ \(\backslash\)"{}"{}\ <<\ \#name\ <<\ "{}\(\backslash\)"{}\ is\ not\ registered\ in\ host\ process.\(\backslash\)n"{};\ \(\backslash\)}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ ret\_type\{\};\ \(\backslash\)}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\ \ \ \ \})()}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \textcolor{comment}{//\ Safe\ call\ for\ functions\ returning\ a\ non-\/pointer\ type\ with\ default\ fallback\ if\ no\ function\ registered.}}
+\DoxyCodeLine{00050\ \textcolor{comment}{//\ Requires\ the\ return\ type\ and\ the\ full\ function\ pointer\ signature.}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#define\ ENGINE\_SAFE\_CALL\_RET\_FALLBACK(ret\_type,\ fn\_ptr\_type,\ name,\ fallback\_value,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\ \ \ \ ([\&]()\ -\/>\ ret\_type\ \{\ \(\backslash\)}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (EngineCallbackAPI::s\_FunctionMap.count(\#name))\ \(\backslash\)}}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ return\ reinterpret\_cast<fn\_ptr\_type>(EngineCallbackAPI::s\_FunctionMap[\#name])(\_\_VA\_ARGS\_\_);\ \(\backslash\)}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ std::cerr\ <<\ "{}[SCRIPT\ DLL]\ ENGINE\_SAFE\_CALL\_RET\ failed:\ Function\ \(\backslash\)"{}"{}\ <<\ \#name\ <<\ "{}\(\backslash\)"{}\ is\ not\ registered\ in\ host\ process.\(\backslash\)n"{};\ \(\backslash\)}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ fallback\_value;\ \(\backslash\)}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\ \ \ \ \})()}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \textcolor{comment}{//\ Safe\ call\ for\ functions\ returning\ a\ pointer\ type.}}
+\DoxyCodeLine{00060\ \textcolor{comment}{//\ Returns\ nullptr\ on\ failure\ instead\ of\ a\ default\ constructed\ value.}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#define\ ENGINE\_SAFE\_CALL\_RET\_PTR(ret\_type,\ fn\_ptr\_type,\ name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\ \ \ \ ([\&]()\ -\/>\ ret\_type\ \{\ \(\backslash\)}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (EngineCallbackAPI::s\_FunctionMap.count(\#name))\ \(\backslash\)}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ return\ reinterpret\_cast<fn\_ptr\_type>(EngineCallbackAPI::s\_FunctionMap[\#name])(\_\_VA\_ARGS\_\_);\ \(\backslash\)}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ std::cerr\ <<\ "{}[SCRIPT\ DLL]\ ENGINE\_SAFE\_CALL\_RET\_PTR\ failed:\ Function\ \(\backslash\)"{}"{}\ <<\ \#name\ <<\ "{}\(\backslash\)"{}\ is\ not\ registered\ in\ host\ process.\(\backslash\)n"{};\ \(\backslash\)}}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ nullptr;\ \(\backslash\)}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\ \ \ \ \})()}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{comment}{//\ Safe\ call\ for\ void-\/returning\ functions.}}
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{\#define\ ENGINE\_SAFE\_CALL\_VOID(fn\_ptr\_type,\ name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \(\backslash\)}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (EngineCallbackAPI::s\_FunctionMap.count(\#name))\ \(\backslash\)}}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ ENGINE\_CALL\_TYPED(fn\_ptr\_type,\ name,\ \_\_VA\_ARGS\_\_);\ \(\backslash\)}}
+\DoxyCodeLine{00074\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ else\ \(\backslash\)}}
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ "{}[SCRIPT\ DLL]\ ENGINE\_SAFE\_CALL\_VOID\ failed:\ Function\ \(\backslash\)"{}"{}\ <<\ \#name\ <<\ "{}\(\backslash\)"{}\ is\ not\ registered\ in\ host\ process.\(\backslash\)n"{};\ \(\backslash\)}}
+\DoxyCodeLine{00076\ \textcolor{preprocessor}{\ \ \ \ \}\ while(0)}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{preprocessor}{\#pragma\ endregion}}
+
+\end{DoxyCode}

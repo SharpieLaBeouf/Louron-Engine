@@ -21,10 +21,11 @@ At this point there are an array of features utilised in this project:
   - Shadow mapping (cascaded shadow maps, point light maps and spot light maps)
   - Multi threaded geometry renderable candidate sorting
 - ENTT entity component system
-- Mono C# scripting integration
-  - Create scripts, 
+- Custom C++ Native Scripting Workflow [DOXYGEN DOCUMENTATION](Louron Native Script Core/doxy-gen/html/index.html)
+  - Create scripts in C++
+  - Scripts are compiled used clang++ during editor runtime 
   - Set fields in editor
-  - Serialise fields on entities
+  - Serialise/deserialise fields on entities
 - NVIDIA PhysX library implementation
 - ImGui for editor user interface
 - Centralised asset manager system
@@ -42,8 +43,8 @@ At this point there are an array of features utilised in this project:
   - transparent with writeable depth (these write depth values to FBO during transparent rendering e.g., you want transparent/discarded pixels in some areas, but opaque pixels in others)
 - Custom shaders
   - Can create custom shader assets in projects with custom uniform blocks
-  - Custom compute shaders with compute buffers that can be written to and read from C#
-  - Custom uniform blocks for shaders through C# and material serialisation
+  - Custom compute shaders with compute buffers that can be written to and read from scripts
+  - Custom uniform blocks for shaders through scripts and material serialisation
 - Basic audio playback
 - Automatic instancing
 - Skyboxes
@@ -87,7 +88,6 @@ There is no doubt this can make a game at its current state, but it would most l
 - PhysX
 - STB Image & STB Resize
 - Assimp
-- Mono C#
 - Spdlog
 - Yaml-cpp
 - ESFW - file watch
@@ -96,6 +96,7 @@ There is no doubt this can make a game at its current state, but it would most l
 - Miniaudio
 - ENTT
 - GLM
+- clang-c / libclang
 
 ## Acknowledgements
 

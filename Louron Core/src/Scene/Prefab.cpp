@@ -257,15 +257,15 @@ namespace Louron {
 			}
 
 			// 1.d. Audio Listener
-			if (start_entity.HasComponent<AudioListener>()) {
-				auto& component = start_entity.GetComponent<AudioListener>();
-				m_PrefabRegistry.emplace_or_replace<AudioListener>(prefab_entity_handle, component);
+			if (start_entity.HasComponent<AudioListenerComponent>()) {
+				auto& component = start_entity.GetComponent<AudioListenerComponent>();
+				m_PrefabRegistry.emplace_or_replace<AudioListenerComponent>(prefab_entity_handle, component);
 			}
 
 			// 1.e. Audio Emitter
-			if (start_entity.HasComponent<AudioEmitter>()) {
-				auto& component = start_entity.GetComponent<AudioEmitter>();
-				m_PrefabRegistry.emplace_or_replace<AudioEmitter>(prefab_entity_handle, component);
+			if (start_entity.HasComponent<AudioEmitterComponent>()) {
+				auto& component = start_entity.GetComponent<AudioEmitterComponent>();
+				m_PrefabRegistry.emplace_or_replace<AudioEmitterComponent>(prefab_entity_handle, component);
 			}
 
 			// 1.f. Transform Component
@@ -531,7 +531,6 @@ namespace Louron {
 		if (camera) {
 
 			auto& entityCamera = AddComponent<CameraComponent>(entity);
-			entityCamera.CameraInstance = std::make_shared<SceneCamera>();
 
 			if (!entityCamera.Deserialize(camera))
 				L_CORE_WARN("Deserialisation of Camera Component Not Complete.");

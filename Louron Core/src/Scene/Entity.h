@@ -65,7 +65,7 @@ namespace Louron {
 
 			if constexpr (std::is_same_v<T, ScriptComponent>) {
 				if(m_Scene && m_Scene->IsRunning())
-					ScriptManager::OnCreateEntity(*this);
+					InitAllEntityScripts();
 			}
 
 			if constexpr (std::is_same_v<T, RigidbodyComponent>) {
@@ -371,7 +371,10 @@ namespace Louron {
 		}
 
 		Scene* GetScene() const { return m_Scene; }
-		const UUID& GetUUID() const { return GetComponent<IDComponent>().ID; }
+		const UUID& GetUUID() const {
+			static UUID null_uuid_instance = UUID{ NULL_UUID };
+			return (operator bool()) ? GetComponent<IDComponent>().ID : null_uuid_instance;
+		}
 		const std::string& GetName() const { return GetComponent<TagComponent>().Tag; }
 
 		operator entt::entity() const { return m_EntityHandle; }
@@ -411,6 +414,8 @@ namespace Louron {
 
 			return *std::static_pointer_cast<T>(s_BlankComponents[typeid(T)]);
 		}
+
+		void InitAllEntityScripts();
 
 		friend struct ComponentBase;
 	};

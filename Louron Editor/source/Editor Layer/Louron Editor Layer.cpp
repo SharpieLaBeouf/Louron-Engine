@@ -49,19 +49,13 @@ void LouronEditorLayer::OnAttach()
 		Project::LoadProject(lprojFilePath);
 
 	// 2. Then we have to load ScriptManager -> Script Manager needs a current project instance to be running
-	ScriptManager::Init();
+	m_ScriptsCompiledSuccess = ::Utils::BuildScriptCodeAssembly(Project::GetActiveProject()->GetProjectDirectory() / "Scripts");
+
+	const auto& script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+	ScriptManager::Init(script_assembly_path);
 
 	// 3. Then we have to load startup scene -> ScriptComponent serialisation requires the ScriptManager to be initialised
 	Project::GetActiveProject()->LoadStartupScene();
-
-	for (const auto& entry : std::filesystem::directory_iterator(Project::GetActiveProject()->GetProjectDirectory() / "Scripts/")) {
-		if (entry.path().extension() == ".csproj") {
-			m_ScriptsCompiledSuccess = ::Utils::CompileAppAssembly(entry.path());
-			if (m_ScriptsCompiledSuccess)
-				ScriptManager::ReloadAssembly(); // Dont check if compilation succeeded because we need it to point the to updated assembly!
-			break;
-		}
-	}
 
 	auto scene = Project::GetActiveScene();
 
@@ -129,6 +123,7 @@ void LouronEditorLayer::OnAttach()
 void LouronEditorLayer::OnDetach() {
 
 	Project::GetActiveScene()->OnStop();
+	ScriptManager::Shutdown();
 }
 
 void LouronEditorLayer::OnUpdate() {
@@ -346,15 +341,11 @@ void LouronEditorLayer::OnGuiRender() {
 							Project::LoadProject(filepath);
 
 							// 2. then ensure script manager has the correct assembly
-							ScriptManager::SetAppAssemblyPath(Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().AppScriptAssemblyPath);
-
-							for (const auto& entry : std::filesystem::directory_iterator(Project::GetActiveProject()->GetProjectDirectory() / "Scripts/")) {
-								if (entry.path().extension() == ".csproj") {
-									m_ScriptsCompiledSuccess = ::Utils::CompileAppAssembly(entry.path());
-									ScriptManager::ReloadAssembly(); // Dont check if compilation succeeded because we need it to point the to updated assembly!
-									break;
-								}
-							}
+							const auto& script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+							ScriptManager::Get()->FreeAssembly();
+							ScriptManager::Get()->RemoveAllScriptFields();
+							m_ScriptsCompiledSuccess = ::Utils::BuildScriptCodeAssembly(Project::GetActiveProject()->GetProjectDirectory() / "Scripts");
+							ScriptManager::Get()->ReloadAssembly(script_assembly_path);
 
 							// 3. then load startupscene 
 							Project::GetActiveProject()->LoadStartupScene();
@@ -440,19 +431,34 @@ void LouronEditorLayer::OnGuiRender() {
 
 				}
 
-				if (ImGui::MenuItem("Reload Script Assembly")) {
-					for (const auto& entry : std::filesystem::directory_iterator(Project::GetActiveProject()->GetProjectDirectory() / "Scripts/")) 
-					{
-						if (!entry.is_regular_file())
-							continue;
+				if (ImGui::MenuItem("Reload Script Assembly")) 
+				{
 
-						if (entry.path().extension() == ".csproj") {
-							m_ScriptsCompiledSuccess = ::Utils::CompileAppAssembly(entry.path());
-							if(m_ScriptsCompiledSuccess)
-								ScriptManager::ReloadAssembly();
-							break;
-						}
-					}
+					JobSystem::Get()->SubmitJob("Reload Script Assembly", [&]()
+						{
+							const auto& script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+							m_ScriptsCompiledSuccess = ::Utils::BuildScriptCodeAssembly(Project::GetActiveProject()->GetProjectDirectory() / "Scripts", false);
+							m_ScriptsNeedCompiling.store(false, std::memory_order_relaxed);
+
+							Engine::Get().SubmitToMainThread([script_assembly_path]()
+								{
+									ScriptManager::Get()->FreeAssembly();
+									if(std::filesystem::exists(script_assembly_path.string() + ".tmp"))
+									{
+										try 
+										{
+											std::filesystem::rename(script_assembly_path.string() + ".tmp", script_assembly_path);
+										}
+										catch (const std::filesystem::filesystem_error& e)
+										{
+											L_APP_ERROR("Could Not Rename Old DLL: {}", e.what());
+										}
+									}
+									ScriptManager::Get()->ReloadAssembly(script_assembly_path);
+								});
+
+						}, nullptr, JobPriority::Low, true);
+
 				}
 
 				ImGui::Separator();
@@ -598,19 +604,12 @@ void LouronEditorLayer::OnGuiRender() {
 
 					auto project = Project::NewProject(s_NewProjectName, s_NewFolderPath);
 
-					// Generate C# Scripting MSVC Solution - TODO: idk use some form of project build tools?
-					::Utils::GenerateScriptingProject(project->GetConfig().Name, project->GetProjectDirectory() / "Scripts");
-
-					ScriptManager::SetAppAssemblyPath(project->GetProjectDirectory() / project->GetConfig().AppScriptAssemblyPath);
-
-					// Build initial DLL
-					for (const auto& entry : std::filesystem::directory_iterator(project->GetProjectDirectory() / "Scripts")) {
-						if (entry.path().extension() == ".csproj") {
-							m_ScriptsCompiledSuccess = ::Utils::CompileAppAssembly(entry.path());
-							ScriptManager::ReloadAssembly(); // Dont check if compilation succeeded because we need it to point the to updated assembly!
-							break;
-						}
-					}
+					const auto& script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+					m_ScriptsCompiledSuccess = ::Utils::BuildScriptCodeAssembly(Project::GetActiveProject()->GetProjectDirectory() / "Scripts");
+					ScriptManager::Get()->FreeAssembly();
+					ScriptManager::Get()->RemoveAllScriptFields();
+					m_ScriptsCompiledSuccess = ::Utils::BuildScriptCodeAssembly(Project::GetActiveProject()->GetProjectDirectory() / "Scripts");
+					ScriptManager::Get()->ReloadAssembly(script_assembly_path);
 
 					m_ScriptFileWatcher->removeWatch(m_ScriptFileWatchID);
 					m_ScriptFileWatchID = m_ScriptFileWatcher->addWatch((Project::GetActiveProject()->GetProjectDirectory() / "Scripts").string(), m_ScriptFileListener, true);
@@ -803,17 +802,30 @@ void LouronEditorLayer::OnGuiRender() {
 
 		if (m_ScriptsNeedCompiling.load(std::memory_order_relaxed))
 		{
-			// Handle script recompilation logic
-			for (const auto& entry : std::filesystem::directory_iterator(Project::GetActiveProject()->GetProjectDirectory() / "Scripts/")) {
-				if (entry.path().extension() == ".csproj") {
-					m_ScriptsCompiledSuccess = ::Utils::CompileAppAssembly(entry.path());
-					
-					if(m_ScriptsCompiledSuccess)
-						ScriptManager::ReloadAssembly();
+			JobSystem::Get()->SubmitJob("Reload Script Assembly", [&]()
+				{
+					const auto& script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+					m_ScriptsCompiledSuccess = ::Utils::BuildScriptCodeAssembly(Project::GetActiveProject()->GetProjectDirectory() / "Scripts", false);
+					m_ScriptsNeedCompiling.store(false, std::memory_order_relaxed);
 
-					break;
-				}
-			}
+					Engine::Get().SubmitToMainThread([script_assembly_path]()
+						{
+							ScriptManager::Get()->FreeAssembly();
+							if (std::filesystem::exists(script_assembly_path.string() + ".tmp"))
+							{
+								try
+								{
+									std::filesystem::rename(script_assembly_path.string() + ".tmp", script_assembly_path);
+								}
+								catch (const std::filesystem::filesystem_error& e)
+								{
+									L_APP_ERROR("Could Not Rename Old DLL: {}", e.what());
+								}
+							}
+							ScriptManager::Get()->ReloadAssembly(script_assembly_path);
+						});
+
+				}, nullptr, JobPriority::Low, true);
 
 			m_ScriptFileWatcher->removeWatch(m_ScriptFileWatchID);
 			m_ScriptFileWatchID = m_ScriptFileWatcher->addWatch((Project::GetActiveProject()->GetProjectDirectory() / "Scripts").string(), m_ScriptFileListener, true);
@@ -846,8 +858,6 @@ void LouronEditorLayer::OnScenePlay()
 
 void LouronEditorLayer::OnSceneStop()
 {
-	L_APP_INFO("Stopping Scene");
-
 	if(m_SceneState == SceneState::Play)
 		Project::GetActiveScene()->OnRuntimeStop();
 	else if (m_SceneState == SceneState::Simulate)
@@ -880,6 +890,7 @@ void LouronEditorLayer::OnSceneStop()
 		m_EditorScene.reset();
 		m_EditorScene = nullptr;
 	}
+	L_APP_INFO("Scene Stopped");
 }
 
 void LouronEditorLayer::DisplaySceneViewportWindow() {

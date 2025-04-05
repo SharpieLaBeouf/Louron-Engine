@@ -1,0 +1,249 @@
+\doxysection{Louron\+::Components\+::Spot\+Light\+Component Class Reference}
+\hypertarget{class_louron_1_1_components_1_1_spot_light_component}{}\label{class_louron_1_1_components_1_1_spot_light_component}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+
+
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access point light information.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+Inheritance diagram for Louron\+::Components\+::Spot\+Light\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_components_1_1_spot_light_component}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_ac886fc18df74d460760e2f28934d8d81}{Is\+Active}} () const
+\begin{DoxyCompactList}\small\item\em Checks if the spot light is currently active. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_a2c0d84d48514cb89dacbdde66966c85e}{Set\+Active}} (bool active) const
+\begin{DoxyCompactList}\small\item\em Enables or disables the spot light. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_a3b46212be3e0fbae31640e112c97e85f}{Get\+Range}} () const
+\begin{DoxyCompactList}\small\item\em Gets the effective range of the spot light. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_a5c0cce157ddd8f69b1f4bf5755c4d0e8}{Set\+Range}} (float range) const
+\begin{DoxyCompactList}\small\item\em Sets the range of the spot light. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_aa7634e194ce9e2f57720eefa49db714f}{Get\+Angle}} () const
+\begin{DoxyCompactList}\small\item\em Gets the cone angle in degrees. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_aa78b02dd94379bb7c932cb505fde42da}{Set\+Angle}} (float angle) const
+\begin{DoxyCompactList}\small\item\em Sets the cone angle in degrees. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_aed14acf96676fa5777a7a3b6a8e4184d}{Get\+Intensity}} () const
+\begin{DoxyCompactList}\small\item\em Gets the light intensity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_ad950872e0ae114d95dd0125462af775d}{Set\+Intensity}} (float intensity) const
+\begin{DoxyCompactList}\small\item\em Sets the light intensity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_aa93cfe3f965e7e1d4078f327974003a3}{Get\+Colour}} () const
+\begin{DoxyCompactList}\small\item\em Gets the light colour. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_a1bcbc4e7cde5c7c68c5a28b0ece8ec3a}{Set\+Colour}} (\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} colour) const
+\begin{DoxyCompactList}\small\item\em Sets the light colour. \end{DoxyCompactList}\item 
+Shadow\+Type\+Flag \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_af1fd35f221dd10f9cfb0ea227d96a8a0}{Get\+Shadow\+Flag}} () const
+\begin{DoxyCompactList}\small\item\em Gets the shadow flag for this light. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_components_1_1_spot_light_component_a653f533ed57b0c7c4dda957b497edc2c}{Set\+Shadow\+Flag}} (Shadow\+Type\+Flag flag) const
+\begin{DoxyCompactList}\small\item\em Sets the shadow flag. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_ad6920b19a92e97b2283b279d9cab2ae8}\label{class_louron_1_1_components_1_1_spot_light_component_ad6920b19a92e97b2283b279d9cab2ae8} 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+static Back\+End\+API\+::\+Field\+Type {\bfseries Get\+Type} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Component} (uint32\+\_\+t entity\+\_\+uuid)
+\item 
+void {\bfseries Set\+Entity} (uint32\+\_\+t entity\+\_\+uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_components_1_1_component}{Louron\+::\+Components\+::\+Component}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{class_louron_1_1_components_1_1_component}{Component} to access point light information. 
+
+Allows configuration of range, angle, intensity, colour, and shadowing behavior for a spot light. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_aa7634e194ce9e2f57720eefa49db714f}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!GetAngle@{GetAngle}}
+\index{GetAngle@{GetAngle}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{GetAngle()}{GetAngle()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_aa7634e194ce9e2f57720eefa49db714f} 
+float Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Get\+Angle (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the cone angle in degrees. 
+
+\begin{DoxyReturn}{Returns}
+Cone angle in degrees. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_aa93cfe3f965e7e1d4078f327974003a3}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!GetColour@{GetColour}}
+\index{GetColour@{GetColour}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{GetColour()}{GetColour()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_aa93cfe3f965e7e1d4078f327974003a3} 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}} Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Get\+Colour (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the light colour. 
+
+\begin{DoxyReturn}{Returns}
+RGBA colour vector. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_aed14acf96676fa5777a7a3b6a8e4184d}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!GetIntensity@{GetIntensity}}
+\index{GetIntensity@{GetIntensity}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{GetIntensity()}{GetIntensity()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_aed14acf96676fa5777a7a3b6a8e4184d} 
+float Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Get\+Intensity (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the light intensity. 
+
+\begin{DoxyReturn}{Returns}
+Intensity multiplier. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_a3b46212be3e0fbae31640e112c97e85f}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!GetRange@{GetRange}}
+\index{GetRange@{GetRange}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{GetRange()}{GetRange()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_a3b46212be3e0fbae31640e112c97e85f} 
+float Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Get\+Range (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the effective range of the spot light. 
+
+\begin{DoxyReturn}{Returns}
+Range in world units. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_af1fd35f221dd10f9cfb0ea227d96a8a0}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!GetShadowFlag@{GetShadowFlag}}
+\index{GetShadowFlag@{GetShadowFlag}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{GetShadowFlag()}{GetShadowFlag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_af1fd35f221dd10f9cfb0ea227d96a8a0} 
+Shadow\+Type\+Flag Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Get\+Shadow\+Flag (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the shadow flag for this light. 
+
+\begin{DoxyReturn}{Returns}
+Shadow casting mode. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_ac886fc18df74d460760e2f28934d8d81}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!IsActive@{IsActive}}
+\index{IsActive@{IsActive}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{IsActive()}{IsActive()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_ac886fc18df74d460760e2f28934d8d81} 
+bool Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Is\+Active (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if the spot light is currently active. 
+
+\begin{DoxyReturn}{Returns}
+True if the light is on. 
+\end{DoxyReturn}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_a2c0d84d48514cb89dacbdde66966c85e}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!SetActive@{SetActive}}
+\index{SetActive@{SetActive}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{SetActive()}{SetActive()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_a2c0d84d48514cb89dacbdde66966c85e} 
+void Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Set\+Active (\begin{DoxyParamCaption}\item[{bool}]{active}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enables or disables the spot light. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em active} & True to turn on the light. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_aa78b02dd94379bb7c932cb505fde42da}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!SetAngle@{SetAngle}}
+\index{SetAngle@{SetAngle}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{SetAngle()}{SetAngle()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_aa78b02dd94379bb7c932cb505fde42da} 
+void Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Set\+Angle (\begin{DoxyParamCaption}\item[{float}]{angle}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the cone angle in degrees. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em range} & Cone angle in degrees. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_a1bcbc4e7cde5c7c68c5a28b0ece8ec3a}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!SetColour@{SetColour}}
+\index{SetColour@{SetColour}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{SetColour()}{SetColour()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_a1bcbc4e7cde5c7c68c5a28b0ece8ec3a} 
+void Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Set\+Colour (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector4}{Vectors\+::\+Vector4}}}]{colour}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the light colour. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em colour} & RGBA colour. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_ad950872e0ae114d95dd0125462af775d}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!SetIntensity@{SetIntensity}}
+\index{SetIntensity@{SetIntensity}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{SetIntensity()}{SetIntensity()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_ad950872e0ae114d95dd0125462af775d} 
+void Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Set\+Intensity (\begin{DoxyParamCaption}\item[{float}]{intensity}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the light intensity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em intensity} & Intensity multiplier. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_a5c0cce157ddd8f69b1f4bf5755c4d0e8}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!SetRange@{SetRange}}
+\index{SetRange@{SetRange}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{SetRange()}{SetRange()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_a5c0cce157ddd8f69b1f4bf5755c4d0e8} 
+void Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Set\+Range (\begin{DoxyParamCaption}\item[{float}]{range}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the range of the spot light. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em range} & Range in world units. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_louron_1_1_components_1_1_spot_light_component_a653f533ed57b0c7c4dda957b497edc2c}\index{Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}!SetShadowFlag@{SetShadowFlag}}
+\index{SetShadowFlag@{SetShadowFlag}!Louron::Components::SpotLightComponent@{Louron::Components::SpotLightComponent}}
+\doxysubsubsection{\texorpdfstring{SetShadowFlag()}{SetShadowFlag()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_components_1_1_spot_light_component_a653f533ed57b0c7c4dda957b497edc2c} 
+void Louron\+::\+Components\+::\+Spot\+Light\+Component\+::\+Set\+Shadow\+Flag (\begin{DoxyParamCaption}\item[{Shadow\+Type\+Flag}]{flag}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the shadow flag. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em flag} & Shadow casting mode. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\end{DoxyCompactItemize}

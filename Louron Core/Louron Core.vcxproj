@@ -183,8 +183,9 @@
     <ClCompile Include="src\OpenGL\Material.cpp" />
     <ClCompile Include="src\Scene\Components\Skybox Component.cpp" />
     <ClCompile Include="src\Core\UUID.cpp" />
-    <ClCompile Include="src\Scripting\Script Connector.cpp" />
+    <ClCompile Include="src\Scripting\Script Defines.cpp" />
     <ClCompile Include="src\Scripting\Script Manager.cpp" />
+    <ClCompile Include="src\Scripting\Script Register.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Animation\Animations.h" />
@@ -780,8 +781,9 @@
     <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\OpenGL\Shader.h" />
     <ClInclude Include="src\Core\Window.h" />
-    <ClInclude Include="src\Scripting\Script Connector.h" />
+    <ClInclude Include="src\Scripting\Script Defines.h" />
     <ClInclude Include="src\Scripting\Script Manager.h" />
+    <ClInclude Include="src\Scripting\Script Register.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\Images\cube_texture.png" />
@@ -942,8 +944,6 @@
     <None Include="include\glm\gtx\wrap.inl" />
     <None Include="include\glm\out\build\x64-Debug (default)\CMakeFiles\3.18.20081302-MSVC_2\CMakeDetermineCompilerABI_C.bin" />
     <None Include="include\glm\out\build\x64-Debug (default)\CMakeFiles\3.18.20081302-MSVC_2\CMakeDetermineCompilerABI_CXX.bin" />
-    <None Include="libs\mono\LICENSE" />
-    <None Include="libs\mono\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

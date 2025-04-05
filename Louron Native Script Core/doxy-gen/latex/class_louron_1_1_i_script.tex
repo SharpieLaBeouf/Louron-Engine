@@ -1,0 +1,480 @@
+\doxysection{Louron\+::IScript Class Reference}
+\hypertarget{class_louron_1_1_i_script}{}\label{class_louron_1_1_i_script}\index{Louron::IScript@{Louron::IScript}}
+
+
+Interface for all scripts.  
+
+
+
+
+{\ttfamily \#include $<$Script\+API.\+h$>$}
+
+Inheritance diagram for Louron\+::IScript\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_louron_1_1_i_script}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_louron_1_1_i_script_ac292e36ddefe9e849ce35063fec83c7d}{On\+Create}} ()
+\begin{DoxyCompactList}\small\item\em Function that is called as the script is instantiated. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_louron_1_1_i_script_adee1aa89d4513546cc2a63aac8802474}{On\+Destroy}} ()
+\begin{DoxyCompactList}\small\item\em Function that is called when the script is destroyed. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_louron_1_1_i_script_a5de601b077261c3a10e4e8b50cccb1c9}{On\+Update}} ()
+\begin{DoxyCompactList}\small\item\em Function that is called every frame. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_louron_1_1_i_script_a5cbac995277a26c8a25171282670fd5a}{On\+Late\+Update}} ()
+\begin{DoxyCompactList}\small\item\em Function that is called every frame, after the update phase. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_louron_1_1_i_script_a256530e31abbef7f074524805c014fa9}{On\+Fixed\+Update}} ()
+\begin{DoxyCompactList}\small\item\em Function that is called every fixed frame. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_louron_1_1_i_script_a492ac8ab0092d2d2a93253b874222eb6}{On\+Collide\+Enter}} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\begin{DoxyCompactList}\small\item\em Function that is called when a \doxylink{struct_louron_1_1_collider}{Collider} hits any collider attached to this \doxylink{class_louron_1_1_entity}{Entity}. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_louron_1_1_i_script_a4cb9770c4440c56418af952afcc5ca66}{On\+Collide\+Stay}} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\begin{DoxyCompactList}\small\item\em Function that is called when a \doxylink{struct_louron_1_1_collider}{Collider} is still colliding with any collider attached to this \doxylink{class_louron_1_1_entity}{Entity}. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_louron_1_1_i_script_a4d1c701bf62df9ac560defe12a67f657}{On\+Collide\+Leave}} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\begin{DoxyCompactList}\small\item\em Function that is called when a \doxylink{struct_louron_1_1_collider}{Collider} leaves any collider that had collided with this \doxylink{class_louron_1_1_entity}{Entity}. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_louron_1_1_i_script_a6ddbf6a7085d65cc1c21124d86a2cae6}{On\+Trigger\+Enter}} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\begin{DoxyCompactList}\small\item\em Function that is called when a Trigger collider enters any trigger attached to this \doxylink{class_louron_1_1_entity}{Entity}. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_louron_1_1_i_script_ac612cd978b61b76016c87f8efb6ba4b4}{On\+Trigger\+Stay}} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\begin{DoxyCompactList}\small\item\em Function that is called when a Trigger collider stays inside any trigger attached to this \doxylink{class_louron_1_1_entity}{Entity}. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_louron_1_1_i_script_ac933c2001272483d274b81c9fa8ad9db}{On\+Trigger\+Leave}} (const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&other)
+\begin{DoxyCompactList}\small\item\em Function that is called when a Trigger collider leaves any trigger attached to this \doxylink{class_louron_1_1_entity}{Entity}. \end{DoxyCompactList}\item 
+\Hypertarget{class_louron_1_1_i_script_a7e3660d8af4daae1920b65beecab550a}\label{class_louron_1_1_i_script_a7e3660d8af4daae1920b65beecab550a} 
+const uint32\+\_\+t \& {\bfseries Get\+Entity\+ID} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_entity}{Louron\+::\+Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_louron_1_1_entity_a2b29469bb4593e97889dfda13e11401f}{Entity}} ()=default
+\begin{DoxyCompactList}\small\item\em Default constructor for a null entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_entity_a752d3840b87aa5ff6e2159d8c9c43b07}{operator const uint32\+\_\+t \&}} () const
+\begin{DoxyCompactList}\small\item\em Get the UUID of the entity as a uint32\+\_\+t. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_entity_adbd2cdf09806246844c124ff3379e518}{operator bool}} () const
+\begin{DoxyCompactList}\small\item\em Check if the entity is valid. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{class_louron_1_1_entity_a6e809db39e8c094e7acffb5b7ecd43ba}{Get\+Tag}} () const
+\begin{DoxyCompactList}\small\item\em Get the name of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_a97d941b3044664e1669c1c71d8523ee0}{Set\+Tag}} (const std\+::string \&tag) const
+\begin{DoxyCompactList}\small\item\em Set the name of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \mbox{\hyperlink{class_louron_1_1_entity_aa4b6e37a6b1e13a40e60d136543e4ea2}{Get\+Transform}} () const
+\begin{DoxyCompactList}\small\item\em Get the transform of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_a20259f353d26ab890a7bb0097921e95a}{Set\+Transform}} (const \mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \&transform) const
+\begin{DoxyCompactList}\small\item\em Set the transform of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_a90b7b88426192399b6761ae5cc42c33f}{Get\+Position}} () const
+\begin{DoxyCompactList}\small\item\em Get the position of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_ad5ceb346a86760a287e16a399f361ad4}{Set\+Position}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&position) const
+\begin{DoxyCompactList}\small\item\em Set the position of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_a7a983908f8afc076ad0fe625df0bf202}{Get\+Rotation}} () const
+\begin{DoxyCompactList}\small\item\em Get the rotation of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_abf63e6326d73532443e1da35decec536}{Set\+Rotation}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&rotation) const
+\begin{DoxyCompactList}\small\item\em Set the rotation of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_a91dc7b572a739270db3e56bc675900b2}{Get\+Scale}} () const
+\begin{DoxyCompactList}\small\item\em Get the scale of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_a9da657a99b1d8274a9770548eb1c9de5}{Set\+Scale}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&scale) const
+\begin{DoxyCompactList}\small\item\em Set the scale of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_acd798a66a636ead5dc27a3aa32a9997c}{Get\+Front}} () const
+\begin{DoxyCompactList}\small\item\em Get the front vector of the entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_af6a503159676d502cec39824bee6d2cf}{Set\+Front}} (const \mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \&front) const
+\begin{DoxyCompactList}\small\item\em Set the front vector of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_a14ae0ceae213e6a75933c5307ac6c763}{Get\+Up}} () const
+\begin{DoxyCompactList}\small\item\em Get the up vector of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_louron_1_1_vectors_1_1_vector3}{Vectors\+::\+Vector3}} \mbox{\hyperlink{class_louron_1_1_entity_ac42e691631cad90717bf3c50fcc1a7d6}{Get\+Right}} () const
+\begin{DoxyCompactList}\small\item\em Get the right vector of the entity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_a9322b035353cffb27663b249a4c567e1}{Get\+Parent}} () const
+\begin{DoxyCompactList}\small\item\em Get the parent entity. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_louron_1_1_entity_a9bd31bcc32f2a80b731cf706414cca70}{Set\+Parent}} (\mbox{\hyperlink{class_louron_1_1_entity}{Entity}} parent\+\_\+entity) const
+\begin{DoxyCompactList}\small\item\em Set the parent entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\bool \mbox{\hyperlink{class_louron_1_1_entity_a866710d63037b2a8b57e5bf860116422}{Has\+Component}} ()
+\begin{DoxyCompactList}\small\item\em Check if the entity has a component of type T. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T \mbox{\hyperlink{class_louron_1_1_entity_a47dd12137e949ebeb4c535326fe23def}{Add\+Component}} ()
+\begin{DoxyCompactList}\small\item\em Add a component of type T to the entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\void \mbox{\hyperlink{class_louron_1_1_entity_a14e1c5512e680fc5c42621706b8d215d}{Remove\+Component}} ()
+\begin{DoxyCompactList}\small\item\em Remove a component of type T from the entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T \mbox{\hyperlink{class_louron_1_1_entity_a8609d72c061abd27aa4125772a13bc8c}{Get\+Component}} ()
+\begin{DoxyCompactList}\small\item\em Get a component of type T from the entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T \mbox{\hyperlink{class_louron_1_1_entity_a94f15c13339f8ca0af90920ba1aa55b8}{Get\+Component\+In\+Parent}} ()
+\begin{DoxyCompactList}\small\item\em Try and get a component of type T from a parent entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\std\+::vector$<$ T $>$ \mbox{\hyperlink{class_louron_1_1_entity_a0aef6ee6112c279d23dd7b30423ddbec}{Get\+Components\+In\+Parent}} ()
+\begin{DoxyCompactList}\small\item\em Get all component\textquotesingle{}s of type T from all parent entities. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\T \mbox{\hyperlink{class_louron_1_1_entity_a90d9333dd43db85364b39657e02df8a6}{Get\+Component\+In\+Children}} ()
+\begin{DoxyCompactList}\small\item\em Try and get a component of type T from a child entity. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T, typename = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+base\+\_\+of$<$\+Components\+::\+Component, T$>$\+::value$>$$>$ }\\std\+::vector$<$ T $>$ \mbox{\hyperlink{class_louron_1_1_entity_a19b85c3c0c1f848df7c1afaacf5dd5be}{Get\+Components\+In\+Children}} ()
+\begin{DoxyCompactList}\small\item\em Get all component\textquotesingle{}s of type T from all children entities. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_entity}{Louron\+::\+Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_ae09dc66119abb65a18e170a9e64ef10d}{Instantiate}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}} prefab)
+\begin{DoxyCompactList}\small\item\em Instantiate a prefab within the Scene. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_adbad73772d7dc0f6d0dc1f94cf1fa4a2}{Instantiate}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}} prefab, const \mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \&transform)
+\begin{DoxyCompactList}\small\item\em Instantiate a prefab within the Scene. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_a79d60c5ba2d2d78f4fc0f65b8be03d6c}{Instantiate}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}} prefab, \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} parent)
+\begin{DoxyCompactList}\small\item\em Instantiate a prefab within the Scene. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_ab369c1512ee659b1c2d7bef1efe9abfe}{Instantiate}} (\mbox{\hyperlink{class_louron_1_1_assets_1_1_prefab}{Assets\+::\+Prefab}} prefab, \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} parent, const \mbox{\hyperlink{struct_louron_1_1_transform}{Transform}} \&transform)
+\begin{DoxyCompactList}\small\item\em Instantiate a prefab within the Scene. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_a2cbb9d56d7d5622a705671e90c998fb0}{Create}} (const std\+::string \&name="{}Untitled Entity"{})
+\begin{DoxyCompactList}\small\item\em Create a new entity within the Scene. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{class_louron_1_1_entity_aa519fdca9c0e885bb69fa7c581bad822}{Destroy}} (\mbox{\hyperlink{class_louron_1_1_entity}{Entity}} entity)
+\begin{DoxyCompactList}\small\item\em Destroy an entity within the Scene. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_a8935ca10e7a7b7b53d7ab80faedd30a5}{Find\+By\+Name}} (const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em Find an entity by name. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} \mbox{\hyperlink{class_louron_1_1_entity_a7dc2dd8899e81cb9b61b4ce1f2d2d923}{Find\+By\+UUID}} (uint32\+\_\+t entity\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Find an entity by UUID. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_louron_1_1_entity}{Louron\+::\+Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Entity} (uint32\+\_\+t entity\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Constructor for creating an entity with a specific UUID. Protected to prevent direct instantiation, use either \doxylink{class_louron_1_1_entity_a2cbb9d56d7d5622a705671e90c998fb0}{Create()}, \doxylink{class_louron_1_1_entity_ae09dc66119abb65a18e170a9e64ef10d}{Instantiate()}, \doxylink{class_louron_1_1_entity_a8935ca10e7a7b7b53d7ab80faedd30a5}{Find\+By\+Name()}, or \doxylink{class_louron_1_1_entity_a7dc2dd8899e81cb9b61b4ce1f2d2d923}{Find\+By\+UUID()}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_louron_1_1_entity}{Louron\+::\+Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t {\bfseries m\+\_\+\+Entity\+ID} = NULL\+\_\+\+UUID
+\begin{DoxyCompactList}\small\item\em The UUID this entity belongs to. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Interface for all scripts. 
+
+Every script must inherit from this interface, in order to be recognised by the engine.
+
+Each script has a range of default functions the engine will invoke at different points in the game loop.
+
+Each script MUST be a class, and must inherit from this interface for this to work. If you use a struct , it will not work.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{//\ Will\ Not\ Work}}
+\DoxyCodeLine{\textcolor{keyword}{struct\ }MyScript\ :\ \textcolor{keyword}{public}\ IScript\ \{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Will\ Work}}
+\DoxyCodeLine{\textcolor{keyword}{class\ }MyScript\ :\ \textcolor{keyword}{public}\ IScript\ \{\};}
+
+\end{DoxyCode}
+ 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_louron_1_1_i_script_a492ac8ab0092d2d2a93253b874222eb6}\index{Louron::IScript@{Louron::IScript}!OnCollideEnter@{OnCollideEnter}}
+\index{OnCollideEnter@{OnCollideEnter}!Louron::IScript@{Louron::IScript}}
+\doxysubsubsection{\texorpdfstring{OnCollideEnter()}{OnCollideEnter()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_i_script_a492ac8ab0092d2d2a93253b874222eb6} 
+virtual void Louron\+::\+IScript\+::\+On\+Collide\+Enter (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&}]{other}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Function that is called when a \doxylink{struct_louron_1_1_collider}{Collider} hits any collider attached to this \doxylink{class_louron_1_1_entity}{Entity}. 
+
+When this \doxylink{class_louron_1_1_entity}{Entity} collides with another, a collision event is triggered to any scripts on both entities that have a On\+Collide\+Enter function.
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & Information about the collision include the type of \doxylink{struct_louron_1_1_collider}{Collider}, and the \doxylink{class_louron_1_1_entity}{Entity} collided with.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{uint8\_t\ player\_health\ =\ 100;}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a492ac8ab0092d2d2a93253b874222eb6}{OnCollideEnter}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{}\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (other.entity.GetTag().find(\textcolor{stringliteral}{"{}Bullet"{}})\ !=\ std::string::npos)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ player\_health\ -\/=\ 1;}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}(other.collider\_type\ ==\ ColliderType::Box\_Collider)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Collided\ with\ a\ Box\ Collider"{}});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_i_script_a4d1c701bf62df9ac560defe12a67f657}\index{Louron::IScript@{Louron::IScript}!OnCollideLeave@{OnCollideLeave}}
+\index{OnCollideLeave@{OnCollideLeave}!Louron::IScript@{Louron::IScript}}
+\doxysubsubsection{\texorpdfstring{OnCollideLeave()}{OnCollideLeave()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_i_script_a4d1c701bf62df9ac560defe12a67f657} 
+virtual void Louron\+::\+IScript\+::\+On\+Collide\+Leave (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&}]{other}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Function that is called when a \doxylink{struct_louron_1_1_collider}{Collider} leaves any collider that had collided with this \doxylink{class_louron_1_1_entity}{Entity}. 
+
+When the collider leaves the other collider, a collision event is triggered to any scripts on both entities that have an \doxylink{class_louron_1_1_i_script_a4d1c701bf62df9ac560defe12a67f657}{On\+Collide\+Leave()} function.
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & Information about the collision include the type of \doxylink{struct_louron_1_1_collider}{Collider}, and the \doxylink{class_louron_1_1_entity}{Entity} collided with.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{uint8\_t\ player\_health\ =\ 100;}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a4d1c701bf62df9ac560defe12a67f657}{OnCollideLeave}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{}\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (other.entity.GetTag().find(\textcolor{stringliteral}{"{}SafeZone"{}})\ !=\ std::string::npos)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ player\_health\ -\/=\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Left\ the\ Safe\ Zone,\ health\ decreased\ by\ 1"{}});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_i_script_a4cb9770c4440c56418af952afcc5ca66}\index{Louron::IScript@{Louron::IScript}!OnCollideStay@{OnCollideStay}}
+\index{OnCollideStay@{OnCollideStay}!Louron::IScript@{Louron::IScript}}
+\doxysubsubsection{\texorpdfstring{OnCollideStay()}{OnCollideStay()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_i_script_a4cb9770c4440c56418af952afcc5ca66} 
+virtual void Louron\+::\+IScript\+::\+On\+Collide\+Stay (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&}]{other}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Function that is called when a \doxylink{struct_louron_1_1_collider}{Collider} is still colliding with any collider attached to this \doxylink{class_louron_1_1_entity}{Entity}. 
+
+When this \doxylink{class_louron_1_1_entity}{Entity} is still colliding with another, a collision event is triggered to any scripts on both entities that have a On\+Collide\+Stay function.
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & Information about the collision include the type of \doxylink{struct_louron_1_1_collider}{Collider}, and the \doxylink{class_louron_1_1_entity}{Entity} collided with.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{struct\ }BabyMamma}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{float}\ time\_spent\_sexing\ =\ 0.0f;}
+\DoxyCodeLine{\ \ \ \ std::vector<Entity>\ babies;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ MakeABaby(\textcolor{keyword}{const}\ Prefab\&\ prefab,\ \textcolor{keyword}{const}\ Transform\&\ transform)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ babies.push\_back(Entity::Instantiate(prefab,\ transform));\ \textcolor{comment}{//\ The\ special\ magic\ happens\ here}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Key\ =\ BabyMamma,\ Value\ =\ The\ Sexing\ and\ Babies\ :3}}
+\DoxyCodeLine{std::unordered\_map<Entity,\ BabyMamma>\ baby\_mammas;}
+\DoxyCodeLine{[[ExposedInEditor]]\ Prefab\ baby\_prefab;\ \textcolor{comment}{//\ Set\ in\ editor}}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ time\_required\_to\_make\_a\_baby\ =\ 5.0f;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a4cb9770c4440c56418af952afcc5ca66}{OnCollideStay}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{}\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (other.entity.GetTag().find(\textcolor{stringliteral}{"{}Mamma"{}})\ !=\ std::string::npos)\ \textcolor{comment}{//\ If\ she\ a\ mamma}}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ BabyMamma\&\ baby\_mamma\ =\ baby\_mammas[other.entity];}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (baby\_mamma.time\_spent\_sexing\ <\ time\_required\_to\_make\_a\_baby)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ baby\_mamma.time\_spent\_sexing\ +=\ \mbox{\hyperlink{class_louron_1_1_time_af40b06c0ff844cfea82d2d01d691a194}{Time::GetFixedDeltaTime}}();\ \textcolor{comment}{//\ Fixed\ because\ Collision\ functions\ are\ called\ in\ FixedUpdate\ stage\ of\ engine.}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ baby\_mamma.time\_spent\_sexing\ =\ 0.0f;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ baby\_mamma.MakeABaby(baby\_prefab,\ other.entity.GetTransform());}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_i_script_ac292e36ddefe9e849ce35063fec83c7d}\index{Louron::IScript@{Louron::IScript}!OnCreate@{OnCreate}}
+\index{OnCreate@{OnCreate}!Louron::IScript@{Louron::IScript}}
+\doxysubsubsection{\texorpdfstring{OnCreate()}{OnCreate()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_i_script_ac292e36ddefe9e849ce35063fec83c7d} 
+virtual void Louron\+::\+IScript\+::\+On\+Create (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Function that is called as the script is instantiated. 
+
+When the script is made active on a Script\+Component, or when an entity is instantiated with an active script, this function is called.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_ac292e36ddefe9e849ce35063fec83c7d}{OnCreate}}()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{}\{}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Script\ created!"{}});}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_i_script_adee1aa89d4513546cc2a63aac8802474}\index{Louron::IScript@{Louron::IScript}!OnDestroy@{OnDestroy}}
+\index{OnDestroy@{OnDestroy}!Louron::IScript@{Louron::IScript}}
+\doxysubsubsection{\texorpdfstring{OnDestroy()}{OnDestroy()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_i_script_adee1aa89d4513546cc2a63aac8802474} 
+virtual void Louron\+::\+IScript\+::\+On\+Destroy (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Function that is called when the script is destroyed. 
+
+When the script is destroyed, or when the entity it is attached to is destroyed, this function is called.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_adee1aa89d4513546cc2a63aac8802474}{OnDestroy}}()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{}\{}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Script\ destroyed!"{}});}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_i_script_a256530e31abbef7f074524805c014fa9}\index{Louron::IScript@{Louron::IScript}!OnFixedUpdate@{OnFixedUpdate}}
+\index{OnFixedUpdate@{OnFixedUpdate}!Louron::IScript@{Louron::IScript}}
+\doxysubsubsection{\texorpdfstring{OnFixedUpdate()}{OnFixedUpdate()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_i_script_a256530e31abbef7f074524805c014fa9} 
+virtual void Louron\+::\+IScript\+::\+On\+Fixed\+Update (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Function that is called every fixed frame. 
+
+This is called every fixed tick of game engine. The engine has its main update pass which is called once per frame, however, for systems like physics, you need a fixed update.
+
+This is set to 60hz per default, but can be changed using \doxylink{class_louron_1_1_time_a9c0ddef74992a1ce85a923917698d097}{Time\+::\+Set\+Fixed\+Delta\+Time(float fixed\+\_\+delta\+\_\+time)}.
+
+Use Fixed\+Update when using Rigidbody\+Component. Set a force to a Rigidbody\+Component and it applies each fixed frame. If however, you applied a force every frame, it would be inconsistent and not work as intended.
+
+Imagine having a computer that only could run at 30 frames per second, you would apply 30 forces per second, but if another computer were to run the game at 60 frames per second, it would apply 60 forces per second. This would be inconsistent and not work as intended.
+
+Having a fixed step basically means that you can apply a force every fixed frame, and it will be consistent across all computers, e.\+g., for a computer running at 30 frames per second, it would call the fixed update twice per frame, to ensure the consistency, and for a computer running at 60 frames per second, it would call the fixed update once per frame. To go even further, if you had a computer running at 120 frames per second, it would call the fixed update every other frame.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a256530e31abbef7f074524805c014fa9}{OnFixedUpdate}}()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{}\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_louron_1_1_input_a4380b98f3f16ddfeb55477d90f3a1b08}{Input::GetKey}}(KeyCode::W))}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_entity_a8609d72c061abd27aa4125772a13bc8c}{GetComponent<RigidbodyComponent>}}.AddForce(this-\/>\mbox{\hyperlink{class_louron_1_1_entity_acd798a66a636ead5dc27a3aa32a9997c}{GetFront}}()\ *\ 10.0f);}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_i_script_a5cbac995277a26c8a25171282670fd5a}\index{Louron::IScript@{Louron::IScript}!OnLateUpdate@{OnLateUpdate}}
+\index{OnLateUpdate@{OnLateUpdate}!Louron::IScript@{Louron::IScript}}
+\doxysubsubsection{\texorpdfstring{OnLateUpdate()}{OnLateUpdate()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_i_script_a5cbac995277a26c8a25171282670fd5a} 
+virtual void Louron\+::\+IScript\+::\+On\+Late\+Update (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Function that is called every frame, after the update phase. 
+
+Once all On\+Updates have been called, this function is called on all scripts.
+
+This is useful for scenarios where you need to do something after all other scripts have updated, for instance update the transform of a camera that is tracking an \doxylink{class_louron_1_1_entity}{Entity}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ CustomEntityFollow(\mbox{\hyperlink{class_louron_1_1_entity_ae9db65afb9ea1d4cb2cb4ba336b0c5c0}{Entity}}\&\ target)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ ...\ Custom\ look\ at\ logic\ per\ requirements,\ maybe\ using\ a\ smooth\ interpolation,\ or\ just\ direct\ lookat.}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a5cbac995277a26c8a25171282670fd5a}{OnLateUpdate}}()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{}\{}
+\DoxyCodeLine{\ \ \ \ CustomEntityFollow(\mbox{\hyperlink{class_louron_1_1_entity_a8935ca10e7a7b7b53d7ab80faedd30a5}{Entity::FindByName}}(\textcolor{stringliteral}{"{}Player"{}}));}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_i_script_a6ddbf6a7085d65cc1c21124d86a2cae6}\index{Louron::IScript@{Louron::IScript}!OnTriggerEnter@{OnTriggerEnter}}
+\index{OnTriggerEnter@{OnTriggerEnter}!Louron::IScript@{Louron::IScript}}
+\doxysubsubsection{\texorpdfstring{OnTriggerEnter()}{OnTriggerEnter()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_i_script_a6ddbf6a7085d65cc1c21124d86a2cae6} 
+virtual void Louron\+::\+IScript\+::\+On\+Trigger\+Enter (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&}]{other}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Function that is called when a Trigger collider enters any trigger attached to this \doxylink{class_louron_1_1_entity}{Entity}. 
+
+Trigger colliders do not physically block movement but instead raise trigger events.
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & Information about the trigger, including the type and the entity that entered.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a6ddbf6a7085d65cc1c21124d86a2cae6}{OnTriggerEnter}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{}\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (other.entity.GetTag()\ ==\ \textcolor{stringliteral}{"{}Player"{}})}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Player\ entered\ the\ trigger\ zone."{}});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_i_script_ac933c2001272483d274b81c9fa8ad9db}\index{Louron::IScript@{Louron::IScript}!OnTriggerLeave@{OnTriggerLeave}}
+\index{OnTriggerLeave@{OnTriggerLeave}!Louron::IScript@{Louron::IScript}}
+\doxysubsubsection{\texorpdfstring{OnTriggerLeave()}{OnTriggerLeave()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_i_script_ac933c2001272483d274b81c9fa8ad9db} 
+virtual void Louron\+::\+IScript\+::\+On\+Trigger\+Leave (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&}]{other}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Function that is called when a Trigger collider leaves any trigger attached to this \doxylink{class_louron_1_1_entity}{Entity}. 
+
+Trigger colliders do not physically block movement but instead raise trigger events.
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & Information about the trigger, including the type and the entity that exited.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_ac933c2001272483d274b81c9fa8ad9db}{OnTriggerLeave}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{}\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (other.entity.GetTag()\ ==\ \textcolor{stringliteral}{"{}Player"{}})}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Player\ exited\ the\ trigger\ zone."{}});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_i_script_ac612cd978b61b76016c87f8efb6ba4b4}\index{Louron::IScript@{Louron::IScript}!OnTriggerStay@{OnTriggerStay}}
+\index{OnTriggerStay@{OnTriggerStay}!Louron::IScript@{Louron::IScript}}
+\doxysubsubsection{\texorpdfstring{OnTriggerStay()}{OnTriggerStay()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_i_script_ac612cd978b61b76016c87f8efb6ba4b4} 
+virtual void Louron\+::\+IScript\+::\+On\+Trigger\+Stay (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_louron_1_1_collider}{Louron\+::\+Collider}} \&}]{other}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Function that is called when a Trigger collider stays inside any trigger attached to this \doxylink{class_louron_1_1_entity}{Entity}. 
+
+Trigger colliders do not physically block movement but instead raise trigger events.
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & Information about the trigger, including the type and the entity that is still inside.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_ac612cd978b61b76016c87f8efb6ba4b4}{OnTriggerStay}}(\textcolor{keyword}{const}\ Collider\&\ other)\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{}\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (other.entity.GetTag()\ ==\ \textcolor{stringliteral}{"{}Player"{}})}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \mbox{\hyperlink{class_louron_1_1_debug_a96dcdd6faffbde3f546f136d784fe83d}{Debug::Log}}(\textcolor{stringliteral}{"{}Player\ is\ still\ inside\ the\ trigger."{}});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{class_louron_1_1_i_script_a5de601b077261c3a10e4e8b50cccb1c9}\index{Louron::IScript@{Louron::IScript}!OnUpdate@{OnUpdate}}
+\index{OnUpdate@{OnUpdate}!Louron::IScript@{Louron::IScript}}
+\doxysubsubsection{\texorpdfstring{OnUpdate()}{OnUpdate()}}
+{\footnotesize\ttfamily \label{class_louron_1_1_i_script_a5de601b077261c3a10e4e8b50cccb1c9} 
+virtual void Louron\+::\+IScript\+::\+On\+Update (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Function that is called every frame. 
+
+This is the main function that is used for most of the script logic.
+
+This is called once per frame during the update phase.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_louron_1_1_i_script_a5de601b077261c3a10e4e8b50cccb1c9}{OnUpdate}}()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{\textcolor{keyword}{}\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Can\ just\ call\ GetPosition()\ and\ SetPosition()\ directly\ as\ the\ IScript\ inherits\ from\ Entity.}}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_louron_1_1_entity_ad5ceb346a86760a287e16a399f361ad4}{SetPosition}}(\mbox{\hyperlink{class_louron_1_1_entity_a90b7b88426192399b6761ae5cc42c33f}{GetPosition}}()\ +\ Vector3(0.0f,\ 1.0f,\ 0.0f)\ *\ \mbox{\hyperlink{class_louron_1_1_time_a2a1d0e28898d70d3ffb7379af679e82c}{Time::GetDeltaTime}}());}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Script\+API.\+h\end{DoxyCompactItemize}

@@ -95,7 +95,10 @@ namespace Louron
 	{
 		// --- Constructors & Assignment Operators ---
 
-		SkinnedMeshComponent() = default;
+		SkinnedMeshComponent()
+		{
+			MaterialHandles.push_back({ NULL_UUID, nullptr });
+		}
 		SkinnedMeshComponent(const SkinnedMeshComponent& other) = default;
 		SkinnedMeshComponent(SkinnedMeshComponent&& other) noexcept = default;
 

@@ -1,0 +1,42 @@
+\doxysection{Louron\+::Components\+::LODMesh\+Component\+::LODElement Struct Reference}
+\hypertarget{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element}{}\label{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element}\index{Louron::Components::LODMeshComponent::LODElement@{Louron::Components::LODMeshComponent::LODElement}}
+
+
+A single Level of Detail (LOD) element.  
+
+
+
+
+{\ttfamily \#include $<$LComponent.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element_a07e9ac9db72cb80e2fca5397108c6c7e}{Distance\+Threshold\+Normalised}}
+\begin{DoxyCompactList}\small\item\em Distance threshold from the camera, normalized between 0 and 1. \end{DoxyCompactList}\item 
+\Hypertarget{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element_a8dff5dd8d8e7c908ddec1da5239b1969}\label{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element_a8dff5dd8d8e7c908ddec1da5239b1969} 
+std\+::vector$<$ \mbox{\hyperlink{class_louron_1_1_entity}{Entity}} $>$ {\bfseries Mesh\+Renderer\+Entities}
+\begin{DoxyCompactList}\small\item\em Vector of entities with Mesh\+Renderer components for this LOD level. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A single Level of Detail (LOD) element. 
+
+Each element specifies a distance threshold and a set of mesh renderer entities to activate when that threshold is met. 
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element_a07e9ac9db72cb80e2fca5397108c6c7e}\index{Louron::Components::LODMeshComponent::LODElement@{Louron::Components::LODMeshComponent::LODElement}!DistanceThresholdNormalised@{DistanceThresholdNormalised}}
+\index{DistanceThresholdNormalised@{DistanceThresholdNormalised}!Louron::Components::LODMeshComponent::LODElement@{Louron::Components::LODMeshComponent::LODElement}}
+\doxysubsubsection{\texorpdfstring{DistanceThresholdNormalised}{DistanceThresholdNormalised}}
+{\footnotesize\ttfamily \label{struct_louron_1_1_components_1_1_l_o_d_mesh_component_1_1_l_o_d_element_a07e9ac9db72cb80e2fca5397108c6c7e} 
+float Louron\+::\+Components\+::\+LODMesh\+Component\+::\+LODElement\+::\+Distance\+Threshold\+Normalised}
+
+
+
+Distance threshold from the camera, normalized between 0 and 1. 
+
+0 = near plane, 1 = far plane. If set to 0.\+5, this element is active when the object is halfway between near and far. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+ECS/LComponent.\+h\end{DoxyCompactItemize}

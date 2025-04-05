@@ -378,12 +378,12 @@ constexpr auto parse_arg_id(const Char* begin, const Char* end) {
   return parse_arg_id_result<Char>{handler.arg_id, arg_id_end};
 }
 
-template <typename T, typename Enable = void> struct field_type {
+template <typename T, typename Enable = void> struct type {
   using type = remove_cvref_t<T>;
 };
 
 template <typename T>
-struct field_type<T, enable_if_t<detail::is_named_arg<T>::value>> {
+struct type<T, enable_if_t<detail::is_named_arg<T>::value>> {
   using type = remove_cvref_t<decltype(T::value)>;
 };
 
@@ -395,19 +395,19 @@ constexpr auto parse_replacement_field_then_tail(S format_str) {
   constexpr char_type c = END_POS != str.size() ? str[END_POS] : char_type();
   if constexpr (c == '}') {
     return parse_tail<Args, END_POS + 1, NEXT_ID>(
-        field<char_type, typename field_type<T>::type, ARG_INDEX>(),
+        field<char_type, typename type<T>::type, ARG_INDEX>(),
         format_str);
   } else if constexpr (c != ':') {
     FMT_THROW(format_error("expected ':'"));
   } else {
-    constexpr auto result = parse_specs<typename field_type<T>::type>(
+    constexpr auto result = parse_specs<typename type<T>::type>(
         str, END_POS + 1, NEXT_ID == manual_indexing_id ? 0 : NEXT_ID);
     if constexpr (result.end >= str.size() || str[result.end] != '}') {
       FMT_THROW(format_error("expected '}'"));
       return 0;
     } else {
       return parse_tail<Args, result.end + 1, result.next_arg_id>(
-          spec_field<char_type, typename field_type<T>::type, ARG_INDEX>{
+          spec_field<char_type, typename type<T>::type, ARG_INDEX>{
               result.fmt},
           format_str);
     }
