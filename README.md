@@ -21,7 +21,7 @@ At this point there are an array of features utilised in this project:
   - Shadow mapping (cascaded shadow maps, point light maps and spot light maps)
   - Multi threaded geometry renderable candidate sorting
 - ENTT entity component system
-- Custom C++ Native Scripting Workflow [DOXYGEN DOCUMENTATION](Louron Native Script Core/doxy-gen/html/index.html)
+- Custom C++ Native Scripting Workflow [Native Script Core API Documentation](https://sharpielabeouf.github.io/Louron-Engine/Louron%20Native%20Script%20Core/doxy-gen/html/index.html)
   - Create scripts in C++
   - Scripts are compiled used clang++ during editor runtime 
   - Set fields in editor
