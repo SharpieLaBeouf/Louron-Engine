@@ -625,8 +625,8 @@ namespace Louron
             case ScriptFieldType::ScriptComponent:              entity.AddComponent<ScriptComponent>();             break;
             case ScriptFieldType::TransformComponent:           entity.AddComponent<TransformComponent>();          break;
             case ScriptFieldType::CameraComponent:              entity.AddComponent<CameraComponent>();             break;
-            case ScriptFieldType::AudioListenerComponent:       entity.AddComponent<AudioListenerComponent>();               break;
-            case ScriptFieldType::AudioEmitterComponent:        entity.AddComponent<AudioEmitterComponent>();                break;
+            case ScriptFieldType::AudioListenerComponent:       entity.AddComponent<AudioListenerComponent>();      break;
+            case ScriptFieldType::AudioEmitterComponent:        entity.AddComponent<AudioEmitterComponent>();       break;
             case ScriptFieldType::MeshFilterComponent:          entity.AddComponent<MeshFilterComponent>();         break;
             case ScriptFieldType::MeshRendererComponent:        entity.AddComponent<MeshRendererComponent>();       break;
             case ScriptFieldType::LODMeshComponent:             entity.AddComponent<LODMeshComponent>();            break;
@@ -2537,13 +2537,23 @@ namespace Louron
             return;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<MeshRendererComponent>() || material_index >= entity.GetComponent<MeshRendererComponent>().MaterialHandles.size())
+        if (!entity || !entity.HasComponent<MeshRendererComponent>())
             return;
 
         auto& material_handle_vector = entity.GetComponent<MeshRendererComponent>().MaterialHandles;
 
-        if (material_index == size_t(-1))
-            material_index = material_handle_vector.size() - 1; // We pass -1 when we want to enable last uniform block in material handle element pairs
+        if (material_handle_vector.empty() && (material_index == size_t(-1) || material_index == size_t(0)))
+        {
+            material_handle_vector.push_back({ material_handle, nullptr });
+            return;
+        }
+        else if (material_index == size_t(-1))
+        {
+            material_index = material_handle_vector.size() - 1;
+        }
+
+        if (material_index >= entity.GetComponent<MeshRendererComponent>().MaterialHandles.size())
+            return;
 
         if (material_handle_vector[material_index].first == material_handle) // If Material Handle Already Set
             return;
@@ -2928,13 +2938,23 @@ namespace Louron
             return;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<SkinnedMeshComponent>() || material_index >= entity.GetComponent<SkinnedMeshComponent>().MaterialHandles.size())
+        if (!entity || !entity.HasComponent<SkinnedMeshComponent>())
             return;
 
         auto& material_handle_vector = entity.GetComponent<SkinnedMeshComponent>().MaterialHandles;
 
-        if (material_index == size_t(-1))
-            material_index = material_handle_vector.size() - 1; // We pass -1 when we want to enable last uniform block in material handle element pairs
+        if (material_handle_vector.empty() && (material_index == size_t(-1) || material_index == size_t(0)))
+        {
+            material_handle_vector.push_back({ material_handle, nullptr });
+            return;
+        }
+        else if (material_index == size_t(-1))
+        {
+            material_index = material_handle_vector.size() - 1;
+        }
+
+        if (material_index >= entity.GetComponent<MeshRendererComponent>().MaterialHandles.size())
+            return;
 
         if (material_handle_vector[material_index].first == material_handle) // If Material Handle Already Set
             return;

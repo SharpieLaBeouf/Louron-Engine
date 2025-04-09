@@ -4,6 +4,8 @@ namespace Louron
 {
     namespace LMath
     {
+        float Max(float a, float b) { return (a > b) ? a : b; }
+
         float Lerp(float t, float a, float b) { return a + t * (b - a); }
 
         float SCurve(float t)

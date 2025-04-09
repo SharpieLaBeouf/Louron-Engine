@@ -1176,6 +1176,18 @@ namespace Louron
 			float GetAngularDrag() const { return ENGINE_SAFE_CALL_RET(float, float(*)(uint32_t), RigidbodyComponent_GetAngularDrag, m_EntityID); }
 
 			/**
+			* @brief Gets the linear velocity of the rigidbody.
+			* @return Linear velocity of the rigidbody.
+			*/
+			Vectors::Vector3 GetLinearVelocity() const { return ENGINE_SAFE_CALL_RET(Vectors::Vector3, Vectors::Vector3(*)(uint32_t), RigidbodyComponent_GetLinearVelocity, m_EntityID); }
+
+			/**
+			* @brief Gets the angular velocity of the rigidbody.
+			* @return Angular velocity of the rigidbody.
+			*/
+			Vectors::Vector3 GetAngularVelocity() const { return ENGINE_SAFE_CALL_RET(Vectors::Vector3, Vectors::Vector3(*)(uint32_t), RigidbodyComponent_GetAngularVelocity, m_EntityID); }
+
+			/**
 			* @brief Checks whether the automatic center of mass is enabled.
 			* @return True if automatic center of mass is used.
 			*/
@@ -1216,6 +1228,18 @@ namespace Louron
 			* @param drag The new drag value.
 			*/
 			void SetDrag(float drag) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, float), RigidbodyComponent_SetDrag, m_EntityID, drag); }
+
+			/**
+			* @brief Sets the linear velocity of the rigidbody.
+			* @param linear_velocity The new linear velocity of the rigidbody.
+			*/
+			void SetLinearVelocity(const Vectors::Vector3& linear_velocity) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, Vectors::Vector3), RigidbodyComponent_SetLinearVelocity, m_EntityID, linear_velocity); }
+
+			/**
+			* @brief Sets the angular velocity of the rigidbody.
+			* @param angular_velocity The new angular velocity of the rigidbody.
+			*/
+			void SetAngularVelocity(const Vectors::Vector3& angular_velocity) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, Vectors::Vector3), RigidbodyComponent_SetAngularVelocity, m_EntityID, angular_velocity); }
 
 			/**
 			* @brief Sets the angular drag.

@@ -2769,7 +2769,7 @@ namespace Louron {
 		{
 			auto& mesh_filter_component = static_mesh_view.get<MeshFilterComponent>(entity_handle);
 
-			if (mesh_filter_component.StaticMeshHandle == NULL_UUID)
+			if (mesh_filter_component.StaticMeshHandle == NULL_UUID || !AssetManager::IsAssetLoaded(mesh_filter_component.StaticMeshHandle))
 			{
 				continue;
 			}
@@ -2836,7 +2836,7 @@ namespace Louron {
 		{
 			auto& skinned_mesh_component = skinned_mesh_view.get<SkinnedMeshComponent>(entity_handle);
 
-			if (skinned_mesh_component.StaticMeshHandle == NULL_UUID)
+			if (skinned_mesh_component.StaticMeshHandle == NULL_UUID || !AssetManager::IsAssetLoaded(skinned_mesh_component.StaticMeshHandle))
 			{
 				continue;
 			}

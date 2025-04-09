@@ -655,12 +655,27 @@ namespace Louron {
 				if (prefab_registry->has<MeshFilterComponent>(start_prefab_entity)) {
 					auto& component = prefab_registry->get<MeshFilterComponent>(start_prefab_entity);
 					instantiated_entity.AddComponent<MeshFilterComponent>(component);
+
+					// Ensure Mesh Loaded
+					if (!Project::GetStaticAssetManager()->IsAssetLoaded(component.StaticMeshHandle))
+					{
+						Project::GetStaticAssetManager()->GetAsset(component.StaticMeshHandle);
+					}
 				}
 
 				// 1.h. MeshRenderer
 				if (prefab_registry->has<MeshRendererComponent>(start_prefab_entity)) {
 					auto& component = prefab_registry->get<MeshRendererComponent>(start_prefab_entity);
 					instantiated_entity.AddComponent<MeshRendererComponent>(component);
+
+					// Ensure Materials Loaded
+					for (const auto& material_pair : component.MaterialHandles)
+					{
+						if (!Project::GetStaticAssetManager()->IsAssetLoaded(material_pair.first))
+						{
+							Project::GetStaticAssetManager()->GetAsset(material_pair.first);
+						}
+					}
 				}
 
 				// 1.i. PointLight Component
@@ -741,6 +756,27 @@ namespace Louron {
 					auto& component = prefab_registry->get<SkinnedMeshComponent>(start_prefab_entity);
 					instantiated_entity.AddComponent<SkinnedMeshComponent>(component);
 					SkinnedMeshEntities.push_back(instantiated_entity);
+
+					// Ensure Mesh Loaded
+					if (!Project::GetStaticAssetManager()->IsAssetLoaded(component.StaticMeshHandle))
+					{
+						Project::GetStaticAssetManager()->GetAsset(component.StaticMeshHandle);
+					}
+
+					// Ensure Skeleton Loaded
+					if (!Project::GetStaticAssetManager()->IsAssetLoaded(component.SkeletonHandle))
+					{
+						Project::GetStaticAssetManager()->GetAsset(component.SkeletonHandle);
+					}
+
+					// Ensure Materials Loaded
+					for (const auto& material_pair : component.MaterialHandles)
+					{
+						if (!Project::GetStaticAssetManager()->IsAssetLoaded(material_pair.first))
+						{
+							Project::GetStaticAssetManager()->GetAsset(material_pair.first);
+						}
+					}
 				}
 
 				// 1.s. Animator Component

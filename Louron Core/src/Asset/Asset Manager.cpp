@@ -195,7 +195,6 @@ namespace Louron {
 
 		for (const auto& entry_path : std::filesystem::recursive_directory_iterator(project_asset_directory)) 
 		{
-
 			if (entry_path.is_directory() || !entry_path.is_regular_file())
 				continue; // Not a Regular File That Can Be Imported
 

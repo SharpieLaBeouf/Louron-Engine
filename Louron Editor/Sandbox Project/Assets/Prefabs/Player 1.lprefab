@@ -10,9 +10,7 @@ PrefabEntities:
     ScriptComponent:
       Script_1:
         Active: true
-        Script Name: SandboxProject.KnerpixPlayerCollision
-        Fields:
-          []
+        Script Name: CollissionPush
     TransformComponent:
       Translation: [0, 0, 0]
       Rotation: [0, -0, 0]
@@ -37,6 +35,6 @@ PrefabEntities:
       RotationConstraint: [false, false, false]
     SphereColliderComponent:
       IsTrigger: false
-      Radius: 1.0
+      Radius: 1
       Centre: [0, 0, 0]
       MaterialProperties: [0.600000024, 0.600000024, 0]

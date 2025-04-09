@@ -516,7 +516,7 @@ private:
         MaterialUniformBlock mub = AddComponent<MeshRendererComponent>().GetUniformBlock();
         mub.SetBool("TestUniform", false);
 
-        unsigned char tex_data[4] = { 255, 0, 0, 255 }; 
+        unsigned char tex_data[4] = { 255, 0, 255, 255 }; 
         Texture2D texture = Texture2D(tex_data, { 1, 1}, Texture2D::TextureFormat::RED_GREEN_BLUE_ALPHA_8, Texture2D::TextureFormat::RED_GREEN_BLUE_ALPHA_8);
         mub.OverrideAlbedoMap(texture);
         mub.OverrideMetallicMap(texture);

@@ -335,32 +335,29 @@ Entities:
     ScriptComponent:
       Script_1:
         Active: true
-        Script Name: SandboxProject.KnerpixGameManager
+        Script Name: GameManager
         Fields:
-          - Name: Player1_Prefab
+          - Name: Player_1_Prefab
             Type: Prefab
             Data: 1938405934
-          - Name: Speed_Multiplier
+          - Name: DeathFloorY
             Type: Float
-            Data: 5
-          - Name: Player2_Prefab
-            Type: Prefab
-            Data: 1502522335
-          - Name: WinnerLocation
+            Data: -10
+          - Name: Winner_Location
             Type: Entity
             Data: 2400339882
-          - Name: Player1_SpawnPoint
-            Type: Entity
-            Data: 1136546040
-          - Name: Player2_SpawnPoint
+          - Name: Player_2_Prefab
+            Type: Prefab
+            Data: 1502522335
+          - Name: Player_2_Spawn_Point
             Type: Entity
             Data: 3885195277
           - Name: Players_Parent_Entity
             Type: Entity
             Data: 3601754716
-          - Name: DeathFloorY
-            Type: Float
-            Data: -10
+          - Name: Player_1_Spawn_Point
+            Type: Entity
+            Data: 1136546040
     TransformComponent:
       Translation: [0, 0, 0]
       Rotation: [0, 0, 0]
@@ -399,7 +396,7 @@ Entities:
         []
     TransformComponent:
       Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
+      Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
   - Entity: 2400339882
     TagComponent:

@@ -309,7 +309,7 @@ namespace Louron
 		* @endcode
 		*/
 		template<typename T, typename = std::enable_if_t<std::is_base_of<Components::Component, T>::value>>
-		bool HasComponent()
+		bool HasComponent() const
 		{
 			uint8_t type = static_cast<uint8_t>(T::GetType());
 			return ENGINE_SAFE_CALL_RET(bool, bool(*)(uint32_t, uint8_t), Entity_HasComponent, m_EntityID, type);
@@ -330,7 +330,7 @@ namespace Louron
 		* @endcode 
 		*/
 		template<typename T, typename = std::enable_if_t<std::is_base_of<Components::Component, T>::value>>
-		T AddComponent()
+		T AddComponent() const
 		{
 			if (!HasComponent<T>())
 			{
@@ -360,7 +360,7 @@ namespace Louron
 		* 
 		*/
 		template<typename T, typename = std::enable_if_t<std::is_base_of<Components::Component, T>::value>>
-		void RemoveComponent()
+		void RemoveComponent() const
 		{
 			ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint8_t), Entity_RemoveComponent, m_EntityID, static_cast<uint8_t>(T::GetType()));
 		}
@@ -379,7 +379,7 @@ namespace Louron
 		* @endcode
 		*/
 		template<typename T, typename = std::enable_if_t<std::is_base_of<Components::Component, T>::value>>
-		T GetComponent()
+		T GetComponent() const
 		{
 			if (HasComponent<T>())
 			{
@@ -407,7 +407,7 @@ namespace Louron
 		* @endcode
 		*/
 		template<typename T, typename = std::enable_if_t<std::is_base_of<Components::Component, T>::value>>
-		T GetComponentInParent()
+		T GetComponentInParent() const
 		{
 			T component{};
 			component.SetEntity(ENGINE_SAFE_CALL_RET(uint32_t, uint32_t(*)(uint32_t, uint8_t), Entity_GetComponentInParent, m_EntityID, static_cast<uint8_t>(T::GetType())));
@@ -431,7 +431,7 @@ namespace Louron
 		* @endcode
 		*/
 		template<typename T, typename = std::enable_if_t<std::is_base_of<Components::Component, T>::value>>
-		std::vector<T> GetComponentsInParent()
+		std::vector<T> GetComponentsInParent() const 
 		{
 			std::vector<T> components{};
 
@@ -468,7 +468,7 @@ namespace Louron
 		* @endcode
 		*/
 		template<typename T, typename = std::enable_if_t<std::is_base_of<Components::Component, T>::value>>
-		T GetComponentInChildren()
+		T GetComponentInChildren() const
 		{
 			T component{};
 			component.SetEntity(ENGINE_SAFE_CALL_RET(uint32_t, uint32_t(*)(uint32_t, uint8_t), Entity_GetComponentInChildren, m_EntityID, static_cast<uint8_t>(T::GetType())));
@@ -492,7 +492,7 @@ namespace Louron
 		* @endcode
 		*/
 		template<typename T, typename = std::enable_if_t<std::is_base_of<Components::Component, T>::value>>
-		std::vector<T> GetComponentsInChildren()
+		std::vector<T> GetComponentsInChildren() const
 		{
 			std::vector<T> components{};
 

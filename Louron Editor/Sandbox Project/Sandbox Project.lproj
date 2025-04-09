@@ -1,5 +1,5 @@
 Project Name: Sandbox Project
 Project Config:
-  StartScene: Scenes\Native Script Testing.lscene
+  StartScene: Scenes\Knerpix Game Again.lscene
   AssetDirectory: Assets\
   AppScriptModulePath: Scripts\Binaries\ScriptCode.dll
