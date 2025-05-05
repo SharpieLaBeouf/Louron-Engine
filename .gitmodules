@@ -22,3 +22,6 @@
 [submodule "External/physx"]
 	path = External/physx
 	url = https://github.com/NVIDIA-Omniverse/PhysX.git
+[submodule "External/spdlog"]
+	path = External/spdlog
+	url = https://github.com/gabime/spdlog.git
