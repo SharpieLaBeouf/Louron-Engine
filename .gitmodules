@@ -16,3 +16,6 @@
 [submodule "External/imguizmo"]
 	path = External/imguizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo.git
+[submodule "External/miniaudio"]
+	path = External/miniaudio
+	url = https://github.com/mackron/miniaudio.git
