@@ -19,3 +19,6 @@
 [submodule "External/miniaudio"]
 	path = External/miniaudio
 	url = https://github.com/mackron/miniaudio.git
+[submodule "External/physx"]
+	path = External/physx
+	url = https://github.com/NVIDIA-Omniverse/PhysX.git
