@@ -62,3 +62,9 @@
 **.so filter=lfs diff=lfs merge=lfs -text
 Louron-Editor/Resources/Compiler/clang++.exe filter=lfs diff=lfs merge=lfs -text
 Louron-Editor/Resources/Compiler/clang++_linux filter=lfs diff=lfs merge=lfs -text
+External/bin/physx/windows/debug/** filter=lfs diff=lfs merge=lfs -text
+External/bin/physx/windows/release/** filter=lfs diff=lfs merge=lfs -text
+External/bin/physx/linux/debug/** filter=lfs diff=lfs merge=lfs -text
+External/bin/physx/linux/release/** filter=lfs diff=lfs merge=lfs -text
+External/bin/clang-c/linux/** filter=lfs diff=lfs merge=lfs -text
+External/bin/clang-c/windows/** filter=lfs diff=lfs merge=lfs -text
