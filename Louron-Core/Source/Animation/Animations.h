@@ -1,0 +1,136 @@
+#pragma once
+
+// Louron Core Headers
+#include "../Core/UUID.h"
+#include "../Asset/Asset.h"
+
+// C++ Standard Library Headers
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+// External Vendor Library Headers
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+
+namespace Louron
+{
+    struct Keyframe_Position
+    {
+        float Time;
+        glm::vec3 Position;
+    };
+
+    struct Keyframe_Rotation 
+    {
+        float Time;
+        glm::quat Rotation;
+    };
+
+    struct Keyframe_Scale 
+    {
+        float Time;
+        glm::vec3 Scale;
+    };
+
+    struct BoneKeyframes 
+    {
+        std::vector<Keyframe_Position>  PositionKeyframes;
+        std::vector<Keyframe_Rotation>  RotationKeyframes;
+        std::vector<Keyframe_Scale>     ScaleKeyframes;
+    };
+
+    using BoneKeyFrameMap = std::unordered_map<std::string, BoneKeyframes>;
+
+    class AnimationClip : public Asset
+    {
+
+    public:
+
+        // --- Constructors & Assignment Operators ---
+
+        virtual AssetType GetType() const override { return AssetType::AnimationClip; }
+
+        AnimationClip() = default;
+        AnimationClip(const AnimationClip& other) = default;
+        AnimationClip(AnimationClip&& other) noexcept = default;
+
+        AnimationClip& operator=(const AnimationClip& other) = default;
+        AnimationClip& operator=(AnimationClip&& other) noexcept = default;
+
+        // --- Animation Clip Functions ---
+
+        void AddBoneKeyframes(const std::string& bone_name, const BoneKeyframes& keyframes)
+        {
+            m_BoneKeyFrames[bone_name] = keyframes;
+        }
+
+        void AddBonePositionKeyFrame(const std::string& bone_name, const Keyframe_Position& keyframe) 
+        {
+            m_BoneKeyFrames[bone_name].PositionKeyframes.push_back(keyframe);
+            if (keyframe.Time > m_AnimationDuration) 
+            {
+                m_AnimationDuration = keyframe.Time;
+            }
+        }
+
+        void AddBoneRotationKeyFrame(const std::string& bone_name, const Keyframe_Rotation& keyframe)
+        {
+            m_BoneKeyFrames[bone_name].RotationKeyframes.push_back(keyframe);
+            if (keyframe.Time > m_AnimationDuration)
+            {
+                m_AnimationDuration = keyframe.Time;
+            }
+        }
+
+        void AddBoneScaleKeyFrame(const std::string& bone_name, const Keyframe_Scale& keyframe)
+        {
+            m_BoneKeyFrames[bone_name].ScaleKeyframes.push_back(keyframe);
+            if (keyframe.Time > m_AnimationDuration)
+            {
+                m_AnimationDuration = keyframe.Time;
+            }
+        }
+
+        const std::vector<Keyframe_Position>& GetBonePositionKeyframes(const std::string& bone_name) const
+        {
+            static const std::vector<Keyframe_Position> emptyKeyframes;
+            auto it = m_BoneKeyFrames.find(bone_name);
+            return (it != m_BoneKeyFrames.end()) ? it->second.PositionKeyframes : emptyKeyframes;
+        }
+
+        const std::vector<Keyframe_Rotation>& GetBoneRotationKeyframes(const std::string& bone_name) const
+        {
+            static const std::vector<Keyframe_Rotation> emptyKeyframes;
+            auto it = m_BoneKeyFrames.find(bone_name);
+            return (it != m_BoneKeyFrames.end()) ? it->second.RotationKeyframes : emptyKeyframes;
+        }
+
+        const std::vector<Keyframe_Scale>& GetBoneScaleKeyframes(const std::string& bone_name) const
+        {
+            static const std::vector<Keyframe_Scale> emptyKeyframes;
+            auto it = m_BoneKeyFrames.find(bone_name);
+            return (it != m_BoneKeyFrames.end()) ? it->second.ScaleKeyframes : emptyKeyframes;
+        }
+
+        float GetDuration() const { return m_AnimationDuration; }
+        void SetDuration(float duration) { m_AnimationDuration = duration; }
+
+        uint32_t GetTicksPerSecond() const { return m_TicksPerSecond; }
+        void SetTicksPerSecond(uint32_t ticks_per_second) { m_TicksPerSecond = ticks_per_second; }
+
+        const BoneKeyFrameMap& GetAllBoneKeyFrames() const { return m_BoneKeyFrames; }
+        void SetAllBoneKeyFrames(const BoneKeyFrameMap& bone_key_frames) { m_BoneKeyFrames = bone_key_frames; }
+
+    private:
+
+        // --- Data of AnimationClip Class ---
+
+        float m_AnimationDuration = 0.0f;
+        uint32_t m_TicksPerSecond = 0;
+        BoneKeyFrameMap m_BoneKeyFrames;
+
+    };
+
+}
