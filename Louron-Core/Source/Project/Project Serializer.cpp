@@ -52,6 +52,13 @@ namespace Louron {
         
     }
 
+    std::string NormalizePath(const std::string& path) 
+    {
+        std::string normalized = path;
+        std::replace(normalized.begin(), normalized.end(), '\\', '/');
+        return normalized;
+    }
+
     bool ProjectSerializer::Deserialize(const std::filesystem::path& projectFilePath) {
 
         if (projectFilePath.extension() != ".lproj") {
@@ -83,13 +90,13 @@ namespace Louron {
         auto projectConfig = data["Project Config"];
             
         if(projectConfig["StartScene"])
-            config.StartScene = projectConfig["StartScene"].as<std::string>();
+            config.StartScene = NormalizePath(projectConfig["StartScene"].as<std::string>());
             
         if(projectConfig["AssetDirectory"])
-            config.AssetDirectory = projectConfig["AssetDirectory"].as<std::string>();
+            config.AssetDirectory = NormalizePath(projectConfig["AssetDirectory"].as<std::string>());
 
         if (projectConfig["AppScriptModulePath"])
-            config.ScriptAssemblyPath = projectConfig["AppScriptModulePath"].as<std::string>();
+            config.ScriptAssemblyPath = NormalizePath(projectConfig["AppScriptModulePath"].as<std::string>());
 
         m_Project->SetConfig(config);
 

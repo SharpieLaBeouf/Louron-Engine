@@ -5,8 +5,8 @@
 // https://gamedev.stackexchange.com/questions/211647/octree-query-frustum-search-and-recursive-vector-inserts/211698#211698
 
 // Louron Core Headers
-#include "../Core/Logging.h"
-#include "../Debug/Assert.h"
+#include "../../Core/Logging.h"
+#include "../../Debug/Assert.h"
 
 #include "Bounds.h"
 #include "Frustum.h"
@@ -14,6 +14,7 @@
 // C++ Standard Library Headers
 #include <memory>
 #include <vector>
+#include <array>
 
 // External Vendor Library Headers
 #define GLM_ENABLE_EXPERIMENTAL
@@ -105,12 +106,11 @@ namespace Louron {
 
 	private:
 
-		template <typename DataType>
 		class OctreeBoundsNode {
 
 		private:
 
-			using OctreeNode = std::shared_ptr<OctreeBoundsNode<DataType>>;
+			using OctreeNode = std::shared_ptr<OctreeBoundsNode>;
 			using OctreeData = std::shared_ptr<OctreeDataSource<DataType>>;
 			friend class OctreeBounds;
 
@@ -182,7 +182,7 @@ namespace Louron {
 					if (m_ChildrenBounds[i].Contains(data->Bounds, m_Octree->m_Config.Looseness) == BoundsContainResult::Contains) {
 
 						if (!m_ChildrenNodes[i]) {
-							m_ChildrenNodes[i] = std::make_shared<OctreeBoundsNode<DataType>>(m_ChildrenBounds[i], m_Octree);
+							m_ChildrenNodes[i] = std::make_shared<OctreeBoundsNode>(m_ChildrenBounds[i], m_Octree);
 							m_IsNodeSplit = true;
 						}
 
@@ -677,7 +677,7 @@ namespace Louron {
 						if (m_ChildrenBounds[i].Contains((*it)->Bounds, m_Octree->m_Config.Looseness) == BoundsContainResult::Contains) {
 
 							if (!m_ChildrenNodes[i]) {
-								m_ChildrenNodes[i] = std::make_shared<OctreeBoundsNode<DataType>>(m_ChildrenBounds[i], m_Octree);
+								m_ChildrenNodes[i] = std::make_shared<OctreeBoundsNode>(m_ChildrenBounds[i], m_Octree);
 								m_ChildrenNodes[i]->m_DataSourceIndex = child_data_start;
 								m_IsNodeSplit = true;
 							}
@@ -850,7 +850,7 @@ namespace Louron {
 			/// </summary>
 			uint8_t m_LifeCount = 0;
 		};
-		using OctreeNode = std::shared_ptr<OctreeBoundsNode<DataType>>;
+		using OctreeNode = std::shared_ptr<OctreeBoundsNode>;
 
 	public:
 
@@ -1288,7 +1288,7 @@ namespace Louron {
 			m_DataSources.reserve(initialCapacity);
 
 			// 4. Create Root Octree Node
-			m_RootNode = std::make_shared<OctreeBoundsNode<DataType>>(m_Config.InitialBounds, this);
+			m_RootNode = std::make_shared<OctreeBoundsNode>(m_Config.InitialBounds, this);
 
 			if (!data_sources.empty())
 				InsertVector(data_sources);
@@ -1325,7 +1325,7 @@ namespace Louron {
 
 			// 6. Store old root node and create new root node
 			OctreeNode old_root_node = m_RootNode;
-			OctreeNode new_root_node = std::make_shared<OctreeBoundsNode<DataType>>(new_bounds, this);
+			OctreeNode new_root_node = std::make_shared<OctreeBoundsNode>(new_bounds, this);
 
 			// 7. Get the node index of the new root node which holds the old root node
 			int child_index = new_root_node->BestFitChild(m_RootNode->GetNodeBounds().Center());

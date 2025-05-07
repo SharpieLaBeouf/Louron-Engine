@@ -3,6 +3,7 @@
 // Louron Core Headers
 
 // C++ Standard Library Headers
+#include <algorithm>
 
 // External Vendor Library Headers
 

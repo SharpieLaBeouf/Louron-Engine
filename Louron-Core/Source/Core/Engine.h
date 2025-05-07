@@ -21,7 +21,10 @@
 #include <GLFW/glfw3.h>
 
 int main(int argc, char** argv); 
+
+#if defined(L_PLATFORM_WINDOWS)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd);
+#endif
 
 namespace Louron {
 

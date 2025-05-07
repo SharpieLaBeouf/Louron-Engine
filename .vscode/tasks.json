@@ -28,6 +28,34 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "build LouronEditor-Linux-Debug",
+            "type": "shell",
+            "command": "${workspaceFolder}/Tools/Linux/build_debug.sh",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/Tools/Linux"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "build LouronEditor-Linux-Release",
+            "type": "shell",
+            "command": "${workspaceFolder}/Tools/Linux/build.sh",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/Tools/Linux"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

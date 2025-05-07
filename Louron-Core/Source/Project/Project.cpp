@@ -369,7 +369,10 @@ namespace Louron {
 	std::shared_ptr<Scene> Project::LoadStartupScene()
 	{
 		s_ActiveProject->m_ActiveScene = s_ActiveProject->LoadScene(s_ActiveProject->m_ProjectDirectory / s_ActiveProject->m_Config.StartScene);
-		L_CORE_INFO("Scene Loaded: {0}", s_ActiveProject->m_ActiveScene->GetConfig().Name);
+		
+		if(s_ActiveProject->m_ActiveScene)
+			L_CORE_INFO("Scene Loaded: {}", s_ActiveProject->m_ActiveScene->GetConfig().Name.c_str());
+			
 		return s_ActiveProject->m_ActiveScene;
 	}
 

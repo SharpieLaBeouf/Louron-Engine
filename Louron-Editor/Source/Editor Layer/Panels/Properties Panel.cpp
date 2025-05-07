@@ -123,7 +123,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 		auto& component = selected_entity.GetComponent<TagComponent>();
 
 		char tag_buffer[256];
+
+	#if defined(L_PLATFORM_WINDOWS)
 		strncpy_s(tag_buffer, component.Tag.c_str(), sizeof(tag_buffer));
+	#else
+		strncpy(tag_buffer, component.Tag.c_str(), sizeof(tag_buffer));
+	#endif
+
 		tag_buffer[sizeof(tag_buffer) - 1] = '\0'; // Ensure null-termination
 
 		ImGui::InputText("##TagDisplay", tag_buffer, sizeof(tag_buffer), ImGuiInputTextFlags_EnterReturnsTrue);
@@ -140,7 +146,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 		ImGui::NextColumn();
 
 		char id_buffer[11];
+
+	#if defined(L_PLATFORM_WINDOWS)
 		strncpy_s(id_buffer, std::to_string(selected_entity.GetUUID()).c_str(), sizeof(id_buffer));
+	#else
+		strncpy(id_buffer, std::to_string(selected_entity.GetUUID()).c_str(), sizeof(id_buffer));
+	#endif
+
 		id_buffer[sizeof(id_buffer) - 1] = '\0'; // Ensure null-termination
 
 		ImGui::InputText("##IDDisplay", id_buffer, sizeof(id_buffer), ImGuiInputTextFlags_ReadOnly);
@@ -621,7 +633,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			}
 
 			char asset_name_buf[256];
+			
+		#if defined(L_PLATFORM_WINDOWS)
 			strncpy_s(asset_name_buf, skybox_material_name.c_str(), sizeof(asset_name_buf));
+		#else
+			strncpy(asset_name_buf, skybox_material_name.c_str(), sizeof(asset_name_buf));
+		#endif
+
 			asset_name_buf[sizeof(asset_name_buf) - 1] = '\0'; // Ensure null-termination
 
 			ImGui::Columns(2, "skybox_columns", false);
@@ -769,7 +787,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 						std::string entity_name = entity ? entity.GetName() + " (Mesh Renderer)" : component.LOD_Elements[i].MeshRendererEntities[j] == NULL_UUID ? "(None)" : std::to_string(component.LOD_Elements[i].MeshRendererEntities[j]) + " (Invalid Entity Handle)";
 
 						char buffer[256];
-						strcpy_s(buffer, sizeof(buffer), entity_name.c_str());
+
+					#if defined(L_PLATFORM_WINDOWS)
+						strncpy_s(buffer, entity_name.c_str(), sizeof(buffer));
+					#else
+						strncpy(buffer, entity_name.c_str(), sizeof(buffer));
+					#endif
+
 						ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 						ImGui::InputText(("##" + entity_name + std::to_string(j)).c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
 
@@ -909,7 +933,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			}
 
 			char asset_name_buf[256];
-			strncpy_s(asset_name_buf, asset_mesh_name.c_str(), sizeof(asset_name_buf));
+
+			#if defined(L_PLATFORM_WINDOWS)
+				strncpy_s(asset_name_buf, asset_mesh_name.c_str(), sizeof(asset_name_buf));
+			#else
+				strncpy(asset_name_buf, asset_mesh_name.c_str(), sizeof(asset_name_buf));
+			#endif
+
 			asset_name_buf[sizeof(asset_name_buf) - 1] = '\0'; // Ensure null-termination
 
 			ImGui::Columns(2, "skinned_mesh_columns", false);
@@ -997,7 +1027,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 					}
 
 					char asset_name_buf[256];
+
+				#if defined(L_PLATFORM_WINDOWS)
 					strncpy_s(asset_name_buf, material_name.c_str(), sizeof(asset_name_buf));
+				#else
+					strncpy(asset_name_buf, material_name.c_str(), sizeof(asset_name_buf));
+				#endif
+
 					asset_name_buf[sizeof(asset_name_buf) - 1] = '\0'; // Ensure null-termination
 
 					ImGui::Text("Element %i: ", i);
@@ -1137,7 +1173,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 						std::string entity_name = bone_entity ? bone_entity.GetName() : "Invalid Entity";
 
 						char entity_name_buf[256];
+
+					#if defined(L_PLATFORM_WINDOWS)
 						strncpy_s(entity_name_buf, entity_name.c_str(), sizeof(entity_name_buf));
+					#else
+						strncpy(entity_name_buf, entity_name.c_str(), sizeof(entity_name_buf));
+					#endif
+
 						entity_name_buf[sizeof(entity_name_buf) - 1] = '\0'; // Ensure null-termination
 
 						ImGui::InputText(label.c_str(), entity_name_buf, sizeof(entity_name_buf), ImGuiInputTextFlags_ReadOnly);
@@ -1204,7 +1246,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 						std::string label = "##SkeletonReference" + skeleton_asset_name;
 
 						char skeleton_asset_name_buf[256];
+
+					#if defined(L_PLATFORM_WINDOWS)
 						strncpy_s(skeleton_asset_name_buf, skeleton_asset_name.c_str(), sizeof(skeleton_asset_name_buf));
+					#else
+						strncpy(skeleton_asset_name_buf, skeleton_asset_name.c_str(), sizeof(skeleton_asset_name_buf));
+					#endif
+
 						skeleton_asset_name_buf[sizeof(skeleton_asset_name_buf) - 1] = '\0'; // Ensure null-termination
 
 						ImGui::InputText(label.c_str(), skeleton_asset_name_buf, sizeof(skeleton_asset_name_buf), ImGuiInputTextFlags_ReadOnly);
@@ -1394,7 +1442,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 						ImGui::PushItemWidth(availableWidth);
 
 						char entity_name_buf[256];
+
+					#if defined(L_PLATFORM_WINDOWS)
 						strncpy_s(entity_name_buf, animation_names[i], sizeof(entity_name_buf));
+					#else
+						strncpy(entity_name_buf, animation_names[i], sizeof(entity_name_buf));
+					#endif
+
 						entity_name_buf[sizeof(entity_name_buf) - 1] = '\0'; // Ensure null-termination
 
 						std::string label = "##AnimationName" + std::string(animation_names[i]);
@@ -1492,7 +1546,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 			}
 
 			char asset_name_buf[256];
+
+		#if defined(L_PLATFORM_WINDOWS)
 			strncpy_s(asset_name_buf, mesh_filter_name.c_str(), sizeof(asset_name_buf));
+		#else
+			strncpy(asset_name_buf, mesh_filter_name.c_str(), sizeof(asset_name_buf));
+		#endif
+
 			asset_name_buf[sizeof(asset_name_buf) - 1] = '\0'; // Ensure null-termination
 
 			ImGui::Columns(2, "mesh_filter_columns", false);
@@ -1628,7 +1688,13 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 					}
 
 					char asset_name_buf[256];
+
+				#if defined(L_PLATFORM_WINDOWS)
 					strncpy_s(asset_name_buf, material_name.c_str(), sizeof(asset_name_buf));
+				#else
+					strncpy(asset_name_buf, material_name.c_str(), sizeof(asset_name_buf));
+				#endif
+
 					asset_name_buf[sizeof(asset_name_buf) - 1] = '\0'; // Ensure null-termination
 
 					ImGui::Text("Element %i: ", i);
@@ -2791,7 +2857,12 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 						if (!instance->GetFieldValue<const char*>(field.name, data)) data = "";
 
 						static char buffer[256];
+
+					#if defined(L_PLATFORM_WINDOWS)
 						strncpy_s(buffer, data, sizeof(buffer) - 1);
+					#else
+						strncpy(buffer, data, sizeof(buffer) - 1);
+					#endif
 
 						if (ImGui::InputText(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), buffer, sizeof(buffer)))
 						{
@@ -3196,7 +3267,13 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 						std::string text = (scene_ref->HasEntityByUUID(data)) ? scene_ref->FindEntityByUUID(data).GetName().c_str() : ("None (" + std::string(ScriptUtils::FieldTypeToString(field.type)) + ")");
 
 						char buffer[256];
-						strcpy_s(buffer, sizeof(buffer), text.c_str());
+
+					#if defined(L_PLATFORM_WINDOWS)
+						strncpy_s(buffer, text.c_str()), sizeof(buffer);
+					#else
+						strncpy(buffer, text.c_str(), sizeof(buffer));
+					#endif
+
 						ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
 
 						if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
@@ -3245,7 +3322,13 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 						std::string text = (meta_data.AssetName != "") ? meta_data.AssetName + " (" + ScriptUtils::FieldTypeToString(field.type) +")" : "None(" + ScriptUtils::FieldTypeToString(field.type) + ")";
 
 						char buffer[256];
-						strcpy_s(buffer, sizeof(buffer), text.c_str());
+
+					#if defined(L_PLATFORM_WINDOWS)
+						strncpy_s(buffer, text.c_str(), sizeof(buffer));
+					#else
+						strncpy(buffer, text.c_str(), sizeof(buffer));
+					#endif
+
 						ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
 
 						if (ImGui::BeginDragDropTarget()) 
@@ -3493,7 +3576,12 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					const char* data = script_field_instance_exists ? script_field->GetCStringValue() : script_field_default_value_exists ? script_default_value_field->GetCStringValue() : "";
 
 					static char buffer[256];
+
+				#if defined(L_PLATFORM_WINDOWS)
 					strncpy_s(buffer, data, sizeof(buffer) - 1);
+				#else
+					strncpy(buffer, data, sizeof(buffer) - 1);
+				#endif
 
 					if (ImGui::InputText(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), buffer, sizeof(buffer)))
 					{
@@ -3911,7 +3999,13 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					std::string text = (scene_ref->HasEntityByUUID(data)) ? scene_ref->FindEntityByUUID(data).GetName().c_str() : ("None (" + std::string(ScriptUtils::FieldTypeToString(field.type)) + ")");
 
 					char buffer[256];
-					strcpy_s(buffer, sizeof(buffer), text.c_str());
+
+				#if defined(L_PLATFORM_WINDOWS)
+					strncpy_s(buffer, text.c_str(), sizeof(buffer));
+				#else
+					strncpy(buffer, text.c_str(), sizeof(buffer));
+				#endif
+
 					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
 
 					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
@@ -3961,7 +4055,13 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					std::string text = (meta_data.AssetName != "") ? meta_data.AssetName + " (" + ScriptUtils::FieldTypeToString(field.type) + ")" : "None(" + ScriptUtils::FieldTypeToString(field.type) + ")";
 
 					char buffer[256];
-					strcpy_s(buffer, sizeof(buffer), text.c_str());
+
+				#if defined(L_PLATFORM_WINDOWS)
+					strncpy_s(buffer, text.c_str(), sizeof(buffer));
+				#else
+					strncpy(buffer, text.c_str(), sizeof(buffer));
+				#endif
+
 					ImGui::InputText(label.c_str(), buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
 
 					if (ImGui::BeginDragDropTarget())

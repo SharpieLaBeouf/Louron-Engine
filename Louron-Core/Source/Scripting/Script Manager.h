@@ -12,14 +12,13 @@
 #include <filesystem>
 #include <unordered_map>
 
-#ifdef L_PLATFORM_WINDOWS
+#if defined(L_PLATFORM_WINDOWS)
 #include <Windows.h>
-#else
+#elif defined(L_PLATFORM_LINUX)
 #include <dlfcn.h>
 #endif
 
 // External Vendor Library Headers
-
 
 namespace Louron
 {
@@ -84,7 +83,12 @@ namespace Louron
         // KEY = uuid + script_name, VALUE = script field map
         std::unordered_map<std::string, ScriptFieldMap> m_ScriptFieldInstances;
 
-        HMODULE m_DLL = nullptr;
+    #if defined(L_PLATFORM_WINDOWS)
+        HMODULE m_Assembly = nullptr;
+    #else
+        void* m_Assembly = nullptr;
+    #endif
+
         void (*m_LoadScripts)() = nullptr;
         const ScriptClass* (*m_GetScriptTypes)(size_t*) = nullptr;
 

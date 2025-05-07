@@ -17,7 +17,6 @@
 
 namespace Louron {
 
-
     // Structure to store a log entry's details.
     struct LogEntry {
         std::string text;

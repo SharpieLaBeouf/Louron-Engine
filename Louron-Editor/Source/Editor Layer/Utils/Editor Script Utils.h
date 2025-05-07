@@ -4,22 +4,23 @@
 
 #include <fstream>
 
+
+#if defined(L_PLATFORM_WINDOWS)
 #include "clang-c/Index.h"
+#endif
 
 #ifdef L_PLATFORM_WINDOWS
 #define CLANG_EXECUTABLE "Resources\\Compiler\\clang++.exe"
 #define SHARED_FLAG "-shared"
 #define PIC_FLAG "" // MSVC doesn't need -fPIC
 #else
-#define CLANG_EXECUTABLE "./vendor/tools/clang++"
+#define CLANG_EXECUTABLE "Resources/Compiler/clang++_linux"
 #define SHARED_FLAG "-shared"
 #define PIC_FLAG "-fPIC"
 #endif
 
-
 namespace Utils 
 {
-
 
 	class ScriptReflectionGenerator 
 	{
@@ -53,6 +54,8 @@ namespace Utils
 
 		std::filesystem::path current_header_file_path = {};
 
+		#if defined(L_PLATFORM_WINDOWS)
+
 		bool HasExposedAttribute(CXCursor cursor);
 
 		static CXChildVisitResult ClassVisitor(CXCursor cursor, CXCursor parent, CXClientData clientData);
@@ -60,6 +63,8 @@ namespace Utils
 		static CXChildVisitResult TUVisitor(CXCursor cursor, CXCursor parent, CXClientData clientData);
 
 		void ParseHeader(const std::filesystem::path& path, const std::filesystem::path& absolute_file_path_engine_api);
+
+		#endif
 
 		void WriteReflectionFile();
 
@@ -273,7 +278,13 @@ namespace Utils
 			ImGui::NextColumn();
 
 			char buf[256];
+
+		#if defined(L_PLATFORM_WINDOWS)
 			strncpy_s(buf, new_script_path.string().c_str(), sizeof(buf));
+		#else
+			strncpy(buf, new_script_path.string().c_str(), sizeof(buf));
+		#endif
+		
 			ImGui::InputText("##Folder Path", buf, sizeof(buf));
 			new_script_path = buf;
 

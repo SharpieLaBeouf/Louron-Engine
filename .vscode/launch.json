@@ -27,6 +27,48 @@
             "environment": [],
             "console": "integratedTerminal",
             "preLaunchTask": "build LouronEditor-Win-Release"
+        },
+        {
+            "name": "(Linux) Launch LouronEditor-Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Build/Debug/bin/LouronEditor",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/Louron-Editor",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build LouronEditor-Linux-Debug"
+        },
+        {
+            "name": "(Linux) Launch LouronEditor-Release",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Build/Release/bin/LouronEditor",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/Louron-Editor",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build LouronEditor-Linux-Release"
         }
     ]
 }

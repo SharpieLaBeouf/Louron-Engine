@@ -3,6 +3,7 @@
 // Louron Core Headers
 #include "Engine.h"
 #include "Logging.h"
+#include "Platform.h"
 
 // C++ Standard Library Headers
 
@@ -29,21 +30,21 @@ namespace Louron {
 	}
 }
 
-#if _DEBUG
-
-#pragma comment(linker, "/subsystem:console")
-int main(int argc, char** argv) {
-
-	return Louron::Main_Entry(argc, argv);
-}
-
-#else
+#if !defined(_DEBUG) && defined(L_PLATFORM_WINDOWS)
 
 #include <Windows.h>
 #pragma comment(linker, "/subsystem:windows")
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) 
 {
 	return Louron::Main_Entry(__argc, __argv);
+}
+
+#else
+
+#pragma comment(linker, "/subsystem:console")
+int main(int argc, char** argv) {
+
+	return Louron::Main_Entry(argc, argv);
 }
 
 #endif

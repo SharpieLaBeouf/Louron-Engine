@@ -1,2 +1,2 @@
-cd ../../Build/Release
+cd ../../Build/Debug
 cmake --build . -- -j$(nproc)

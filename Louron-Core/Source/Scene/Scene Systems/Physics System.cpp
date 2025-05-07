@@ -62,7 +62,7 @@ namespace Louron {
 		// 2. Check Parent(s) for Rigidbody
 		if (collider.CheckFlag(ColliderFlag_RigidbodyUpdated)) {
 
-			if (auto rb_ref = collider.GetComponentInParent<RigidbodyComponent>(); rb_ref.GetActor() && *rb_ref.GetActor()) {
+			if (auto rb_ref = collider.template GetComponentInParent<RigidbodyComponent>(); rb_ref.GetActor() && *rb_ref.GetActor()) { // ERROR HERE
 
 				// Remove Collider from Previous Rigidbody
 				if (auto old_rb_ref = collider.GetShape()->GetRigidbody(); old_rb_ref && *old_rb_ref)

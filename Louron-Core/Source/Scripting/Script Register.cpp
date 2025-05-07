@@ -10,9 +10,19 @@
 namespace Louron
 {
 
-    bool ScriptRegister::RegisterAll(HMODULE script_assembly)
+    bool ScriptRegister::RegisterAll(void* script_assembly)
     {
+
+    #if defined(L_PLATFORM_WINDOWS)
+        
         auto register_function = (RegisterHostFunctionFn)GetProcAddress(script_assembly, "RegisterHostFunction");
+    
+    #elif defined(L_PLATFORM_LINUX)
+    
+        auto register_function = (RegisterHostFunctionFn)dlsym(script_assembly, "RegisterHostFunction");
+        
+    #endif
+
         if (!register_function)
         {
             L_CORE_ERROR("Could Not Find RegisterHostFunction in ScriptDLL.");

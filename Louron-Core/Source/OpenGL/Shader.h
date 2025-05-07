@@ -5,6 +5,7 @@
 
 // C++ Standard Library Headers
 #include <string>
+#include <vector>
 #include <unordered_map>
 #include <filesystem>
 

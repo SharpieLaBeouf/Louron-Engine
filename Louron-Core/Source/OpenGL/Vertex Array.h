@@ -55,7 +55,7 @@ namespace Louron {
 		IndexBuffer* GetIndexBuffer() const { return m_IndexBuffer; }
 
 	private:
-		GLuint m_VAO = NULL;
+		GLuint m_VAO = -1;
 		GLuint m_VertexBufferIndex = 0;
 
 		IndexBuffer* m_IndexBuffer = nullptr;

@@ -22,7 +22,7 @@ namespace Louron
 
         using RegisterHostFunctionFn = void(*)(const char* name, void* fn);
 
-        static bool RegisterAll(HMODULE script_assembly);
+        static bool RegisterAll(void* script_assembly);
 
     private:
 

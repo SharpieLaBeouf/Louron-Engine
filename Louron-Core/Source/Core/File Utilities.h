@@ -3,17 +3,26 @@
 #include "Engine.h"
 
 #include <string>
-#include <shlobj.h>
-#include <atlstr.h>
-#include <commdlg.h>
 
 #include <glad/glad.h>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+#if defined(L_PLATFORM_WINDOWS)
+
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
+
+#include <shlobj.h>
+#include <atlstr.h>
+#include <commdlg.h>
+
+#elif defined(L_PLATFORM_LINUX)
+
+#include "tinyfiledialogs.h"
+
+#endif
 
 namespace Louron {
 
@@ -22,6 +31,9 @@ namespace Louron {
 
 		static std::string OpenFile(const char* filter, const std::filesystem::path& initialDir = "")
 		{
+
+        #if defined(L_PLATFORM_WINDOWS)
+
             OPENFILENAMEA ofn;
             CHAR szFile[260] = { 0 };
             ZeroMemory(&ofn, sizeof(OPENFILENAME));
@@ -65,10 +77,24 @@ namespace Louron {
 
             return std::string();
 
+        #elif defined (L_PLATFORM_LINUX)
+
+            const char* path = tinyfd_openFileDialog("Open File", initialDir.empty() ? nullptr : initialDir.string().c_str(), 0, nullptr, nullptr, 0);
+            return path ? std::string(path) : std::string();
+
+        #else
+
+            return "";
+            
+        #endif
+
 		}
 
 		static std::string OpenDirectory()
         {
+
+        #if defined(L_PLATFORM_WINDOWS)
+
             // Initialize COM
             CoInitialize(NULL);
 
@@ -130,10 +156,25 @@ namespace Louron {
             CoUninitialize();
 
             return strFolderPath; // Return the selected folder path
+
+        #elif defined (L_PLATFORM_LINUX)
+
+            const char* path = tinyfd_selectFolderDialog("Select Folder", nullptr);
+            return path ? std::string(path) : std::string();
+
+        #else
+
+            return "";
+
+        #endif
+
         }
 
         static std::string SaveFile(const char* filter, const std::filesystem::path& initialDir = "")
         {
+
+        #if defined(L_PLATFORM_WINDOWS)
+
             OPENFILENAMEA ofn;
             CHAR szFile[260] = { 0 };
             ZeroMemory(&ofn, sizeof(OPENFILENAME));
@@ -179,6 +220,18 @@ namespace Louron {
                 return ofn.lpstrFile;
 
             return std::string();
+
+        #elif defined(L_PLATFORM_LINUX)
+
+            const char* path = tinyfd_saveFileDialog("Save File", initialDir.empty() ? nullptr : initialDir.string().c_str(), 0, nullptr, nullptr);
+            return path ? std::string(path) : std::string();
+
+        #else
+
+            return "";
+
+        #endif
+
 		}
 
         static bool IsPathHidden(const std::filesystem::path& p)

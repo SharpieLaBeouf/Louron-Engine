@@ -11,7 +11,6 @@
 
 // External Vendor Library Headers
 
-
 namespace Louron
 {
 	ScriptManager* ScriptManager::s_Instance = nullptr;
@@ -65,9 +64,9 @@ namespace Louron
 
     std::shared_ptr<ScriptClass> ScriptManager::GetScriptClass(const std::string& name)
     {
-        if (!m_DLL)
+        if (!m_Assembly)
         {
-            L_CORE_ERROR("Script DLL Not Loaded.");
+            L_CORE_ERROR("Script Assembly Not Loaded.");
             return nullptr;
         }
 
@@ -457,22 +456,41 @@ namespace Louron
 
     bool ScriptManager::LoadAssembly(const std::filesystem::path& path)
     {
-        m_DLL = LoadLibraryA(path.string().c_str());
-        if (!m_DLL)
+    
+    #if defined(L_PLATFORM_WINDOWS)
+
+        m_Assembly = LoadLibraryA(path.string().c_str());
+
+    #elif defined(L_PLATFORM_LINUX)
+
+        m_Assembly = dlopen(path.string().c_str(), RTLD_NOW);
+
+    #endif
+
+        if (!m_Assembly)
         {
-            L_CORE_ERROR("Failed to Load DLL: {}", path.string());
+            L_CORE_ERROR("Failed to Load Assembly: {}", path.string());
             return false;
         }
 
-        m_LoadScripts = (void(*)())GetProcAddress(m_DLL, "LoadScripts");
-        m_GetScriptTypes = (const ScriptClass * (*)(size_t*))GetProcAddress(m_DLL, "GetScriptTypes");
+    #if defined(L_PLATFORM_WINDOWS)
 
-        if (!ScriptRegister::RegisterAll(m_DLL))
+        m_LoadScripts = (void(*)())GetProcAddress(m_Assembly, "LoadScripts");
+        m_GetScriptTypes = (const ScriptClass * (*)(size_t*))GetProcAddress(m_Assembly, "GetScriptTypes");
+
+    #elif defined(L_PLATFORM_LINUX)
+
+        m_LoadScripts = reinterpret_cast<void(*)()>(dlsym(m_Assembly, "LoadScripts"));
+        m_GetScriptTypes = reinterpret_cast<const ScriptClass* (*)(size_t*)>(dlsym(m_Assembly, "GetScriptTypes"));
+    
+    #endif
+
+        if (!ScriptRegister::RegisterAll(m_Assembly))
             return false;
 
         if (!m_LoadScripts || !m_GetScriptTypes)
         {
-            L_CORE_ERROR("Missing Expected Exports in DLL");
+            L_CORE_ERROR("Missing Expected Exports in Assembly");
             return false;
         }
 
@@ -522,7 +540,7 @@ namespace Louron
 
     void ScriptManager::FreeAssembly()
     {
-        if (!m_DLL) return;
+        if (!m_Assembly) return;
 
         m_ScriptClasses.clear();
         m_ScriptInstances.clear();
@@ -530,8 +548,17 @@ namespace Louron
         m_LoadScripts = nullptr;
         m_GetScriptTypes = nullptr;
 
-        FreeLibrary(m_DLL);
-        m_DLL = nullptr;
+    #if defined(L_PLATFORM_WINDOWS)
+
+        FreeLibrary(m_Assembly);
+
+    #elif defined(L_PLATFORM_LINUX)
+    
+        dlclose(m_Assembly);
+
+    #endif
+
+        m_Assembly = nullptr;
     }
 
     bool ScriptManager::CreateInstance(uint32_t entity_uuid, const std::string& script_name)

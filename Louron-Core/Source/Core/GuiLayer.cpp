@@ -11,7 +11,7 @@
 #include <glad/glad.h>
 
 #define GLFW_INCLUDE_NONE
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -161,7 +161,7 @@ namespace Louron {
 
 	uint32_t GuiLayer::GetActiveWidgetID() const
 	{
-		return GImGui->ActiveId;
+		return static_cast<uint32_t>(GImGui->ActiveId);
 	}
 
 }

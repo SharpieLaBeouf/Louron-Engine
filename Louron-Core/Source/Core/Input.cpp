@@ -36,7 +36,7 @@ namespace Louron {
 	}
 
 	void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-		InputManager::m_ScrollX += xoffset; // Accumulate scroll offsets
+		InputManager::m_ScrollX += xoffset;
 		InputManager::m_ScrollY += yoffset;
 
 		ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);

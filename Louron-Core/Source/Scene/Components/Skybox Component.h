@@ -11,8 +11,11 @@
 
 // External Vendor Library Headers
 
-class YAML::Emitter;
-class YAML::Node;
+namespace YAML
+{
+	class Emitter;
+	class Node;
+}
 
 namespace Louron 
 {

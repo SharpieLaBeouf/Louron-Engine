@@ -436,7 +436,13 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 						static char buf[256]{};
 
 						if (first_focus) {
-							strcpy_s(buf, sizeof(buf), new_path_file_name.c_str());
+
+							#if defined(L_PLATFORM_WINDOWS)
+								strncpy_s(buf, sizeof(buf), new_path_file_name.c_str());
+							#else
+								strncpy(buf, new_path_file_name.c_str(), sizeof(buf));
+							#endif
+							
 						}
 						ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 						if (ImGui::InputText("##RenamingInputText", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll)) {

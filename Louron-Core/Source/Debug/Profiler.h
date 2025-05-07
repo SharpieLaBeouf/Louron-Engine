@@ -91,7 +91,7 @@ namespace Louron {
 	private:
 
 		const char* m_Name;
-		std::chrono::time_point<std::chrono::steady_clock> m_TimerStart;
+		std::chrono::time_point<std::chrono::high_resolution_clock> m_TimerStart;
 		bool m_Stopped;
 		bool m_Accumulative;
 	};

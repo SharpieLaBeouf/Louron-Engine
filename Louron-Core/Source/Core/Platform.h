@@ -22,7 +22,6 @@
 
 	#elif defined(__linux__)
 
-		#error "Linux is not supported!"
 		#define L_PLATFORM_LINUX
 
 	#else

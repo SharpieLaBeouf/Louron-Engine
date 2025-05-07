@@ -8,7 +8,7 @@
 
 // External Vendor Library Headers
 #define GLFW_INCLUDE_NONE
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 
@@ -52,10 +52,10 @@ namespace Louron {
 		static double m_MouseX, m_MouseY;
 		static double m_ScrollX, m_ScrollY;
 
-		friend static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-		friend static void mouseCallback(GLFWwindow* window, int button, int action, int mods);
-		friend static void scrollCallback(GLFWwindow* window, double xpos, double ypos);
-		friend static void cursorCallback(GLFWwindow* window, double xpos, double ypos);
+		friend void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		friend void mouseCallback(GLFWwindow* window, int button, int action, int mods);
+		friend void scrollCallback(GLFWwindow* window, double xpos, double ypos);
+		friend void cursorCallback(GLFWwindow* window, double xpos, double ypos);
 
 		void ResetScroll();
 

@@ -17,8 +17,11 @@
 
 using namespace physx;
 
-class YAML::Emitter;
-class YAML::Node;
+namespace YAML
+{
+	class Emitter;
+	class Node;
+}
 
 namespace Louron {
 

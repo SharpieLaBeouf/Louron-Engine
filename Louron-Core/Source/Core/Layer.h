@@ -4,6 +4,7 @@
 
 // C++ Standard Library Headers
 #include <string>
+#include <cstdint>
 
 // External Vendor Library Headers
 

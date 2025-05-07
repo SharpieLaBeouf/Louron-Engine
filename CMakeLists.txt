@@ -181,7 +181,16 @@ message("-- libclang Binary Location: ${LIBCLANG_LIB_DIR}")
 if(WIN32)
     set(LIBCLANG_LIB_PATH "${LIBCLANG_LIB_DIR}/libclang.lib")
 else()
-    set(LIBCLANG_LIB_PATH "${LIBCLANG_LIB_DIR}/libclang.so")
+    # set(LIBCLANG_LIB_PATH "${LIBCLANG_LIB_DIR}/libclang.so")
+endif()
+
+# ---------------------------------------------------------------------------
+# External: tinyfiledialogs (Linux-only)
+# ---------------------------------------------------------------------------
+if(UNIX AND NOT APPLE) # Linux only
+    add_library(tinyfiledialogs STATIC External/tinyfiledialogs/tinyfiledialogs.c)
+    target_include_directories(tinyfiledialogs PUBLIC External/tinyfiledialogs)
+    set_target_properties(tinyfiledialogs PROPERTIES FOLDER "External/tinyfiledialogs")
 endif()
 
 # Projects

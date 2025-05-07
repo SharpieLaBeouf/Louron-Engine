@@ -9,6 +9,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/string_cast.hpp>
+
+#include <imgui.h>
 #include <imgui_internal.h>
 #include <ImGuizmo.h>
 
@@ -555,8 +557,14 @@ void LouronEditorLayer::OnGuiRender() {
 			// Input fields
 			char projectNameBuffer[256];
 			char folderPathBuffer[512];
+
+		#if defined(L_PLATFORM_WINDOWS)
 			strncpy_s(projectNameBuffer, s_NewProjectName.c_str(), sizeof(projectNameBuffer));
 			strncpy_s(folderPathBuffer, std::filesystem::path(s_NewFolderPath / s_NewProjectName).string().c_str(), sizeof(folderPathBuffer));
+		#else
+			strncpy(projectNameBuffer, s_NewProjectName.c_str(), sizeof(projectNameBuffer));
+			strncpy(folderPathBuffer, std::filesystem::path(s_NewFolderPath / s_NewProjectName).string().c_str(), sizeof(folderPathBuffer));
+		#endif
 
 			float first_coloumn_width = ImGui::CalcTextSize("Project Name").x + 10.0f;
 
@@ -680,7 +688,12 @@ void LouronEditorLayer::OnGuiRender() {
 
 			// Input fields
 			char sceneNameBuffer[256];
+
+		#if defined(L_PLATFORM_WINDOWS)
 			strncpy_s(sceneNameBuffer, s_NewSceneName.c_str(), sizeof(sceneNameBuffer));
+		#else
+			strncpy(sceneNameBuffer, s_NewSceneName.c_str(), sizeof(sceneNameBuffer));
+		#endif
 
 			float first_coloumn_width = ImGui::CalcTextSize("Scene Name").x + 10.0f;
 
@@ -1270,7 +1283,13 @@ void LouronEditorLayer::DisplayMaterialPropertiesWindow()
 				ImGui::NextColumn();
 
 				char buf[256];
+
+			#if defined(L_PLATFORM_WINDOWS)
 				strncpy_s(buf, material_ref->GetName().c_str(), sizeof(buf));
+			#else
+				strncpy(buf, material_ref->GetName().c_str(), sizeof(buf));
+			#endif
+
 				buf[sizeof(buf) - 1] = '\0'; // Ensure null-termination
 
 				if (ImGui::InputText("##MaterialName", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue))
@@ -1321,7 +1340,12 @@ void LouronEditorLayer::DisplayMaterialPropertiesWindow()
 					shader_name = "No Shader";
 				}
 
+			#if defined(L_PLATFORM_WINDOWS)
 				strncpy_s(buf, shader_name.c_str(), sizeof(buf));
+			#else
+				strncpy(buf, shader_name.c_str(), sizeof(buf));
+			#endif
+
 				buf[sizeof(buf) - 1] = '\0'; // Ensure null-termination
 
 				ImGui::InputText("##ShaderName", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
@@ -2176,8 +2200,14 @@ void LouronEditorLayer::DisplayProfilerWindow() {
 					continue;
 
 				char label[128];
+
+			#if defined(L_PLATFORM_WINDOWS)
 				strcpy_s(label, result.second.Name);
 				strcat_s(label, " %.3fms");
+			#else
+				strcpy(label, result.second.Name);
+				strcat(label, " %.3fms");
+			#endif
 
 				ImGui::Text(label, result.second.Time);
 			}
@@ -2635,7 +2665,13 @@ void LouronEditorLayer::DisplayProjectProperties() {
 		ImGui::SetNextItemWidth(-1.0f);
 
 		char buf[256];
+			
+	#if defined(L_PLATFORM_WINDOWS)
 		strcpy_s(buf, project->GetConfig().Name.c_str());
+	#else
+		strcpy(buf, project->GetConfig().Name.c_str());
+	#endif
+
 		ImGui::InputText("##ProjectName", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
 
 		ImGui::NextColumn();
@@ -2643,7 +2679,12 @@ void LouronEditorLayer::DisplayProjectProperties() {
 		ImGui::Text("Start Scene");
 		ImGui::NextColumn();
 
+	#if defined(L_PLATFORM_WINDOWS)
 		strcpy_s(buf, project->GetConfig().StartScene.stem().string().c_str());
+	#else
+		strcpy(buf, project->GetConfig().StartScene.stem().string().c_str());
+	#endif
+
 		ImGui::InputText("##ProjectStartScene", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
 		ImGui::SameLine();
 		if (ImGui::Button("...")) {
@@ -2697,7 +2738,13 @@ void LouronEditorLayer::DisplaySceneProperties() {
 		ImGui::SetNextItemWidth(-1.0f);
 
 		char buf[256];
+
+	#if defined(L_PLATFORM_WINDOWS)
 		strcpy_s(buf, scene_config.Name.c_str());
+	#else
+		strcpy(buf, scene_config.Name.c_str());
+	#endif
+
 		ImGui::InputText("##SceneName", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
 
 		ImGui::NextColumn();
@@ -2708,7 +2755,12 @@ void LouronEditorLayer::DisplaySceneProperties() {
 
 		std::string buf_string = (scene_config.ScenePipelineType == L_RENDER_PIPELINE::FORWARD) ? "Forward" : (scene_config.ScenePipelineType == L_RENDER_PIPELINE::FORWARD_PLUS) ? "Forward Plus" : "Deferred";
 
+	#if defined(L_PLATFORM_WINDOWS)
 		strcpy_s(buf, buf_string.c_str());
+	#else
+		strcpy(buf, buf_string.c_str());
+	#endif
+
 		ImGui::InputText("##ScenePipeline", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
 
 		ImGui::Columns(1);

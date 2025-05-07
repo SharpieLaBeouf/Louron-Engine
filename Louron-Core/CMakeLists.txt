@@ -31,8 +31,13 @@ target_include_directories(LouronCore
         ${PROJECT_SOURCE_DIR}/External/glm/glm
         ${PROJECT_SOURCE_DIR}/External/stb
         ${PROJECT_SOURCE_DIR}/External/yaml-cpp/include
+        ${PROJECT_SOURCE_DIR}/External/tinyfiledialogs
         ${LIBCLANG_INCLUDE_DIR}
 )
+
+if(UNIX AND NOT APPLE)
+    target_link_libraries(LouronCore PUBLIC tinyfiledialogs)
+endif()
 
 target_link_libraries(LouronCore
     PUBLIC

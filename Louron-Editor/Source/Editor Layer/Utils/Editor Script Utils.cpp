@@ -1,5 +1,8 @@
 #include "Editor Script Utils.h"
 
+#include <string>
+#include <algorithm>
+
 namespace Utils
 {
 
@@ -16,12 +19,18 @@ namespace Utils
             {
 				L_APP_INFO("Parsing Header File: {}", entry.path().string());
                 current_header_file_path = entry.path();
+
+                #if defined(L_PLATFORM_WINDOWS)
                 ParseHeader(entry.path().string(), absolute_file_path_engine_api);
+                #endif
+                
             }
         }
 
         WriteReflectionFile();
     }
+
+    #if defined(L_PLATFORM_WINDOWS)
 
     bool ScriptReflectionGenerator::HasExposedAttribute(CXCursor cursor)
     {
@@ -184,6 +193,7 @@ namespace Utils
             std::filesystem::remove(temp_path);
     }
 
+    #endif
 
     void ScriptReflectionGenerator::WriteReflectionFile()
     {
