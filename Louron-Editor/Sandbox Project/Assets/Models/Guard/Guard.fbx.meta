@@ -1,0 +1,19 @@
+Asset Name: Guard
+Asset Handle: 775656677
+Asset Type: AssetType::ModelImport
+Asset Is Composite: true
+Asset Import Config:
+  AutoReImport: true
+  Import Position: [0, 0, 0]
+  Import Rotation: [0, 0, 0]
+  Import Scale: [1, 1, 1]
+  Import Skeleton: false
+  Import Animations: false
+  Import Materials: true
+Composite Assets:
+  - Asset Name: Guard02
+    Asset Handle: 995961984
+    Asset Type: AssetType::Mesh
+  - Asset Name: Guard_02
+    Asset Handle: 2696109393
+    Asset Type: AssetType::Material_Standard
