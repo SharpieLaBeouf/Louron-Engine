@@ -72,6 +72,11 @@ namespace Louron {
 		}
 
 		glViewport(0, 0, (GLsizei)m_Data->Width, (GLsizei)m_Data->Height);
+
+		// Clear Screen On Load to Have Blank Dark Grey Whilst Everything Else Loads
+		glClearColor(0.1568f, 0.1568f, 0.1568f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		OnUpdate();
 		
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 

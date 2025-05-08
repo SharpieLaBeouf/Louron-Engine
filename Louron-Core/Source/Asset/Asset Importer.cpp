@@ -607,7 +607,7 @@ namespace Louron {
 
 					if (std::filesystem::exists(absolute_texture_path) && std::filesystem::is_regular_file(absolute_texture_path))
 					{
-						std::filesystem::path relative_texture_path = std::filesystem::relative(absolute_texture_path, Project::GetActiveProject()->GetAssetDirectory());
+						std::filesystem::path relative_texture_path = Utils::NormalisePath(std::filesystem::relative(absolute_texture_path, Project::GetActiveProject()->GetAssetDirectory()));
 						bool is_relative_to_project = !relative_texture_path.string().starts_with("..");
 
 						texture_meta_data.AssetName = relative_texture_path.stem().string();
@@ -620,7 +620,7 @@ namespace Louron {
 
 						texture_handle = Utils::fnv1a_hash(
 							AssetUtils::AssetTypeToString(texture_meta_data.Type) + 
-							texture_meta_data.FilePath.string()
+							Utils::NormalisePath(texture_meta_data.FilePath).string()
 						);
 
 						// Check if texture file already loaded.
@@ -632,7 +632,7 @@ namespace Louron {
 					else if (auto assimp_texture_ref = ai_scene->GetEmbeddedTexture(assimp_texture_string.C_Str()))
 					{
 						texture_meta_data.AssetName = assimp_texture_string.C_Str();
-						texture_meta_data.FilePath = std::filesystem::relative(model_file_path, Project::GetActiveProject()->GetAssetDirectory());
+						texture_meta_data.FilePath = Utils::NormalisePath(std::filesystem::relative(model_file_path, Project::GetActiveProject()->GetAssetDirectory()));
 						texture_meta_data.Type = AssetType::Texture2D;
 
 						// This is an embedded texture which requires the model 
@@ -978,7 +978,7 @@ namespace Louron {
 		auto& skinned_mesh_component = model_prefab->GetComponent<SkinnedMeshComponent>(model_prefab->GetRootEntity());
 		skinned_mesh_component.SkeletonHandle = Utils::fnv1a_hash(
 			AssetUtils::AssetTypeToString(AssetType::Skeleton) + 
-			import_params.asset_meta_data.FilePath.string() + 
+			Utils::NormalisePath(import_params.asset_meta_data.FilePath).string() + 
 			first_bone_node->mName.C_Str()
 		);
 
@@ -1100,7 +1100,7 @@ namespace Louron {
 
 			AssetHandle animation_clip_handle = Utils::fnv1a_hash(
 				AssetUtils::AssetTypeToString(AssetType::AnimationClip) + 
-				import_params.asset_meta_data.FilePath.string() + 
+				Utils::NormalisePath(import_params.asset_meta_data.FilePath).string() + 
 				ai_animation->mName.C_Str()
 			);
 
