@@ -32,3 +32,17 @@ set_target_properties(LouronEditor PROPERTIES
 
 target_include_directories(LouronEditor PRIVATE "${PROJECT_SOURCE_DIR}/Louron-Core/Source")
 target_link_libraries(LouronEditor PRIVATE LouronCore)
+
+# ---------------------------------------------------------------------------
+# Always copy Native Script Core source folder before building LouronEditor
+# ---------------------------------------------------------------------------
+
+set(SCRIPT_CORE_SRC "${CMAKE_CURRENT_SOURCE_DIR}/../Louron-Native-Script-Core/Source")
+set(SCRIPT_CORE_DST "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Script Core API")
+
+add_custom_target(copy_script_core ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${SCRIPT_CORE_SRC}" "${SCRIPT_CORE_DST}"
+    COMMENT "Copying Native Script Core into Resources/Script Core API..."
+)
+
+add_dependencies(LouronEditor copy_script_core)
