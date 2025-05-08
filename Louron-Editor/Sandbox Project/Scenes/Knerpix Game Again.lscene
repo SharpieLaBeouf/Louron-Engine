@@ -32,9 +32,9 @@ Entities:
     CameraComponent:
       Camera:
         Projection Type: Perspective
-        FOV: 60.000004
-        Near: 0.01
-        Far: 1000
+        FOV: 10
+        Near: -1
+        Far: 1
       Primary: true
       DisplayToMainViewport: true
       ClearFlag: Skybox
@@ -332,7 +332,31 @@ Entities:
       Children:
         []
     ScriptComponent:
-      {}
+      Script_1:
+        Active: true
+        Script Name: GameManager
+        Fields:
+          - Name: Player_1_Prefab
+            Type: Prefab
+            Data: 2328332160
+          - Name: DeathFloorY
+            Type: Float
+            Data: -5
+          - Name: Winner_Location
+            Type: Entity
+            Data: 2400339882
+          - Name: Player_2_Prefab
+            Type: Prefab
+            Data: 170504789
+          - Name: Player_2_Spawn_Point
+            Type: Entity
+            Data: 3885195277
+          - Name: Players_Parent_Entity
+            Type: Entity
+            Data: 3601754716
+          - Name: Player_1_Spawn_Point
+            Type: Entity
+            Data: 1136546040
     TransformComponent:
       Translation: [0, 0, 0]
       Rotation: [0, 0, 0]

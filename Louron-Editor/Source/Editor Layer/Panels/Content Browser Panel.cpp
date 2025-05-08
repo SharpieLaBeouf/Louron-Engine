@@ -834,15 +834,16 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 
 }
 
-void ContentBrowserPanel::AssetFileListener::handleFileAction(efsw::WatchID watchid, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename)
+void ContentBrowserPanel::AssetFileListener::handleFileAction(efsw::WatchID watchid, const std::string& in_dir, const std::string& filename, efsw::Action action, std::string oldFilename)
 {
+	std::filesystem::path dir = Louron::Utils::NormalisePath(in_dir);
 
 	if (!Louron::AssetManager::IsExtensionSupported(std::filesystem::path(filename).extension()))
 		return;
 
 	if (action == efsw::Actions::Add) // ADDEDD OR MOVED INTO
 	{
-		std::filesystem::path new_path = dir + filename;
+		std::filesystem::path new_path = dir / filename;
 		if (m_AssetFileChanges.find(filename) != m_AssetFileChanges.end()) // Existing Asset Moved
 		{
 			std::filesystem::path& old_path = m_AssetFileChanges[filename];
@@ -891,23 +892,22 @@ void ContentBrowserPanel::AssetFileListener::handleFileAction(efsw::WatchID watc
 
 	if (action == efsw::Actions::Delete) // MOVED OR DELETED - cannot determine if deleted at this stage as it could either be moved or deleted
 	{
-		m_AssetFileChanges[filename] = std::filesystem::path(dir + filename);
+		m_AssetFileChanges[filename] = std::filesystem::path(dir / filename);
 	}
-
 
 	if (action == efsw::Actions::Modified) // MODIFIED
 	{
-		Engine::Get().SubmitToMainThread([this, dir, filename]() {
-			Project::GetStaticEditorAssetManager()->ReImportAsset(dir + filename, Project::GetActiveProject()->GetAssetDirectory());
+		Engine::Get().SubmitToMainThread([this, dir, filename]() 
+		{
+			Project::GetStaticEditorAssetManager()->ReImportAsset(dir / filename, Project::GetActiveProject()->GetAssetDirectory());
 		});
 
 	}
 
-
 	if (action == efsw::Actions::Moved) // RENAMED
 	{
-		std::filesystem::path new_path = dir + filename;
-		std::filesystem::path old_path = dir + oldFilename;
+		std::filesystem::path new_path = dir / filename;
+		std::filesystem::path old_path = dir / oldFilename;
 		std::filesystem::path meta_old_path = old_path.string() + ".meta";
 
 		if (std::filesystem::exists(meta_old_path)) // Rename old Meta Data File and Update Asset Manager Registry

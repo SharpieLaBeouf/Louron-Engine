@@ -463,25 +463,25 @@ namespace Louron
 	{
 		if (!std::filesystem::exists(asset_file_path))
 		{
-			L_CORE_WARN("Could Not Load Asset File That Does Not Exist: {}", asset_file_path.string());
+			L_CORE_WARN("Could Not Load Asset File That Does Not Exist: {}", asset_file_path.generic_string());
 			return NULL_UUID;
 		}
 
 		if (!AssetManager::IsExtensionSupported(asset_file_path.extension()))
 		{
-			L_CORE_WARN("Could Not Load UnSupported Asset File Type: {}", asset_file_path.string());
+			L_CORE_WARN("Could Not Load UnSupported Asset File Type: {}", asset_file_path.generic_string());
 			return NULL_UUID;
 		}
 
 		AssetMetaData meta_data;
 		AssetHandle handle;
 		
-		if (std::filesystem::exists(asset_file_path.string() + ".meta"))
+		if (std::filesystem::exists(asset_file_path.generic_string() + ".meta"))
 		{
 			YAML::Node data;
 			try
 			{
-				data = YAML::LoadFile(asset_file_path.string() + ".meta");
+				data = YAML::LoadFile(asset_file_path.generic_string() + ".meta");
 
 				if (data["Asset Name"])
 					meta_data.AssetName = data["Asset Name"].as<std::string>();
@@ -611,14 +611,14 @@ namespace Louron
 				m_LoadedAssets[handle] = asset;
 				m_AssetRegistry[handle] = meta_data;
 
-				SerialiseMetaDataFile(handle, meta_data, static_cast<std::filesystem::path>(asset_file_path.string() + ".meta"));
+				SerialiseMetaDataFile(handle, meta_data, static_cast<std::filesystem::path>(asset_file_path.generic_string() + ".meta"));
 			}
 			else {
 				handle = NULL_UUID;
 			}
 		}
 		else {
-			L_CORE_INFO("Asset Already Registered: {0}", meta_data.FilePath.string());
+			L_CORE_INFO("Asset Already Registered: {0}", meta_data.FilePath.generic_string());
 		}
 
 		return handle;

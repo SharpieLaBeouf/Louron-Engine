@@ -6,6 +6,7 @@ namespace Louron::Utils
     {
         std::string normalized = file_path.string();
         std::replace(normalized.begin(), normalized.end(), '\\', '/');
-        return normalized;
+
+        return std::filesystem::path(normalized).generic_string();
     }
 }

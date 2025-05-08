@@ -1,5 +1,5 @@
-Asset Name: Knerpix Ball
-Asset Handle: 2481334477
+Asset Name: Test Instanced Mesh
+Asset Handle: 1302586247
 Asset Type: AssetType::ModelImport
 Asset Is Composite: true
 Asset Import Config:
@@ -11,12 +11,12 @@ Asset Import Config:
   Import Animations: false
   Import Materials: true
 Composite Assets:
-  - Asset Name: Spike Material
-    Asset Handle: 278565327
+  - Asset Name: Material.001
+    Asset Handle: 723177154
     Asset Type: AssetType::Material_Standard
-  - Asset Name: Sphere Material
-    Asset Handle: 2609533358
+  - Asset Name: Material
+    Asset Handle: 2002845819
     Asset Type: AssetType::Material_Standard
-  - Asset Name: Sphere
-    Asset Handle: 4241833205
+  - Asset Name: Suzanne
+    Asset Handle: 3757258278
     Asset Type: AssetType::Mesh

@@ -12,22 +12,22 @@ PrefabEntities:
         Active: true
         Script Name: CollissionPush
     TransformComponent:
-      Translation: [0, 0, 0]
+      Translation: [0, 3.5942886, 0]
       Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     MeshFilterComponent:
-      MeshAssetHandle: 361062613
+      MeshAssetHandle: 4241833205
     MeshRendererComponent:
       MeshActive: true
       CastShadows: false
       MaterialAssetCount: 2
       MaterialAssetHandles:
-        - 2325616013
-        - 2353975250
+        - 1766215451
+        - 1299502695
     RigidbodyComponent:
       Mass: 1
       Drag: 0
-      AngularDrag: 0.0500000007
+      AngularDrag: 0.05
       AutomaticCentreOfMass: true
       UseGravity: true
       IsKinematic: false
@@ -37,4 +37,4 @@ PrefabEntities:
       IsTrigger: false
       Radius: 1
       Centre: [0, 0, 0]
-      MaterialProperties: [0.600000024, 0.600000024, 0]
+      MaterialProperties: [0.6, 0.6, 0]
