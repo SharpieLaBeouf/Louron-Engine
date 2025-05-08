@@ -11,8 +11,11 @@ if(ENABLE_IPO)
     set_property(TARGET LouronEditor PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
-target_compile_options(LouronEditor PUBLIC $<$<CONFIG:Release>:-O3>)
-target_compile_definitions(LouronEditor PUBLIC $<$<CONFIG:Release>:NDEBUG>)
+if(UNIX)
+    target_compile_options(LouronEditor PUBLIC $<$<CONFIG:Release>:-O3>)
+elseif(WIN32)
+    target_compile_options(LouronEditor PUBLIC $<$<CONFIG:Release>:/O2>)
+endif()
 
 set(CMAKE_CXX_STANDARD 20)
 
