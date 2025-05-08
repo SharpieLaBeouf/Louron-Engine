@@ -6,9 +6,26 @@ I started Louron Engine way way back in 2020 with an idea of having a layered sy
 
 This has evolved ALOT over the past years as I have strived to learn more about realtime renderings and C++. I transitioned from this system to an editor application, where everything was controlled through an application that had entity hierarchies, property panels, serialisation of scene states, etc., but all the data of the game state was held in the internal engine, the editor was simply a means of manipulating this data... Like every 'normal' game engine design.
 
-It is still currently just a MSVC solution that utilises C++20. I will be looking to change this to a CMAKE system, but right now is not a priority to my goals/learning.
+This engine utilises OpenGL 4.6 and C++20.
 
-This engine utilises OpenGL 4.5 and C++20.
+## Building
+
+To build you must ensure you have CMAKE and a compiler that works! 
+
+Clone the repository recursively, open a terminal in the root of the repo, and enter the following commands.
+```
+cd ./Tools/{windows/linux}
+
+./configure.{bat/sh}
+
+./build{_debug}.{bat/sh}
+
+./run{_debug}.{bat.sh}
+```
+
+If you use Visual Studio Code, you can use the pre-created `launch.json` launch configurations. 
+
+E.g., `(Windows) Launch LouronEditor-Debug` launch configuration will automatically build and launch a debug build on Windows of the application.  
 
 ## Features
 
@@ -55,6 +72,9 @@ At this point there are an array of features utilised in this project:
 - Simple Animations - can load animations and play them back during runtime (WIP)
 - Multiple render targets - e.g., multiple cameras with different viewports may render the scene
 - Thread pool job system (WIP: need to implement use of local queues, and add yielding to jobs)
+- CMAKE system!
+- Git submodules!
+- Linux Support! Sort of... Still a WIP ironing out all the kinks
 
 ## Goals
 
@@ -72,8 +92,6 @@ There is no doubt this can make a game at its current state, but it would most l
 - Animation system
   - Root Motion - motion of entity controlled through animation
   - Animation Graph - state machines, transitions, and blend trees + GUI Node Editing
-- CMAKE or PREMAKE system
-- Linux Support
 - Physics Cast Ray functionality
 - Geometry sorting abstraction - separate all scene management and partitioning into separate abstraction/class
 - Thorough documentation
@@ -83,19 +101,20 @@ There is no doubt this can make a game at its current state, but it would most l
 - Refraction
 
 ## Dependencies
-- GLFW
-- GLAD
-- PhysX
-- STB Image & STB Resize
 - Assimp
-- Spdlog
-- Yaml-cpp
-- ESFW - file watch
-- ImGui
-- ImGuizmo
-- Miniaudio
-- ENTT
+- Efsw
+- EnTT
+- GLAD
+- GLFW
 - GLM
+- imgui
+- imguizmo
+- miniaudio
+- PhysX
+- spdlog
+- stb
+- tinyfiledialogs
+- yaml-cpp
 - clang-c / libclang
 
 ## Acknowledgements
