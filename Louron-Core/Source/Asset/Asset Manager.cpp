@@ -17,7 +17,16 @@
 #endif
 #include <yaml-cpp/yaml.h>
 
-namespace Louron {
+namespace Louron 
+{
+
+	uint32_t Utils::fnv1a_hash(const std::string &str)
+	{
+		uint32_t hash = 2166136261u;
+		for (char c : str)
+			hash ^= static_cast<uint8_t>(c), hash *= 16777619u;
+		return hash;
+	}
 
 	#pragma region Asset Manager Static API
 
@@ -438,9 +447,11 @@ namespace Louron {
 
 	void EditorAssetManager::ReImportCustomAsset(const std::filesystem::path& asset_file_path)
 	{
-		AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-			AssetUtils::AssetTypeToString(AssetManager::GetAssetTypeFromFileExtension(asset_file_path.extension())) + "InBuiltAsset" + asset_file_path.stem().string()
-		));
+		AssetHandle handle = Utils::fnv1a_hash(
+			AssetUtils::AssetTypeToString(AssetManager::GetAssetTypeFromFileExtension(asset_file_path.extension())) + 
+			"InBuiltAsset" + 
+			asset_file_path.stem().string()
+		);
 
 		AssetMetaData meta_data = GetMetadata(handle);
 
@@ -827,9 +838,11 @@ namespace Louron {
 
 	std::shared_ptr<Shader> EditorAssetManager::GetInbuiltShader(const std::string& default_shader_name, bool is_compute)
 	{
-		AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-			AssetUtils::AssetTypeToString(AssetType::Shader) + "InBuiltAsset" + default_shader_name
-		));
+		AssetHandle handle = Utils::fnv1a_hash(
+			AssetUtils::AssetTypeToString(AssetType::Shader) + 
+			"InBuiltAsset" + 
+			default_shader_name
+		);
 
 		return static_pointer_cast<Shader>(LoadAsset(handle));
 	}
@@ -839,6 +852,7 @@ namespace Louron {
 		AssetMetaData meta_data;
 		meta_data.IsCustomAsset = true;
 
+		// SHADERS
 		for (const auto& entry : std::filesystem::recursive_directory_iterator("Resources/Shaders/"))
 		{
 			if (!AssetManager::IsExtensionSupported(entry.path().extension()))
@@ -853,13 +867,16 @@ namespace Louron {
 			meta_data.FilePath = entry.path();
 			meta_data.IsComposite = false;
 
-			AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-				AssetUtils::AssetTypeToString(meta_data.Type) + "InBuiltAsset" + entry.path().stem().string()
-			));
+			AssetHandle handle = Utils::fnv1a_hash(
+				AssetUtils::AssetTypeToString(meta_data.Type) + 
+				"InBuiltAsset" + 
+				entry.path().stem().string()
+			);
 
 			ImportCustomAsset(handle, meta_data);
 		}
 
+		// MODELS
 		for (const auto& entry : std::filesystem::recursive_directory_iterator("Resources/Models/"))
 		{
 			if (!AssetManager::IsExtensionSupported(entry.path().extension()))
@@ -874,13 +891,16 @@ namespace Louron {
 			meta_data.FilePath = entry.path();
 			meta_data.IsComposite = true;
 
-			AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-				AssetUtils::AssetTypeToString(meta_data.Type) + "InBuiltAsset" + entry.path().stem().string()
-			));
+			AssetHandle handle = Utils::fnv1a_hash(
+				AssetUtils::AssetTypeToString(meta_data.Type) + 
+				"InBuiltAsset" + 
+				entry.path().stem().string()
+			);
 
 			ImportCustomAsset(handle, meta_data);
 		}
 
+		// TEXTURES
 		for (const auto& entry : std::filesystem::recursive_directory_iterator("Resources/Textures/"))
 		{
 			if (!AssetManager::IsExtensionSupported(entry.path().extension()))
@@ -895,9 +915,11 @@ namespace Louron {
 			meta_data.FilePath = entry.path();
 			meta_data.IsComposite = false;
 
-			AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-				AssetUtils::AssetTypeToString(meta_data.Type) + "InBuiltAsset" + entry.path().stem().string()
-			));
+			AssetHandle handle = Utils::fnv1a_hash(
+				AssetUtils::AssetTypeToString(meta_data.Type) + 
+				"InBuiltAsset" + 
+				entry.path().stem().string()
+			);
 
 			ImportCustomAsset(handle, meta_data);
 		}
@@ -910,9 +932,11 @@ namespace Louron {
 		unsigned char texture_data[] = { 255, 255, 255, 255 };
 		std::shared_ptr<Texture2D> default_texture = std::make_shared<Texture2D>(texture_data, 1, 1, Texture2D::TextureFormat::RED_GREEN_BLUE_ALPHA_8, Texture2D::TextureFormat::RED_GREEN_BLUE_ALPHA_8);
 
-		AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-			AssetUtils::AssetTypeToString(meta_data.Type) + "InBuiltAsset" + meta_data.AssetName
-		));
+		AssetHandle handle = Utils::fnv1a_hash(
+			AssetUtils::AssetTypeToString(meta_data.Type) + 
+			"InBuiltAsset" + 
+			meta_data.AssetName
+		);
 		default_texture->Handle = handle;
 
 		AddCustomAsset(default_texture, handle, meta_data);
@@ -923,9 +947,11 @@ namespace Louron {
 		std::shared_ptr<Texture2D> default_normal_texture = std::make_shared<Texture2D>(texture_data, 1, 1, Texture2D::TextureFormat::RED_GREEN_BLUE_ALPHA_8, Texture2D::TextureFormat::RED_GREEN_BLUE_ALPHA_8);
 
 		meta_data.AssetName = "Default_Normal_Texture";
-		handle = static_cast<uint32_t>(std::hash<std::string>{}(
-			AssetUtils::AssetTypeToString(meta_data.Type) + "InBuiltAsset" + meta_data.AssetName
-		));
+		handle = Utils::fnv1a_hash(
+			AssetUtils::AssetTypeToString(meta_data.Type) + 
+			"InBuiltAsset" + 
+			meta_data.AssetName
+		);
 		default_normal_texture->Handle = handle;
 
 		AddCustomAsset(default_normal_texture, handle, meta_data);
@@ -934,9 +960,11 @@ namespace Louron {
 
 		meta_data.AssetName = "Default_Material";
 		meta_data.Type = AssetType::Material_Standard;
-		handle = static_cast<uint32_t>(std::hash<std::string>{}(
-			AssetUtils::AssetTypeToString(meta_data.Type) + "InBuiltAsset" + meta_data.AssetName
-		));
+		handle = Utils::fnv1a_hash(
+			AssetUtils::AssetTypeToString(meta_data.Type) + 
+			"InBuiltAsset" + 
+			meta_data.AssetName
+		);
 		default_material->Handle = handle;
 
 		AddCustomAsset(default_material, handle, meta_data);
@@ -1020,9 +1048,10 @@ namespace Louron {
 
 	AssetHandle EditorAssetManager::GenerateNewAssetHandle(const AssetType& asset_type, const std::filesystem::path& asset_file_path)
 	{
-		AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-			AssetUtils::AssetTypeToString(asset_type) + asset_file_path.string()
-		));
+		AssetHandle handle = Utils::fnv1a_hash(
+			AssetUtils::AssetTypeToString(asset_type) + 
+			asset_file_path.string()
+		);
 
 		return handle;
 	}

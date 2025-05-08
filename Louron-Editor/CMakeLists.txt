@@ -7,6 +7,8 @@ file(GLOB_RECURSE APP_SRC
 
 add_executable(LouronEditor ${APP_SRC})
 
+set(CMAKE_CXX_STANDARD 20)
+
 target_compile_definitions(LouronEditor PUBLIC PX_PHYSX_STATIC_LIB)
 
 if(UNIX)

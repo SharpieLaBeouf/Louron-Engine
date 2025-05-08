@@ -1,6 +1,7 @@
 #include "Project Serializer.h"
 
 // Louron Core Headers
+#include "../Core/FileSystem Utilities.h"
 
 // C++ Standard Library Headers
 #include <fstream>
@@ -52,16 +53,10 @@ namespace Louron {
         
     }
 
-    std::string NormalizePath(const std::string& path) 
-    {
-        std::string normalized = path;
-        std::replace(normalized.begin(), normalized.end(), '\\', '/');
-        return normalized;
-    }
-
     bool ProjectSerializer::Deserialize(const std::filesystem::path& projectFilePath) {
 
-        if (projectFilePath.extension() != ".lproj") {
+        if (projectFilePath.extension() != ".lproj") 
+        {
             L_CORE_WARN("Incompatible Project File Extension");
             L_CORE_WARN("Extension Used: {0}", projectFilePath.extension().string());
             L_CORE_WARN("Extension Expected: .lproj");
@@ -72,15 +67,18 @@ namespace Louron {
         ProjectConfig config = m_Project->GetConfig();
 
         YAML::Node data;
-        try {
+        try 
+        {
             data = YAML::LoadFile(projectFilePath.string());
         }
-        catch (YAML::ParserException e) {
+        catch (YAML::ParserException e) 
+        {
             L_CORE_ERROR("YAML-CPP Failed to Load Project File: '{0}', {1}", projectFilePath.string(), e.what());
             return false;
         }
 
-        if (!data["Project Name"] || !data["Project Config"]) {
+        if (!data["Project Name"] || !data["Project Config"]) 
+        {
             L_CORE_ERROR("Project Node's Not Correctly Declared in File: \'{0}\'", projectFilePath.string());
             return false;
         }
@@ -90,13 +88,13 @@ namespace Louron {
         auto projectConfig = data["Project Config"];
             
         if(projectConfig["StartScene"])
-            config.StartScene = NormalizePath(projectConfig["StartScene"].as<std::string>());
+            config.StartScene = Utils::NormalisePath(projectConfig["StartScene"].as<std::string>());
             
         if(projectConfig["AssetDirectory"])
-            config.AssetDirectory = NormalizePath(projectConfig["AssetDirectory"].as<std::string>());
+            config.AssetDirectory = Utils::NormalisePath(projectConfig["AssetDirectory"].as<std::string>());
 
         if (projectConfig["AppScriptModulePath"])
-            config.ScriptAssemblyPath = NormalizePath(projectConfig["AppScriptModulePath"].as<std::string>());
+            config.ScriptAssemblyPath = Utils::NormalisePath(projectConfig["AppScriptModulePath"].as<std::string>());
 
         m_Project->SetConfig(config);
 

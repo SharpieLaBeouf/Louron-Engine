@@ -7,6 +7,8 @@ file(GLOB_RECURSE ENGINE_SRC
 
 add_library(LouronCore STATIC ${ENGINE_SRC})
 
+set(CMAKE_CXX_STANDARD 20)
+
 target_compile_definitions(LouronCore PUBLIC PX_PHYSX_STATIC_LIB)
 
 if(MSVC)

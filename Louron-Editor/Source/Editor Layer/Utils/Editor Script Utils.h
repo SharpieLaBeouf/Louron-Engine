@@ -9,12 +9,12 @@
 #include "clang-c/Index.h"
 #endif
 
-#ifdef L_PLATFORM_WINDOWS
-#define CLANG_EXECUTABLE "Resources\\Compiler\\clang++.exe"
+#if defined(L_PLATFORM_WINDOWS)
+#define CLANG_EXECUTABLE "Resources\\Compiler\\windows\\clang++.exe"
 #define SHARED_FLAG "-shared"
 #define PIC_FLAG "" // MSVC doesn't need -fPIC
-#else
-#define CLANG_EXECUTABLE "Resources/Compiler/clang++_linux"
+#elif defined(L_PLATFORM_LINUX)
+#define CLANG_EXECUTABLE "./Resources/Compiler/linux/clang++"
 #define SHARED_FLAG "-shared"
 #define PIC_FLAG "-fPIC"
 #endif
@@ -292,7 +292,7 @@ namespace Utils
 
 			if (ImGui::Button("...")) 
 			{
-				new_script_path = Louron::FileUtils::SaveFile("C++ Script (*.h)\0*.h\0", (Louron::Project::GetActiveProject()->GetProjectDirectory() / "Scripts")); // Open File Dialog in Scripts Folder
+				new_script_path = Louron::Utils::SaveFile("C++ Script (*.h)\0*.h\0", (Louron::Project::GetActiveProject()->GetProjectDirectory() / "Scripts")); // Open File Dialog in Scripts Folder
 
 				if (new_script_path.lexically_normal().string().find((Louron::Project::GetActiveProject()->GetProjectDirectory() / "Scripts").lexically_normal().string()) != 0) {
 					new_script_path = "";

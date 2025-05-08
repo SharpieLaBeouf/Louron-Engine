@@ -3,6 +3,8 @@
 // Louron Core Headers
 #include "Asset Manager API.h"
 
+#include "../Core/FileSystem Utilities.h"
+
 #include "../Debug/Profiler.h"
 #include "../Project/Project.h"
 
@@ -132,8 +134,8 @@ namespace Louron {
 
 	std::shared_ptr<Material> MaterialImporter::ImportMaterial(const AssetImporter::ImportParams& import_params) {
 
-		if (import_params.asset_meta_data.FilePath.extension() != ".lmat" && import_params.asset_meta_data.FilePath.extension() != ".lmaterial" && import_params.asset_meta_data.FilePath.extension() != ".lskybox") {
-
+		if (import_params.asset_meta_data.FilePath.extension() != ".lmat" && import_params.asset_meta_data.FilePath.extension() != ".lmaterial" && import_params.asset_meta_data.FilePath.extension() != ".lskybox") 
+		{
 			L_CORE_WARN("Incompatible Material File Extension");
 			L_CORE_WARN("Extension Used: {0}", import_params.asset_meta_data.FilePath.extension().string());
 
@@ -148,24 +150,29 @@ namespace Louron {
 		if (!std::filesystem::exists(file_path))
 			return nullptr;
 
-		try {
+		try 
+		{
 			data = YAML::LoadFile(file_path.string());
 		}
-		catch (YAML::ParserException e) {
+		catch (YAML::ParserException e) 
+		{
 			L_CORE_ERROR("YAML-CPP Failed to Load Scene File: '{0}', {1}", import_params.asset_meta_data.FilePath.string(), e.what());
 			return nullptr;
 		}
 
-		if (!data["Material Asset Type"]) {
+		if (!data["Material Asset Type"]) 
+		{
 			L_CORE_ERROR("Material Type Node is Not Specified in File: '{0}'", import_params.asset_meta_data.FilePath.string());
 			return nullptr;
 		}
 
-		if (data["Material Asset Type"].as<std::string>() == AssetUtils::AssetTypeToString(AssetType::Material_Skybox)) {
+		if (data["Material Asset Type"].as<std::string>() == AssetUtils::AssetTypeToString(AssetType::Material_Skybox)) 
+		{
 			return LoadMaterialSkybox(import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
 		}
 
-		if (data["Material Asset Type"].as<std::string>() == AssetUtils::AssetTypeToString(AssetType::Material_Standard)) {
+		if (data["Material Asset Type"].as<std::string>() == AssetUtils::AssetTypeToString(AssetType::Material_Standard)) 
+		{
 			return LoadMaterialPBR(import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
 		}
 
@@ -261,7 +268,7 @@ namespace Louron {
 				absolute_texture_path = std::filesystem::absolute(absolute_texture_path);
 			}
 
-			return absolute_texture_path;
+			return Utils::NormalisePath(absolute_texture_path);
 		}
 
 	}
@@ -540,9 +547,10 @@ namespace Louron {
 		}
 
 		// Generate the material handle
-		asset_material_handle = static_cast<uint32_t>(std::hash<std::string>{}(
-			AssetUtils::AssetTypeToString(AssetType::Material_Standard) + material_suffix
-			));
+		asset_material_handle = Utils::fnv1a_hash(
+			AssetUtils::AssetTypeToString(AssetType::Material_Standard) + 
+			material_suffix
+		);
 
 		// If the Material has not already been loaded into the asset map, we 
 		// want to create a new material. Once this is done, we won't need to do this again 
@@ -614,9 +622,10 @@ namespace Louron {
 						// as the texture is standalone and can be loaded independent of the model being loaded
 						texture_meta_data.ParentAssetHandle = NULL_UUID;
 
-						texture_handle = static_cast<uint32_t>(std::hash<std::string>{}(
-							AssetUtils::AssetTypeToString(texture_meta_data.Type) + texture_meta_data.FilePath.string()
-							));
+						texture_handle = Utils::fnv1a_hash(
+							AssetUtils::AssetTypeToString(texture_meta_data.Type) + 
+							texture_meta_data.FilePath.string()
+						);
 
 						// Check if texture file already loaded.
 						if (import_params.asset_map->count(texture_handle) == 0)
@@ -634,9 +643,11 @@ namespace Louron {
 						// to be loaded so we can access this texture
 						texture_meta_data.ParentAssetHandle = import_params.asset_handle;
 
-						texture_handle = static_cast<uint32_t>(std::hash<std::string>{}(
-							AssetUtils::AssetTypeToString(texture_meta_data.Type) + model_file_path.filename().string() + texture_meta_data.AssetName
-						));
+						texture_handle = Utils::fnv1a_hash(
+							AssetUtils::AssetTypeToString(texture_meta_data.Type) + 
+							model_file_path.filename().string() + 
+							texture_meta_data.AssetName
+						);
 
 						glm::ivec2 texture_size = { assimp_texture_ref->mWidth, assimp_texture_ref->mHeight };
 						unsigned char* texture_data = reinterpret_cast<unsigned char*>(assimp_texture_ref->pcData);
@@ -777,9 +788,11 @@ namespace Louron {
 			else
 			{
 				// Generate AssetMesh Handle
-				AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-					AssetUtils::AssetTypeToString(AssetType::Mesh) + model_file_path.filename().string() + ai_node->mName.C_Str()
-					));
+				AssetHandle handle = Utils::fnv1a_hash(
+					AssetUtils::AssetTypeToString(AssetType::Mesh) + 
+					model_file_path.filename().string() + 
+					ai_node->mName.C_Str()
+				);
 
 				std::shared_ptr<StaticMesh> asset_mesh = std::make_shared<StaticMesh>();
 				asset_mesh->Handle = handle;
@@ -967,9 +980,11 @@ namespace Louron {
 
 		// Step 5: Create Skeleton Asset
 		auto& skinned_mesh_component = model_prefab->GetComponent<SkinnedMeshComponent>(model_prefab->GetRootEntity());
-		skinned_mesh_component.SkeletonHandle = static_cast<uint32_t>(std::hash<std::string>{}(
-			AssetUtils::AssetTypeToString(AssetType::Skeleton) + import_params.asset_meta_data.FilePath.string() + first_bone_node->mName.C_Str()
-		));
+		skinned_mesh_component.SkeletonHandle = Utils::fnv1a_hash(
+			AssetUtils::AssetTypeToString(AssetType::Skeleton) + 
+			import_params.asset_meta_data.FilePath.string() + 
+			first_bone_node->mName.C_Str()
+		);
 
 		std::shared_ptr<Skeleton> asset_skeleton = std::make_shared<Skeleton>();
 		asset_skeleton->Handle = skinned_mesh_component.SkeletonHandle;
@@ -1001,9 +1016,11 @@ namespace Louron {
 		auto& skinned_mesh_component = model_prefab->GetComponent<SkinnedMeshComponent>(root_entity_handle);
 
 		// Generate AssetMesh Handle
-		skinned_mesh_component.StaticMeshHandle = static_cast<uint32_t>(std::hash<std::string>{}(
-			AssetUtils::AssetTypeToString(AssetType::Mesh) + model_file_path.filename().string() + model_file_path.stem().string()
-		));
+		skinned_mesh_component.StaticMeshHandle = Utils::fnv1a_hash(
+			AssetUtils::AssetTypeToString(AssetType::Mesh) + 
+			model_file_path.filename().string() + 
+			model_file_path.stem().string()
+		);
 
 		std::shared_ptr<StaticMesh> asset_mesh = std::make_shared<StaticMesh>();
 		asset_mesh->Handle = skinned_mesh_component.StaticMeshHandle;
@@ -1085,9 +1102,11 @@ namespace Louron {
 			if (!ai_animation)
 				continue;
 
-			AssetHandle animation_clip_handle = static_cast<uint32_t>(std::hash<std::string>{}(
-				AssetUtils::AssetTypeToString(AssetType::AnimationClip) + import_params.asset_meta_data.FilePath.string() + ai_animation->mName.C_Str()
-			));
+			AssetHandle animation_clip_handle = Utils::fnv1a_hash(
+				AssetUtils::AssetTypeToString(AssetType::AnimationClip) + 
+				import_params.asset_meta_data.FilePath.string() + 
+				ai_animation->mName.C_Str()
+			);
 
 			std::shared_ptr<AnimationClip> animation_clip_asset = std::make_shared<AnimationClip>();
 			animation_clip_asset->Handle = animation_clip_handle;

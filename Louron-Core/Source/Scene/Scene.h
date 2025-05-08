@@ -51,7 +51,6 @@ namespace Louron {
 	struct SceneConfig {
 
 		std::string Name = "Untitled Scene";
-		std::filesystem::path AssetDirectory;
 		std::filesystem::path SceneFilePath;
 
 		L_RENDER_PIPELINE ScenePipelineType;

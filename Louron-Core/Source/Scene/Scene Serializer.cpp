@@ -7,6 +7,7 @@
 
 #include "../Core/UUID.h"
 #include "../Core/Time.h"
+#include "../Core/FileSystem Utilities.h"
 #include "../Physics/PhysicsWrappers.h"
 #include "../Renderer/RendererPipeline.h"
 
@@ -234,7 +235,6 @@ namespace Louron {
 		YAML::Emitter out;
 		out << YAML::BeginMap;
 		out << YAML::Key << "Scene Name" << YAML::Value << scene_ref->m_SceneConfig.Name;
-		out << YAML::Key << "Scene Asset Directory" << YAML::Value << scene_ref->m_SceneConfig.AssetDirectory.string();
 		out << YAML::Key << "Scene Pipeline Type" << YAML::Value << std::to_string((uint8_t)scene_ref->m_SceneConfig.ScenePipelineType);
 
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
@@ -278,44 +278,41 @@ namespace Louron {
 		{
 			YAML::Node data;
 
-			try {
+			try 
+			{
 				data = YAML::LoadFile(sceneFilePath.string());
 			}
-			catch (YAML::ParserException e) {
+			catch (YAML::ParserException e) 
+			{
 				L_CORE_ERROR("YAML-CPP Failed to Load Scene File: '{0}', {1}", sceneFilePath.string(), e.what());
 				return false;
 			}
 
-			if (!data["Scene Name"]) {
+			if (!data["Scene Name"]) 
+			{
 				L_CORE_ERROR("Scene Name Node Not Correctly Declared in File: \'{0}\'", sceneFilePath.string());
 				return false;
 			}
-			else {
+			else 
+			{
 				scene_ref->m_SceneConfig.Name = data["Scene Name"].as<std::string>();
 			}
 
-			if (!data["Scene Asset Directory"]) {
-				L_CORE_ERROR("Scene Asset Directory Node Not Correctly Declared in File: \'{0}\'", sceneFilePath.string());
-				return false;
-			}
-			else {
-				scene_ref->m_SceneConfig.AssetDirectory = data["Scene Asset Directory"].as<std::string>();
-			}
-
-			if (!data["Scene Pipeline Type"]) {
+			if (!data["Scene Pipeline Type"]) 
+			{
 				L_CORE_ERROR("Scene Pipeline Type Node Not Correctly Declared in File: \'{0}\'", sceneFilePath.string());
 				return false;
 			}
-			else {
-
+			else 
+			{
 				scene_ref->m_SceneConfig.ScenePipelineType = (L_RENDER_PIPELINE)data["Scene Pipeline Type"].as<uint8_t>();
 			}
 			
 			auto entities = data["Entities"];
-			if (entities) {
-
-				for (auto entity : entities) {
-					
+			if (entities) 
+			{
+				for (auto entity : entities) 
+				{
 					// UUID
 					UUID uuid = entity["Entity"].as<uint32_t>();
 					std::string tag = entity["TagComponent"]["Tag"].as<std::string>();
@@ -497,8 +494,15 @@ namespace Louron {
 			std::vector<OctreeBounds<Entity>::OctreeData> data_sources;
 
 			auto static_mesh_view = scene_ref->GetAllEntitiesWith<MeshFilterComponent, MeshRendererComponent>();
-			for (const auto& entity_handle : static_mesh_view) {
-				auto& mesh_filter = static_mesh_view.get<MeshFilterComponent>(entity_handle);
+			for (const auto& entity_handle : static_mesh_view) 
+			{
+				Entity entity = { entity_handle, scene_ref.get() };
+				if (!entity || !entity.HasComponent<MeshFilterComponent>())
+					continue;
+
+				
+				auto& mesh_filter = entity.GetComponent<MeshFilterComponent>();
+				L_CORE_TRACE("Entity ID: {} - Mesh Filter Handle: {}", (uint32_t)entity.GetUUID(), (uint32_t)mesh_filter.StaticMeshHandle);
 
 				// Ensure the AABB is up to date
 				mesh_filter.UpdateTransformedAABB();

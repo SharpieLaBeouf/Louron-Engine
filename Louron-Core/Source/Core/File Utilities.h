@@ -26,9 +26,8 @@
 
 namespace Louron {
 
-	namespace FileUtils {
-
-
+	namespace Utils 
+    {
 		static std::string OpenFile(const char* filter, const std::filesystem::path& initialDir = "")
 		{
 

@@ -67,7 +67,6 @@ namespace Louron {
 		m_SceneConfig.SceneFilePath = "Scenes/Untitled Scene.lscene";
 
 		m_SceneConfig.Name = m_SceneConfig.SceneFilePath.filename().replace_extension().string();
-		m_SceneConfig.AssetDirectory = "Assets/";
 
 		m_SceneConfig.ScenePipelineType = L_RENDER_PIPELINE::FORWARD_PLUS;
 	}
@@ -77,7 +76,6 @@ namespace Louron {
 		m_SceneConfig.SceneFilePath = "Scenes/Untitled Scene.lscene";
 
 		m_SceneConfig.Name = m_SceneConfig.SceneFilePath.filename().replace_extension().string();
-		m_SceneConfig.AssetDirectory = "Assets/";
 		m_SceneConfig.ScenePipelineType = pipeline;
 	}
 
@@ -268,7 +266,6 @@ namespace Louron {
 		dest_scene->m_IsRunning = source_scene->m_IsRunning;
 		dest_scene->m_IsPhysicsCalculating = source_scene->m_IsPhysicsCalculating;
 
-		dest_scene->m_SceneConfig.AssetDirectory = source_scene->m_SceneConfig.AssetDirectory;
 		dest_scene->m_SceneConfig.Name = source_scene->m_SceneConfig.Name;
 		dest_scene->m_SceneConfig.SceneFilePath = source_scene->m_SceneConfig.SceneFilePath;
 		dest_scene->m_SceneConfig.ScenePipelineType = source_scene->m_SceneConfig.ScenePipelineType;

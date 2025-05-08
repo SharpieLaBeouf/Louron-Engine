@@ -326,7 +326,7 @@ void LouronEditorLayer::OnGuiRender() {
 				if (ImGui::BeginMenu("Open")) {
 
 					if (ImGui::MenuItem("Open Project")) {
-						std::string filepath = FileUtils::OpenFile("Louron Project (*.lproj)\0*.lproj\0", Project::GetActiveProject()->GetProjectDirectory());
+						std::string filepath = Louron::Utils::OpenFile("Louron Project (*.lproj)\0*.lproj\0", Project::GetActiveProject()->GetProjectDirectory());
 						if (!filepath.empty()) {
 
 							m_SelectedEntity = {};
@@ -588,7 +588,7 @@ void LouronEditorLayer::OnGuiRender() {
 			ImGui::SameLine();
 
 			if (ImGui::Button("...")) {
-				s_NewFolderPath = FileUtils::OpenDirectory();
+				s_NewFolderPath = Louron::Utils::OpenDirectory();
 			}
 
 			ImGui::Columns(1);
@@ -2686,7 +2686,7 @@ void LouronEditorLayer::DisplayProjectProperties() {
 		ImGui::InputText("##ProjectStartScene", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
 		ImGui::SameLine();
 		if (ImGui::Button("...")) {
-			std::filesystem::path file_path = FileUtils::OpenFile("Louron Scene (*.lscene)\0*.lscene\0");
+			std::filesystem::path file_path = Louron::Utils::OpenFile("Louron Scene (*.lscene)\0*.lscene\0");
 
 			// Check if scene is in scenes directory in this project
 			auto scenes_directory = project->GetProjectDirectory() / "Scenes";
@@ -2828,7 +2828,7 @@ void LouronEditorLayer::OpenScene(const std::filesystem::path& scene_file_path) 
 	std::string filepath;
 	
 	if (scene_file_path.empty())
-		filepath = FileUtils::OpenFile("Louron Scene (*.lscene)\0*.lscene\0", Project::GetActiveProject()->GetProjectDirectory() / "Scenes");
+		filepath = Louron::Utils::OpenFile("Louron Scene (*.lscene)\0*.lscene\0", Project::GetActiveProject()->GetProjectDirectory() / "Scenes");
 	else
 		filepath = scene_file_path.string();
 
@@ -2877,7 +2877,7 @@ void LouronEditorLayer::SaveScene(bool save_as) {
 
 	if (save_as) {
 
-		std::string filepath = FileUtils::SaveFile("Louron Scene (*.lscene)\0*.lscene\0");
+		std::string filepath = Louron::Utils::SaveFile("Louron Scene (*.lscene)\0*.lscene\0");
 		if (!filepath.empty()) {
 
 			OnSceneStop();

@@ -319,7 +319,6 @@ namespace Louron {
 		SceneConfig scnConfig = m_ActiveScene->GetConfig();
 		scnConfig.Name = scene_file_path.stem().string();
 		scnConfig.SceneFilePath = scene_file_path;
-		scnConfig.AssetDirectory = m_ProjectDirectory / "Assets";
 		m_ActiveScene->SetConfig(scnConfig);
 
 		m_ActiveScene->m_Octree = std::make_shared<OctreeBounds<Entity>>();
@@ -381,7 +380,6 @@ namespace Louron {
 		SceneConfig scnConfig = m_ActiveScene->GetConfig();
 		scnConfig.Name = scene_file_path.stem().string();
 		scnConfig.SceneFilePath = scene_file_path;
-		scnConfig.AssetDirectory = m_ProjectDirectory / "Assets";
 		m_ActiveScene->SetConfig(scnConfig);
 
 		if(!m_ActiveScene->m_Octree)

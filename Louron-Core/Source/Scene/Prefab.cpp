@@ -708,8 +708,8 @@ namespace Louron {
 
 	bool Prefab::Deserialize(const std::filesystem::path& file_path) {
 
-		if (file_path.extension() != ".lprefab") {
-
+		if (file_path.extension() != ".lprefab") 
+		{
 			L_CORE_WARN("Incompatible Prefab File Extension");
 			L_CORE_WARN("	Extension Used: {0}", file_path.extension().string());
 			L_CORE_WARN("	Extension Expected: ..lprefab");
@@ -718,19 +718,23 @@ namespace Louron {
 
 		YAML::Node data;
 
-		try {
+		try 
+		{
 			data = YAML::LoadFile(file_path.string());
 		}
-		catch (YAML::ParserException e) {
+		catch (YAML::ParserException e) 
+		{
 			L_CORE_ERROR("YAML-CPP Failed to Load Prefab File: '{0}', {1}", file_path.string(), e.what());
 			return false;
 		}
 
-		if (!data["Prefab Name"]) {
+		if (!data["Prefab Name"]) 
+		{
 			L_CORE_ERROR("Prefab Name Node Not Correctly Declared in File: \'{0}\'", file_path.string());
 			return false;
 		}
-		else {
+		else 
+		{
 			m_PrefabName = data["Prefab Name"].as<std::string>();
 		}
 
@@ -743,14 +747,15 @@ namespace Louron {
 			return false; // No Actual Entities
 		
 		std::unordered_map<UUID, YAML::Node> node_map; // Store the node by value
-		for (int i = 0; i < entities.size(); i++) {
+		for (int i = 0; i < entities.size(); i++) 
+		{
 			UUID uuid = entities[i]["Entity"].as<uint32_t>();
 			node_map[uuid] = entities[i];
 		}
 
 		// Find All ROOT entities and create them (they will create their own children)
-		for (auto entity : entities) {
-
+		for (auto entity : entities) 
+		{
 			UUID uuid = entity["Entity"].as<uint32_t>();
 
 			auto hierarchy_data = entity["HierarchyComponent"];

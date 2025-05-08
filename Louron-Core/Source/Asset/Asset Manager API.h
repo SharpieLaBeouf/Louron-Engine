@@ -102,9 +102,11 @@ namespace Louron {
 				}
 			}
 
-			AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-				AssetUtils::AssetTypeToString(expectedType) + "InBuiltAsset" + inbuilt_asset_name
-			));
+			AssetHandle handle = Utils::fnv1a_hash(
+				AssetUtils::AssetTypeToString(expectedType) + 
+				"InBuiltAsset" + 
+				inbuilt_asset_name
+			);
 
 			std::shared_ptr<Asset> asset = project_ref->GetAssetManager()->GetAsset(handle);
 			return std::static_pointer_cast<TAssetType>(asset);
@@ -176,17 +178,21 @@ namespace Louron {
 			if (meta_data.Type == AssetType::Unknown)
 				return NULL_UUID;
 
-			AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-				AssetUtils::AssetTypeToString(meta_data.Type) + "RunTimeAsset" + meta_data.AssetName
-			));
+			AssetHandle handle = Utils::fnv1a_hash(
+				AssetUtils::AssetTypeToString(meta_data.Type) + 
+				"RunTimeAsset" + 
+				meta_data.AssetName
+			);
 
 			int index = 0;
 			while (IsAssetHandleValid(handle))
 			{
 				meta_data.AssetName = asset_name + "_" + std::to_string(index);
-				handle = static_cast<uint32_t>(std::hash<std::string>{}(
-					AssetUtils::AssetTypeToString(meta_data.Type) + "RunTimeAsset" + meta_data.AssetName
-				));
+				handle = Utils::fnv1a_hash(
+					AssetUtils::AssetTypeToString(meta_data.Type) + 
+					"RunTimeAsset" + 
+					meta_data.AssetName
+				);
 
 				index++;
 			}

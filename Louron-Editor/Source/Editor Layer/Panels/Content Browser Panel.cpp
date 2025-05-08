@@ -3,7 +3,6 @@
 #include "../Louron Editor Layer.h"
 #include "../Utils/Editor Script Utils.h"
 
-
 #ifndef YAML_CPP_STATIC_DEFINE
 #define YAML_CPP_STATIC_DEFINE
 #endif
@@ -161,7 +160,7 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 
 					std::filesystem::path entry_path = entry.path().lexically_normal();
 
-					if (entry.is_directory() && !FileUtils::IsPathHidden(entry.path())) {
+					if (entry.is_directory() && !Louron::Utils::IsPathHidden(entry.path())) {
 
 						bool is_leaf_node = !PathHasSubDirectory(entry_path);
 
@@ -325,12 +324,12 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 				std::vector<std::filesystem::directory_entry> files;
 
 				for (const auto& entry : std::filesystem::directory_iterator(m_CurrentDirectory)) {
-					if (std::filesystem::is_directory(entry) && !FileUtils::IsPathHidden(entry.path())) {
+					if (std::filesystem::is_directory(entry) && !Louron::Utils::IsPathHidden(entry.path())) {
 						directories.push_back(entry);
 					}
 					else {
 
-						if (FileUtils::IsPathHidden(entry.path()))
+						if (Louron::Utils::IsPathHidden(entry.path()))
 							continue;
 
 						if(entry.path().extension() != ".meta")
@@ -587,16 +586,20 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								first_focus = true;
 
 								// Ensure Custom Handle When Creating Asset
-								AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-									AssetUtils::AssetTypeToString(AssetType::Material_Standard) + std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
-									));
+								AssetHandle handle = Louron::Utils::fnv1a_hash(
+									AssetUtils::AssetTypeToString(AssetType::Material_Standard) + 
+									std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
+								);
 
 								counter = 0;
 								while (AssetManager::IsAssetHandleValid(handle))
 								{
-									handle = static_cast<uint32_t>(std::hash<std::string>{}(
-										AssetUtils::AssetTypeToString(AssetType::Material_Standard) + std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + "_" + std::to_string(counter)
-										));
+									handle = Louron::Utils::fnv1a_hash(
+										AssetUtils::AssetTypeToString(AssetType::Material_Standard) + 
+										std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + 
+										"_" + 
+										std::to_string(counter)
+									);
 									counter++;
 								}
 
@@ -631,16 +634,20 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								first_focus = true;
 
 								// Ensure Custom Handle When Creating Asset
-								AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-									AssetUtils::AssetTypeToString(AssetType::Material_Skybox) + std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
-								));
+								AssetHandle handle = Louron::Utils::fnv1a_hash(
+									AssetUtils::AssetTypeToString(AssetType::Material_Skybox) + 
+									std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
+								);
 
 								counter = 0;
 								while (AssetManager::IsAssetHandleValid(handle))
 								{
-									handle = static_cast<uint32_t>(std::hash<std::string>{}(
-										AssetUtils::AssetTypeToString(AssetType::Material_Skybox) + std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + "_" + std::to_string(counter)
-									));
+									handle = Louron::Utils::fnv1a_hash(
+										AssetUtils::AssetTypeToString(AssetType::Material_Skybox) + 
+										std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + 
+										"_" + 
+										std::to_string(counter)
+									);
 									counter++;
 								}
 
@@ -664,16 +671,20 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								first_focus = true;
 
 								// Ensure Custom Handle When Creating Asset
-								AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-									AssetUtils::AssetTypeToString(AssetType::Shader) + std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
-									));
+								AssetHandle handle = Louron::Utils::fnv1a_hash(
+									AssetUtils::AssetTypeToString(AssetType::Shader) + 
+									std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
+								);
 
 								counter = 0;
 								while (AssetManager::IsAssetHandleValid(handle))
 								{
-									handle = static_cast<uint32_t>(std::hash<std::string>{}(
-										AssetUtils::AssetTypeToString(AssetType::Material_Standard) + std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + "_" + std::to_string(counter)
-										));
+									handle = Louron::Utils::fnv1a_hash(
+										AssetUtils::AssetTypeToString(AssetType::Material_Standard) + 
+										std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + 
+										"_" + 
+										std::to_string(counter)
+									);
 									counter++;
 								}
 
@@ -697,16 +708,20 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								first_focus = true;
 
 								// Ensure Custom Handle When Creating Asset
-								AssetHandle handle = static_cast<uint32_t>(std::hash<std::string>{}(
-									AssetUtils::AssetTypeToString(AssetType::Compute_Shader) + std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
-									));
+								AssetHandle handle = Louron::Utils::fnv1a_hash(
+									AssetUtils::AssetTypeToString(AssetType::Compute_Shader) + 
+									std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
+								);
 
 								counter = 0;
 								while (AssetManager::IsAssetHandleValid(handle))
 								{
-									handle = static_cast<uint32_t>(std::hash<std::string>{}(
-										AssetUtils::AssetTypeToString(AssetType::Compute_Shader) + std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + "_" + std::to_string(counter)
-										));
+									handle = Louron::Utils::fnv1a_hash(
+										AssetUtils::AssetTypeToString(AssetType::Compute_Shader) + 
+										std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + 
+										"_" + 
+										std::to_string(counter)
+									);
 									counter++;
 								}
 

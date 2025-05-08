@@ -180,27 +180,33 @@ namespace Louron
 	{
 		YAML::Node component = data;
 
-		if (component["CurrentClipIndex"]) {
+		if (component["CurrentClipIndex"]) 
+		{
 			CurrentClipIndex = component["CurrentClipIndex"].as<int>();
 		}
 
-		if (component["CurrentTime"]) {
+		if (component["CurrentTime"]) 
+		{
 			CurrentTime = component["CurrentTime"].as<float>();
 		}
 
-		if (component["PlaybackSpeed"]) {
+		if (component["PlaybackSpeed"]) 
+		{
 			PlaybackSpeed = component["PlaybackSpeed"].as<float>();
 		}
 
-		if (component["IsPlaying"]) {
+		if (component["IsPlaying"]) 
+		{
 			IsPlaying = component["IsPlaying"].as<bool>();
 		}
 
-		if (component["IsLooping"]) {
+		if (component["IsLooping"]) 
+		{
 			IsLooping = component["IsLooping"].as<bool>();
 		}
 
-		if (component["CullingMode"]) {
+		if (component["CullingMode"]) 
+		{
 			std::string culling_mode = component["CullingMode"].as<std::string>();
 
 			if (culling_mode == "AlwaysAnimate")
@@ -211,14 +217,17 @@ namespace Louron
 				CullingMode = AnimationCullingMode::NoAnimateOffScreenStopTimer;
 		}
 
-		if (component["AnimationClipHandles"]) {
+		if (component["AnimationClipHandles"]) 
+		{
 			YAML::Node handles = component["AnimationClipHandles"];
 			AnimationClipHandles.clear();
-			for (const auto& handle : handles) {
+			for (const auto& handle : handles) 
+			{
 				AnimationClipHandles.emplace_back(handle.as<uint32_t>());
 			}
 		}
-		else {
+		else 
+		{
 			return false;
 		}
 

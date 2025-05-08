@@ -47,28 +47,34 @@ namespace Louron
 	{
 		YAML::Node component = data;
 
-		if (component["MeshActive"]) {
+		if (component["MeshActive"]) 
+		{
 			Active = component["MeshActive"].as<bool>();
 		}
 
-		if (component["CastShadows"]) {
+		if (component["CastShadows"]) 
+		{
 			CastShadows = component["CastShadows"].as<bool>();
 		}
 
-		if (component["MaterialAssetCount"] && component["MaterialAssetHandles"]) {
+		if (component["MaterialAssetCount"] && component["MaterialAssetHandles"]) 
+		{
 			uint32_t count = component["MaterialAssetCount"].as<uint32_t>();
 			YAML::Node handles = component["MaterialAssetHandles"];
 
-			if (handles.size() != count) {
+			if (handles.size() != count) 
+			{
 				return false;
 			}
 
 			MaterialHandles.clear();
-			for (const auto& handle : handles) {
+			for (const auto& handle : handles) 
+			{
 				MaterialHandles.push_back({ handle.as<uint32_t>() , nullptr });
 			}
 		}
-		else {
+		else 
+		{
 			return false;
 		}
 
@@ -143,10 +149,12 @@ namespace Louron
 
 		YAML::Node component = data;
 
-		if (component["MeshAssetHandle"]) {
+		if (component["MeshAssetHandle"]) 
+		{
 			StaticMeshHandle = component["MeshAssetHandle"].as<uint32_t>();
 		}
-		else {
+		else 
+		{
 			return false;
 		}
 

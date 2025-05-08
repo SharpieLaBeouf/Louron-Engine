@@ -123,12 +123,16 @@ namespace Louron {
 		glUseProgram(0);
 	}
 
-	static AssetHandle default_texture_handle = static_cast<uint32_t>(std::hash<std::string>{}(
-		AssetUtils::AssetTypeToString(AssetType::Texture2D) + "InBuiltAsset" + "Default_White_Texture"
-	));
-	static AssetHandle default_normal_texture_handle = static_cast<uint32_t>(std::hash<std::string>{}(
-		AssetUtils::AssetTypeToString(AssetType::Texture2D) + "InBuiltAsset" + "Default_Normal_Texture"
-	));
+	static AssetHandle default_texture_handle = Utils::fnv1a_hash(
+		AssetUtils::AssetTypeToString(AssetType::Texture2D) + 
+		"InBuiltAsset" + 
+		"Default_White_Texture"
+	);
+	static AssetHandle default_normal_texture_handle = Utils::fnv1a_hash(
+		AssetUtils::AssetTypeToString(AssetType::Texture2D) + 
+		"InBuiltAsset" + 
+		"Default_Normal_Texture"
+	);
 
 	static void SetUniforms(const UniformBlock& uniform_block, const Shader& shader_ref, uint8_t texture_unit, uint8_t max_texture_units)
 	{
@@ -385,10 +389,12 @@ namespace Louron {
 		if (!std::filesystem::exists(path))
 			return false;
 
-		try {
+		try 
+		{
 			data = YAML::LoadFile(path.string());
 		}
-		catch (YAML::ParserException e) {
+		catch (YAML::ParserException e) 
+		{
 			L_CORE_ERROR("YAML-CPP Failed to Load Scene File: '{0}', {1}", path.string(), e.what());
 			return false;
 		}
@@ -396,28 +402,34 @@ namespace Louron {
 		if (!data)
 			return false;
 
-		if (data["Material Asset Name"]) {
+		if (data["Material Asset Name"]) 
+		{
 			m_MaterialName = data["Material Asset Name"].as<std::string>();
 		}
 
-		if (data["Shader Handle"]) {
+		if (data["Shader Handle"]) 
+		{
 			SetShader(data["Shader Handle"].as<uint32_t>());
 		}
 
-		if (data["Render Type"]) {
+		if (data["Render Type"]) 
+		{
 			m_RenderType = StringToRenderType(data["Render Type"].as<std::string>());
 			SetTransparencyWriteDepth(m_RenderType == L_MATERIAL_TRANSPARENT_WRITE_DEPTH);
 		}
 
-		if (data["Roughness"]) {
+		if (data["Roughness"]) 
+		{
 			m_Roughness = data["Roughness"].as<float>();
 		}
 
-		if (data["Metallic"]) {
+		if (data["Metallic"]) 
+		{
 			m_MetallicScale = data["Metallic"].as<float>();
 		}
 
-		if (data["Albedo Tint"]) {
+		if (data["Albedo Tint"]) 
+		{
 			auto positionSeq = data["Albedo Tint"];
 			if (positionSeq.IsSequence() && positionSeq.size() == 4) {
 				m_AlbedoTint.r = positionSeq[0].as<float>();
@@ -427,15 +439,18 @@ namespace Louron {
 			}
 		}
 
-		if (data["AlbedoTextureAsset"]) {
+		if (data["AlbedoTextureAsset"]) 
+		{
 			m_AlbedoTexture = data["AlbedoTextureAsset"].as<uint32_t>();
 		}
 
-		if (data["MetallicTextureAsset"]) {
+		if (data["MetallicTextureAsset"]) 
+		{
 			m_MetallicTexture = data["MetallicTextureAsset"].as<uint32_t>();
 		}
 
-		if (data["NormalTextureAsset"]) {
+		if (data["NormalTextureAsset"]) 
+		{
 			m_NormalTexture = data["NormalTextureAsset"].as<uint32_t>();
 		}
 
@@ -605,8 +620,6 @@ namespace Louron {
 		{
 			const GLSLType& type = uniform.second.first;
 			const UniformValue& value = uniform.second.second;
-
-
 
 			out << YAML::BeginMap;
 			out << YAML::Key << "Name" << YAML::Value << uniform.first;

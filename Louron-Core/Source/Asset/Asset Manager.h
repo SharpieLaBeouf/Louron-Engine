@@ -16,7 +16,13 @@
 //  
 // P.s., changed dramatically to my own style, but still relevant
 
-namespace Louron {
+namespace Louron 
+{
+
+	namespace Utils
+	{
+		uint32_t fnv1a_hash(const std::string& str);
+	}
 
 	class Shader;
 
