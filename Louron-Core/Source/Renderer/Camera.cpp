@@ -9,10 +9,8 @@
 // C++ Standard Library Headers
 
 // External Vendor Library Headers
-#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
 namespace Louron {

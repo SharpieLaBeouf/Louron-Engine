@@ -9,7 +9,6 @@
 
 // External Vendor Library Headers
 #include <PxPhysicsAPI.h>
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 
 using namespace physx;

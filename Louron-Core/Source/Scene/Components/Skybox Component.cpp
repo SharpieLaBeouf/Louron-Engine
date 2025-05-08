@@ -17,9 +17,6 @@
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include <stb_image_resize2.h>
 
-#ifndef YAML_CPP_STATIC_DEFINE
-#define YAML_CPP_STATIC_DEFINE
-#endif
 #include <yaml-cpp/yaml.h>
 
 namespace Louron {

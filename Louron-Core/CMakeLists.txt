@@ -9,7 +9,14 @@ add_library(LouronCore STATIC ${ENGINE_SRC})
 
 set(CMAKE_CXX_STANDARD 20)
 
+if(ENABLE_IPO)
+    set_property(TARGET LouronCore PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+
+target_compile_definitions(LouronCore PUBLIC GLFW_INCLUDE_NONE)
 target_compile_definitions(LouronCore PUBLIC PX_PHYSX_STATIC_LIB)
+target_compile_definitions(LouronCore PUBLIC GLM_ENABLE_EXPERIMENTAL)
+target_compile_definitions(LouronCore PUBLIC YAML_CPP_STATIC_DEFINE)
 
 if(MSVC)
     target_compile_options(LouronCore PRIVATE /utf-8)

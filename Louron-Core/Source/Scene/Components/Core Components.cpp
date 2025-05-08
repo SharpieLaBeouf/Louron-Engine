@@ -11,16 +11,12 @@
 // C++ Standard Library Headers
 
 // External Vendor Library Headers
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#ifndef YAML_CPP_STATIC_DEFINE
-#define YAML_CPP_STATIC_DEFINE
-#endif
 #include <yaml-cpp/yaml.h>
 
 namespace Louron

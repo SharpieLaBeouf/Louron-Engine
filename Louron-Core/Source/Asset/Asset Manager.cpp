@@ -12,9 +12,6 @@
 #include <fstream>
 
 // External Vendor Library Headers
-#ifndef YAML_CPP_STATIC_DEFINE
-#define YAML_CPP_STATIC_DEFINE
-#endif
 #include <yaml-cpp/yaml.h>
 
 namespace Louron 

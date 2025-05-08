@@ -5,7 +5,6 @@
 // C++ Standard Library Headers
 
 // External Vendor Library Headers
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/norm.hpp>
 
 namespace Louron {

@@ -45,8 +45,8 @@
 #include <future>
 
 // External Vendor Library Headers
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/quaternion.hpp>
+
 #include <imgui.h>
 
 namespace Louron {

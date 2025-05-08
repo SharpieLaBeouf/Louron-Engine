@@ -7,9 +7,19 @@ file(GLOB_RECURSE APP_SRC
 
 add_executable(LouronEditor ${APP_SRC})
 
+if(ENABLE_IPO)
+    set_property(TARGET LouronEditor PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+
+target_compile_options(LouronEditor PUBLIC $<$<CONFIG:Release>:-O3>)
+target_compile_definitions(LouronEditor PUBLIC $<$<CONFIG:Release>:NDEBUG>)
+
 set(CMAKE_CXX_STANDARD 20)
 
+target_compile_definitions(LouronEditor PUBLIC GLFW_INCLUDE_NONE)
 target_compile_definitions(LouronEditor PUBLIC PX_PHYSX_STATIC_LIB)
+target_compile_definitions(LouronEditor PUBLIC GLM_ENABLE_EXPERIMENTAL)
+target_compile_definitions(LouronEditor PUBLIC YAML_CPP_STATIC_DEFINE)
 
 if(UNIX)
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")

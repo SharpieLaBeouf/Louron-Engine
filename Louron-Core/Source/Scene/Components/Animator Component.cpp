@@ -11,13 +11,9 @@
 // C++ Standard Library Headers
 
 // External Vendor Library Headers
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#ifndef YAML_CPP_STATIC_DEFINE
-#define YAML_CPP_STATIC_DEFINE
-#endif
 #include <yaml-cpp/yaml.h>
 
 

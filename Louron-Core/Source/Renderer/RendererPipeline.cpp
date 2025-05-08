@@ -19,7 +19,7 @@
 
 // External Vendor Library Headers
 #include <entt/entt.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/gtx/string_cast.hpp>
 
 namespace Louron {

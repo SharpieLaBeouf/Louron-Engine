@@ -8,7 +8,6 @@
 #include <memory>
 
 // External Vendor Library Headers
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 
 namespace Louron {

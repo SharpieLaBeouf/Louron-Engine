@@ -25,15 +25,11 @@
 #include <fstream>
 
 // External Vendor Library Headers
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 
 #pragma warning( push )
 #pragma warning( disable : 4099)
 
-#ifndef YAML_CPP_STATIC_DEFINE
-#define YAML_CPP_STATIC_DEFINE
-#endif
 #include <yaml-cpp/yaml.h>
 
 namespace YAML {

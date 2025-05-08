@@ -12,7 +12,6 @@
 
 // External Vendor Library Headers
 #include <glad/glad.h>
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 
 namespace Louron {

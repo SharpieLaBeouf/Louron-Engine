@@ -30,7 +30,7 @@
 
 // External Vendor Library Headers
 #include <entt/entt.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
 
 namespace Louron {

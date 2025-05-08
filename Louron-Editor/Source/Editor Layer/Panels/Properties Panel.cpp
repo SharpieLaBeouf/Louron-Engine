@@ -3,7 +3,6 @@
 
 #include "../Utils/Editor Script Utils.h"
 
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <imgui.h>
 #include <imgui_internal.h>
