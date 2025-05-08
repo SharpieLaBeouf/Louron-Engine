@@ -136,7 +136,8 @@ void main()
 
 #version 450 core
 
-class PBRMaterial {
+struct PBRMaterial 
+{
     vec4 albedoTint;
     sampler2D albedoTexture;
 

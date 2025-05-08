@@ -153,6 +153,9 @@ namespace Louron {
 			glShaderSource(vertex, 1, &vShaderCode, NULL);
 			glCompileShader(vertex);
 			if (!checkCompileErrors(vertex, "VERTEX")) {
+
+				L_CORE_ERROR("Vertex Shader Failed to Compile: {}", m_ShaderFilePath.string());
+
 				glDeleteShader(vertex);
 				m_Program = -1;
 				return;
@@ -162,6 +165,9 @@ namespace Louron {
 			glShaderSource(fragment, 1, &fShaderCode, NULL);
 			glCompileShader(fragment);
 			if (!checkCompileErrors(fragment, "FRAGMENT")) {
+				
+				L_CORE_ERROR("Fragment Shader Failed to Compile: {}", m_ShaderFilePath.string());
+
 				glDeleteShader(vertex);
 				glDeleteShader(fragment);
 				m_Program = -1;
@@ -173,6 +179,9 @@ namespace Louron {
 				glShaderSource(geometry, 1, &gShaderCode, NULL);
 				glCompileShader(geometry);
 				if (!checkCompileErrors(geometry, "GEOMETRY")) {
+
+					L_CORE_ERROR("Geometry Shader Failed to Compile: {}", m_ShaderFilePath.string());
+
 					glDeleteShader(vertex);
 					glDeleteShader(fragment);
 					glDeleteShader(geometry);
@@ -188,6 +197,9 @@ namespace Louron {
 			glLinkProgram(program);
 			
 			if (!checkCompileErrors(program, "PROGRAM")) {
+
+				L_CORE_ERROR("Shader Failed to Link: {}", m_ShaderFilePath.string());
+
 				glDeleteShader(vertex);
 				glDeleteShader(fragment);
 				if (!gString.empty()) glDeleteShader(geometry);

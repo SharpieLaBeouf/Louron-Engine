@@ -500,9 +500,7 @@ namespace Louron {
 				if (!entity || !entity.HasComponent<MeshFilterComponent>())
 					continue;
 
-				
 				auto& mesh_filter = entity.GetComponent<MeshFilterComponent>();
-				L_CORE_TRACE("Entity ID: {} - Mesh Filter Handle: {}", (uint32_t)entity.GetUUID(), (uint32_t)mesh_filter.StaticMeshHandle);
 
 				// Ensure the AABB is up to date
 				mesh_filter.UpdateTransformedAABB();
