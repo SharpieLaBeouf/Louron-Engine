@@ -1,2 +1,2 @@
 cd ../../Louron-Editor
-./../Build/Debug/bin/LouronEditor
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ./../Build/Debug/bin/LouronEditor
