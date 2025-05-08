@@ -75,8 +75,6 @@ namespace Louron {
 
 		void ExecuteMainThreadQueue();
 
-		std::vector<std::string> FindFilePaths(const std::string& extension);
-
 	private:
 
 		bool m_Running = true;

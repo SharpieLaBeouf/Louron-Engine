@@ -21,6 +21,31 @@ namespace Louron {
 	// PROJECT
 
 	/// <summary>
+	/// Shuts down the project by deleting the active scene, asset registry, and active project.
+	/// </summary>
+	void Project::Shutdown()
+	{
+		if(s_ActiveProject)
+		{
+			if(s_ActiveProject->m_ActiveScene)
+			{
+				s_ActiveProject->m_ActiveScene->OnStop();
+				s_ActiveProject->m_ActiveScene.reset();
+				s_ActiveProject->m_ActiveScene = nullptr;
+			}
+
+			if(s_ActiveProject->m_AssetManager)
+			{
+				s_ActiveProject->m_AssetManager.reset();
+				s_ActiveProject->m_AssetManager = nullptr;
+			}
+			
+			s_ActiveProject.reset();
+			s_ActiveProject = nullptr;
+		}
+	}
+
+	/// <summary>
 	/// Create a New Project Instance.
 	/// Please Note: this will create a new project, and it will replace the current project. Please 
 	/// ensure that any changes made to the existing project are saved before creating a new project.

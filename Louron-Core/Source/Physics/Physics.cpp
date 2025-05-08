@@ -18,8 +18,8 @@ namespace Louron {
 	physx::PxDefaultCpuDispatcher* Physics::mDispatcher = nullptr;
 	physx::PxPvd* Physics::mPvd = nullptr;
 
-	bool Physics::Init() {
-
+	bool Physics::Init() 
+	{
 		// 1. Init Physics Founation
 		mFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, mAllocator, mErrorCallback);
 		if (!mFoundation) {

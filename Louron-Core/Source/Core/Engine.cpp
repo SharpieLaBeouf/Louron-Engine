@@ -53,17 +53,20 @@ namespace Louron {
         m_Input->Init((GLFWwindow*)m_Window->GetNativeWindow());
     }
 
-    void Engine::PushLayer(Layer* layer) {
+    void Engine::PushLayer(Layer* layer)
+    {
         m_LayerStack.PushLayer(layer);
         layer->OnAttach();
     }
 
-    void Engine::PushOverlay(Layer* layer) {
+    void Engine::PushOverlay(Layer* layer)
+    {
         m_LayerStack.PushOverlay(layer);
         layer->OnAttach();
     }
 
-    void Engine::Close() {
+    void Engine::Close()
+    {
         m_Running = false;
     }
 
@@ -74,8 +77,8 @@ namespace Louron {
         m_MainThreadQueue.emplace_back(function);
     }
 
-    void Engine::Run() {
-
+    void Engine::Run()
+    {
         while (m_Running) {
             L_PROFILE_SCOPE("Engine: Overall Loop");
 
@@ -149,24 +152,20 @@ namespace Louron {
 
         Audio::Shutdown();
         Time::Shutdown();
-
-        // Shutdown scene properly if still running
-        auto scene = Project::GetActiveScene();
-        if (scene->IsRunning())
-            scene->OnRuntimeStop();
-
-        if (scene->IsSimulating())
-            scene->OnSimulationStop();
-
-        scene->OnStop();
+        Renderer::Shutdown();
+        JobSystem::Shutdown();
+        Project::Shutdown();
+        ScriptManager::Shutdown();
     }
 
-    bool Engine::OnWindowClose() {
+    bool Engine::OnWindowClose()
+    {
         m_Running = false;
         return true;
     }
 
-    bool Engine::OnWindowResize() {
+    bool Engine::OnWindowResize()
+    {
         return false;
     }
 
@@ -178,29 +177,6 @@ namespace Louron {
             func();
 
         m_MainThreadQueue.clear();
-    }
-
-    std::vector<std::string> Engine::FindFilePaths(const std::string& extension) {
-        std::vector<std::string> paths;
-
-        namespace fs = std::filesystem;
-
-        try {
-            fs::path currentPath = fs::current_path();
-
-            for (const auto& entry : fs::recursive_directory_iterator(currentPath)) {
-                if (entry.is_regular_file()) {
-                    if (entry.path().extension() == extension) {
-                        paths.push_back(entry.path().string());
-                    }
-                }
-            }
-        }
-        catch (const std::exception& e) {
-            std::cerr << "Error searching for files: " << e.what() << std::endl;
-        }
-
-        return paths;
     }
 }
 

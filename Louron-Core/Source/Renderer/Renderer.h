@@ -65,6 +65,7 @@ namespace Louron {
 
 		// This is used to init the debug vertex arrays for cubes and spheres
 		static void Init();
+		static void Shutdown();
 
 		static void ClearColour(const glm::vec4 colour);
 		static void ClearBuffer(GLbitfield mask);

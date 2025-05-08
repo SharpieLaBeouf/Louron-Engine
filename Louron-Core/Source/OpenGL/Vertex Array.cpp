@@ -8,12 +8,13 @@
 
 namespace Louron {
 
-	VertexArray::VertexArray() {
+	VertexArray::VertexArray() 
+	{
 		glCreateVertexArrays(1, &m_VAO);
 	}
 
-	VertexArray::~VertexArray() {
-
+	VertexArray::~VertexArray() 
+	{
 		glDeleteVertexArrays(1, &m_VAO);
 
 		delete m_IndexBuffer;

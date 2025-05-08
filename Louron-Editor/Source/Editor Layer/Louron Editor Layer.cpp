@@ -122,10 +122,8 @@ void LouronEditorLayer::OnAttach()
 	m_EditorCamera->OnUpdate();
 }
 
-void LouronEditorLayer::OnDetach() {
-
-	Project::GetActiveScene()->OnStop();
-	ScriptManager::Shutdown();
+void LouronEditorLayer::OnDetach() 
+{
 }
 
 void LouronEditorLayer::OnUpdate() {

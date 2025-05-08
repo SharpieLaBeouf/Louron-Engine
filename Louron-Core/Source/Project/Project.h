@@ -51,6 +51,8 @@ namespace Louron {
 		const std::filesystem::path& GetProjectDirectory() const { return m_ProjectDirectory; }
 		std::filesystem::path GetAssetDirectory() const { return m_ProjectDirectory / m_Config.AssetDirectory; }
 
+		static void Shutdown();
+
 	public: // Scene Functions
 
 		std::shared_ptr<Scene> NewScene(const std::filesystem::path& sceneFilePath);

@@ -115,6 +115,21 @@ namespace Louron {
 		}
 	}
 
+	void Renderer::Shutdown()
+	{
+		if(s_DebugCubeVAO)
+		{
+			s_DebugCubeVAO.reset();
+			s_DebugCubeVAO = nullptr;
+		}
+
+		if(s_SkyboxVAO)
+		{
+			s_SkyboxVAO.reset();
+			s_SkyboxVAO = nullptr;
+		}
+	}
+
 	void Renderer::ClearColour(const glm::vec4 colour) 
 	{
 		glClearColor(colour.r, colour.g, colour.b, colour.a);
