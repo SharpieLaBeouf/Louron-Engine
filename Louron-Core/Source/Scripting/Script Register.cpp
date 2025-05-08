@@ -15,7 +15,7 @@ namespace Louron
 
     #if defined(L_PLATFORM_WINDOWS)
         
-        auto register_function = (RegisterHostFunctionFn)GetProcAddress(script_assembly, "RegisterHostFunction");
+        auto register_function = (RegisterHostFunctionFn)GetProcAddress((HMODULE)script_assembly, "RegisterHostFunction");
     
     #elif defined(L_PLATFORM_LINUX)
     

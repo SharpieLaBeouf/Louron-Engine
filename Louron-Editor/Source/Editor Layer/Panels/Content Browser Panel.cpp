@@ -438,7 +438,7 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 						if (first_focus) {
 
 							#if defined(L_PLATFORM_WINDOWS)
-								strncpy_s(buf, sizeof(buf), new_path_file_name.c_str());
+								strncpy_s(buf, new_path_file_name.c_str(), sizeof(buf));
 							#else
 								strncpy(buf, new_path_file_name.c_str(), sizeof(buf));
 							#endif

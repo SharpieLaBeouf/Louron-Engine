@@ -3269,7 +3269,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 						char buffer[256];
 
 					#if defined(L_PLATFORM_WINDOWS)
-						strncpy_s(buffer, text.c_str()), sizeof(buffer);
+						strncpy_s(buffer, text.c_str(), sizeof(buffer));
 					#else
 						strncpy(buffer, text.c_str(), sizeof(buffer));
 					#endif
