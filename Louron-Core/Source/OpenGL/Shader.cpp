@@ -268,7 +268,7 @@ namespace Louron {
 
 		while (std::getline(stream, line)) {
 			// Trim whitespace
-			line = std::regex_replace(line, std::regex("^\s+|\s+$"), "");
+			line = std::regex_replace(line, std::regex("^\\s+|\\s+$"), "");
 			if (line.empty() || line.rfind("//", 0) == 0) continue; // Skip comments
 
 			size_t commentPos = line.find("//");
