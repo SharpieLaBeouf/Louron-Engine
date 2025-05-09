@@ -28,19 +28,20 @@ target_include_directories(LouronCore
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}
         "${PROJECT_SOURCE_DIR}/Louron Core/Source"
-        ${PROJECT_SOURCE_DIR}/External/glfw/include
-        ${PROJECT_SOURCE_DIR}/External/glad/include
         ${PROJECT_SOURCE_DIR}/External/assimp/include
         ${PROJECT_SOURCE_DIR}/External/efsw/include
+        ${PROJECT_SOURCE_DIR}/External/entt/src
+        ${PROJECT_SOURCE_DIR}/External/glad/include
+        ${PROJECT_SOURCE_DIR}/External/glfw/include
+        ${PROJECT_SOURCE_DIR}/External/glm/glm
         ${PROJECT_SOURCE_DIR}/External/imgui
         ${PROJECT_SOURCE_DIR}/External/imguizmo
         ${PROJECT_SOURCE_DIR}/External/miniaudio
-        ${PROJECT_SOURCE_DIR}/External/spdlog/include
         ${PROJECT_SOURCE_DIR}/External/physx
-        ${PROJECT_SOURCE_DIR}/External/glm/glm
+        ${PROJECT_SOURCE_DIR}/External/spdlog/include
         ${PROJECT_SOURCE_DIR}/External/stb
-        ${PROJECT_SOURCE_DIR}/External/yaml-cpp/include
         ${PROJECT_SOURCE_DIR}/External/tinyfiledialogs
+        ${PROJECT_SOURCE_DIR}/External/yaml-cpp/include
         ${LIBCLANG_INCLUDE_DIR}
 )
 

@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/External/assimp/include",
+                "${workspaceFolder}/External/efsw/include",
+                "${workspaceFolder}/External/entt/src",
+                "${workspaceFolder}/External/glad/include",
+                "${workspaceFolder}/External/glfw/include",
+                "${workspaceFolder}/External/glm/glm",
+                "${workspaceFolder}/External/imgui",
+                "${workspaceFolder}/External/imguizmo",
+                "${workspaceFolder}/External/miniaudio",
+                "${workspaceFolder}/External/physx",
+                "${workspaceFolder}/External/spdlog/include",
+                "${workspaceFolder}/External/stb",
+                "${workspaceFolder}/External/tinyfiledialogs",
+                "${workspaceFolder}/External/yaml-cpp/include",
+                "${workspaceFolder}/External/clang-c",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "${default}"
+        }
+    ],
+    "version": 4
+}
