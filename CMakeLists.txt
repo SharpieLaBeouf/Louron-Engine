@@ -4,7 +4,16 @@ project(LouronEngine)
 
 set(CMAKE_CXX_STANDARD 20)
 
+# Determine platform
+if(WIN32)
+    set(PLATFORM windows)
+elseif(UNIX)
+    set(PLATFORM linux)
+else()
+    message(FATAL_ERROR "Unsupported platform")
+endif()
 
+# Optimisation Flags
 if(UNIX)
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "-s")
     set(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG" CACHE STRING "" FORCE)
@@ -15,6 +24,7 @@ elseif(WIN32)
     set(CMAKE_CXX_FLAGS_RELEASE "/O2 -DNDEBUG" CACHE STRING "" FORCE)
 endif()
 
+# Output Directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
@@ -124,22 +134,11 @@ set_target_properties(miniaudio_vocoder_node PROPERTIES FOLDER "External/miniaud
 # ---------------------------------------------------------------------------
 # External: PhysX
 # ---------------------------------------------------------------------------
-set(PHYSX_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/External/physx/physx/include")
+set(PHYSX_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/External/physx")
 set(PHYSX_LIB_DIR_BASE "${PROJECT_SOURCE_DIR}/External/bin/physx")
-
-# Determine platform
-if(WIN32)
-    set(PLATFORM windows)
-elseif(UNIX)
-    set(PLATFORM linux)
-else()
-    message(FATAL_ERROR "Unsupported platform for PhysX")
-endif()
 
 set(PHYSX_DEBUG_LIB_DIR "${PHYSX_LIB_DIR_BASE}/${PLATFORM}/debug")
 set(PHYSX_RELEASE_LIB_DIR "${PHYSX_LIB_DIR_BASE}/${PLATFORM}/release")
-message("-- PHYSX Debug Binary Location: ${PHYSX_DEBUG_LIB_DIR}")
-message("-- PHYSX Release Binary Location: ${PHYSX_RELEASE_LIB_DIR}")
 
 # List of PhysX module libraries
 set(PHYSX_MODULES

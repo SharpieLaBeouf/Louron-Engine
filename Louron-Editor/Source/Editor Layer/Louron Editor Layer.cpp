@@ -2499,7 +2499,7 @@ void LouronEditorLayer::DisplayAssetRegistryWindow() {
 
 		// Input box for filtering assets
 		ImGui::InputTextWithHint("##Filter", "Search Assets...", filter, IM_ARRAYSIZE(filter));
-		ImGui::Text("Total Assets: %i", asset_manager->GetAssetRegistry().size());
+		ImGui::Text("Total Assets: %i", static_cast<uint32_t>(asset_manager->GetAssetRegistry().size()));
 		ImGui::SameLine();
 		if(ImGui::Button("Refresh Asset Registry")) {
 			asset_manager->RefreshAssetRegistry(Project::GetActiveProject()->GetAssetDirectory());

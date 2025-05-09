@@ -36,7 +36,7 @@ target_include_directories(LouronCore
         ${PROJECT_SOURCE_DIR}/External/imguizmo
         ${PROJECT_SOURCE_DIR}/External/miniaudio
         ${PROJECT_SOURCE_DIR}/External/spdlog/include
-        ${PROJECT_SOURCE_DIR}/External/physx/physx/include
+        ${PROJECT_SOURCE_DIR}/External/physx
         ${PROJECT_SOURCE_DIR}/External/glm/glm
         ${PROJECT_SOURCE_DIR}/External/stb
         ${PROJECT_SOURCE_DIR}/External/yaml-cpp/include

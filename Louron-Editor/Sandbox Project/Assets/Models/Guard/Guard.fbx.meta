@@ -7,13 +7,52 @@ Asset Import Config:
   Import Position: [0, 0, 0]
   Import Rotation: [0, 0, 0]
   Import Scale: [1, 1, 1]
-  Import Skeleton: false
-  Import Animations: false
+  Import Skeleton: true
+  Import Animations: true
   Import Materials: true
 Composite Assets:
-  - Asset Name: Guard02
-    Asset Handle: 995961984
+  - Asset Name: Guard
+    Asset Handle: 133603062
     Asset Type: AssetType::Mesh
+  - Asset Name: Locomotion_Walking_Game Ready
+    Asset Handle: 179854324
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Locomotion_Running_Game Ready
+    Asset Handle: 334699808
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Locomotion_Turn Left 180_Game Ready
+    Asset Handle: 667878196
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Locomotion_Strafe Right Running_Game Ready
+    Asset Handle: 1759637117
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Locomotion_Turn Left 90_Game Ready
+    Asset Handle: 2212193764
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Locomotion_Strafe Right Walking_Game Ready
+    Asset Handle: 2262650301
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Locomotion_Turn Right 180_Game Ready
+    Asset Handle: 2496979885
+    Asset Type: AssetType::AnimationClip
   - Asset Name: Guard_02
     Asset Handle: 2696109393
     Asset Type: AssetType::Material_Standard
+  - Asset Name: Locomotion_Jump_Game Ready
+    Asset Handle: 2722134115
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Game Rig
+    Asset Handle: 3677312648
+    Asset Type: AssetType::Skeleton
+  - Asset Name: Locomotion_Turn Right 90_Game Ready
+    Asset Handle: 3821992227
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Locomotion_Idle_Game Ready
+    Asset Handle: 4060588689
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Locomotion_Strafe Left Walking_Game Ready
+    Asset Handle: 4119735156
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Locomotion_Strafe Left Running_Game Ready
+    Asset Handle: 4274580640
+    Asset Type: AssetType::AnimationClip
