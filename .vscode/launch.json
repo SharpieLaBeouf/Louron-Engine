@@ -46,8 +46,7 @@
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 }
-            ],
-            "preLaunchTask": "build LouronEditor-Linux-Debug"
+            ]
         },
         {
             "name": "(Linux) Launch LouronEditor-Release",
