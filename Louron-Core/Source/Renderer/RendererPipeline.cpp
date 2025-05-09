@@ -2380,6 +2380,10 @@ namespace Louron {
 					shader->SetMat4("u_Model", transform);
 
 					std::shared_ptr<StaticMesh> asset_mesh = AssetManager::GetAsset<StaticMesh>(entity.GetComponent<MeshFilterComponent>().StaticMeshHandle);
+
+					if(!asset_mesh)
+						continue;
+
 					for (auto& sub_mesh : asset_mesh->SubMeshes)
 					{
 						Renderer::DrawSubMesh(sub_mesh);
@@ -2515,6 +2519,10 @@ namespace Louron {
 						shader->SetMat4("u_Model", transform);
 
 						std::shared_ptr<StaticMesh> asset_mesh = AssetManager::GetAsset<StaticMesh>(mesh_entity.GetComponent<MeshFilterComponent>().StaticMeshHandle);
+
+						if(!asset_mesh)
+							continue;
+
 						for (auto& sub_mesh : asset_mesh->SubMeshes)
 						{
 							Renderer::DrawSubMesh(sub_mesh);

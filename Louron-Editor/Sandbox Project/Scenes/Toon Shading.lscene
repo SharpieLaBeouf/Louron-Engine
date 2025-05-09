@@ -1,8 +1,32 @@
 Scene Name: Toon Shading
-Scene Asset Directory: E:\Coding\Louron\Louron Editor\Sandbox Project\Assets
 Scene Pipeline Type: 1
 Entities:
-  - Entity: 895205798
+  - Entity: 2006140417
+    TagComponent:
+      Tag: Main Camera
+    HierarchyComponent:
+      Parent: 4294967295
+      Children:
+        []
+    ScriptComponent:
+      {}
+    TransformComponent:
+      Translation: [0, 12.796128, 30.833385]
+      Rotation: [-10, 0, 0]
+      Scale: [0.9999999, 1, 0.9999999]
+    CameraComponent:
+      Camera:
+        Projection Type: Perspective
+        FOV: 60.000004
+        Near: 0.01
+        Far: 1000
+      Primary: true
+      DisplayToMainViewport: true
+      ClearFlag: Skybox
+      ClearColour: [0.2640571, 0.3299537, 0.5441177, 1]
+      CameraViewport: [0, 0, 1, 1]
+    CameraDepth: "\x00"
+  - Entity: 2844645185
     TagComponent:
       Tag: Sphere
     HierarchyComponent:
@@ -10,36 +34,17 @@ Entities:
       Children:
         []
     TransformComponent:
-      Translation: [0, 3.96924591, 0]
-      Rotation: [0, -0, 0]
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     MeshFilterComponent:
-      MeshAssetHandle: 1346696148
+      MeshAssetHandle: 2834195060
     MeshRendererComponent:
       MeshActive: true
       CastShadows: false
       MaterialAssetCount: 1
       MaterialAssetHandles:
-        - 3097488182
-  - Entity: 614684837
-    TagComponent:
-      Tag: Floor
-    HierarchyComponent:
-      Parent: 4294967295
-      Children:
-        []
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, -0, 0]
-      Scale: [10, 0.100000001, 10]
-    MeshFilterComponent:
-      MeshAssetHandle: 2903028380
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 1
-      MaterialAssetHandles:
-        - 1468248674
+        - 834396518
   - Entity: 3077619168
     TagComponent:
       Tag: Directional Light
@@ -49,36 +54,30 @@ Entities:
         []
     TransformComponent:
       Translation: [0, 0, 0]
-      Rotation: [-50, 28.3999996, 0]
+      Rotation: [-50, 28.4, 0]
       Scale: [1, 1, 1]
     DirectionalLightComponent:
       Active: true
       Colour: [1, 1, 1, 1]
       Intensity: 1
       Shadow Type: None
-  - Entity: 2006140417
+      Max Shadow Visible Distance: 1
+  - Entity: 2138007476
     TagComponent:
-      Tag: Main Camera
+      Tag: Cube
     HierarchyComponent:
       Parent: 4294967295
       Children:
         []
-    ScriptComponent:
-      Script_1:
-        Active: true
-        Script Name: SandboxProject.CameraMoveScript
-        Fields:
-          []
     TransformComponent:
-      Translation: [0, 12.7961283, 30.8333855]
-      Rotation: [-10, 0, 0]
-      Scale: [0.999999881, 1, 0.999999881]
-    CameraComponent:
-      Camera:
-        Projection Type: Perspective
-        FOV: 60.0000038
-        Near: 0.00999999978
-        Far: 1000
-      Primary: true
-      ClearFlag: Skybox
-      ClearColour: [0.2640571, 0.3299537, 0.544117689, 1]
+      Translation: [0, -2.110508, 0]
+      Rotation: [0, -0, 0]
+      Scale: [4.2898927, 0.09664287, 5.025679]
+    MeshFilterComponent:
+      MeshAssetHandle: 1708907836
+    MeshRendererComponent:
+      MeshActive: true
+      CastShadows: false
+      MaterialAssetCount: 1
+      MaterialAssetHandles:
+        - 1802845666

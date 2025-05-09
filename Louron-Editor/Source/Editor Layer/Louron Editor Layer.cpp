@@ -848,6 +848,18 @@ void LouronEditorLayer::OnGuiRender() {
 	}
 }
 
+void LouronEditorLayer::OnSceneSimulate()
+{
+	L_APP_INFO("Simulating Scene");
+
+	m_GizmoType = -1;
+	m_SceneState = SceneState::Simulate;
+	m_EditorScene = Scene::Copy(Project::GetActiveScene());
+	m_SceneWindowFocused = false;
+
+	Project::GetActiveScene()->OnSimulationStart();
+}
+
 void LouronEditorLayer::OnScenePlay()
 {
 	if (!m_ScriptsCompiledSuccess)
@@ -868,6 +880,8 @@ void LouronEditorLayer::OnScenePlay()
 
 void LouronEditorLayer::OnSceneStop()
 {
+	L_APP_INFO("Stopping Scene");
+
 	if(m_SceneState == SceneState::Play)
 		Project::GetActiveScene()->OnRuntimeStop();
 	else if (m_SceneState == SceneState::Simulate)
@@ -900,7 +914,6 @@ void LouronEditorLayer::OnSceneStop()
 		m_EditorScene.reset();
 		m_EditorScene = nullptr;
 	}
-	L_APP_INFO("Scene Stopped");
 }
 
 void LouronEditorLayer::DisplaySceneViewportWindow() {
@@ -1005,49 +1018,49 @@ void LouronEditorLayer::DisplaySceneViewportWindow() {
 
 		// ----- Draw Scene Control Buttons -----
 		{
-			ImGuiWindowFlags window_flags =
-				ImGuiWindowFlags_NoDecoration |
+			ImGuiWindowFlags flags =
+				ImGuiWindowFlags_NoDecoration | 
 				ImGuiWindowFlags_AlwaysAutoResize |
-				ImGuiWindowFlags_NoSavedSettings |
+				ImGuiWindowFlags_NoSavedSettings | 
 				ImGuiWindowFlags_NoFocusOnAppearing |
-				ImGuiWindowFlags_NoDocking |
-				ImGuiWindowFlags_NoBackground;
+				ImGuiWindowFlags_NoDocking;
 
-			ImVec2 scene_control_window_pos = ImGui::GetWindowPos();
-			ImVec2 scene_control_window_size = ImGui::GetWindowSize();
-			ImVec2 scene_control_overlay_size = ImVec2(40.0f, 40.0f);
-			ImVec2 scene_control_overlay_pos = ImVec2(
-				scene_control_window_pos.x + scene_control_window_size.x - scene_control_overlay_size.x - 10.0f,  // 10.0f is a margin
-				scene_control_window_pos.y + ImGui::GetCurrentWindow()->TitleBarHeight + 10.0f   // 10.0f is a margin
+			const float btn_size = 30.0f, spacing = 8.0f, margin = 5.0f;
+			ImVec2 padding = ImGui::GetStyle().FramePadding;
+			ImVec2 total_btn = ImVec2(btn_size + padding.x * 2, btn_size + padding.y * 2);
+			int btn_count = (m_SceneState == SceneState::Edit) ? 2 : 1;
+
+			ImVec2 overlay_size = ImVec2(
+				btn_count * total_btn.x + (btn_count - 1) * spacing + margin * 2,
+				total_btn.y + margin * 2
 			);
 
-			ImGui::SetNextWindowSize(scene_control_overlay_size, ImGuiCond_Always);
-			ImGui::SetNextWindowPos(scene_control_overlay_pos, ImGuiCond_Always);
-			if (ImGui::Begin("Scene Control", nullptr, window_flags))
+			ImVec2 win_pos = ImGui::GetWindowPos(), win_size = ImGui::GetWindowSize();
+			ImVec2 overlay_pos = ImVec2(
+				win_pos.x + win_size.x - overlay_size.x - 10.0f,
+				win_pos.y + ImGui::GetCurrentWindow()->TitleBarHeight + 10.0f
+			);
+
+			ImGui::SetNextWindowSize(overlay_size, ImGuiCond_Always);
+			ImGui::SetNextWindowPos(overlay_pos, ImGuiCond_Always);
+			if (ImGui::Begin("Scene Control", nullptr, flags))
 			{
-				// Center the button horizontally
-				float buttonWidth = 30.0f; // Width of the play button
-				ImVec2 available_region = ImGui::GetContentRegionAvail();
-				ImGui::SetCursorPosX((available_region.x - buttonWidth) * 0.5f);
+				ImVec2 pos = ImGui::GetWindowPos();
+				ImGui::GetWindowDrawList()->AddRectFilled(pos, ImVec2(pos.x + overlay_size.x, pos.y + overlay_size.y), IM_COL32(50, 50, 50, 200), 6.0f);
+				ImGui::SetCursorPos(ImVec2(margin, margin));
 
-				bool isPlaying = m_SceneState == SceneState::Play;
-				GLuint icon_texture_id = isPlaying ? m_IconStop->GetID() : m_IconPlay->GetID();
-
-				ImGui::SetCursorPosX(0.0f);
-				ImGui::SetCursorPosY(0.0f);
-				if (ImGui::ImageButton("##PlayStopButton", (ImTextureID)(uintptr_t)icon_texture_id, ImVec2(30.0f, 30.0f))) {
-
-					isPlaying = !isPlaying; // Toggle play state
-					if (isPlaying)
-					{
-						OnScenePlay();
-					}
-					else
-					{
-						OnSceneStop();
-					}
+				if (m_SceneState == SceneState::Edit)
+				{
+					if (ImGui::ImageButton("##Play", (ImTextureID)(uintptr_t)m_IconPlay->GetID(), ImVec2(btn_size, btn_size))) OnScenePlay();
+					scene_image_hovered = ImGui::IsItemHovered();
+					ImGui::SameLine(0, spacing);
+					if (ImGui::ImageButton("##Sim", (ImTextureID)(uintptr_t)m_IconSimulate->GetID(), ImVec2(btn_size, btn_size))) OnSceneSimulate();
 				}
-				scene_image_hovered = ImGui::IsItemHovered();
+				else
+				{
+					if (ImGui::ImageButton("##Stop", (ImTextureID)(uintptr_t)m_IconStop->GetID(), ImVec2(btn_size, btn_size))) OnSceneStop();
+					scene_image_hovered = ImGui::IsItemHovered();
+				}
 			}
 			ImGui::End();
 		}

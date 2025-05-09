@@ -26,6 +26,7 @@ public:
 	virtual void OnGuiRender() override;
 
 	void OnScenePlay();
+	void OnSceneSimulate();
 	void OnSceneStop();
 
 private:
