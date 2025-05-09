@@ -5,6 +5,7 @@
 #include "Asset Manager API.h"
 
 #include "../Core/Engine.h"
+#include "../Core/FileSystem Utilities.h"
 #include "../Debug/Profiler.h"
 #include "../Project/Project.h"
 
@@ -1047,7 +1048,7 @@ namespace Louron
 	{
 		AssetHandle handle = Utils::fnv1a_hash(
 			AssetUtils::AssetTypeToString(asset_type) + 
-			asset_file_path.string()
+			Utils::NormalisePath(asset_file_path).string()
 		);
 
 		return handle;

@@ -15,6 +15,7 @@
 #include "Core/Logging.h"
 #include "Core/Time.h"
 #include "Core/Window.h"
+#include "Core/FileSystem Utilities.h"
 #include "Core/File Utilities.h"
 #include "Core/Platform.h"
 

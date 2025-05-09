@@ -588,7 +588,7 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								// Ensure Custom Handle When Creating Asset
 								AssetHandle handle = Louron::Utils::fnv1a_hash(
 									AssetUtils::AssetTypeToString(AssetType::Material_Standard) + 
-									std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
+									Louron::Utils::NormalisePath(std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory())).string()
 								);
 
 								counter = 0;
@@ -596,7 +596,7 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								{
 									handle = Louron::Utils::fnv1a_hash(
 										AssetUtils::AssetTypeToString(AssetType::Material_Standard) + 
-										std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + 
+										Louron::Utils::NormalisePath(std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory())).string() + 
 										"_" + 
 										std::to_string(counter)
 									);
@@ -636,7 +636,7 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								// Ensure Custom Handle When Creating Asset
 								AssetHandle handle = Louron::Utils::fnv1a_hash(
 									AssetUtils::AssetTypeToString(AssetType::Material_Skybox) + 
-									std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
+									Louron::Utils::NormalisePath(std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory())).string()
 								);
 
 								counter = 0;
@@ -644,7 +644,7 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								{
 									handle = Louron::Utils::fnv1a_hash(
 										AssetUtils::AssetTypeToString(AssetType::Material_Skybox) + 
-										std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + 
+										Louron::Utils::NormalisePath(std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory())).string() + 
 										"_" + 
 										std::to_string(counter)
 									);
@@ -673,7 +673,7 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								// Ensure Custom Handle When Creating Asset
 								AssetHandle handle = Louron::Utils::fnv1a_hash(
 									AssetUtils::AssetTypeToString(AssetType::Shader) + 
-									std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
+									Louron::Utils::NormalisePath(std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory())).string()
 								);
 
 								counter = 0;
@@ -681,7 +681,7 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								{
 									handle = Louron::Utils::fnv1a_hash(
 										AssetUtils::AssetTypeToString(AssetType::Material_Standard) + 
-										std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + 
+										Louron::Utils::NormalisePath(std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory())).string() + 
 										"_" + 
 										std::to_string(counter)
 									);
@@ -710,7 +710,7 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								// Ensure Custom Handle When Creating Asset
 								AssetHandle handle = Louron::Utils::fnv1a_hash(
 									AssetUtils::AssetTypeToString(AssetType::Compute_Shader) + 
-									std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string()
+									Louron::Utils::NormalisePath(std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory())).string()
 								);
 
 								counter = 0;
@@ -718,7 +718,7 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								{
 									handle = Louron::Utils::fnv1a_hash(
 										AssetUtils::AssetTypeToString(AssetType::Compute_Shader) + 
-										std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory()).string() + 
+										Louron::Utils::NormalisePath(std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory())).string() + 
 										"_" + 
 										std::to_string(counter)
 									);
