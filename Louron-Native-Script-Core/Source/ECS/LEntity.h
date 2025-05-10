@@ -94,7 +94,7 @@ namespace Louron
 		* @brief Set the transform of the entity.
 		* @param transform The new transform of the entity.
 		*/
-		void SetTransform(const Transform& transform) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Transform&), TransformComponent_SetTransform, m_EntityID, transform); }
+		void SetTransform(const Transform& transform) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Transform*), TransformComponent_SetTransform, m_EntityID, &transform); }
 
 		/**
 		* @brief Get the position of the entity.
@@ -106,7 +106,7 @@ namespace Louron
 		* @brief Set the position of the entity.
 		* @param position The new position of the entity.
 		*/
-		void SetPosition(const Vectors::Vector3& position) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3&), TransformComponent_SetPosition, m_EntityID, position); }
+		void SetPosition(const Vectors::Vector3& position) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), TransformComponent_SetPosition, m_EntityID, &position); }
 
 		/**
 		* @brief Get the rotation of the entity.
@@ -118,7 +118,7 @@ namespace Louron
 		* @brief Set the rotation of the entity.
 		* @param rotation The new rotation of the entity.
 		*/
-		void SetRotation(const Vectors::Vector3& rotation) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3&), TransformComponent_SetRotation, m_EntityID, rotation); }
+		void SetRotation(const Vectors::Vector3& rotation) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), TransformComponent_SetRotation, m_EntityID, &rotation); }
 
 		/**
 		* @brief Get the scale of the entity.
@@ -130,7 +130,7 @@ namespace Louron
 		* @brief Set the scale of the entity.
 		* @param scale The new scale of the entity.
 		*/
-		void SetScale(const Vectors::Vector3& scale) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3&), TransformComponent_SetScale, m_EntityID, scale); }
+		void SetScale(const Vectors::Vector3& scale) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), TransformComponent_SetScale, m_EntityID, &scale); }
 
 		/**
 		* @brief Get the front vector of the entity.
@@ -142,7 +142,7 @@ namespace Louron
 		* @brief Set the front vector of the entity.
 		* @param front The new front vector of the entity.
 		*/
-		void SetFront(const Vectors::Vector3& front) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3&), TransformComponent_SetFront, m_EntityID, front); }
+		void SetFront(const Vectors::Vector3& front) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), TransformComponent_SetFront, m_EntityID, &front); }
 
 		/**
 		* @brief Get the up vector of the entity.
@@ -199,7 +199,7 @@ namespace Louron
 		* @param transform The transform to place the new entity at in World Space.
 		* @return Entity The new entity created from the prefab.
 		*/
-		static Entity Instantiate(Assets::Prefab prefab, const Transform& transform) { return (prefab != NULL_UUID) ? Entity(ENGINE_SAFE_CALL_RET(uint32_t, uint32_t(*)(uint32_t, const Transform&), Entity_Instantiate_Transform, prefab.operator uint32_t(), transform)) : Entity(NULL_UUID); }
+		static Entity Instantiate(Assets::Prefab prefab, const Transform& transform) { return (prefab != NULL_UUID) ? Entity(ENGINE_SAFE_CALL_RET(uint32_t, uint32_t(*)(uint32_t, const Transform*), Entity_Instantiate_Transform, prefab.operator uint32_t(), &transform)) : Entity(NULL_UUID); }
 		
 		/**
 		* @brief Instantiate a prefab within the Scene.

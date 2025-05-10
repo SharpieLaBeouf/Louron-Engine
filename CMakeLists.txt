@@ -196,15 +196,15 @@ set_target_properties(yaml-cpp PROPERTIES FOLDER "External/yaml-cpp")
 # External: libclang
 # ---------------------------------------------------------------------------
 set(LIBCLANG_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/External/clang-c")
-set(LIBCLANG_LIB_DIR_BASE "${PROJECT_SOURCE_DIR}/External/bin/clang-c")
-
-set(LIBCLANG_LIB_DIR "${LIBCLANG_LIB_DIR_BASE}/${PLATFORM}")
-message("-- libclang Binary Location: ${LIBCLANG_LIB_DIR}")
 
 if(WIN32)
+    set(LIBCLANG_LIB_DIR_BASE "${PROJECT_SOURCE_DIR}/External/bin/clang-c")
+
+    set(LIBCLANG_LIB_DIR "${LIBCLANG_LIB_DIR_BASE}/${PLATFORM}")
+    message("-- libclang Binary Location: ${LIBCLANG_LIB_DIR}")
     set(LIBCLANG_LIB_PATH "${LIBCLANG_LIB_DIR}/libclang.lib")
 else()
-    # set(LIBCLANG_LIB_PATH "${LIBCLANG_LIB_DIR}/libclang.so")
+    set(LIBCLANG_LIB_PATH "${PROJECT_SOURCE_DIR}/Louron-Editor/libclang.so.18.1")
 endif()
 
 # ---------------------------------------------------------------------------

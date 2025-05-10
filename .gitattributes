@@ -69,3 +69,5 @@ External/bin/physx/linux/release/** filter=lfs diff=lfs merge=lfs -text
 External/bin/clang-c/linux/** filter=lfs diff=lfs merge=lfs -text
 External/bin/clang-c/windows/** filter=lfs diff=lfs merge=lfs -text
 Louron-Editor/Resources/Compiler/linux/clang++ filter=lfs diff=lfs merge=lfs -text
+Louron-Editor/libclang.so.18.1 filter=lfs diff=lfs merge=lfs -text
+Louron-Editor/Resources/Compiler/windows/clang++.exe filter=lfs diff=lfs merge=lfs -text

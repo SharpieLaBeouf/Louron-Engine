@@ -52,7 +52,18 @@ void LouronEditorLayer::OnAttach()
 	// 2. Then we have to load ScriptManager -> Script Manager needs a current project instance to be running
 	m_ScriptsCompiledSuccess = ::Utils::BuildScriptCodeAssembly(Project::GetActiveProject()->GetProjectDirectory() / "Scripts");
 
-	const auto& script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+	auto script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+	
+#if defined(L_PLATFORM_WINDOWS)
+
+	script_assembly_path = script_assembly_path.parent_path() / "ScriptCode.dll";
+
+#elif defined(L_PLATFORM_LINUX)
+
+	script_assembly_path = script_assembly_path.parent_path() / "ScriptCode.so";
+
+#endif
+	
 	ScriptManager::Init(script_assembly_path);
 
 	// 3. Then we have to load startup scene -> ScriptComponent serialisation requires the ScriptManager to be initialised
@@ -340,7 +351,18 @@ void LouronEditorLayer::OnGuiRender() {
 							Project::LoadProject(filepath);
 
 							// 2. then ensure script manager has the correct assembly
-							const auto& script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+							auto script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+							
+						#if defined(L_PLATFORM_WINDOWS)
+
+							script_assembly_path = script_assembly_path.parent_path() / "ScriptCode.dll";
+
+						#elif defined(L_PLATFORM_LINUX)
+
+							script_assembly_path = script_assembly_path.parent_path() / "ScriptCode.so";
+
+						#endif
+
 							ScriptManager::Get()->FreeAssembly();
 							ScriptManager::Get()->RemoveAllScriptFields();
 							m_ScriptsCompiledSuccess = ::Utils::BuildScriptCodeAssembly(Project::GetActiveProject()->GetProjectDirectory() / "Scripts");
@@ -435,7 +457,18 @@ void LouronEditorLayer::OnGuiRender() {
 
 					JobSystem::Get()->SubmitJob("Reload Script Assembly", [&]()
 						{
-							const auto& script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+							auto script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+														
+						#if defined(L_PLATFORM_WINDOWS)
+
+							script_assembly_path = script_assembly_path.parent_path() / "ScriptCode.dll";
+
+						#elif defined(L_PLATFORM_LINUX)
+
+							script_assembly_path = script_assembly_path.parent_path() / "ScriptCode.so";
+
+						#endif
+							
 							m_ScriptsCompiledSuccess = ::Utils::BuildScriptCodeAssembly(Project::GetActiveProject()->GetProjectDirectory() / "Scripts", false);
 							m_ScriptsNeedCompiling.store(false, std::memory_order_relaxed);
 
@@ -609,7 +642,18 @@ void LouronEditorLayer::OnGuiRender() {
 
 					auto project = Project::NewProject(s_NewProjectName, s_NewFolderPath);
 
-					const auto& script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+					auto script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+
+				#if defined(L_PLATFORM_WINDOWS)
+
+					script_assembly_path = script_assembly_path.parent_path() / "ScriptCode.dll";
+
+				#elif defined(L_PLATFORM_LINUX)
+
+					script_assembly_path = script_assembly_path.parent_path() / "ScriptCode.so";
+
+				#endif
+					
 					m_ScriptsCompiledSuccess = ::Utils::BuildScriptCodeAssembly(Project::GetActiveProject()->GetProjectDirectory() / "Scripts");
 					ScriptManager::Get()->FreeAssembly();
 					ScriptManager::Get()->RemoveAllScriptFields();
@@ -814,7 +858,18 @@ void LouronEditorLayer::OnGuiRender() {
 		{
 			JobSystem::Get()->SubmitJob("Reload Script Assembly", [&]()
 				{
-					const auto& script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+					auto script_assembly_path = Project::GetActiveProject()->GetProjectDirectory() / Project::GetActiveProject()->GetConfig().ScriptAssemblyPath;
+					
+				#if defined(L_PLATFORM_WINDOWS)
+
+					script_assembly_path = script_assembly_path.parent_path() / "ScriptCode.dll";
+
+				#elif defined(L_PLATFORM_LINUX)
+
+					script_assembly_path = script_assembly_path.parent_path() / "ScriptCode.so";
+
+				#endif
+				
 					m_ScriptsCompiledSuccess = ::Utils::BuildScriptCodeAssembly(Project::GetActiveProject()->GetProjectDirectory() / "Scripts", false);
 					m_ScriptsNeedCompiling.store(false, std::memory_order_relaxed);
 

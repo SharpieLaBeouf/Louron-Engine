@@ -1,10 +1,11 @@
 #pragma once
 
+#include <memory>
+
 #include "../Engine Callbacks.h"
 
 #include "../Defines/LAssets.h"
 #include "../Defines/LTypes.h"
-
 
 namespace Louron
 {
@@ -22,14 +23,17 @@ namespace Louron
 
 			static BackEndAPI::FieldType GetType() { return BackEndAPI::FieldType::Unknown; }
 
+		private:
+
+			void SetEntity(uint32_t entity_uuid) { m_EntityID = entity_uuid; }
+			friend class ::Louron::Entity;
+		
 		protected:
 
 			Component(uint32_t entity_uuid) : m_EntityID(entity_uuid) {}
-			void SetEntity(uint32_t entity_uuid) { m_EntityID = entity_uuid; }
-
+			
 			uint32_t m_EntityID;
-
-			friend class Entity;
+			
 		};
 
 		/**
@@ -221,7 +225,7 @@ namespace Louron
 			* camera.SetViewport({ 0.0f, 0.0f, 0.5f, 0.5f }); // Bottom-left quadrant
 			* @endcode
 			*/
-			void SetViewport(Vectors::Vector4 viewport_dimensions) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector4&), CameraComponent_SetViewport, m_EntityID, viewport_dimensions); }
+			void SetViewport(Vectors::Vector4 viewport_dimensions) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector4*), CameraComponent_SetViewport, m_EntityID, &viewport_dimensions); }
 			/**
 			* @brief Gets the position of the viewport.
 			*
@@ -962,7 +966,7 @@ namespace Louron
 			* @brief Sets the light colour.
 			* @param colour RGBA colour.
 			*/
-			void SetColour(Vectors::Vector4 colour) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector4&), PointLightComponent_SetColour, m_EntityID, colour); }
+			void SetColour(Vectors::Vector4 colour) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector4*), PointLightComponent_SetColour, m_EntityID, &colour); }
 			
 			/**
 			* @brief Gets the shadow flag for this light.
@@ -1048,7 +1052,7 @@ namespace Louron
 			* @brief Sets the light colour.
 			* @param colour RGBA colour.
 			*/
-			void SetColour(Vectors::Vector4 colour) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector4&), SpotLightComponent_SetColour, m_EntityID, colour); }
+			void SetColour(Vectors::Vector4 colour) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector4*), SpotLightComponent_SetColour, m_EntityID, &colour); }
 
 			/**
 			* @brief Gets the shadow flag for this light.
@@ -1122,7 +1126,7 @@ namespace Louron
 			* @brief Sets the light colour.
 			* @param colour RGBA colour.
 			*/
-			void SetColour(Vectors::Vector4 colour) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector4&), DirectionalLightComponent_SetColour, m_EntityID, colour); }
+			void SetColour(Vectors::Vector4 colour) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector4*), DirectionalLightComponent_SetColour, m_EntityID, &colour); }
 
 			/**
 			* @brief Gets the shadow flag for this light.
@@ -1233,13 +1237,13 @@ namespace Louron
 			* @brief Sets the linear velocity of the rigidbody.
 			* @param linear_velocity The new linear velocity of the rigidbody.
 			*/
-			void SetLinearVelocity(const Vectors::Vector3& linear_velocity) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, Vectors::Vector3), RigidbodyComponent_SetLinearVelocity, m_EntityID, linear_velocity); }
+			void SetLinearVelocity(const Vectors::Vector3& linear_velocity) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), RigidbodyComponent_SetLinearVelocity, m_EntityID, &linear_velocity); }
 
 			/**
 			* @brief Sets the angular velocity of the rigidbody.
 			* @param angular_velocity The new angular velocity of the rigidbody.
 			*/
-			void SetAngularVelocity(const Vectors::Vector3& angular_velocity) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, Vectors::Vector3), RigidbodyComponent_SetAngularVelocity, m_EntityID, angular_velocity); }
+			void SetAngularVelocity(const Vectors::Vector3& angular_velocity) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), RigidbodyComponent_SetAngularVelocity, m_EntityID, &angular_velocity); }
 
 			/**
 			* @brief Sets the angular drag.
@@ -1269,13 +1273,13 @@ namespace Louron
 			* @brief Locks movement along specific axes.
 			* @param position_constraint Boolean vector (x, y, z) where true = locked.
 			*/
-			void SetPositionConstraint(const Vectors::BVector3& positionConstraint) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, Vectors::BVector3), RigidbodyComponent_SetPositionConstraint, m_EntityID, positionConstraint); }
+			void SetPositionConstraint(const Vectors::BVector3& positionConstraint) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::BVector3*), RigidbodyComponent_SetPositionConstraint, m_EntityID, &positionConstraint); }
 
 			/**
 			* @brief Locks rotation along specific axes.
 			* @param rotation_constraint Boolean vector (x, y, z) where true = locked.
 			*/
-			void SetRotationConstraint(const Vectors::BVector3& rotationConstraint) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, Vectors::BVector3), RigidbodyComponent_SetRotationConstraint, m_EntityID, rotationConstraint); }
+			void SetRotationConstraint(const Vectors::BVector3& rotationConstraint) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::BVector3*), RigidbodyComponent_SetRotationConstraint, m_EntityID, &rotationConstraint); }
 
 			/**
 			* @brief Defines how forces are applied to the rigidbody.
@@ -1293,13 +1297,13 @@ namespace Louron
 			* @param force The force vector in world space.
 			* @param force_mode The mode to apply the force in (default = Force).
 			*/
-			void ApplyForce(const Vectors::Vector3& force, ForceMode forceMode = ForceMode::Force) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, Vectors::Vector3, uint8_t), RigidbodyComponent_ApplyForce, m_EntityID, force, static_cast<uint8_t>(forceMode)); }
+			void ApplyForce(const Vectors::Vector3& force, ForceMode forceMode = ForceMode::Force) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*, uint8_t), RigidbodyComponent_ApplyForce, m_EntityID, &force, static_cast<uint8_t>(forceMode)); }
 
 			/**
 			* @brief Applies a torque to the rigidbody.
 			* @param torque The torque vector in world space.
 			*/
-			void ApplyTorque(const Vectors::Vector3& torque) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, Vectors::Vector3), RigidbodyComponent_ApplyTorque, m_EntityID, torque); }
+			void ApplyTorque(const Vectors::Vector3& torque) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), RigidbodyComponent_ApplyTorque, m_EntityID, &torque); }
 
 			static BackEndAPI::FieldType GetType() { return BackEndAPI::FieldType::RigidbodyComponent; }
 
@@ -1349,19 +1353,19 @@ namespace Louron
 			* @brief Sets the physics material for this collider.
 			* @param material The physics material to assign.
 			*/
-			void SetMaterial(const PhysicsMaterial& material) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, PhysicsMaterial), BoxColliderComponent_SetMaterial, m_EntityID, material); }
+			void SetMaterial(const PhysicsMaterial& material) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const PhysicsMaterial*), BoxColliderComponent_SetMaterial, m_EntityID, &material); }
 
 			/**
 			* @brief Sets the center of the box collider.
 			* @param centre New center position as a 3D vector.
 			*/
-			void SetCentre(const Vectors::Vector3& centre) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, Vectors::Vector3), BoxColliderComponent_SetCentre, m_EntityID, centre); }
+			void SetCentre(const Vectors::Vector3& centre) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), BoxColliderComponent_SetCentre, m_EntityID, &centre); }
 
 			/**
 			* @brief Sets the size of the box collider.
 			* @param size New size as a 3D vector.
 			*/
-			void SetSize(const Vectors::Vector3& size) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, Vectors::Vector3), BoxColliderComponent_SetSize, m_EntityID, size); }
+			void SetSize(const Vectors::Vector3& size) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), BoxColliderComponent_SetSize, m_EntityID, &size); }
 
 			static BackEndAPI::FieldType GetType() { return BackEndAPI::FieldType::BoxColliderComponent; }
 
@@ -1411,13 +1415,13 @@ namespace Louron
 			* @brief Sets the physics material for this collider.
 			* @param material The physics material to assign.
 			*/
-			void SetMaterial(const PhysicsMaterial& material) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, PhysicsMaterial), SphereColliderComponent_SetMaterial, m_EntityID, material); }
+			void SetMaterial(const PhysicsMaterial& material) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const PhysicsMaterial*), SphereColliderComponent_SetMaterial, m_EntityID, &material); }
 
 			/**
 			* @brief Sets the center of the sphere collider.
 			* @param centre New center position as a 3D vector.
 			*/
-			void SetCentre(const Vectors::Vector3& centre) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, Vectors::Vector3), SphereColliderComponent_SetCentre, m_EntityID, centre); }
+			void SetCentre(const Vectors::Vector3& centre) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), SphereColliderComponent_SetCentre, m_EntityID, &centre); }
 
 			/**
 			* @brief Sets the radius of the sphere collider.

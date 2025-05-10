@@ -70,13 +70,13 @@ namespace Louron
         };
 
         static uint32_t Entity_Instantiate(uint32_t prefab_handle);
-        static uint32_t Entity_Instantiate_Transform(uint32_t prefab_handle, const _Transform& transform);
+        static uint32_t Entity_Instantiate_Transform(uint32_t prefab_handle, const _Transform* transform);
 		
         static uint32_t Entity_Create(const char* name);
         static void Entity_Destroy(UUID entity_uuid);
 
-		static uint32_t Entity_FindByName(const char* name);
-		static uint32_t Entity_FindByUUID(uint32_t entity_uuid);
+        static uint32_t Entity_FindByName(const char* name);
+        static uint32_t Entity_FindByUUID(uint32_t entity_uuid);
 
         static UUID Entity_GetParent(UUID entity_uuid);
         static void Entity_SetParent(UUID entity_uuid, UUID parent_uuid);
@@ -130,19 +130,19 @@ namespace Louron
 #pragma region TransformComponent
 
         static _Transform TransformComponent_GetTransform(UUID entity_uuid);
-        static void TransformComponent_SetTransform(UUID entity_uuid, const _Transform& value);
+        static void TransformComponent_SetTransform(UUID entity_uuid, const _Transform* value);
 
         static glm::vec3 TransformComponent_GetPosition(UUID entity_uuid);
-        static void TransformComponent_SetPosition(UUID entity_uuid, const glm::vec3& value);
+        static void TransformComponent_SetPosition(UUID entity_uuid, const glm::vec3* value);
 
         static glm::vec3 TransformComponent_GetRotation(UUID entity_uuid);
-        static void TransformComponent_SetRotation(UUID entity_uuid, const glm::vec3& value);
+        static void TransformComponent_SetRotation(UUID entity_uuid, const glm::vec3* value);
 
         static glm::vec3 TransformComponent_GetScale(UUID entity_uuid);
-        static void TransformComponent_SetScale(UUID entity_uuid, const glm::vec3& value);
+        static void TransformComponent_SetScale(UUID entity_uuid, const glm::vec3* value);
 
         static glm::vec3 TransformComponent_GetFront(UUID entity_uuid);
-        static void TransformComponent_SetFront(UUID entity_uuid, const glm::vec3& value);
+        static void TransformComponent_SetFront(UUID entity_uuid, const glm::vec3* value);
 
         static glm::vec3 TransformComponent_GetUp(UUID entity_uuid);
         static glm::vec3 TransformComponent_GetRight(UUID entity_uuid);
@@ -164,7 +164,7 @@ namespace Louron
         static void CameraComponent_SetDisplayingToViewport(UUID entity_uuid, bool value);
 
         static glm::vec4 CameraComponent_GetViewport(UUID entity_uuid);
-        static void CameraComponent_SetViewport(UUID entity_uuid, const glm::vec4& value);
+        static void CameraComponent_SetViewport(UUID entity_uuid, const glm::vec4* value);
 
 #pragma endregion
 
@@ -272,7 +272,7 @@ namespace Louron
         static void PointLightComponent_SetIntensity(UUID entity_uuid, float value);
 
         static glm::vec4 PointLightComponent_GetColour(UUID entity_uuid);
-        static void PointLightComponent_SetColour(UUID entity_uuid, const glm::vec4& value);
+        static void PointLightComponent_SetColour(UUID entity_uuid, const glm::vec4* value);
 
         static uint8_t PointLightComponent_GetShadowFlag(UUID entity_uuid);
         static void PointLightComponent_SetShadowFlag(UUID entity_uuid, ShadowTypeFlag value);
@@ -285,7 +285,7 @@ namespace Louron
         static void SpotLightComponent_SetIsActive(UUID entity_uuid, bool value);
 
         static glm::vec4 SpotLightComponent_GetColour(UUID entity_uuid);
-        static void SpotLightComponent_SetColour(UUID entity_uuid, const glm::vec4& value);
+        static void SpotLightComponent_SetColour(UUID entity_uuid, const glm::vec4* value);
 
         static float SpotLightComponent_GetRange(UUID entity_uuid);
         static void SpotLightComponent_SetRange(UUID entity_uuid, float value);
@@ -313,7 +313,7 @@ namespace Louron
         static void DirectionalLightComponent_SetMaxShadowDistance(UUID entity_uuid, float value);
 
         static glm::vec4 DirectionalLightComponent_GetColour(UUID entity_uuid);
-        static void DirectionalLightComponent_SetColour(UUID entity_uuid, const glm::vec4& value);
+        static void DirectionalLightComponent_SetColour(UUID entity_uuid, const glm::vec4* value);
 
         static uint8_t DirectionalLightComponent_GetShadowFlag(UUID entity_uuid);
         static void DirectionalLightComponent_SetShadowFlag(UUID entity_uuid, uint8_t value);
@@ -349,19 +349,19 @@ namespace Louron
         static void RigidbodyComponent_SetIsKinematic(UUID entity_uuid, bool value);
 
         static glm::bvec3 RigidbodyComponent_GetPositionConstraint(UUID entity_uuid);
-        static void RigidbodyComponent_SetPositionConstraint(UUID entity_uuid, const glm::bvec3& value);
+        static void RigidbodyComponent_SetPositionConstraint(UUID entity_uuid, const glm::bvec3* value);
 
         static glm::bvec3 RigidbodyComponent_GetRotationConstraint(UUID entity_uuid);
-        static void RigidbodyComponent_SetRotationConstraint(UUID entity_uuid, const glm::bvec3& value);
+        static void RigidbodyComponent_SetRotationConstraint(UUID entity_uuid, const glm::bvec3* value);
 
         static glm::vec3 RigidbodyComponent_GetLinearVelocity(UUID entity_uuid);
-        static void RigidbodyComponent_SetLinearVelocity(UUID entity_uuid, const glm::vec3& value);
+        static void RigidbodyComponent_SetLinearVelocity(UUID entity_uuid, const glm::vec3* value);
 
         static glm::vec3 RigidbodyComponent_GetAngularVelocity(UUID entity_uuid);
-        static void RigidbodyComponent_SetAngularVelocity(UUID entity_uuid, const glm::vec3& value);
+        static void RigidbodyComponent_SetAngularVelocity(UUID entity_uuid, const glm::vec3* value);
 
-        static void RigidbodyComponent_ApplyForce(UUID entity_uuid, const glm::vec3& force, uint8_t forceMode);
-        static void RigidbodyComponent_ApplyTorque(UUID entity_uuid, const glm::vec3& torque);
+        static void RigidbodyComponent_ApplyForce(UUID entity_uuid, const glm::vec3* force, uint8_t forceMode);
+        static void RigidbodyComponent_ApplyTorque(UUID entity_uuid, const glm::vec3* torque);
 
 #pragma endregion
 
@@ -371,13 +371,13 @@ namespace Louron
         static void BoxColliderComponent_SetIsTrigger(UUID entity_uuid, bool value);
 
         static glm::vec3 BoxColliderComponent_GetCentre(UUID entity_uuid);
-        static void BoxColliderComponent_SetCentre(UUID entity_uuid, const glm::vec3& value);
+        static void BoxColliderComponent_SetCentre(UUID entity_uuid, const glm::vec3* value);
 
         static glm::vec3 BoxColliderComponent_GetSize(UUID entity_uuid);
-        static void BoxColliderComponent_SetSize(UUID entity_uuid, const glm::vec3& value);
+        static void BoxColliderComponent_SetSize(UUID entity_uuid, const glm::vec3* value);
 
         static _PhysicsMaterial BoxColliderComponent_GetMaterial(UUID entity_uuid);
-        static void BoxColliderComponent_SetMaterial(UUID entity_uuid, const _PhysicsMaterial& value);
+        static void BoxColliderComponent_SetMaterial(UUID entity_uuid, const _PhysicsMaterial* value);
 
 #pragma endregion
 
@@ -387,13 +387,13 @@ namespace Louron
         static void SphereColliderComponent_SetIsTrigger(UUID entity_uuid, bool value);
 
         static glm::vec3 SphereColliderComponent_GetCentre(UUID entity_uuid);
-        static void SphereColliderComponent_SetCentre(UUID entity_uuid, const glm::vec3& value);
+        static void SphereColliderComponent_SetCentre(UUID entity_uuid, const glm::vec3* value);
 
         static float SphereColliderComponent_GetRadius(UUID entity_uuid);
         static void SphereColliderComponent_SetRadius(UUID entity_uuid, float value);
 
         static _PhysicsMaterial SphereColliderComponent_GetMaterial(UUID entity_uuid);
-        static void SphereColliderComponent_SetMaterial(UUID entity_uuid, const _PhysicsMaterial& value);
+        static void SphereColliderComponent_SetMaterial(UUID entity_uuid, const _PhysicsMaterial* value);
 
 #pragma endregion
 
@@ -441,7 +441,7 @@ namespace Louron
         static void MaterialUniformBlock_OverrideMetallicMap(MaterialUniformBlock* uniform_block, UUID asset_handle);
         static void MaterialUniformBlock_OverrideNormalMap(MaterialUniformBlock* uniform_block, UUID asset_handle);
 
-        static void MaterialUniformBlock_OverrideAlbedoTint(MaterialUniformBlock* uniform_block, const glm::vec4& value);
+        static void MaterialUniformBlock_OverrideAlbedoTint(MaterialUniformBlock* uniform_block, const glm::vec4* value);
         static void MaterialUniformBlock_OverrideMetallic(MaterialUniformBlock* uniform_block, float value);
         static void MaterialUniformBlock_OverrideRoughness(MaterialUniformBlock* uniform_block, float value);
 
@@ -452,7 +452,7 @@ namespace Louron
         static uint32_t Texture2D_Create(int width, int height, uint8_t internal_format);
         static uint32_t Texture2D_CreateWithData(unsigned char* data, int width, int height, uint8_t internal_format, uint8_t data_format);
 
-        static void Texture2D_SetPixel(uint32_t asset_handle, const glm::vec4& colour, const glm::ivec2& pixel_coord);
+        static void Texture2D_SetPixel(uint32_t asset_handle, const glm::vec4* colour, const glm::ivec2* pixel_coord);
         static void Texture2D_SetPixelData(uint32_t asset_handle, unsigned char* pixel_data, size_t pixel_data_size, uint8_t pixel_data_format);
         static void Texture2D_SubmitTextureChanges(uint32_t asset_handle);
 

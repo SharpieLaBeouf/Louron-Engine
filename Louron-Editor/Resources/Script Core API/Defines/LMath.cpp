@@ -1,5 +1,9 @@
 #include "LMath.h"
 
+#ifdef __linux__
+#include <math.h>
+#endif
+
 namespace Louron
 {
     namespace LMath

@@ -7,6 +7,8 @@
 #include "../Core/Input.h"
 #include "../Core/Engine.h"
 
+#include <glm/gtx/string_cast.hpp>
+
 namespace Louron
 {
 
@@ -505,8 +507,11 @@ namespace Louron
         return NULL_UUID;
     }
 
-    uint32_t ScriptRegister::Entity_Instantiate_Transform(uint32_t prefab_handle, const _Transform& transform)
+    uint32_t ScriptRegister::Entity_Instantiate_Transform(uint32_t prefab_handle, const _Transform* transform)
     {
+        if(!transform)
+            return NULL_UUID;
+
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return NULL_UUID;
@@ -516,9 +521,9 @@ namespace Louron
             return NULL_UUID;
 
         TransformComponent temp_transform{};
-        temp_transform.m_Position = transform.position;
-        temp_transform.m_Rotation = transform.rotation;
-        temp_transform.m_Scale = transform.scale;
+        temp_transform.m_Position = transform->position;
+        temp_transform.m_Rotation = transform->rotation;
+        temp_transform.m_Scale = transform->scale;
 
         Entity prefab_clone = scene_ref->InstantiatePrefab(prefab_asset, temp_transform);
         if (prefab_clone)
@@ -939,8 +944,11 @@ namespace Louron
         return { transform.GetLocalPosition(), transform.GetLocalRotation(), transform.GetLocalScale() };
     }
 
-    void ScriptRegister::TransformComponent_SetTransform(UUID entity_uuid, const _Transform& value) 
+    void ScriptRegister::TransformComponent_SetTransform(UUID entity_uuid, const _Transform* value) 
     {
+        if(!value)
+            return;
+
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -950,9 +958,9 @@ namespace Louron
             return;
 
         auto& transform = entity.GetTransform();
-        transform.SetPosition(value.position);
-        transform.SetRotation(value.rotation);
-        transform.SetScale(value.scale);
+        transform.SetPosition(value->position);
+        transform.SetRotation(value->rotation);
+        transform.SetScale(value->scale);
     }
 
     glm::vec3 ScriptRegister::TransformComponent_GetPosition(UUID entity_uuid) 
@@ -968,8 +976,11 @@ namespace Louron
         return entity.GetTransform().GetLocalPosition();
     }
 
-    void ScriptRegister::TransformComponent_SetPosition(UUID entity_uuid, const glm::vec3& value)
+    void ScriptRegister::TransformComponent_SetPosition(UUID entity_uuid, const glm::vec3* value)
     {
+        if(!value)
+            return;
+
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -978,7 +989,7 @@ namespace Louron
         if (!entity)
             return;
 
-        entity.GetTransform().SetPosition(value);
+        entity.GetTransform().SetPosition(*value);
     }
 
     glm::vec3 ScriptRegister::TransformComponent_GetRotation(UUID entity_uuid)
@@ -994,8 +1005,11 @@ namespace Louron
         return entity.GetTransform().GetLocalRotation();
     }
 
-    void ScriptRegister::TransformComponent_SetRotation(UUID entity_uuid, const glm::vec3& value)
+    void ScriptRegister::TransformComponent_SetRotation(UUID entity_uuid, const glm::vec3* value)
     {
+        if(!value)
+            return;
+
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1004,7 +1018,7 @@ namespace Louron
         if (!entity)
             return;
 
-        entity.GetTransform().SetRotation(value);
+        entity.GetTransform().SetRotation(*value);
     }
 
     glm::vec3 ScriptRegister::TransformComponent_GetScale(UUID entity_uuid)
@@ -1020,8 +1034,11 @@ namespace Louron
         return entity.GetTransform().GetLocalScale();
     }
 
-    void ScriptRegister::TransformComponent_SetScale(UUID entity_uuid, const glm::vec3& value)
+    void ScriptRegister::TransformComponent_SetScale(UUID entity_uuid, const glm::vec3* value)
     {
+        if(!value)
+            return;
+
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1030,7 +1047,7 @@ namespace Louron
         if (!entity)
             return;
 
-        entity.GetTransform().SetScale(value);
+        entity.GetTransform().SetScale(*value);
     }
 
     glm::vec3 ScriptRegister::TransformComponent_GetFront(UUID entity_uuid)
@@ -1046,8 +1063,11 @@ namespace Louron
         return entity.GetTransform().GetForwardDirection();
     }
 
-    void ScriptRegister::TransformComponent_SetFront(UUID entity_uuid, const glm::vec3& value)
+    void ScriptRegister::TransformComponent_SetFront(UUID entity_uuid, const glm::vec3* value)
     {
+        if(!value)
+            return;
+
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1056,7 +1076,7 @@ namespace Louron
         if (!entity)
             return;
 
-        entity.GetTransform().SetForwardDirection(value);
+        entity.GetTransform().SetForwardDirection(*value);
     }
 
     glm::vec3 ScriptRegister::TransformComponent_GetUp(UUID entity_uuid)
@@ -1206,8 +1226,11 @@ namespace Louron
         return entity.GetComponent<CameraComponent>().GetViewport();
     }
 
-    void ScriptRegister::CameraComponent_SetViewport(UUID entity_uuid, const glm::vec4& value)
+    void ScriptRegister::CameraComponent_SetViewport(UUID entity_uuid, const glm::vec4* value)
     {
+        if(!value)
+            return;
+
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1217,7 +1240,7 @@ namespace Louron
             return;
 
         auto& config = Project::GetActiveScene()->GetSceneFrameBuffer()->GetConfig();
-        entity.GetComponent<CameraComponent>().SetViewport(value, { config.Width, config.Height});
+        entity.GetComponent<CameraComponent>().SetViewport(*value, { config.Width, config.Height});
     }
 
 #pragma endregion
@@ -1330,8 +1353,11 @@ namespace Louron
         return entity.GetComponent<PointLightComponent>().Colour;
     }
 
-    void ScriptRegister::PointLightComponent_SetColour(UUID entity_uuid, const glm::vec4& value)
+    void ScriptRegister::PointLightComponent_SetColour(UUID entity_uuid, const glm::vec4* value)
     {
+        if(!value)
+            return;
+
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1340,7 +1366,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<PointLightComponent>())
             return;
 
-        entity.GetComponent<PointLightComponent>().Colour = value;
+        entity.GetComponent<PointLightComponent>().Colour = *value;
     }
 
     float ScriptRegister::PointLightComponent_GetRadius(UUID entity_uuid)
@@ -1464,8 +1490,11 @@ namespace Louron
         return entity.GetComponent<SpotLightComponent>().Colour;
     }
 
-    void ScriptRegister::SpotLightComponent_SetColour(UUID entity_uuid, const glm::vec4& value)
+    void ScriptRegister::SpotLightComponent_SetColour(UUID entity_uuid, const glm::vec4* value)
     {
+        if(!value)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1474,7 +1503,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<SpotLightComponent>())
             return;
 
-        entity.GetComponent<SpotLightComponent>().Colour = value;
+        entity.GetComponent<SpotLightComponent>().Colour = *value;
     }
 
     float ScriptRegister::SpotLightComponent_GetRange(UUID entity_uuid)
@@ -1624,8 +1653,11 @@ namespace Louron
         return entity.GetComponent<DirectionalLightComponent>().Colour;
     }
 
-    void ScriptRegister::DirectionalLightComponent_SetColour(UUID entity_uuid, const glm::vec4& value)
+    void ScriptRegister::DirectionalLightComponent_SetColour(UUID entity_uuid, const glm::vec4* value)
     {
+        if(!value)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1634,7 +1666,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<DirectionalLightComponent>())
             return;
 
-        entity.GetComponent<DirectionalLightComponent>().Colour = value;
+        entity.GetComponent<DirectionalLightComponent>().Colour = *value;
     }
 
     float ScriptRegister::DirectionalLightComponent_GetIntensity(UUID entity_uuid)
@@ -1888,8 +1920,11 @@ namespace Louron
         return entity.GetComponent<RigidbodyComponent>().GetPositionConstraint();
     }
 
-    void ScriptRegister::RigidbodyComponent_SetPositionConstraint(UUID entity_uuid, const glm::bvec3& value)
+    void ScriptRegister::RigidbodyComponent_SetPositionConstraint(UUID entity_uuid, const glm::bvec3* value)
     {
+        if(!value)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1898,7 +1933,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<RigidbodyComponent>())
             return;
 
-        entity.GetComponent<RigidbodyComponent>().SetPositionConstraint(value);
+        entity.GetComponent<RigidbodyComponent>().SetPositionConstraint(*value);
     }
 
     glm::bvec3 ScriptRegister::RigidbodyComponent_GetRotationConstraint(UUID entity_uuid)
@@ -1914,8 +1949,11 @@ namespace Louron
         return entity.GetComponent<RigidbodyComponent>().GetRotationConstraint();
     }
 
-    void ScriptRegister::RigidbodyComponent_SetRotationConstraint(UUID entity_uuid, const glm::bvec3& value)
+    void ScriptRegister::RigidbodyComponent_SetRotationConstraint(UUID entity_uuid, const glm::bvec3* value)
     {
+        if(!value)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1924,7 +1962,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<RigidbodyComponent>())
             return;
 
-        entity.GetComponent<RigidbodyComponent>().SetRotationConstraint(value);
+        entity.GetComponent<RigidbodyComponent>().SetRotationConstraint(*value);
     }
 
     glm::vec3 ScriptRegister::RigidbodyComponent_GetLinearVelocity(UUID entity_uuid)
@@ -1942,8 +1980,11 @@ namespace Louron
         return { velocity.x, velocity.y, velocity.z };
     }
 
-    void ScriptRegister::RigidbodyComponent_SetLinearVelocity(UUID entity_uuid, const glm::vec3& value)
+    void ScriptRegister::RigidbodyComponent_SetLinearVelocity(UUID entity_uuid, const glm::vec3* value)
     {
+        if(!value)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1952,7 +1993,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<RigidbodyComponent>())
             return;
 
-        entity.GetComponent<RigidbodyComponent>().GetActor()->SetLinearVelocity(value);
+        entity.GetComponent<RigidbodyComponent>().GetActor()->SetLinearVelocity(*value);
     }
 
     glm::vec3 ScriptRegister::RigidbodyComponent_GetAngularVelocity(UUID entity_uuid)
@@ -1970,8 +2011,11 @@ namespace Louron
         return { velocity.x, velocity.y, velocity.z };
     }
 
-    void ScriptRegister::RigidbodyComponent_SetAngularVelocity(UUID entity_uuid, const glm::vec3& value)
+    void ScriptRegister::RigidbodyComponent_SetAngularVelocity(UUID entity_uuid, const glm::vec3* value)
     {
+        if(!value)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1980,11 +2024,15 @@ namespace Louron
         if (!entity || !entity.HasComponent<RigidbodyComponent>())
             return;
 
-        entity.GetComponent<RigidbodyComponent>().GetActor()->SetAngularVelocity(value);
+        entity.GetComponent<RigidbodyComponent>().GetActor()->SetAngularVelocity(*value);
     }
 
-    void ScriptRegister::RigidbodyComponent_ApplyForce(UUID entity_uuid, const glm::vec3& force, uint8_t forceMode)
+
+    void ScriptRegister::RigidbodyComponent_ApplyForce(UUID entity_uuid, const glm::vec3* force, uint8_t forceMode)
     {
+        if(!force)
+            return;
+
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -1993,11 +2041,14 @@ namespace Louron
         if (!entity || !entity.HasComponent<RigidbodyComponent>())
             return;
 
-        entity.GetComponent<RigidbodyComponent>().ApplyForce(force, static_cast<physx::PxForceMode::Enum>(forceMode));
+        entity.GetComponent<RigidbodyComponent>().ApplyForce({force->x, force->y, force->z}, static_cast<physx::PxForceMode::Enum>(forceMode));
     }
 
-    void ScriptRegister::RigidbodyComponent_ApplyTorque(UUID entity_uuid, const glm::vec3& torque)
+    void ScriptRegister::RigidbodyComponent_ApplyTorque(UUID entity_uuid, const glm::vec3* torque)
     {
+        if(!torque)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -2006,7 +2057,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<RigidbodyComponent>())
             return;
 
-        entity.GetComponent<RigidbodyComponent>().ApplyTorque(torque);
+        entity.GetComponent<RigidbodyComponent>().ApplyTorque(*torque);
     }
 
 #pragma endregion
@@ -2052,8 +2103,11 @@ namespace Louron
         return entity.GetComponent<BoxColliderComponent>().GetCentre();
     }
 
-    void ScriptRegister::BoxColliderComponent_SetCentre(UUID entity_uuid, const glm::vec3& value)
+    void ScriptRegister::BoxColliderComponent_SetCentre(UUID entity_uuid, const glm::vec3* value)
     {
+        if(!value)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -2062,7 +2116,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<BoxColliderComponent>())
             return;
 
-        entity.GetComponent<BoxColliderComponent>().SetCentre(value);
+        entity.GetComponent<BoxColliderComponent>().SetCentre(*value);
     }
 
     glm::vec3 ScriptRegister::BoxColliderComponent_GetSize(UUID entity_uuid)
@@ -2078,8 +2132,11 @@ namespace Louron
         return entity.GetComponent<BoxColliderComponent>().GetSize();
     }
 
-    void ScriptRegister::BoxColliderComponent_SetSize(UUID entity_uuid, const glm::vec3& value)
+    void ScriptRegister::BoxColliderComponent_SetSize(UUID entity_uuid, const glm::vec3* value)
     {
+        if(!value)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -2088,7 +2145,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<BoxColliderComponent>())
             return;
 
-        entity.GetComponent<BoxColliderComponent>().SetSize(value);
+        entity.GetComponent<BoxColliderComponent>().SetSize(*value);
     }
 
     ScriptRegister::_PhysicsMaterial ScriptRegister::BoxColliderComponent_GetMaterial(UUID entity_uuid)
@@ -2108,8 +2165,11 @@ namespace Louron
         return { phys_material->GetDynamicFriction(), phys_material->GetStaticFriction(), phys_material->GetBounciness() };
     }
 
-    void ScriptRegister::BoxColliderComponent_SetMaterial(UUID entity_uuid, const _PhysicsMaterial& value)
+    void ScriptRegister::BoxColliderComponent_SetMaterial(UUID entity_uuid, const _PhysicsMaterial* value)
     {
+        if(!value)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -2118,7 +2178,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<BoxColliderComponent>())
             return;
 
-        auto phys_material = std::make_shared<PhysicsMaterial>(value.m_DynamicFriction, value.m_StaticFriction, value.m_Bounciness);
+        auto phys_material = std::make_shared<PhysicsMaterial>(value->m_DynamicFriction, value->m_StaticFriction, value->m_Bounciness);
         entity.GetComponent<BoxColliderComponent>().SetMaterial(phys_material);
     }
 
@@ -2165,8 +2225,11 @@ namespace Louron
         return entity.GetComponent<SphereColliderComponent>().GetCentre();
     }
 
-    void ScriptRegister::SphereColliderComponent_SetCentre(UUID entity_uuid, const glm::vec3& value)
+    void ScriptRegister::SphereColliderComponent_SetCentre(UUID entity_uuid, const glm::vec3* value)
     {
+        if(!value)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -2175,7 +2238,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<SphereColliderComponent>())
             return;
 
-        entity.GetComponent<SphereColliderComponent>().SetCentre(value);
+        entity.GetComponent<SphereColliderComponent>().SetCentre(*value);
     }
 
     float ScriptRegister::SphereColliderComponent_GetRadius(UUID entity_uuid)
@@ -2221,8 +2284,11 @@ namespace Louron
         return { phys_material->GetDynamicFriction(), phys_material->GetStaticFriction(), phys_material->GetBounciness() };
     }
 
-    void ScriptRegister::SphereColliderComponent_SetMaterial(UUID entity_uuid, const _PhysicsMaterial& value)
+    void ScriptRegister::SphereColliderComponent_SetMaterial(UUID entity_uuid, const _PhysicsMaterial* value)
     {
+        if(!value)
+            return;
+            
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
@@ -2231,7 +2297,7 @@ namespace Louron
         if (!entity || !entity.HasComponent<SphereColliderComponent>())
             return;
 
-        auto phys_material = std::make_shared<PhysicsMaterial>(value.m_DynamicFriction, value.m_StaticFriction, value.m_Bounciness);
+        auto phys_material = std::make_shared<PhysicsMaterial>(value->m_DynamicFriction, value->m_StaticFriction, value->m_Bounciness);
         entity.GetComponent<SphereColliderComponent>().SetMaterial(phys_material);
     }
 
@@ -3318,12 +3384,12 @@ namespace Louron
         uniform_block->OverrideNormalMap(asset_handle);
     }
 
-    void ScriptRegister::MaterialUniformBlock_OverrideAlbedoTint(MaterialUniformBlock* uniform_block, const glm::vec4& value)
+    void ScriptRegister::MaterialUniformBlock_OverrideAlbedoTint(MaterialUniformBlock* uniform_block, const glm::vec4* value)
     {
-        if (!uniform_block)
+        if (!uniform_block || !value)
             return;
 
-        uniform_block->OverrideAlbedoTint(value);
+        uniform_block->OverrideAlbedoTint(*value);
     }
 
     void ScriptRegister::MaterialUniformBlock_OverrideMetallic(MaterialUniformBlock* uniform_block, float value)
@@ -3360,8 +3426,11 @@ namespace Louron
         return AssetManager::AddRuntimeAsset(texture, "Runtime Texture");
     }
 
-    void ScriptRegister::Texture2D_SetPixel(uint32_t asset_handle, const glm::vec4& colour, const glm::ivec2& pixel_coord)
+    void ScriptRegister::Texture2D_SetPixel(uint32_t asset_handle, const glm::vec4* colour, const glm::ivec2* pixel_coord)
     {
+        if(!colour || !pixel_coord)
+            return;
+            
         if (!AssetManager::IsAssetHandleValid(asset_handle))
             return;
 
@@ -3369,7 +3438,7 @@ namespace Louron
         if (!texture_ref)
             return;
 
-        texture_ref->SetPixel(colour, pixel_coord);
+        texture_ref->SetPixel(*colour, *pixel_coord);
     }
 
     void ScriptRegister::Texture2D_SetPixelData(uint32_t asset_handle, unsigned char* pixel_data, size_t pixel_data_size, uint8_t pixel_data_format)

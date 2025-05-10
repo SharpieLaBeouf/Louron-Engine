@@ -9,13 +9,15 @@ using namespace Louron::Vectors;
 using namespace Louron::Matrices;
 using namespace Louron::Partitions;
 
+#include <format>
+
 class GameManager : public IScript
 {
 
 public:
 
-    [[ExposedInEditor]] Prefab Player_1_Prefab;
-    [[ExposedInEditor]] Prefab Player_2_Prefab;
+    [[ExposedInEditor]] ::Louron::Assets::Prefab Player_1_Prefab; // WORDS
+    [[ExposedInEditor]] Prefab Player_2_Prefab; // DOESN'T WORK
 
     [[ExposedInEditor]] Entity Players_Parent_Entity;
     [[ExposedInEditor]] Entity Player_1_Spawn_Point;
@@ -211,8 +213,8 @@ public:
         if(Input::GetKey(KeyCode::D))
         {
             player_force.x -= 1.0f;
-        }       
-        Players[0].GetComponent<RigidbodyComponent>().ApplyForce(player_force * Speed_Multiplier * .1f, RigidbodyComponent::ForceMode::Impulse);
+        }
+        Players[0].GetComponent<RigidbodyComponent>().ApplyForce(player_force * Speed_Multiplier * .1f, RigidbodyComponent::ForceMode::Velocity_Change);
 
         player_force = {};
         if(Input::GetKey(KeyCode::Up))

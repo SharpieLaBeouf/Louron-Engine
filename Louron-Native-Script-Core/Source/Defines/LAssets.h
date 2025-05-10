@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "../Defines/LTypes.h"
 #include "../Engine Callbacks.h"
 
@@ -109,7 +111,7 @@ namespace Louron
 			Texture2D(unsigned char* data, const Vectors::UVector2& size, TextureFormat internal_format, TextureFormat data_format) { m_AssetHandle = ENGINE_SAFE_CALL_RET(uint32_t, uint32_t(*)(const unsigned char*, uint32_t, uint32_t, TextureFormat, TextureFormat), Texture2D_CreateWithData, data, size.x, size.y, internal_format, data_format); }
 			Texture2D(const std::vector<Vectors::UVector4>& data, const Vectors::UVector2& size) { m_AssetHandle = ENGINE_SAFE_CALL_RET(uint32_t, uint32_t(*)(const unsigned char*, uint32_t, uint32_t, TextureFormat, TextureFormat), Texture2D_CreateWithData, reinterpret_cast<const unsigned char*>(data.data()), size.x, size.y, TextureFormat::RED_GREEN_BLUE_ALPHA_8, TextureFormat::RED_GREEN_BLUE_ALPHA_8); }
 
-			void SetPixel(const Vectors::Vector4& colour, const Vectors::IVector2& pixel_coord) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector4&, const Vectors::IVector2&), Texture2D_SetPixel, m_AssetHandle, colour, pixel_coord); }
+			void SetPixel(const Vectors::Vector4& colour, const Vectors::IVector2& pixel_coord) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector4*, const Vectors::IVector2*), Texture2D_SetPixel, m_AssetHandle, &colour, &pixel_coord); }
 			void SetPixelData(unsigned char* pixel_data, size_t pixel_data_size, TextureFormat pixel_data_format) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const unsigned char*, size_t, TextureFormat), Texture2D_SetPixelData, m_AssetHandle, pixel_data, pixel_data_size, pixel_data_format); }
 			void SetPixelData(const std::vector<Vectors::UVector4>& pixel_data) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const unsigned char*, size_t, TextureFormat), Texture2D_SetPixelData, m_AssetHandle, reinterpret_cast<const unsigned char*>(pixel_data.data()), pixel_data.size() * 4, TextureFormat::RED_GREEN_BLUE_ALPHA_8); }
 
@@ -347,7 +349,7 @@ namespace Louron
 			void OverrideAlbedoMap(Texture2D albedo_texture) const { ENGINE_SAFE_CALL_VOID(void(*)(void*, uint32_t), MaterialUniformBlock_OverrideAlbedoMap, m_Handle, albedo_texture.m_AssetHandle); }
 			void OverrideMetallicMap(Texture2D metallic_texture) const { ENGINE_SAFE_CALL_VOID(void(*)(void*, uint32_t), MaterialUniformBlock_OverrideMetallicMap, m_Handle, metallic_texture.m_AssetHandle); }
 			void OverrideNormalMap(Texture2D normal_texture) const { ENGINE_SAFE_CALL_VOID(void(*)(void*, uint32_t), MaterialUniformBlock_OverrideNormalMap, m_Handle, normal_texture.m_AssetHandle); }
-			void OverrideAlbedoTint(const Vectors::Vector4& colour) const { ENGINE_SAFE_CALL_VOID(void(*)(void*, const Vectors::Vector4&), MaterialUniformBlock_OverrideAlbedoTint, m_Handle, colour); }
+			void OverrideAlbedoTint(const Vectors::Vector4& colour) const { ENGINE_SAFE_CALL_VOID(void(*)(void*, const Vectors::Vector4*), MaterialUniformBlock_OverrideAlbedoTint, m_Handle, &colour); }
 			void OverrideMetallic(float metallic_factor) const { ENGINE_SAFE_CALL_VOID(void(*)(void*, float), MaterialUniformBlock_OverrideRoughness, m_Handle, metallic_factor); }
 			void OverrideRoughness(float roughness_factor) const { ENGINE_SAFE_CALL_VOID(void(*)(void*, float), MaterialUniformBlock_OverrideRoughness, m_Handle, roughness_factor); }
 

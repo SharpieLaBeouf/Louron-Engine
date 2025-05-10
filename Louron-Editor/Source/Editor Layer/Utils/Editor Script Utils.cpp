@@ -10,28 +10,25 @@ namespace Utils
     {
         for (const auto& entry : std::filesystem::recursive_directory_iterator(m_ScriptsDir)) 
         {
-            if (entry.path().parent_path().string().find("Scripts\\Binaries") != std::string::npos          ||
-                entry.path().parent_path().string().find("Scripts\\Script Core API") != std::string::npos   ||
-                entry.path().parent_path().string().find("Scripts\\Generated") != std::string::npos
-                ) continue;
+            if (Louron::Utils::NormalisePath(entry.path().parent_path()).string().find("Scripts/Binaries")          != std::string::npos ||
+                Louron::Utils::NormalisePath(entry.path().parent_path()).string().find("Scripts/Script Core API")   != std::string::npos ||
+                Louron::Utils::NormalisePath(entry.path().parent_path()).string().find("Scripts/Generated")         != std::string::npos) 
+            {
+                continue;
+            }
 
             if (entry.path().extension() == ".h") 
             {
 				L_APP_INFO("Parsing Header File: {}", entry.path().string());
                 current_header_file_path = entry.path();
 
-                #if defined(L_PLATFORM_WINDOWS)
-                ParseHeader(entry.path().string(), absolute_file_path_engine_api);
-                #endif
-                
+                ParseHeader(entry.path().string(), absolute_file_path_engine_api);                
             }
         }
 
         WriteReflectionFile();
     }
-
-    #if defined(L_PLATFORM_WINDOWS)
-
+    
     bool ScriptReflectionGenerator::HasExposedAttribute(CXCursor cursor)
     {
         CXTranslationUnit tu = clang_Cursor_getTranslationUnit(cursor);
@@ -96,6 +93,15 @@ namespace Utils
             FieldInfo field;
             field.name = clang_getCString(fieldName);
             field.type = clang_getCString(typeName);
+            
+            std::string full_type = field.type;
+            size_t pos = full_type.find_last_of(':');
+
+            if (pos != std::string::npos && pos + 1 < full_type.size())
+                field.type = full_type.substr(pos + 1);
+            else
+                field.type = full_type;
+
             self->m_CurrentClass->exposed_fields.push_back(field);
 
             clang_disposeString(fieldName);
@@ -135,7 +141,24 @@ namespace Utils
 
     void ScriptReflectionGenerator::ParseHeader(const std::filesystem::path& path, const std::filesystem::path& absolute_file_path_engine_api)
     {
-        const char* args[] = { "-x", "c++", "-std=c++20" };
+    #if defined(L_PLATFORM_WINDOWS)
+
+        const char* args[] = {
+            "-x", "c++",
+            "-std=c++20"
+        };
+
+    #elif defined(L_PLATFORM_LINUX)
+
+        const char* args[] = {
+            "-x", "c++",
+            "-std=c++20",
+            "-I", "/usr/include",
+            "-I", "/usr/include/c++/13",
+            "-I", "/usr/lib/gcc/x86_64-linux-gnu/13/include"
+        };
+
+    #endif
 
         // Read original file content
         std::ifstream file(path);
@@ -148,14 +171,16 @@ namespace Utils
         std::stringstream original_content;
         std::string line;
         bool injected = false;
-
         while (std::getline(file, line))
         {
+            if(line.find("Script Core API") != std::string::npos || line.find("ScriptAPI.h") != std::string::npos)
+                continue;
+                
             original_content << line << '\n';
-            if (!injected)
+            
+            if(!injected)
             {
-                // Inject after the first line
-                original_content << "#include \"" << absolute_file_path_engine_api.string() << "\\ScriptAPI.h\"\n";
+                original_content << "#include \"" << Louron::Utils::NormalisePath(absolute_file_path_engine_api).string() << "/ScriptAPI.h\"\n";
                 injected = true;
             }
         }
@@ -174,7 +199,8 @@ namespace Utils
             sizeof(args) / sizeof(args[0]),
             nullptr,
             0,
-            CXTranslationUnit_None
+            CXTranslationUnit_SkipFunctionBodies |
+            CXTranslationUnit_KeepGoing
         );
 
         if (!tu) {
@@ -192,8 +218,6 @@ namespace Utils
         if (std::filesystem::exists(temp_path))
             std::filesystem::remove(temp_path);
     }
-
-    #endif
 
     void ScriptReflectionGenerator::WriteReflectionFile()
     {

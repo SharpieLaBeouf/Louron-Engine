@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __linux__
+#include <math.h>
+#endif
+
 #include "LMath.h"
 
 namespace Louron {

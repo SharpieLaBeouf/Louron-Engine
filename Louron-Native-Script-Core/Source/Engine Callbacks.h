@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <iostream>
 
+#include <assert.h>
+
 #ifdef _WIN32
 #define SCRIPT_API extern "C" __declspec(dllexport)
 #else

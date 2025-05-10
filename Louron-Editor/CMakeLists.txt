@@ -7,14 +7,31 @@ file(GLOB_RECURSE APP_SRC
 
 add_executable(LouronEditor ${APP_SRC})
 
+# Compile Options and Definitions
 if(ENABLE_IPO)
     set_property(TARGET LouronEditor PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
 if(UNIX)
     target_compile_options(LouronEditor PUBLIC $<$<CONFIG:Release>:-O3>)
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_compile_definitions(_DEBUG)
+    else()
+        add_compile_definitions(NDEBUG)
+    endif()
+
+    set_target_properties(LouronEditor PROPERTIES
+        INSTALL_RPATH "$ORIGIN"
+    )
 elseif(WIN32)
     target_compile_options(LouronEditor PUBLIC $<$<CONFIG:Release>:/O2>)
+endif()
+
+if(MSVC)
+    target_compile_options(LouronEditor PRIVATE /utf-8)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+    target_compile_options(LouronEditor PRIVATE -finput-charset=UTF-8 -fexec-charset=UTF-8)
 endif()
 
 set(CMAKE_CXX_STANDARD 20)
@@ -24,20 +41,7 @@ target_compile_definitions(LouronEditor PUBLIC PX_PHYSX_STATIC_LIB)
 target_compile_definitions(LouronEditor PUBLIC GLM_ENABLE_EXPERIMENTAL)
 target_compile_definitions(LouronEditor PUBLIC YAML_CPP_STATIC_DEFINE)
 
-if(UNIX)
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        add_compile_definitions(_DEBUG)
-    else()
-        add_compile_definitions(NDEBUG)
-    endif()
-endif()
-
-if(MSVC)
-    target_compile_options(LouronEditor PRIVATE /utf-8)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-    target_compile_options(LouronEditor PRIVATE -finput-charset=UTF-8 -fexec-charset=UTF-8)
-endif()
-
+# Output
 set_target_properties(LouronEditor PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     FOLDER "Louron-Editor"
