@@ -399,6 +399,30 @@ namespace Louron
 
 #pragma endregion
 
+#pragma region Animator
+
+        static void AnimatorComponent_PlayAnimation_Index(UUID entity_uuid, int32_t clip_index, bool should_loop);
+        static void AnimatorComponent_PlayAnimation_Name(UUID entity_uuid, const char* clip_name, bool should_loop);
+
+        static void AnimatorComponent_PauseAnimation(UUID entity_uuid);
+        static void AnimatorComponent_ResumeAnimation(UUID entity_uuid);
+        static void AnimatorComponent_StopAnimation(UUID entity_uuid);
+
+        static bool AnimatorComponent_IsPlaying(UUID entity_uuid);
+        static bool AnimatorComponent_IsLooping(UUID entity_uuid);
+        static void AnimatorComponent_SetIsLooping(UUID entity_uuid, bool should_loop);
+
+        static float AnimatorComponent_GetPlaybackSpeed(UUID entity_uuid);
+        static void AnimatorComponent_SetPlaybackSpeed(UUID entity_uuid, float playback_speed);
+        
+        static float AnimatorComponent_GetCurrentTimestep(UUID entity_uuid);
+        static void AnimatorComponent_SetCurrentTimestep(UUID entity_uuid, float normalised_time_step);
+        
+        static uint32_t AnimatorComponent_GetCurrentClipIndex(UUID entity_uuid);
+        static const char* AnimatorComponent_GetCurrentClipName(UUID entity_uuid);
+
+#pragma endregion
+
 #pragma region Compute Shader
 
         static void ComputeShader_SetBuffer(UUID asset_handle, ComputeBuffer* buffer, uint32_t binding_index);

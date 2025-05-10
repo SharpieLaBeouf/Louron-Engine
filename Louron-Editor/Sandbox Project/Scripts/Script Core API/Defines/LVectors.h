@@ -81,6 +81,8 @@ namespace Louron {
                 throw std::out_of_range("Index out of range");
             }
 
+            Vector2 operator-() const { return Vector2(-x, -y); }
+
             Vector2 operator+(const Vector2& v) const { return Vector2(x + v.x, y + v.y); }
             Vector2 operator+(float s) const { return Vector2(x + s, y + s); }
             Vector2 operator-(const Vector2& v) const { return Vector2(x - v.x, y - v.y); }
@@ -127,6 +129,8 @@ namespace Louron {
                 }
                 throw std::out_of_range("Index out of range");
             }
+
+            IVector2 operator-() const { return IVector2(-x, -y); }
 
             IVector2 operator+(const IVector2& v) const { return IVector2(x + v.x, y + v.y); }
             IVector2 operator-(const IVector2& v) const { return IVector2(x - v.x, y - v.y); }
@@ -212,6 +216,8 @@ namespace Louron {
                 throw std::out_of_range("Index out of range");
             }
 
+            DVector2 operator-() const { return DVector2(-x, -y); }
+
             DVector2 operator+(const DVector2& v) const { return DVector2(x + v.x, y + v.y); }
             DVector2 operator-(const DVector2& v) const { return DVector2(x - v.x, y - v.y); }
             DVector2 operator*(const DVector2& v) const { return DVector2(x * v.x, y * v.y); }
@@ -253,6 +259,8 @@ namespace Louron {
                 }
                 throw std::out_of_range("Index out of range");
             }
+
+            BVector2 operator-() const { return BVector2(!x, !y); }
 
             bool operator==(const BVector2& v) const { return x == v.x && y == v.y; }
             bool operator!=(const BVector2& v) const { return !(*this == v); }
@@ -344,6 +352,8 @@ namespace Louron {
                 throw std::out_of_range("Index out of range");
             }
 
+            Vector3 operator-() const { return Vector3(-x, -y, -z); }
+
             Vector3 operator+(const Vector3& v) const { return Vector3(x + v.x, y + v.y, z + v.z); }
             Vector3 operator+(float s) const { return Vector3(x + s, y + s, z + s); }
             Vector3 operator-(const Vector3& v) const { return Vector3(x - v.x, y - v.y, z - v.z); }
@@ -392,6 +402,8 @@ namespace Louron {
                 }
                 throw std::out_of_range("Index out of range");
             }
+
+            IVector3 operator-() const { return IVector3(-x, -y, -z); }
 
             IVector3 operator+(const IVector3& v) const { return IVector3(x + v.x, y + v.y, z + v.z); }
             IVector3 operator-(const IVector3& v) const { return IVector3(x - v.x, y - v.y, z - v.z); }
@@ -481,6 +493,8 @@ namespace Louron {
                 throw std::out_of_range("Index out of range");
             }
 
+            DVector3 operator-() const { return DVector3(-x, -y, -z); }
+
             DVector3 operator+(const DVector3& v) const { return DVector3(x + v.x, y + v.y, z + v.z); }
             DVector3 operator-(const DVector3& v) const { return DVector3(x - v.x, y - v.y, z - v.z); }
             DVector3 operator*(const DVector3& v) const { return DVector3(x * v.x, y * v.y, z * v.z); }
@@ -524,6 +538,8 @@ namespace Louron {
                 }
                 throw std::out_of_range("Index out of range");
             }
+
+            BVector3 operator-() const { return BVector3(!x, !y, !z); }
 
             bool operator==(const BVector3& v) const { return x == v.x && y == v.y && z == v.z; }
             bool operator!=(const BVector3& v) const { return !(*this == v); }
@@ -620,6 +636,8 @@ namespace Louron {
                 throw std::out_of_range("Index out of range");
             }
 
+            Vector4 operator-() const { return Vector4(-x, -y, -z, -w); }
+
             Vector4 operator+(const Vector4& v) const { return Vector4(x + v.x, y + v.y, z + v.z, w + v.w); }
             Vector4 operator+(float s) const { return Vector4(x + s, y + s, z + s, w + s); }
             Vector4 operator-(const Vector4& v) const { return Vector4(x - v.x, y - v.y, z - v.z, w - v.w); }
@@ -670,6 +688,8 @@ namespace Louron {
                 }
                 throw std::out_of_range("Index out of range");
             }
+
+            IVector4 operator-() const { return IVector4(-x, -y, -z, -w); }
 
             IVector4 operator+(const IVector4& v) const { return IVector4(x + v.x, y + v.y, z + v.z, w + v.w); }
             IVector4 operator-(const IVector4& v) const { return IVector4(x - v.x, y - v.y, z - v.z, w - v.w); }
@@ -763,6 +783,8 @@ namespace Louron {
                 throw std::out_of_range("Index out of range");
             }
 
+            DVector4 operator-() const { return DVector4(-x, -y, -z, -w); }
+
             DVector4 operator+(const DVector4& v) const { return DVector4(x + v.x, y + v.y, z + v.z, w + v.w); }
             DVector4 operator-(const DVector4& v) const { return DVector4(x - v.x, y - v.y, z - v.z, w - v.w); }
             DVector4 operator*(const DVector4& v) const { return DVector4(x * v.x, y * v.y, z * v.z, w * v.w); }
@@ -808,6 +830,8 @@ namespace Louron {
                 }
                 throw std::out_of_range("Index out of range");
             }
+
+            BVector4 operator-() const { return BVector4(!x, !y, !z, !w); }
 
             bool operator==(const BVector4& v) const { return x == v.x && y == v.y && z == v.z && w == v.w; }
             bool operator!=(const BVector4& v) const { return !(*this == v); }

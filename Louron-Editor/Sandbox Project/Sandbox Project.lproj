@@ -1,5 +1,5 @@
 Project Name: Sandbox Project
 Project Config:
-  StartScene: Scenes/Knerpix Game Again.lscene
+  StartScene: Scenes\Character Controller.lscene
   AssetDirectory: Assets/
   AppScriptModulePath: Scripts/Binaries/ScriptCode.dll

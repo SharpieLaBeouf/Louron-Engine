@@ -6,6 +6,7 @@
 
 #include "../Defines/LAssets.h"
 #include "../Defines/LTypes.h"
+#include "../Engine Util/LDebug.h"
 
 namespace Louron
 {
@@ -865,6 +866,136 @@ namespace Louron
 
 			static BackEndAPI::FieldType GetType() { return BackEndAPI::FieldType::AnimatorComponent; }
 
+			/**
+			 * @brief Play an animation.
+			 * 
+			 * @param clip_index The index of the clip to play on the animator component.
+			 * @param should_loop Should the animation loop indefinetly
+			 * 
+			 * @code
+			 * animator_component.PlayAnimation(0, false); // This will play animation at index 0 on the animator component animations.
+			 * @endcode
+			 */
+			void PlayAnimation(int clip_index, bool should_loop = true) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, int32_t, bool), AnimatorComponent_PlayAnimation_Index, m_EntityID, clip_index, should_loop); }
+			
+			/**
+			 * @brief Play an animation.
+			 * 
+			 * @param clip_name The name of the clip to play on the animator component. If this animation is not present on the component , it will do nothing.
+			 * @param should_loop Should the animation loop indefinetly
+			 * 
+			 * @code
+			 * animator_component.PlayAnimation("Taunt_Dance_01", false); // This will play the "Taunt_Dance_01" animation on animator component if exists.
+			 * @endcode
+			 */
+			void PlayAnimation(const char* clip_name, bool should_loop = true) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const char*, bool), AnimatorComponent_PlayAnimation_Name, m_EntityID, clip_name, should_loop); }
+			
+			/**
+			 * @brief Pause any currently running animations.
+			 * 
+			 * @code
+			 * if (character_frozen)
+			 * {
+			 *     animator_component.PauseAnimation();
+			 * }
+			 * @endcode
+			 */
+			void PauseAnimation() const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t), AnimatorComponent_PauseAnimation, m_EntityID); }
+			
+			/**
+			 * @brief Resume animator component.
+			 * 
+			 * @code
+			 * if (character_frozen && character_to_be_unfrozen)
+			 * {
+			 *     animator_component.ResumeAnimation();
+			 *     character_frozen = false;
+			 *     character_to_be_unfrozen = false;
+			 * }
+			 * @endcode
+			 */
+			void ResumeAnimation() const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t), AnimatorComponent_ResumeAnimation, m_EntityID); }
+			
+			/**
+			 * @brief Stop any currently running animation, and reset the current timestep to reset the animation.
+			 */
+			void StopAnimation() const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t), AnimatorComponent_StopAnimation, m_EntityID); }
+
+			/**
+			 * @brief Checks if the animator is currently playing an animation.
+			 * 
+			 * @return True if playing, false if not. 
+			 */
+			bool IsPlaying() const { return ENGINE_SAFE_CALL_RET(bool, bool(*)(uint32_t), AnimatorComponent_IsPlaying, m_EntityID); }
+			
+			/**
+			 * @brief Checks if the animator is currently looping an animation.
+			 * 
+			 * @return True if looping, false if not. 
+			 */
+			bool IsLooping() const { return ENGINE_SAFE_CALL_RET(bool, bool(*)(uint32_t), AnimatorComponent_IsLooping, m_EntityID); }
+			
+			/**
+			 * @brief Checks if the animator is currently looping an animation.
+			 * 
+			 * @param should_loop Should the animation loop indefinetly
+			 */
+			void SetIsLooping(bool should_loop) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, bool), AnimatorComponent_SetIsLooping, m_EntityID, should_loop); }
+
+			/**
+			 * @brief Gets the playback speed of the Animator Component.
+			 * 
+			 * @return The playback speed.
+			 */
+			float GetPlaybackSpeed() const { return ENGINE_SAFE_CALL_RET(float, float(*)(uint32_t), AnimatorComponent_GetPlaybackSpeed, m_EntityID); }
+			
+			/**
+			 * @brief Sets the playback speed of the Animator Component.
+			 * 
+			 * @param playback_speed The speed at which the animation should play. E.g., 1.0f being normal speed, 2.0f being double speed, and 0.5f being half speed.
+			 * 
+			 * @code
+			 * if (super_fast_speed)
+			 * {
+			 *     animator_component.SetPlaybackSpeed(2.0f); // Runs animation at x2 speed.
+			 * }
+			 * @endcode
+			 */
+			void SetPlaybackSpeed(float playback_speed) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, float), AnimatorComponent_SetPlaybackSpeed, m_EntityID, playback_speed); }
+
+			/**
+			 * @brief Gets the current normalised time step of the animation clip.
+			 * 
+			 * This is normalised between 0.0f -> 1.0f with 0.0f being the start of the animation and 1.0f being the end of the animation.
+			 * 
+			 * @return The normalised timestep of the animation.
+			 */
+			float GetCurrentTimestep() const { return ENGINE_SAFE_CALL_RET(float, float(*)(uint32_t), AnimatorComponent_GetCurrentTimestep, m_EntityID); }
+			
+			/**
+			 * @brief Sets the current normalised time step of the animation clip.
+			 * 
+			 * This is normalised between 0.0f -> 1.0f with 0.0f being the start of the animation and 1.0f being the end of the animation.
+			 * 
+			 * @param normalised_time_step The timestep you wish to set the animation to
+			 */
+			void SetCurrentTimestep(float normalised_time_step) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, float), AnimatorComponent_SetCurrentTimestep, m_EntityID, normalised_time_step); }
+
+			/**
+			 * @brief Gets the index of the current playing animation.
+			 * 
+			 * @return The index of the current playing animation or -1 if no animation playing.
+			 */
+			uint32_t GetCurrentClipIndex() const { return ENGINE_SAFE_CALL_RET(uint32_t, uint32_t(*)(uint32_t), AnimatorComponent_GetCurrentClipIndex, m_EntityID); }
+			
+			/**
+			 * @brief Gets the name of the current playing animation.
+			 * 
+			 * @return The name of the current playing animation or "" if no animation playing.
+			 */
+			std::string GetCurrentClipName() const {
+				return std::string(ENGINE_SAFE_CALL_RET_PTR(const char*, const char*(*)(uint32_t), AnimatorComponent_GetCurrentClipName, m_EntityID)); 
+			}
 		};
 
 		/**

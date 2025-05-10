@@ -33,6 +33,7 @@ namespace Louron
 		// --- AnimatorComponent Functions ---
 
 		void Play(int clip_index, bool should_loop = true);
+		void Play(const char* clip_name, bool should_loop = true);
 
 		void Pause() { IsPlaying = false; }
 		void Resume() { IsPlaying = true; }

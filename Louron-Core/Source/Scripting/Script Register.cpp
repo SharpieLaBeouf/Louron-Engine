@@ -6,6 +6,7 @@
 #include "../Core/Time.h"
 #include "../Core/Input.h"
 #include "../Core/Engine.h"
+#include "../Animation/Animations.h"
 
 #include <glm/gtx/string_cast.hpp>
 
@@ -348,6 +349,30 @@ namespace Louron
 
         register_function("SphereColliderComponent_GetMaterial", reinterpret_cast<void*>(&SphereColliderComponent_GetMaterial));
         register_function("SphereColliderComponent_SetMaterial", reinterpret_cast<void*>(&SphereColliderComponent_SetMaterial));
+
+#pragma endregion
+
+#pragma region Animator
+
+        register_function("AnimatorComponent_PlayAnimation_Index", reinterpret_cast<void*>(&AnimatorComponent_PlayAnimation_Index));
+        register_function("AnimatorComponent_PlayAnimation_Name", reinterpret_cast<void*>(&AnimatorComponent_PlayAnimation_Name));
+
+        register_function("AnimatorComponent_PauseAnimation", reinterpret_cast<void*>(&AnimatorComponent_PauseAnimation));
+        register_function("AnimatorComponent_ResumeAnimation", reinterpret_cast<void*>(&AnimatorComponent_ResumeAnimation));
+        register_function("AnimatorComponent_StopAnimation", reinterpret_cast<void*>(&AnimatorComponent_StopAnimation));
+
+        register_function("AnimatorComponent_IsPlaying", reinterpret_cast<void*>(&AnimatorComponent_IsPlaying));
+        register_function("AnimatorComponent_IsLooping", reinterpret_cast<void*>(&AnimatorComponent_IsLooping));
+        register_function("AnimatorComponent_SetIsLooping", reinterpret_cast<void*>(&AnimatorComponent_SetIsLooping));
+
+        register_function("AnimatorComponent_GetPlaybackSpeed", reinterpret_cast<void*>(&AnimatorComponent_GetPlaybackSpeed));
+        register_function("AnimatorComponent_SetPlaybackSpeed", reinterpret_cast<void*>(&AnimatorComponent_SetPlaybackSpeed));
+
+        register_function("AnimatorComponent_GetCurrentTimestep", reinterpret_cast<void*>(&AnimatorComponent_GetCurrentTimestep));
+        register_function("AnimatorComponent_SetCurrentTimestep", reinterpret_cast<void*>(&AnimatorComponent_SetCurrentTimestep));
+        
+        register_function("AnimatorComponent_GetCurrentClipIndex", reinterpret_cast<void*>(&AnimatorComponent_GetCurrentClipIndex));
+        register_function("AnimatorComponent_GetCurrentClipName", reinterpret_cast<void*>(&AnimatorComponent_GetCurrentClipName));
 
 #pragma endregion
 
@@ -2299,6 +2324,203 @@ namespace Louron
 
         auto phys_material = std::make_shared<PhysicsMaterial>(value->m_DynamicFriction, value->m_StaticFriction, value->m_Bounciness);
         entity.GetComponent<SphereColliderComponent>().SetMaterial(phys_material);
+    }
+    
+#pragma endregion
+
+#pragma region Animator
+
+    void ScriptRegister::AnimatorComponent_PlayAnimation_Index(UUID entity_uuid, int32_t clip_index, bool should_loop)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return;
+
+        entity.GetComponent<AnimatorComponent>().Play(clip_index, should_loop);
+    }
+
+    void ScriptRegister::AnimatorComponent_PlayAnimation_Name(UUID entity_uuid, const char *clip_name, bool should_loop)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return;
+
+        entity.GetComponent<AnimatorComponent>().Play(clip_name, should_loop);
+    }
+
+    void ScriptRegister::AnimatorComponent_PauseAnimation(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return;
+
+        entity.GetComponent<AnimatorComponent>().Pause();
+    }
+
+    void ScriptRegister::AnimatorComponent_ResumeAnimation(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return;
+
+        entity.GetComponent<AnimatorComponent>().Resume();
+    }
+
+    void ScriptRegister::AnimatorComponent_StopAnimation(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return;
+
+        entity.GetComponent<AnimatorComponent>().Stop();
+    }
+
+    bool ScriptRegister::AnimatorComponent_IsPlaying(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return false;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return false;
+
+        return entity.GetComponent<AnimatorComponent>().IsPlaying;
+    }
+
+    bool ScriptRegister::AnimatorComponent_IsLooping(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return false;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return false;
+
+        return entity.GetComponent<AnimatorComponent>().IsLooping;
+    }
+
+    void ScriptRegister::AnimatorComponent_SetIsLooping(UUID entity_uuid, bool should_loop)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return;
+
+        entity.GetComponent<AnimatorComponent>().IsLooping = should_loop;
+    }
+
+    float ScriptRegister::AnimatorComponent_GetPlaybackSpeed(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return false;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return false;
+
+        return entity.GetComponent<AnimatorComponent>().PlaybackSpeed;
+    }
+
+    void ScriptRegister::AnimatorComponent_SetPlaybackSpeed(UUID entity_uuid, float playback_speed)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return;
+
+        entity.GetComponent<AnimatorComponent>().PlaybackSpeed = playback_speed;
+    }
+
+    float ScriptRegister::AnimatorComponent_GetCurrentTimestep(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return false;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return false;
+
+        return entity.GetComponent<AnimatorComponent>().CurrentTime;
+    }
+
+    void ScriptRegister::AnimatorComponent_SetCurrentTimestep(UUID entity_uuid, float normalised_time_step)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return;
+        
+        auto& animator = entity.GetComponent<AnimatorComponent>();
+        auto animation_clip = AssetManager::GetAsset<AnimationClip>(animator.AnimationClipHandles[animator.CurrentClipIndex]);
+        if (animation_clip)
+        {
+            entity.GetComponent<AnimatorComponent>().CurrentTime = glm::clamp(normalised_time_step, 0.0f, 1.0f) * animation_clip->GetDuration();
+        }
+    }
+
+    uint32_t ScriptRegister::AnimatorComponent_GetCurrentClipIndex(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return NULL_UUID;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return NULL_UUID;
+        
+        return entity.GetComponent<AnimatorComponent>().CurrentClipIndex;
+    }
+
+    const char *ScriptRegister::AnimatorComponent_GetCurrentClipName(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return "";
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>())
+            return "";
+            
+        auto& animator_component = entity.GetComponent<AnimatorComponent>();
+		if (animator_component.CurrentClipIndex < 0 || 
+            animator_component.CurrentClipIndex >= animator_component.AnimationClipHandles.size())
+            return "";
+        
+        const auto& animation_clip_meta_data = Project::GetActiveProject()->GetEditorAssetManager()->GetMetadata(animator_component.AnimationClipHandles[animator_component.CurrentClipIndex]);        
+        return animation_clip_meta_data.AssetName.c_str();
     }
 
 #pragma endregion

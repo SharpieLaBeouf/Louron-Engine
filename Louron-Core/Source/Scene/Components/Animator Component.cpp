@@ -23,9 +23,44 @@ namespace Louron
 	void AnimatorComponent::Play(int clip_index, bool should_loop)
 	{
 		if (clip_index < 0 || clip_index >= AnimationClipHandles.size())
+		{
+			L_CORE_WARN("AnimatorComponent::Play - Clip Index Invalid.");
 			return;
+		}
 
 		CurrentClipIndex = clip_index;
+		CurrentTime = 0.0f;
+		IsPlaying = true;
+		IsLooping = should_loop;
+	}
+
+	void AnimatorComponent::Play(const char* clip_name, bool should_loop)
+	{
+		uint32_t found_index = NULL_UUID;
+		for (auto it = AnimationClipHandles.begin(); it != AnimationClipHandles.end(); )
+		{
+			if (*it == NULL_UUID)
+			{
+				++it;
+				continue;
+			}
+
+			const auto& clip_meta_data = Project::GetActiveProject()->GetEditorAssetManager()->GetMetadata(*it);
+			if(clip_meta_data.AssetName == clip_name)
+			{
+				found_index = std::distance(AnimationClipHandles.begin(), it);
+				break;
+			}
+			++it;
+		}
+
+		if(found_index == NULL_UUID)
+		{
+			L_CORE_WARN("AnimatorComponent::Play - Could Not Find \"{}\" in Animation Clips.", clip_name);
+			return;
+		}
+
+		CurrentClipIndex = found_index;
 		CurrentTime = 0.0f;
 		IsPlaying = true;
 		IsLooping = should_loop;

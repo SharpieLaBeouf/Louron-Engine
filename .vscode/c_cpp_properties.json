@@ -18,6 +18,7 @@
                 "${workspaceFolder}/External/tinyfiledialogs",
                 "${workspaceFolder}/External/yaml-cpp/include",
                 "${workspaceFolder}/External/clang-c",
+                "${workspaceFolder}/Louron-Editor/Sandbox Project/Scripts",
                 "${workspaceFolder}/**"
             ],
             "defines": [],

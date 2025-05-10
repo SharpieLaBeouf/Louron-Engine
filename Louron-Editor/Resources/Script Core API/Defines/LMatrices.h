@@ -41,6 +41,8 @@ namespace Louron
             Mat3 operator*(const Mat3& other) const;
             Vectors::Vector3 operator*(const Vectors::Vector3& v) const;
 
+            Mat3 operator-() const { return Mat3(-columns[0], -columns[1], -columns[2]); }
+
             bool operator==(const Mat3& other) const;
             bool operator!=(const Mat3& other) const;
 
@@ -92,6 +94,8 @@ namespace Louron
 
             Mat4 operator*(const Mat4& other) const;
             Vectors::Vector4 operator*(const Vectors::Vector4& v) const;
+
+            Mat4 operator-() const { return Mat4(-columns[0], -columns[1], -columns[2], -columns[3]); }
 
             bool operator==(const Mat4& other) const;
             bool operator!=(const Mat4& other) const;
