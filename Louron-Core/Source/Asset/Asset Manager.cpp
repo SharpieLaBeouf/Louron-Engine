@@ -17,15 +17,6 @@
 
 namespace Louron 
 {
-
-	uint32_t Utils::fnv1a_hash(const std::string &str)
-	{
-		uint32_t hash = 2166136261u;
-		for (char c : str)
-			hash ^= static_cast<uint8_t>(c), hash *= 16777619u;
-		return hash;
-	}
-
 	#pragma region Asset Manager Static API
 
 	AssetType AssetManager::GetAssetTypeFromFileExtension(const std::filesystem::path& extension)

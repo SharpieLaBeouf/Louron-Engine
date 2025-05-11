@@ -4,6 +4,7 @@
 #include "Asset.h"
 
 #include "../Core/Logging.h"
+#include "../Core/Utilities.h"
 
 // C++ Standard Library Headers
 #include <map>
@@ -18,11 +19,6 @@
 
 namespace Louron 
 {
-
-	namespace Utils
-	{
-		uint32_t fnv1a_hash(const std::string& str);
-	}
 
 	class Shader;
 
