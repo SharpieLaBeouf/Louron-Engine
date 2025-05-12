@@ -1,5 +1,10 @@
 #pragma once
 
+#include "Animation/Animation Base Types.h"
+#include "Animation/Animation Blend Tree.h"
+#include "Animation/Animation State Machine.h"
+#include "Animation/Animation State.h"
+#include "Animation/Animation Transition.h"
 #include "Animation/Animations.h"
 
 #include "Asset/Asset.h"
@@ -18,6 +23,7 @@
 #include "Core/FileSystem Utilities.h"
 #include "Core/File Utilities.h"
 #include "Core/Platform.h"
+#include "Core/Utilities.h"
 
 #include "Jobs/Jobs.h"
 

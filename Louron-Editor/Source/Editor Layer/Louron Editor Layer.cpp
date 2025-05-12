@@ -23,7 +23,8 @@ using namespace Louron;
 std::atomic_bool LouronEditorLayer::m_ScriptsNeedCompiling = false;
 static efsw::WatchID m_ScriptFileWatchID;
 
-LouronEditorLayer::LouronEditorLayer() {
+LouronEditorLayer::LouronEditorLayer() 
+{
 	L_APP_INFO("Opening Louron Editor");
 }
 

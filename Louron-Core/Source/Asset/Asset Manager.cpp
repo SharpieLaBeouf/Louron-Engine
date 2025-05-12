@@ -46,6 +46,7 @@ namespace Louron
 			case AssetType::ModelImport:
 			case AssetType::Material_Skybox:
 			case AssetType::Material_Standard:
+			case AssetType::AnimationStateMachine:
 			{
 				return true;
 			}

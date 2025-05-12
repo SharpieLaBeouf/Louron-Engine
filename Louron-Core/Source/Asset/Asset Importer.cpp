@@ -15,6 +15,7 @@
 #include "../Scene/Components/SkinnedMeshComponent.h"
 
 #include "../Animation/Animations.h"
+#include "../Animation/Animation State Machine.h"
 #include "../OpenGL/Mesh.h"
 
 // C++ Standard Library Headers
@@ -53,7 +54,9 @@ namespace Louron {
 		{ AssetType::ModelImport,				ModelImporter::ImportModel },
 
 		{ AssetType::Shader,					ShaderImporter::ImportShader },
-		{ AssetType::Compute_Shader,			ShaderImporter::ImportComputeShader }
+		{ AssetType::Compute_Shader,			ShaderImporter::ImportComputeShader },
+		
+		{ AssetType::AnimationStateMachine,		AnimationStateMachineImporter::ImportStateMachine }
 	};
 
 	std::shared_ptr<Asset> AssetImporter::ImportAsset(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& metadata, const std::filesystem::path& project_asset_directory)
@@ -1203,6 +1206,39 @@ namespace Louron {
 	{
 		return std::make_shared<ComputeShaderAsset>(path);
 	}
+
+#pragma endregion
+
+#pragma region Animation State Machine
+
+    std::shared_ptr<Animation::StateMachine> AnimationStateMachineImporter::ImportStateMachine(const AssetImporter::ImportParams &import_params)
+    {
+        return LoadStateMachine(import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
+    }
+
+    std::shared_ptr<Animation::StateMachine> AnimationStateMachineImporter::LoadStateMachine(const std::filesystem::path &path)
+    {
+		YAML::Node data;
+
+		if (!std::filesystem::exists(path)) return nullptr;
+
+		try 
+		{
+			data = YAML::LoadFile(path.string());
+		}
+		catch (YAML::ParserException e) 
+		{
+			L_CORE_ERROR("YAML-CPP Failed to Load Animation State Machine File: '{}', {}", path.string(), e.what());
+			return nullptr;
+		}
+
+		if (!data) return nullptr;
+
+		std::shared_ptr<Animation::StateMachine> asset = std::make_shared<Animation::StateMachine>();
+		asset->Deserialise(data);
+
+        return asset;
+    }
 
 #pragma endregion
 

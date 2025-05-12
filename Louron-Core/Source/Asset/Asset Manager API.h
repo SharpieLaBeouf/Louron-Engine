@@ -25,6 +25,8 @@ namespace Louron {
 		{ ".obj",		AssetType::ModelImport },
 		{ ".fbx",		AssetType::ModelImport },
 
+		{ ".lanimator", AssetType::AnimationStateMachine },
+
 		{ ".mp3",		AssetType::Audio },
 
 		{ ".lmaterial",	AssetType::Material_Standard },
@@ -38,6 +40,11 @@ namespace Louron {
 		{ ".lshader",	AssetType::Shader }
 
 	};
+
+	namespace Animation
+	{
+		class StateMachine;
+	}
 
 	/// <summary>
 	/// Static API Class.
@@ -89,6 +96,9 @@ namespace Louron {
 				}
 				else if constexpr (std::is_same_v<TAssetType, Prefab>) {
 					expectedType = AssetType::Prefab;
+				}
+				else if constexpr (std::is_same_v<TAssetType, Animation::StateMachine>) {
+					expectedType = AssetType::AnimationStateMachine;
 				}
 				else if constexpr (std::is_same_v<TAssetType, SkyboxMaterial>) {
 					expectedType = AssetType::Material_Skybox; // Check this first so we can return Material_Skybox opposed to Material_Standard
@@ -150,6 +160,9 @@ namespace Louron {
 			}
 			else if constexpr (std::is_same_v<TAssetType, Prefab>) {
 				return AssetType::Prefab;
+			}
+			else if constexpr (std::is_same_v<TAssetType, Animation::StateMachine>) {
+				return AssetType::AnimationStateMachine;
 			}
 			else if constexpr (std::is_same_v<TAssetType, SkyboxMaterial>) {
 				return AssetType::Material_Skybox; // Check this first so we can return Material_Skybox opposed to Material_Standard

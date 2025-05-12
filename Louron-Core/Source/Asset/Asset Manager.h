@@ -20,7 +20,25 @@
 namespace Louron 
 {
 
+	// Forward Declares
 	class Shader;
+
+	struct StaticMesh;
+
+	class Prefab;
+	class Texture2D;
+
+	class Material;
+	class SkyboxMaterial;
+	class ComputeShaderAsset;
+
+	class Skeleton;
+	class AnimationClip;
+
+	namespace Animation
+	{
+		class StateMachine;
+	}
 
 	using AssetMap = std::map<AssetHandle, std::shared_ptr<Asset>>;
 	using AssetRegistry = std::map<AssetHandle, AssetMetaData>;
@@ -40,17 +58,6 @@ namespace Louron
 
 		virtual void ClearRuntimeAssets() = 0;
 	};
-
-	struct StaticMesh;
-
-	class Prefab;
-	class Texture2D;
-	class Material;
-	class SkyboxMaterial;
-	class ComputeShaderAsset;
-
-	class Skeleton;
-	class AnimationClip;
 
 	class EditorAssetManager : public AssetManagerBase {
 
@@ -166,6 +173,9 @@ namespace Louron
 			}
 			else if constexpr (std::is_same_v<TAssetType, AnimationClip>) {
 				expectedType = AssetType::AnimationClip;
+			}
+			else if constexpr (std::is_same_v<TAssetType, Animation::StateMachine>) {
+				expectedType = AssetType::AnimationStateMachine;
 			}
 			else if constexpr (std::is_same_v<TAssetType, SkyboxMaterial>) {
 				expectedType = AssetType::Material_Skybox; // Check this first so we can return Material_Skybox opposed to Material_Standard

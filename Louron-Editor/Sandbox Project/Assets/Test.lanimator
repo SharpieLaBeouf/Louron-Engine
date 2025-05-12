@@ -1,0 +1,82 @@
+Default State: Idle
+Animation Parameters:
+  - Name: IsWalking
+    Hash: 1823010120
+    Type: Bool
+    Value: 0
+  - Name: IsJumping
+    Hash: 3340040579
+    Type: Bool
+    Value: 0
+  - Name: IsRunning
+    Hash: 1485051900
+    Type: Bool
+    Value: 0
+Animation States:
+  - Name: Idle
+    Hash: 1168775091
+    Type: Clip
+    Asset Handle: 4294967295
+    Should Loop: false
+    Playback Speed: 1
+  - Name: Walk
+    Hash: 583849776
+    Type: Clip
+    Asset Handle: 4294967295
+    Should Loop: false
+    Playback Speed: 1
+  - Name: Run
+    Hash: 2371348074
+    Type: Clip
+    Asset Handle: 4294967295
+    Should Loop: false
+    Playback Speed: 1
+Animation Transitions:
+  - Source Name: Idle
+    Source Hash: 1168775091
+    Destination Name: Walk
+    Destination Hash: 583849776
+    Transition Duration: 2
+    Has Exit Time: false
+    Exit Time: 0
+    Conditions:
+      - Parameter Name: IsWalking
+        Parameter Hash: 1823010120
+        Comparison Operation: Equal
+        Reference Threshold: 1
+  - Source Name: Walk
+    Source Hash: 583849776
+    Destination Name: Idle
+    Destination Hash: 1168775091
+    Transition Duration: 0
+    Has Exit Time: false
+    Exit Time: 0
+    Conditions:
+      - Parameter Name: IsWalking
+        Parameter Hash: 1823010120
+        Comparison Operation: Equal
+        Reference Threshold: 0
+  - Source Name: Walk
+    Source Hash: 583849776
+    Destination Name: Run
+    Destination Hash: 2371348074
+    Transition Duration: 0
+    Has Exit Time: false
+    Exit Time: 0
+    Conditions:
+      - Parameter Name: IsRunning
+        Parameter Hash: 1485051900
+        Comparison Operation: Equal
+        Reference Threshold: 1
+  - Source Name: Run
+    Source Hash: 2371348074
+    Destination Name: Walk
+    Destination Hash: 583849776
+    Transition Duration: 0
+    Has Exit Time: false
+    Exit Time: 0
+    Conditions:
+      - Parameter Name: IsRunning
+        Parameter Hash: 1485051900
+        Comparison Operation: Equal
+        Reference Threshold: 0

@@ -24,6 +24,11 @@ namespace Louron {
 	class Prefab;
 	class Texture2D;
 
+	namespace Animation
+	{
+		class StateMachine;
+	}
+
 	using AssetMap = std::map<AssetHandle, std::shared_ptr<Asset>>;
 	using AssetRegistry = std::map<AssetHandle, AssetMetaData>;
 
@@ -136,6 +141,19 @@ namespace Louron {
 
 		static std::shared_ptr<ComputeShaderAsset> ImportComputeShader(const AssetImporter::ImportParams& import_params);
 		static std::shared_ptr<ComputeShaderAsset> LoadComputeShader(const std::filesystem::path& path);
+
+	};
+
+	class AnimationStateMachineImporter
+	{
+
+	public:
+
+		static std::shared_ptr<Animation::StateMachine> ImportStateMachine(const AssetImporter::ImportParams& import_params);
+
+	private:
+	
+		static std::shared_ptr<Animation::StateMachine> LoadStateMachine(const std::filesystem::path& path);
 
 	};
 

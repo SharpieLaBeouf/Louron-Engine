@@ -9,36 +9,50 @@
 
 // External Vendor Library Headers
 
+namespace YAML
+{
+    class Emitter;
+    class Node;
+}
+
 namespace Louron::Animation
 {
-
-    enum class StateType : uint8_t
-    {
-        Empty,
-        Animation,
-        BlendTree
-    };
-
     struct AnimationState
     {
+        virtual ~AnimationState() = default;
+
         virtual StateType GetType() = 0;
-        virtual void Evaluate() = 0;
+        virtual void Update(float ts, const std::unordered_map<StringHash, AnimationParameter> state_params) = 0;
+        virtual void CleanState() = 0;
+        virtual std::unique_ptr<AnimationState> Clone() const = 0;
 
-        std::string Name;
+        virtual void Serialise(YAML::Emitter& out) = 0;
+        virtual void Deserialise(const YAML::Node& data) = 0;
+
+        std::string Name = "";
     };
 
-    struct AnimationState_Empty : public AnimationState
+    struct AnimationState_Clip : public AnimationState
     {
-        StateType GetType() override { return StateType::Empty; }        
-        void Evaluate() override { }
-    };
+        StateType GetType() override { return StateType::Clip; }
+        
+        AnimationState_Clip() = default;
+        ~AnimationState_Clip() = default;
 
-    struct AnimationState_Animation : public AnimationState
-    {
-        StateType GetType() override { return StateType::Animation; }        
-        void Evaluate() override { /* TODO: Implement Simple Animation State */}
+        AnimationState_Clip(const AnimationState_Clip& other) = default;
+        AnimationState_Clip(AnimationState_Clip&& other) = default;
+        AnimationState_Clip& operator=(const AnimationState_Clip& other) = default;
+        AnimationState_Clip& operator=(AnimationState_Clip&& other) = default;
+
+        void Update(float ts, const std::unordered_map<StringHash, AnimationParameter> state_params) override;
+        void CleanState() override;
+        std::unique_ptr<AnimationState> Clone() const override { return std::make_unique<AnimationState_Clip>(*this); }
+        
+        void Serialise(YAML::Emitter& out) override;
+        void Deserialise(const YAML::Node& data) override;
 
         AssetHandle AnimClipHandle = NULL_UUID;
+
         bool IsPlaying = false;
         bool IsLooping = false;
 
@@ -46,11 +60,27 @@ namespace Louron::Animation
         float PlaybackSpeed = 1.0f;
     };
     
+    // TODO: Finish Blend Tree Animation State
     struct AnimationState_BlendTree : public AnimationState
     {
         StateType GetType() override { return StateType::BlendTree; }
-        void Evaluate() override { AnimBlendTree.Evaluate(); }
+        
+        AnimationState_BlendTree() = default;
+        ~AnimationState_BlendTree() = default;
+        
+        AnimationState_BlendTree(const AnimationState_BlendTree& other);
+        AnimationState_BlendTree(AnimationState_BlendTree&& other) = default;
 
-        BlendTree AnimBlendTree;
+        AnimationState_BlendTree& operator=(const AnimationState_BlendTree& other);
+        AnimationState_BlendTree& operator=(AnimationState_BlendTree&& other) = default;
+
+        void Update(float ts, const std::unordered_map<StringHash, AnimationParameter> state_params) override;
+        void CleanState() override;
+        std::unique_ptr<AnimationState> Clone() const override { return std::make_unique<AnimationState_BlendTree>(*this); }
+        
+        void Serialise(YAML::Emitter& out) override;
+        void Deserialise(const YAML::Node& data) override;
+
+        std::unique_ptr<BlendTree> AnimBlendTree = nullptr;
     };
 }

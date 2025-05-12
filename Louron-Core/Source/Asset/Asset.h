@@ -30,6 +30,7 @@ namespace Louron {
 
 		Skeleton,
 		AnimationClip,
+		AnimationStateMachine,
 
 		Audio,
 
