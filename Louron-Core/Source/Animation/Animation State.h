@@ -25,6 +25,7 @@ namespace Louron::Animation
         virtual void Update(float ts, const std::unordered_map<StringHash, AnimationParameter> state_params) = 0;
         virtual void CleanState() = 0;
         virtual std::unique_ptr<AnimationState> Clone() const = 0;
+        virtual void EvaluatePose(Louron::AnimationPose& evaluated_pose) = 0;
 
         virtual void Serialise(YAML::Emitter& out) = 0;
         virtual void Deserialise(const YAML::Node& data) = 0;
@@ -47,6 +48,8 @@ namespace Louron::Animation
         void Update(float ts, const std::unordered_map<StringHash, AnimationParameter> state_params) override;
         void CleanState() override;
         std::unique_ptr<AnimationState> Clone() const override { return std::make_unique<AnimationState_Clip>(*this); }
+
+        void EvaluatePose(Louron::AnimationPose& evaluated_pose) override;
         
         void Serialise(YAML::Emitter& out) override;
         void Deserialise(const YAML::Node& data) override;
@@ -77,6 +80,8 @@ namespace Louron::Animation
         void Update(float ts, const std::unordered_map<StringHash, AnimationParameter> state_params) override;
         void CleanState() override;
         std::unique_ptr<AnimationState> Clone() const override { return std::make_unique<AnimationState_BlendTree>(*this); }
+
+        void EvaluatePose(Louron::AnimationPose& evaluated_pose) override;
         
         void Serialise(YAML::Emitter& out) override;
         void Deserialise(const YAML::Node& data) override;

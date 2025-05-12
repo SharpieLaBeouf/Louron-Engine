@@ -11,32 +11,6 @@ namespace Louron::Animation
 {
 
 #pragma region Clip
-    
-    AnimationState_BlendTree::AnimationState_BlendTree(const AnimationState_BlendTree &other)
-    {
-        AnimBlendTree.reset();
-
-        if(other.AnimBlendTree)
-        {
-            AnimBlendTree = std::make_unique<BlendTree>();
-            AnimBlendTree->RootNode = other.AnimBlendTree->RootNode;
-        }
-    }
-
-    AnimationState_BlendTree &AnimationState_BlendTree::operator=(const AnimationState_BlendTree &other)
-    {
-        if (this == &other)
-            return *this;
-        
-        AnimBlendTree.reset();
-    
-        if(other.AnimBlendTree)
-        {
-            AnimBlendTree = std::make_unique<BlendTree>(*other.AnimBlendTree.get());
-        }
-    
-        return *this;
-    }
 
     void AnimationState_Clip::Update(float ts, const std::unordered_map<StringHash, AnimationParameter> state_params)
     {
@@ -71,6 +45,15 @@ namespace Louron::Animation
         CurrentTime = 0.0f;
     }
 
+    void AnimationState_Clip::EvaluatePose(Louron::AnimationPose& evaluated_pose)
+    {
+		auto clip = AssetManager::GetAsset<AnimationClip>(AnimClipHandle);
+		if (!clip || !IsPlaying)
+			return;
+	
+		clip->SamplePose(CurrentTime, evaluated_pose);
+    }
+
     void AnimationState_Clip::Serialise(YAML::Emitter& out)
     {
         out << YAML::Key << "Asset Handle"   << YAML::Value << AnimClipHandle;
@@ -93,7 +76,33 @@ namespace Louron::Animation
 #pragma endregion
 
 #pragma region Blend Tree
+    
+    AnimationState_BlendTree::AnimationState_BlendTree(const AnimationState_BlendTree &other)
+    {
+        AnimBlendTree.reset();
 
+        if(other.AnimBlendTree)
+        {
+            AnimBlendTree = std::make_unique<BlendTree>();
+            AnimBlendTree->RootNode = other.AnimBlendTree->RootNode;
+        }
+    }
+
+    AnimationState_BlendTree &AnimationState_BlendTree::operator=(const AnimationState_BlendTree &other)
+    {
+        if (this == &other)
+            return *this;
+        
+        AnimBlendTree.reset();
+
+        if(other.AnimBlendTree)
+        {
+            AnimBlendTree = std::make_unique<BlendTree>(*other.AnimBlendTree.get());
+        }
+
+        return *this;
+    }
+    
     void AnimationState_BlendTree::Update(float ts, const std::unordered_map<StringHash, AnimationParameter> state_params)
     {
         if(AnimBlendTree)
@@ -104,6 +113,12 @@ namespace Louron::Animation
     {
         if(AnimBlendTree)
             AnimBlendTree->CleanBlendTree();
+    }
+
+    void AnimationState_BlendTree::EvaluatePose(Louron::AnimationPose& evaluated_pose)
+    {
+        if(AnimBlendTree)
+            AnimBlendTree->EvaluatePose(evaluated_pose);
     }
 
     void AnimationState_BlendTree::Serialise(YAML::Emitter& out)

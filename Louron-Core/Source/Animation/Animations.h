@@ -15,6 +15,20 @@
 
 namespace Louron
 {
+    struct AnimationPose
+    {
+        struct AnimationTransform
+        {
+            glm::vec3 Position;
+            glm::quat Orientation;
+            glm::vec3 Scale;
+        };
+        
+        // Key = Bone Name
+        // Value = Local Transform
+        std::unordered_map<std::string, AnimationTransform> Pose;
+    };
+
     struct Keyframe_Position
     {
         float Time;
@@ -121,6 +135,85 @@ namespace Louron
 
         const BoneKeyFrameMap& GetAllBoneKeyFrames() const { return m_BoneKeyFrames; }
         void SetAllBoneKeyFrames(const BoneKeyFrameMap& bone_key_frames) { m_BoneKeyFrames = bone_key_frames; }
+
+        void SamplePose(float time, AnimationPose& out_pose) const
+        {
+            for (const auto& [bone_name, keyframes] : m_BoneKeyFrames)
+            {
+                AnimationPose::AnimationTransform transform{};
+
+                // --- Position ---
+                if (!keyframes.PositionKeyframes.empty())
+                {
+                    transform.Position = InterpolatePosition(keyframes.PositionKeyframes, time);
+                }
+
+                // --- Rotation ---
+                if (!keyframes.RotationKeyframes.empty())
+                {
+                    transform.Orientation = InterpolateRotation(keyframes.RotationKeyframes, time);
+                }
+
+                // --- Scale ---
+                if (!keyframes.ScaleKeyframes.empty())
+                {
+                    transform.Scale = InterpolateScale(keyframes.ScaleKeyframes, time);
+                }
+
+                out_pose.Pose[bone_name] = transform;
+            }
+        }
+        
+        glm::vec3 InterpolatePosition(const std::vector<Keyframe_Position>& keys, float time) const
+        {
+            if (keys.size() == 1)
+                return keys.front().Position;
+
+            for (size_t i = 0; i < keys.size() - 1; ++i)
+            {
+                if (time < keys[i + 1].Time)
+                {
+                    float t = (time - keys[i].Time) / (keys[i + 1].Time - keys[i].Time);
+                    return glm::mix(keys[i].Position, keys[i + 1].Position, t);
+                }
+            }
+
+            return keys.back().Position;
+        }
+
+        glm::quat InterpolateRotation(const std::vector<Keyframe_Rotation>& keys, float time) const
+        {
+            if (keys.size() == 1)
+                return keys.front().Rotation;
+
+            for (size_t i = 0; i < keys.size() - 1; ++i)
+            {
+                if (time < keys[i + 1].Time)
+                {
+                    float t = (time - keys[i].Time) / (keys[i + 1].Time - keys[i].Time);
+                    return glm::slerp(keys[i].Rotation, keys[i + 1].Rotation, t);
+                }
+            }
+
+            return keys.back().Rotation;
+        }
+
+        glm::vec3 InterpolateScale(const std::vector<Keyframe_Scale>& keys, float time) const
+        {
+            if (keys.size() == 1)
+                return keys.front().Scale;
+
+            for (size_t i = 0; i < keys.size() - 1; ++i)
+            {
+                if (time < keys[i + 1].Time)
+                {
+                    float t = (time - keys[i].Time) / (keys[i + 1].Time - keys[i].Time);
+                    return glm::mix(keys[i].Scale, keys[i + 1].Scale, t);
+                }
+            }
+
+            return keys.back().Scale;
+        }
 
     private:
 

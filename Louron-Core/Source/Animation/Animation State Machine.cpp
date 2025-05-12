@@ -2,6 +2,7 @@
 
 #include "../Core/Logging.h"
 
+#include <unordered_set>
 #include <yaml-cpp/yaml.h>
 
 namespace Louron::Animation
@@ -142,9 +143,50 @@ namespace Louron::Animation
         }
     }
 
-    void StateMachine::EvaluatePose(AnimationPose &evaluated_pose)
+    void StateMachine::EvaluatePose(Louron::AnimationPose &evaluated_pose)
     {
+        AnimationPose pose_a, pose_b;
 
+        if(States.contains(CurrentState) && States[CurrentState])
+        {
+            States[CurrentState]->EvaluatePose(pose_a);
+        }
+        else
+        {
+            return;
+        }
+    
+        auto target_state = (TargetState != NULL_UUID) ? States[TargetState].get() : nullptr;
+        auto transition = (target_state) ? GetTransition(CurrentState, TargetState) : nullptr;
+        if (target_state && transition && transition->TransitionDuration > 0.0f)
+        {
+            target_state->EvaluatePose(pose_b);
+    
+            float t = TransitionCompletion / transition->TransitionDuration;
+            BlendPoses(pose_a, pose_b, t, evaluated_pose);
+        }
+        else
+        {
+            evaluated_pose = std::move(pose_a);
+        }
+    }
+
+    void StateMachine::BlendPoses(const AnimationPose &a, const AnimationPose &b, float t, AnimationPose &result)
+    {
+        std::unordered_set<std::string> all_bones;
+    
+        for (const auto& [bone_name, transform] : a.Pose) all_bones.insert(bone_name);
+        for (const auto& [bone_name, transform] : b.Pose) all_bones.insert(bone_name);
+    
+        for (const auto& bone_name : all_bones)
+        {
+            const auto& ta = a.Pose.contains(bone_name) ? a.Pose.at(bone_name) : AnimationPose::AnimationTransform{};
+            const auto& tb = b.Pose.contains(bone_name) ? b.Pose.at(bone_name) : AnimationPose::AnimationTransform{};
+    
+            result.Pose[bone_name].Position    = glm::mix(ta.Position, tb.Position, t);
+            result.Pose[bone_name].Orientation = glm::slerp(ta.Orientation, tb.Orientation, t);
+            result.Pose[bone_name].Scale       = glm::mix(ta.Scale, tb.Scale, t);
+        }
     }
 
     void StateMachine::SetCurrentState(const std::string &state_name) 

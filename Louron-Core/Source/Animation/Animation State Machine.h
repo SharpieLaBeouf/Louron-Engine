@@ -4,6 +4,7 @@
 #include "Animation Base Types.h"
 #include "Animation State.h"
 #include "Animation Transition.h"
+#include "Animations.h"
 
 #include "../Asset/Asset.h"
 #include "../Core/Utilities.h"
@@ -47,7 +48,7 @@ namespace Louron::Animation
     #pragma endregion
 
         void UpdateStates(float ts);
-        void EvaluatePose(AnimationPose& evaluated_pose);
+        void EvaluatePose(Louron::AnimationPose& evaluated_pose);
 
         void SetCurrentState(const std::string& state_name);
         void SetCurrentState(const StringHash& state_hash);
@@ -95,6 +96,8 @@ namespace Louron::Animation
 
     private:
 
+        void BlendPoses(const AnimationPose& a, const AnimationPose& b, float t, AnimationPose& result);
+
         std::unordered_map<StringHash, std::unique_ptr<AnimationState>> States = {};
         std::vector<std::unique_ptr<AnimationTransition>> Transitions = {};
 
@@ -109,7 +112,7 @@ namespace Louron::Animation
         // as floats for ease of comparison operations
         std::unordered_map<StringHash, AnimationParameter> AnimationParameters;
         
-        AnimationPose CurrentPose = {};
+        Louron::AnimationPose CurrentPose = {};
     };
 
     /*  State Machine Test - MANUAL

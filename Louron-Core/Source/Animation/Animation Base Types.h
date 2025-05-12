@@ -12,6 +12,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+namespace Louron
+{
+    struct AnimationPose;
+}
+
 namespace Louron::Animation
 {
     using StringHash = uint32_t;
@@ -48,18 +53,6 @@ namespace Louron::Animation
         Float,
         Int,
         UInt
-    };
-
-    struct AnimationPose
-    {
-        struct AnimationTransform
-        {
-            glm::vec3 Position;
-            glm::quat Orientation;
-            glm::vec3 Scale;
-        };
-        
-        std::unordered_map<UUID, AnimationTransform> Pose;
     };
 
     struct AnimationParameter
