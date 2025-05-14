@@ -121,6 +121,25 @@ target_link_libraries(imguizmo PRIVATE imgui)
 set_target_properties(imguizmo PROPERTIES FOLDER "External/imguizmo")
 
 # ---------------------------------------------------------------------------
+# External: ImGui Node Editor
+# ---------------------------------------------------------------------------
+add_library(imgui_node_editor STATIC
+    External/imgui-node-editor/crude_json.cpp
+    External/imgui-node-editor/imgui_canvas.cpp
+    External/imgui-node-editor/imgui_node_editor.cpp
+    External/imgui-node-editor/imgui_node_editor_api.cpp
+)
+
+target_include_directories(imgui_node_editor PUBLIC 
+    External/imgui-node-editor
+    External/imgui
+)
+target_compile_definitions(imgui_node_editor PRIVATE IMGUI_DEFINE_MATH_OPERATORS)
+target_link_libraries(imgui_node_editor PUBLIC imgui) # Depends on ImGui
+
+set_target_properties(imgui_node_editor PROPERTIES FOLDER "External/imgui-node-editor")
+
+# ---------------------------------------------------------------------------
 # External: MiniAudio
 # ---------------------------------------------------------------------------
 add_subdirectory(External/miniaudio)

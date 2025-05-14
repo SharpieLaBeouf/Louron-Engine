@@ -123,12 +123,14 @@ namespace Louron::Animation
 
     void AnimationState_BlendTree::Serialise(YAML::Emitter& out)
     {
-
+        if(AnimBlendTree)
+            AnimBlendTree->Serialise(out);
     }
     
     void AnimationState_BlendTree::Deserialise(const YAML::Node& data)
     {
-        
+        if(AnimBlendTree)
+            AnimBlendTree->Deserialise(data);        
     }
 
 #pragma endregion

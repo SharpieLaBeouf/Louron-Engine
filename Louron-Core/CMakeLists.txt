@@ -36,6 +36,7 @@ target_include_directories(LouronCore
         ${PROJECT_SOURCE_DIR}/External/glm/glm
         ${PROJECT_SOURCE_DIR}/External/imgui
         ${PROJECT_SOURCE_DIR}/External/imguizmo
+        ${PROJECT_SOURCE_DIR}/External/imgui-node-editor
         ${PROJECT_SOURCE_DIR}/External/miniaudio
         ${PROJECT_SOURCE_DIR}/External/physx
         ${PROJECT_SOURCE_DIR}/External/spdlog/include
@@ -58,6 +59,7 @@ target_link_libraries(LouronCore
         efsw
         imgui
         imguizmo
+        imgui_node_editor
         miniaudio
         spdlog
         $<$<CONFIG:Debug>:${PHYSX_DEBUG_LIBS}>

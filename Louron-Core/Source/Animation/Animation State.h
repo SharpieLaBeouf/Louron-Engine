@@ -86,6 +86,13 @@ namespace Louron::Animation
         void Serialise(YAML::Emitter& out) override;
         void Deserialise(const YAML::Node& data) override;
 
-        std::unique_ptr<BlendTree> AnimBlendTree = nullptr;
+        BlendNode* GetBlendTree() const 
+        {
+            if(AnimBlendTree)
+                return &AnimBlendTree->RootNode;
+            return nullptr;
+        }
+
+        std::unique_ptr<BlendTree> AnimBlendTree = std::make_unique<BlendTree>();
     };
 }

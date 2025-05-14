@@ -11,6 +11,12 @@
 
 // External Vendor Library Headers
 
+namespace YAML
+{
+    class Emitter;
+    class Node;
+}
+
 namespace Louron::Animation
 {
 
@@ -28,13 +34,16 @@ namespace Louron::Animation
         virtual void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) = 0;
         virtual void CleanMotion() = 0;
         virtual void EvaluatePose(Louron::AnimationPose& evaluated_pose) = 0;
+        
+        virtual void Serialise(YAML::Emitter& out) = 0;
+        virtual void Deserialise(const YAML::Node& data) = 0;
 
         // Contribution to Final Blend
         float FinalWeight = 0.0f;
 
         // X: Used for 1D & 2D
         // Y: Used for 2D ONLY
-        glm::vec2 BlendState = { 0.0f, 0.0f };
+        glm::vec2 BlendPosition = { 0.0f, 0.0f };
 
         // Use when you want to step the animation 
         // timer even if there is no contribution
@@ -45,12 +54,6 @@ namespace Louron::Animation
 
     struct BlendNode
     {
-        enum class TreeType : uint8_t
-        {
-            OneDimensional,
-            TwoDimensionalFreeForm
-        } BlendType = TreeType::OneDimensional;
-
         // Constructors
         BlendNode() = default;
         ~BlendNode() = default;
@@ -65,7 +68,13 @@ namespace Louron::Animation
         void CleanBlendNode();
 
         void EvaluatePose(Louron::AnimationPose& evaluated_pose);
+        
+        void Serialise(YAML::Emitter& out);
+        void Deserialise(const YAML::Node& data);
 
+        MotionBase* AddMotion(MotionType type);
+        // Data
+        TreeType BlendType = TreeType::OneDimensional;
         std::vector<std::unique_ptr<MotionBase>> ChildNode;
 
         // X: Used for 1D & 2D
@@ -94,6 +103,9 @@ namespace Louron::Animation
         void CleanMotion() override;
 
         void EvaluatePose(Louron::AnimationPose& evaluated_pose) override;
+
+        void Serialise(YAML::Emitter& out) override;
+        void Deserialise(const YAML::Node& data) override;
 
         // Data
         AssetHandle AnimClipHandle = NULL_UUID;
@@ -124,6 +136,9 @@ namespace Louron::Animation
 
         void EvaluatePose(Louron::AnimationPose& evaluated_pose) override { RootNode.EvaluatePose(evaluated_pose); }
 
+        void Serialise(YAML::Emitter& out) override;
+        void Deserialise(const YAML::Node& data) override;
+        
         // Data
         BlendNode RootNode;
     };
@@ -140,6 +155,9 @@ namespace Louron::Animation
         BlendTree(BlendTree&& other) = default;
         BlendTree& operator=(const BlendTree& other) = default;
         BlendTree& operator=(BlendTree&& other) = default;
+        
+        void Serialise(YAML::Emitter& out);
+        void Deserialise(const YAML::Node& data);
 
         // Functional
         void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) { RootNode.Update(ts, state_params); }

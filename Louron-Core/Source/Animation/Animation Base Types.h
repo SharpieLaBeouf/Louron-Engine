@@ -45,6 +45,13 @@ namespace Louron::Animation
         Clip, 
         BlendTree
     };
+    
+    enum class TreeType : uint8_t
+    {
+        Unknown,
+        OneDimensional,
+        TwoDimensionalFreeForm
+    };
 
     enum class ParameterType : uint8_t
     {
@@ -121,6 +128,23 @@ namespace Louron::Animation
             if(type_str == "Clip")      return MotionType::Clip;
             if(type_str == "BlendTree")     return MotionType::BlendTree;
             return MotionType::Unknown;
+        }
+        
+        static inline std::string TreeTypeToString(TreeType type)
+        {
+            switch(type)
+            {
+                case TreeType::OneDimensional:          return "OneDimensional";
+                case TreeType::TwoDimensionalFreeForm:  return "TwoDimensionalFreeForm";
+            }
+            return "Unknown";
+        }
+
+        static inline TreeType TreeTypeFromString(const std::string& type_str)
+        {
+            if(type_str == "OneDimensional")            return TreeType::OneDimensional;
+            if(type_str == "TwoDimensionalFreeForm")    return TreeType::TwoDimensionalFreeForm;
+            return TreeType::Unknown;
         }
 
         static inline std::string ParamTypeToString(ParameterType type)

@@ -34,3 +34,6 @@
 [submodule "External/tinyfiledialogs"]
 	path = External/tinyfiledialogs
 	url = https://github.com/native-toolkit/libtinyfiledialogs.git
+[submodule "External/imgui-node-editor"]
+	path = External/imgui-node-editor
+	url = https://github.com/thedmd/imgui-node-editor.git

@@ -3,8 +3,24 @@
 #include "Animations.h"
 #include "../Asset/Asset Manager API.h"
 
+#include <yaml-cpp/yaml.h>
+
 namespace Louron::Animation
 {
+
+#pragma region Blend Tree
+
+	void BlendTree::Serialise(YAML::Emitter& out)
+	{
+		RootNode.Serialise(out);
+	}
+
+	void BlendTree::Deserialise(const YAML::Node& data)
+	{
+		RootNode.Deserialise(data);
+	}
+
+#pragma endregion
 
 #pragma region BlendNode
 
@@ -106,7 +122,7 @@ namespace Louron::Animation
 			
 				for (auto& motion : ChildNode)
 				{
-					float x = motion->BlendState.x;
+					float x = motion->BlendPosition.x;
 			
 					if (x <= BlendState.x && x > lower_val)
 					{
@@ -153,7 +169,7 @@ namespace Louron::Animation
 			
 				for (auto& motion : ChildNode)
 				{
-					float distance = glm::distance(BlendState, motion->BlendState);
+					float distance = glm::distance(BlendState, motion->BlendPosition);
 					float weight = 1.0f / (distance + constant_epsilon); // Ensure No Division by Zero
 					motion->FinalWeight = weight;
 					total_weight += weight;
@@ -195,7 +211,7 @@ namespace Louron::Animation
 
 		L_CORE_TRACE("BlendTree BlendState: ({}, {})", BlendState.x, BlendState.y);
 		for (const auto& motion : ChildNode)
-			L_CORE_TRACE("  Motion Blend: ({}, {}), FinalWeight: {}", motion->BlendState.x, motion->BlendState.y, motion->FinalWeight);
+			L_CORE_TRACE("  Motion Blend: ({}, {}), FinalWeight: {}", motion->BlendPosition.x, motion->BlendPosition.y, motion->FinalWeight);
 	}
 
     void BlendNode::CleanBlendNode()
@@ -252,6 +268,50 @@ namespace Louron::Animation
 		}
 	}
 
+	void BlendNode::Serialise(YAML::Emitter& out)
+	{
+		out << YAML::Key << "Blend Tree Type" << YAML::Value << Utils::TreeTypeToString(BlendType);
+
+		out << YAML::Key << "Blend Param X" << YAML::Value << BlendParam[0];
+		out << YAML::Key << "Blend Param Y" << YAML::Value << BlendParam[1];
+
+		out << YAML::Key << "Motions" << YAML::Value;
+		{
+			out << YAML::BeginSeq;
+
+			for (const auto& motion : ChildNode)
+			{
+				motion->Serialise(out);
+			}
+
+			out << YAML::EndSeq;
+		}
+	}
+
+	void BlendNode::Deserialise(const YAML::Node& data)
+	{
+		// TODO: Implement
+	}
+
+    MotionBase *BlendNode::AddMotion(MotionType type)
+	{
+		switch(type)
+		{
+			case MotionType::Clip:
+			{
+				ChildNode.push_back(std::make_unique<MotionAnimation>());
+				return ChildNode.back().get();
+			}
+			case MotionType::BlendTree:
+			{
+				ChildNode.push_back(std::make_unique<MotionBlendTree>());
+				return ChildNode.back().get();
+			}
+		}
+		return nullptr;
+	}
+
+
 #pragma endregion
 
 #pragma region Motion Animation
@@ -298,6 +358,42 @@ namespace Louron::Animation
 		clip->SamplePose(CurrentTime, evaluated_pose);
 	}
 
+	void MotionAnimation::Serialise(YAML::Emitter& out)
+	{
+		out << YAML::BeginMap;
+		{
+			out << YAML::Key << "Motion Type" << YAML::Value << Utils::MotionTypeToString(this->GetType());
+			out << YAML::Key << "Motion Blend Position X" << YAML::Value << BlendPosition.x;
+			out << YAML::Key << "Motion Blend Position Y" << YAML::Value << BlendPosition.y;
+
+			out << YAML::Key << "Asset Handle" << YAML::Value << AnimClipHandle;
+			out << YAML::Key << "Should Loop" << YAML::Value << IsLooping;
+			out << YAML::Key << "Playback Speed" << YAML::Value << PlaybackSpeed;
+		}
+		out << YAML::EndMap;
+	}
+
+	void MotionAnimation::Deserialise(const YAML::Node& data)
+	{
+		// TODO: Implement
+	}
+
 #pragma endregion
+
+#pragma region Motion Blend Tree
+
+	void MotionBlendTree::Serialise(YAML::Emitter& out)
+	{
+		RootNode.Serialise(out);
+	}
+
+	void MotionBlendTree::Deserialise(const YAML::Node& data)
+	{
+		RootNode.Deserialise(data);
+	}
+
+#pragma endregion
+
+
 
 }

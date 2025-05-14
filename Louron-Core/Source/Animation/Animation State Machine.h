@@ -63,6 +63,8 @@ namespace Louron::Animation
         AnimationState* GetPreviousAnimationState() { return GetAnimationState(PreviousState); }
         AnimationState* GetTargetAnimationState() { return GetAnimationState(TargetState); }
 
+        const std::unordered_map<StringHash, std::unique_ptr<AnimationState>>& GetAllStates() const { return States; }
+
         AnimationTransition* CreateTransition(const std::string& state_name_from, const std::string& state_name_to);
         AnimationTransition* CreateTransition(const StringHash& state_hash_from, const StringHash& state_hash_to);
         void RemoveTransition(const std::string& state_name_from, const std::string& state_name_to);
@@ -76,6 +78,8 @@ namespace Louron::Animation
 
         AnimationTransition* GetTransition(const std::string& state_name_from, const std::string& state_name_to);
         AnimationTransition* GetTransition(const StringHash& state_hash_from, const StringHash& state_hash_to);
+
+        const std::vector<std::unique_ptr<AnimationTransition>>& GetAllTransitions() const { return Transitions; }
 
         StringHash AddParameter(const std::string& param_name, ParameterType param_type);
 
@@ -138,6 +142,9 @@ namespace Louron::Animation
         auto run_to_walk = machine.CreateTransition(run_hash, walk_hash);
         run_to_walk->Conditions.emplace_back("IsRunning", Louron::Utils::fnv1a_hash("IsRunning"), ComparisonType::Equal, 0.0f);
         run_to_walk->TransitionDuration = 0.0f;
+        
+        machine.AddParameter("IsWalking", ParameterType::Bool);
+        machine.AddParameter("IsRunning", ParameterType::Bool);
 
         // Initial update
         machine.UpdateStates(1.0f);
