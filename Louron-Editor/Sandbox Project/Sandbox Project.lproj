@@ -1,5 +1,5 @@
 Project Name: Sandbox Project
 Project Config:
-  StartScene: Scenes\Character Controller.lscene
+  StartScene: Scenes\YBot Character.lscene
   AssetDirectory: Assets/
   AppScriptModulePath: Scripts/Binaries/ScriptCode.dll

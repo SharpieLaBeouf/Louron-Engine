@@ -55,6 +55,7 @@ namespace Louron {
 		friend void scrollCallback(GLFWwindow* window, double xpos, double ypos);
 		friend void cursorCallback(GLFWwindow* window, double xpos, double ypos);
 
+		void EndFrame();
 		void ResetScroll();
 
 		friend class Engine;

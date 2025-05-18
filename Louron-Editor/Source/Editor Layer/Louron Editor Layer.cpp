@@ -25,104 +25,9 @@ using namespace Louron;
 std::atomic_bool LouronEditorLayer::m_ScriptsNeedCompiling = false;
 static efsw::WatchID m_ScriptFileWatchID;
 
-using namespace Louron::Animation;
-static StateMachine machine = {};
-
 LouronEditorLayer::LouronEditorLayer() 
 {
 	L_APP_INFO("Opening Louron Editor");
-
-	StringHash idle_hash = machine.CreateState("Idle", StateType::Clip);
-	StringHash walk_hash = machine.CreateState("Walk", StateType::BlendTree);
-	StringHash run_hash = machine.CreateState("Run", StateType::Clip);
-
-	StringHash is_walking_param_hash = machine.AddParameter("IsWalking", ParameterType::Bool);
-	StringHash is_running_param_hash = machine.AddParameter("IsRunning", ParameterType::Bool);
-
-	AnimationState_BlendTree* walk_state = reinterpret_cast<AnimationState_BlendTree*>(machine.GetAnimationState(walk_hash));
-	if (walk_state && walk_state->GetBlendTree())
-	{
-		walk_state->GetBlendTree()->BlendType = TreeType::TwoDimensionalFreeForm;
-
-		auto motion_1 = reinterpret_cast<MotionAnimation*>(walk_state->GetBlendTree()->AddMotion(MotionType::Clip));
-		auto motion_2 = reinterpret_cast<MotionAnimation*>(walk_state->GetBlendTree()->AddMotion(MotionType::Clip));
-		auto motion_3 = reinterpret_cast<MotionAnimation*>(walk_state->GetBlendTree()->AddMotion(MotionType::Clip));
-
-		motion_1->AnimClipHandle = 69;
-		motion_1->IsLooping = true;
-		motion_1->BlendPosition.x = 0.0f;
-		motion_1->BlendPosition.y = -1.0f;
-
-		motion_2->AnimClipHandle = 169;
-		motion_2->IsLooping = true;
-		motion_2->BlendPosition.x = 0.0f;
-		motion_2->BlendPosition.y = 0.0f;
-
-		motion_3->AnimClipHandle = 269;
-		motion_3->IsLooping = true;
-		motion_3->BlendPosition.x = 0.0f;
-		motion_3->BlendPosition.y = 1.0f;
-	}
-
-	auto idle_to_walk = machine.CreateTransition(idle_hash, walk_hash);
-	idle_to_walk->Conditions.emplace_back("IsWalking", Louron::Utils::fnv1a_hash("IsWalking"), ComparisonType::Equal, 1.0f);
-	idle_to_walk->TransitionDuration = 2.0f; // <-- Testing non-zero transition
-
-	auto walk_to_idle = machine.CreateTransition(walk_hash, idle_hash);
-	walk_to_idle->Conditions.emplace_back("IsWalking", Louron::Utils::fnv1a_hash("IsWalking"), ComparisonType::Equal, 0.0f);
-	walk_to_idle->TransitionDuration = 0.0f;
-
-	auto walk_to_run = machine.CreateTransition(walk_hash, run_hash);
-	walk_to_run->Conditions.emplace_back("IsRunning", Louron::Utils::fnv1a_hash("IsRunning"), ComparisonType::Equal, 1.0f);
-	walk_to_run->TransitionDuration = 0.0f;
-
-	auto run_to_walk = machine.CreateTransition(run_hash, walk_hash);
-	run_to_walk->Conditions.emplace_back("IsRunning", Louron::Utils::fnv1a_hash("IsRunning"), ComparisonType::Equal, 0.0f);
-	run_to_walk->TransitionDuration = 0.0f;
-
-	// Initial update
-	machine.UpdateStates(1.0f);
-	L_APP_INFO("Initial State: {}", machine.GetCurrentAnimationState()->Name);
-
-	// Begin transition to "Walk"
-	machine.SetBool(Louron::Utils::fnv1a_hash("IsWalking"), true);
-
-	// Simulate transition over multiple updates
-	for (float time = 0.0f; time <= 2.5f; time += 0.5f)
-	{
-		machine.UpdateStates(0.5f);
-		L_APP_INFO("[t = {}s] Current State: {}", time + 0.5f, machine.GetCurrentAnimationState()->Name);
-	}
-
-	// Now trigger Run
-	machine.SetBool(Louron::Utils::fnv1a_hash("IsRunning"), true);
-	machine.UpdateStates(1.0f);
-	L_APP_INFO("Current State: {}", machine.GetCurrentAnimationState()->Name);
-
-	// Revert to Idle through Walk
-	machine.SetBool(Louron::Utils::fnv1a_hash("IsRunning"), false);
-	machine.SetBool(Louron::Utils::fnv1a_hash("IsWalking"), false);
-
-	machine.UpdateStates(1.0f);
-	L_APP_INFO("Current State: {}", machine.GetCurrentAnimationState()->Name);
-
-	machine.UpdateStates(1.0f);
-	L_APP_INFO("Final State: {}", machine.GetCurrentAnimationState()->Name);
-
-	YAML::Emitter out;
-	{
-		out << YAML::BeginMap;
-
-		machine.Serialise(out);
-
-		out << YAML::EndMap;
-	}
-
-	std::ofstream fout("Test.lanimator"); // Create the file
-	fout << out.c_str(); // Save
-	fout.close();
-
-	L_APP_INFO("Animator Serialised to File.");
 }
 
 void LouronEditorLayer::OnAttach() 
@@ -204,7 +109,9 @@ void LouronEditorLayer::OnAttach()
 
 		{ "ProjectProperties", false },
 		{ "SceneProperties", false },
-		{ "ScriptCompilationWarningMessage", false }
+		{ "ScriptCompilationWarningMessage", false },
+
+		{ "AnimatorStateMachine", true }
 
 	};
 
@@ -235,8 +142,7 @@ void LouronEditorLayer::OnDetach()
 }
 
 void LouronEditorLayer::OnUpdate() 
-{
-	
+{	
 	if (m_SceneWindowFocused && m_SceneState == SceneState::Play) {
 		glfwSetInputMode((GLFWwindow*)Engine::Get().GetWindow().GetNativeWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
@@ -948,23 +854,7 @@ void LouronEditorLayer::OnGuiRender() {
 		DisplayProjectProperties();
 		DisplaySceneProperties();
 
-		static ax::NodeEditor::EditorContext* context = nullptr;
-
-		if(!context)
-		{
-			ax::NodeEditor::Config config;
-			config.SettingsFile = "Test Node Editor.json";
-			context = ax::NodeEditor::CreateEditor(&config);
-		}
-		
-		if (ImGui::Begin("Test Node Graph", nullptr, 0)) 
-		{
-			ax::NodeEditor::SetCurrentEditor(context);
-			AnimatorPanel::Draw(machine);
-			ax::NodeEditor::SetCurrentEditor(nullptr);
-			
-			ImGui::End();
-		}
+		DisplayAnimatorStateMachineWindow();
 
 	}
 	ImGui::End();
@@ -2821,6 +2711,17 @@ void LouronEditorLayer::DisplayAssetRegistryWindow() {
 	ImGui::End();
 	
 
+}
+
+void LouronEditorLayer::DisplayAnimatorStateMachineWindow()
+{
+	// Check if the window is open
+	if (!m_ActiveGUIWindows["AnimatorStateMachine"]) {
+		return;
+	}
+	
+	AnimatorPanel::Draw(m_ActiveGUIWindows["AnimatorStateMachine"]);
+	
 }
 
 void LouronEditorLayer::DisplayProjectProperties() {

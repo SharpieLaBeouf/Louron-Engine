@@ -1,5 +1,7 @@
 #include "Content Browser Panel.h"
 
+#include "Animator Node Graph.h"
+
 #include "../Louron Editor Layer.h"
 #include "../Utils/Editor Script Utils.h"
 
@@ -11,7 +13,8 @@
 using namespace Louron;
 
 static const std::unordered_map<std::string, bool> s_SupportedOpenInEditorFiles = {
-	{ ".lscene", true }
+	{ ".lscene", true },
+	{ ".lanimator", true}
 };
 
 ContentBrowserPanel::ContentBrowserPanel() {
@@ -411,6 +414,11 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 							{
 								editor_layer.OpenScene(entry.path());
 							}
+							else if (supported_type != s_SupportedOpenInEditorFiles.end() && supported_type->first == ".lanimator")
+							{
+								AnimatorPanel::SetAnimatorAssetContext(Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(entry.path(), Project::GetActiveProject()->GetAssetDirectory()));
+								editor_layer.m_ActiveGUIWindows["AnimatorStateMachine"] = true;
+							}
 							else { // If not, we will system call the file to open in default system application
 								std::string command = "start \"\" \"" + entry.path().string() + "\"";
 								std::system(command.c_str());
@@ -606,7 +614,8 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								Project::GetStaticEditorAssetManager()->ImportAsset(file_path, Project::GetActiveProject()->GetAssetDirectory(), handle);
 							}
 
-							if (ImGui::MenuItem("Create New Skybox Material")) {
+							if (ImGui::MenuItem("Create New Skybox Material")) 
+							{
 								std::filesystem::path file_path = m_CurrentDirectory / "New Skybox Material.lskybox";
 
 								// Ensure unique filename
@@ -728,6 +737,60 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 								Project::GetStaticEditorAssetManager()->ImportAsset(file_path, Project::GetActiveProject()->GetAssetDirectory(), handle);
 							}
 
+							if (ImGui::MenuItem("Create New Animator Controller"))
+							{
+								std::filesystem::path file_path = m_CurrentDirectory / "New Animator Controller.lanimator";
+
+								// Ensure unique filename
+								int counter = 1;
+								while (std::filesystem::exists(file_path)) {
+									file_path = m_CurrentDirectory / ("New Animator Controller (" + std::to_string(counter) + ").lanimator");
+									counter++;
+								}
+
+								Louron::Animation::StateMachine machine{};
+
+								machine.CreateState("Default Animation State", Louron::Animation::StateType::Clip);
+								machine.CreateState("Default Blend Tree State", Louron::Animation::StateType::Clip);
+
+								YAML::Emitter out;
+								{
+									out << YAML::BeginMap;
+					
+									machine.Serialise(out);
+					
+									out << YAML::EndMap;
+								}
+					
+								std::ofstream fout(file_path); // Create the file
+								fout << out.c_str(); // Save
+								fout.close();
+
+								is_renaming_path = true;
+								renaming_path = file_path;
+								new_path_file_name = file_path.filename().string();
+								first_focus = true;
+
+								// Ensure Custom Handle When Creating Asset
+								AssetHandle handle = Louron::Utils::fnv1a_hash(
+									AssetUtils::AssetTypeToString(AssetType::AnimationStateMachine) + 
+									Louron::Utils::NormalisePath(std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory())).string()
+								);
+
+								counter = 0;
+								while (AssetManager::IsAssetHandleValid(handle))
+								{
+									handle = Louron::Utils::fnv1a_hash(
+										AssetUtils::AssetTypeToString(AssetType::AnimationStateMachine) + 
+										Louron::Utils::NormalisePath(std::filesystem::relative(file_path, Project::GetActiveProject()->GetAssetDirectory())).string() + 
+										"_" + 
+										std::to_string(counter)
+									);
+									counter++;
+								}
+
+								Project::GetStaticEditorAssetManager()->ImportAsset(file_path, Project::GetActiveProject()->GetAssetDirectory(), handle);
+							}
 						}
 
 						// Scenes Folder

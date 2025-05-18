@@ -23,43 +23,47 @@ namespace Louron::Animation
 
     enum class ComparisonType : uint8_t
     {
-        Unknown,
         Equal,
         NotEqual,
         GreaterThan,
         LessThan,
         GreaterThanOrEqual,
-        LessThanOrEqual
+        LessThanOrEqual,
+        
+        Unknown
     };
 
     enum class StateType : uint8_t 
     {
-        Unknown,
         Clip,
-        BlendTree
+        BlendTree,
+        
+        Unknown
     };
     
     enum class MotionType : uint8_t
     {
-        Unknown,
         Clip, 
-        BlendTree
+        BlendTree,
+        
+        Unknown
     };
     
     enum class TreeType : uint8_t
     {
-        Unknown,
         OneDimensional,
-        TwoDimensionalFreeForm
+        TwoDimensionalFreeForm,
+        
+        Unknown
     };
 
     enum class ParameterType : uint8_t
     {
-        Unknown,
         Bool,
         Float,
         Int,
-        UInt
+        UInt,
+        Unknown,
     };
 
     struct AnimationParameter

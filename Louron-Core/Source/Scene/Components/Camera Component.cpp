@@ -130,18 +130,25 @@ namespace Louron
                 out << YAML::Key << "Camera" << YAML::Value;
                 out << YAML::BeginMap;
                 {
-                    const char* type_string = (CameraInstance->GetProjectionType() == SceneCamera::ProjectionType::Perspective) ? "Perspective" : "Orthographic";
-                    out << YAML::Key << "Projection Type" << YAML::Value << type_string;
-                    if (type_string == "Perspective")
+                    out << YAML::Key << "Projection Type" << YAML::Value << ((CameraInstance->GetProjectionType() == SceneCamera::ProjectionType::Perspective) ? "Perspective" : "Orthographic");
+
+                    switch(CameraInstance->GetProjectionType())
                     {
-                        out << YAML::Key << "FOV" << YAML::Value << glm::degrees(CameraInstance->GetPerspectiveVerticalFOV());
-                        out << YAML::Key << "Near" << YAML::Value << CameraInstance->GetPerspectiveNearClip();
-                        out << YAML::Key << "Far" << YAML::Value << CameraInstance->GetPerspectiveFarClip();
-                    }
-                    else {
-                        out << YAML::Key << "FOV" << YAML::Value << CameraInstance->GetOrthographicSize();
-                        out << YAML::Key << "Near" << YAML::Value << CameraInstance->GetOrthographicNearClip();
-                        out << YAML::Key << "Far" << YAML::Value << CameraInstance->GetOrthographicFarClip();
+                        case SceneCamera::ProjectionType::Perspective:
+                        {
+                            out << YAML::Key << "FOV" << YAML::Value << glm::degrees(CameraInstance->GetPerspectiveVerticalFOV());
+                            out << YAML::Key << "Near" << YAML::Value << CameraInstance->GetPerspectiveNearClip();
+                            out << YAML::Key << "Far" << YAML::Value << CameraInstance->GetPerspectiveFarClip();
+                            break;
+                        }
+                        case SceneCamera::ProjectionType::Orthographic:
+                        {
+                            out << YAML::Key << "FOV" << YAML::Value << CameraInstance->GetOrthographicSize();
+                            out << YAML::Key << "Near" << YAML::Value << CameraInstance->GetOrthographicNearClip();
+                            out << YAML::Key << "Far" << YAML::Value << CameraInstance->GetOrthographicFarClip();
+
+                            break;
+                        }
                     }
                 }
                 out << YAML::EndMap;

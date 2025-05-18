@@ -81,6 +81,8 @@ namespace Louron::Animation
         // Y: Used for 2D ONLY
         glm::vec2 BlendState = { 0.0f, 0.0f };
         std::array<StringHash, 2> BlendParam = { NULL_UUID, NULL_UUID };
+
+        std::string Name = "Blend Tree Node";
     };
 
     /// -------- MOTION --------

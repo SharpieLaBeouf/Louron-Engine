@@ -1,6 +1,7 @@
 #include "Input.h"
 
 // Louron Core Headers
+#include "../Debug/Profiler.h"
 
 // C++ Standard Library Headers
 
@@ -86,6 +87,21 @@ namespace Louron {
 		return 0;
 	}
 
+	void InputManager::EndFrame()
+	{
+		L_PROFILE_SCOPE("InputManager::EndFrame");
+
+		// Clear key state changes
+		for (int i = 0; i < MAX_KEYS; ++i)
+			mKeys[i][1] = false;
+
+		// Clear button state changes
+		for (int i = 0; i < MAX_BUTTONS; ++i)
+			mButtons[i][1] = false;
+
+		ResetScroll();
+	}
+
 	bool InputManager::GetKey(int glfwKeyCode)
 	{
 		return mKeys[glfwKeyCode][0];
@@ -93,22 +109,12 @@ namespace Louron {
 
 	bool InputManager::GetKeyDown(int glfwKeyCode)
 	{
-		if (mKeys[glfwKeyCode][0] == true && mKeys[glfwKeyCode][1] == true)
-		{
-			mKeys[glfwKeyCode][1] = false;
-			return true;
-		}
-		return false;
+		return mKeys[glfwKeyCode][0] == true && mKeys[glfwKeyCode][1] == true;
 	}
 
 	bool InputManager::GetKeyUp(int glfwKeyCode)
 	{
-		if (mKeys[glfwKeyCode][0] == false && mKeys[glfwKeyCode][1] == true)
-		{
-			mKeys[glfwKeyCode][1] = false;
-			return true;
-		}
-		return false;
+		return mKeys[glfwKeyCode][0] == false && mKeys[glfwKeyCode][1] == true;
 	}
 
 	bool InputManager::GetMouseButton(int glfwButtonCode)
@@ -118,22 +124,12 @@ namespace Louron {
 
 	bool InputManager::GetMouseButtonDown(int glfwButtonCode)
 	{
-		if (mButtons[glfwButtonCode][0] == true && mButtons[glfwButtonCode][1] == true)
-		{
-			mButtons[glfwButtonCode][1] = false;
-			return true;
-		}
-		return false;
+		return mButtons[glfwButtonCode][0] == true && mButtons[glfwButtonCode][1] == true;
 	}
-
+	
 	bool InputManager::GetMouseButtonUp(int glfwButtonCode)
 	{
-		if (mButtons[glfwButtonCode][0] == false && mButtons[glfwButtonCode][1] == true)
-		{
-			mButtons[glfwButtonCode][1] = false;
-			return true;
-		}
-		return false;
+		return mButtons[glfwButtonCode][0] == false && mButtons[glfwButtonCode][1] == true;
 	}
 
 	float InputManager::GetMouseX()

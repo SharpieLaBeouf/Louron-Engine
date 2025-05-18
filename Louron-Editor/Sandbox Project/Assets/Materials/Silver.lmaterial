@@ -1,0 +1,14 @@
+Material Asset Name: Silver
+Material Asset Type: AssetType::Material_Standard
+Shader Handle: 608148674
+Render Type: Opaque
+Roughness: 0.37
+Metallic: 1
+Albedo Tint: [0.7529412, 0.7529412, 0.7529412, 1]
+AlbedoTextureAsset: 4294967295
+MetallicTextureAsset: 4294967295
+NormalTextureAsset: 4294967295
+Material Uniform Block:
+  - Name: MyCustomProperty
+    Type: float
+    Value: 0

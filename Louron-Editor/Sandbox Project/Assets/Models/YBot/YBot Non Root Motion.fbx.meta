@@ -1,0 +1,55 @@
+Asset Name: YBot Non Root Motion
+Asset Handle: 26363750
+Asset Type: AssetType::ModelImport
+Asset Is Composite: true
+Asset Import Config:
+  AutoReImport: true
+  Import Position: [0, 0, 0]
+  Import Rotation: [0, 0, 0]
+  Import Scale: [1, 1, 1]
+  Import Skeleton: true
+  Import Animations: true
+  Import Materials: true
+Composite Assets:
+  - Asset Name: Idle_Final
+    Asset Handle: 89794127
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Run Left_Final
+    Asset Handle: 193969959
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Alpha_Joints_MAT.001
+    Asset Handle: 475266045
+    Asset Type: AssetType::Material_Standard
+  - Asset Name: Alpha_Body_MAT.001
+    Asset Handle: 1603409676
+    Asset Type: AssetType::Material_Standard
+  - Asset Name: Jump_Final
+    Asset Handle: 2008768937
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Run Right_Final
+    Asset Handle: 2182967682
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Walk Right_Final
+    Asset Handle: 2473008050
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: T-Pose_Final
+    Asset Handle: 2517060239
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Walk Forward_Final
+    Asset Handle: 2661767933
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Run Forward_Final
+    Asset Handle: 3059000749
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: Game_Rig
+    Asset Handle: 3795262308
+    Asset Type: AssetType::Skeleton
+  - Asset Name: Walk Left_Final
+    Asset Handle: 3965387159
+    Asset Type: AssetType::AnimationClip
+  - Asset Name: YBot Non Root Motion
+    Asset Handle: 4119187704
+    Asset Type: AssetType::Mesh
+  - Asset Name: Walk Backward_Final
+    Asset Handle: 4142736987
+    Asset Type: AssetType::AnimationClip

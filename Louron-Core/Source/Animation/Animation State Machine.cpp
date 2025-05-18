@@ -120,6 +120,10 @@ namespace Louron::Animation
                 {
                     SetCurrentState(TargetState);
                 }
+                else
+                {
+                    States[TargetState]->Update(ts, AnimationParameters);
+                }
             }
             else
             {
@@ -249,6 +253,41 @@ namespace Louron::Animation
         return state_hash;
     }
 
+    void StateMachine::RenameState(const StringHash &state_hash, const std::string &state_new_name)
+    {
+        if (!States.contains(state_hash)) // Current State Does Not Exist
+            return;
+
+        StringHash state_new_hash = Louron::Utils::fnv1a_hash(state_new_name);
+        if (States.contains(state_new_hash)) // Already Exists!
+            return;
+
+        States[state_new_hash] = std::move(States[state_hash]);
+        States[state_new_hash]->Name = state_new_name;
+        States.erase(state_hash);
+
+        if (DefaultState == state_hash)
+            DefaultState = state_new_hash;
+
+        if (PreviousState == state_hash)
+            PreviousState = state_new_hash;
+
+        if (TargetState == state_hash)
+            TargetState = state_new_hash;
+
+        for (auto& transition : Transitions)
+        {
+            if  (!transition)
+                continue;
+            
+            if(transition->SourceStateHash == state_hash)
+                transition->SourceStateHash = state_new_hash;
+                
+            if(transition->DestStateHash == state_hash)
+                transition->DestStateHash = state_new_hash;
+        }
+    }
+
     void StateMachine::RemoveState(const std::string &state_name)
     {
         RemoveState(Louron::Utils::fnv1a_hash(state_name));
@@ -267,9 +306,9 @@ namespace Louron::Animation
 
     AnimationState* StateMachine::GetAnimationState(const StringHash &state_hash)
     {
-        if (States.contains(state_hash))
-            return States[state_hash].get();
-        return nullptr;
+        if (!States.contains(state_hash) || state_hash == NULL_UUID)
+            return nullptr;
+        return States[state_hash].get();
     }
 
     AnimationTransition *StateMachine::CreateTransition(const std::string &state_name_from, const std::string &state_name_to)
@@ -379,8 +418,122 @@ namespace Louron::Animation
     StringHash StateMachine::AddParameter(const std::string &param_name, ParameterType param_type)
     {
         StringHash param_hash = Louron::Utils::fnv1a_hash(param_name);
+
+        if (AnimationParameters.contains(param_hash)) 
+            return param_hash;
+
         AnimationParameters[param_hash] = { param_name, 0.0f, param_type };
         return param_hash;
+    }
+
+    bool StateMachine::HasParameterNamed(const std::string &param_name)
+    {
+        return AnimationParameters.contains(Louron::Utils::fnv1a_hash(param_name));
+    }
+
+    void StateMachine::RenameParameter(const StringHash &param_hash, const std::string &param_new_name)
+    {
+        if (!AnimationParameters.contains(param_hash)) // Current Param Does Not Exist
+            return;
+
+        StringHash param_new_hash = Louron::Utils::fnv1a_hash(param_new_name);
+        if (AnimationParameters.contains(param_new_hash)) // Already Exists!
+            return;
+
+        AnimationParameters[param_new_hash] = AnimationParameters[param_hash];
+        AnimationParameters[param_new_hash].Name = param_new_name;
+        AnimationParameters.erase(param_hash);
+
+        // Traverse the State Machine and any recursive blend trees to update the param references!
+
+        for (auto& [hash, state] : States)
+        {
+            if (!state)
+                continue;
+
+            switch (state->GetType())
+            {
+                case StateType::Clip:
+                {
+                    // Do nothing
+                    break;
+                }
+                case StateType::BlendTree:
+                {
+                    std::function<void(Louron::Animation::BlendNode&)> rename_params_recursive = [&](Louron::Animation::BlendNode& blend_node) -> void
+                    {
+                        if (blend_node.BlendParam[0] == param_hash)
+                        {
+                            blend_node.BlendParam[0] = param_new_hash;
+                        }
+
+                        if (blend_node.BlendParam[1] == param_hash)
+                        {
+                            blend_node.BlendParam[1] = param_new_hash;
+                        }
+
+                        for(auto& motion : blend_node.ChildNode)
+                        {
+                            if (!motion)
+                                continue;
+                            
+                            switch (motion->GetType())
+                            {
+                                case MotionType::Clip:
+                                {
+                                    // Do nothing
+                                    break;
+                                }
+                                case MotionType::BlendTree:
+                                {
+                                    auto motion_blend_tree = reinterpret_cast<MotionBlendTree*>(motion.get());
+                                    rename_params_recursive(motion_blend_tree->RootNode);
+                                    break;
+                                }
+                            }
+                        }
+                    };
+                    
+                    auto state_blend_tree = reinterpret_cast<AnimationState_BlendTree*>(state.get());
+                    if (auto blend_tree = state_blend_tree->AnimBlendTree.get(); blend_tree)
+                    {
+                        rename_params_recursive(blend_tree->RootNode);
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Update Transitions & Conditions
+
+        for (auto& transition : Transitions)
+        {
+            if (!transition)
+                continue;
+
+            for (auto& condition : transition->Conditions)
+            {
+                if (condition.ParameterHash == param_hash)
+                {
+                    condition.ParameterHash = param_new_hash;
+                    condition.ParameterName = param_new_name;
+                }
+            }
+        }
+    }
+
+    void StateMachine::RemoveParameter(const std::string &param_name)
+    {
+        StringHash param_hash = Louron::Utils::fnv1a_hash(param_name);
+        RemoveParameter(param_hash);
+    }
+
+    void StateMachine::RemoveParameter(const StringHash &param_hash)
+    {
+        if (AnimationParameters.contains(param_hash))
+        {
+            AnimationParameters.erase(param_hash);
+        }
     }
 
     void StateMachine::SetBool(const std::string& param_name, bool value)
@@ -483,6 +636,14 @@ namespace Louron::Animation
         }
     }
 
+    void StateMachine::SetDefaultState(const StringHash &state_hash)
+    {
+        if(!States.contains(state_hash))
+            return;
+        
+        DefaultState = state_hash;
+    }
+
     void StateMachine::Serialise(YAML::Emitter &out)
     {
         std::string default_state_name;
@@ -544,15 +705,24 @@ namespace Louron::Animation
 
             for (const auto& transition : Transitions)
             {
-                if (!transition || (!States.contains(transition->SourceStateHash) || !States.contains(transition->DestStateHash)) || (!States[transition->SourceStateHash] || !States[transition->DestStateHash]))
+                if (!transition)
                     continue;
 
+                const auto& source_hash = transition->SourceStateHash;
+                const auto& dest_hash = transition->DestStateHash;
+        
+                bool source_valid = (source_hash == m_DefaultEntryHash) || (States.contains(source_hash) && States[source_hash]);
+                bool dest_valid = (dest_hash == m_DefaultExitHash) || (States.contains(dest_hash) && States[dest_hash]);
+        
+                if (!source_valid || !dest_valid)
+                    continue;
+                        
                 out << YAML::BeginMap;
 
-                out << YAML::Key << "Source Name" << YAML::Value << States[transition->SourceStateHash]->Name;
+                out << YAML::Key << "Source Name" << YAML::Value << ((source_hash == m_DefaultEntryHash) ? "Entry State" : States[transition->SourceStateHash]->Name);
                 out << YAML::Key << "Source Hash" << YAML::Value << transition->SourceStateHash;
 
-                out << YAML::Key << "Destination Name" << YAML::Value << States[transition->DestStateHash]->Name;
+                out << YAML::Key << "Destination Name" << YAML::Value << ((dest_hash == m_DefaultExitHash) ? "Exit State" : States[transition->DestStateHash]->Name);
                 out << YAML::Key << "Destination Hash" << YAML::Value << transition->DestStateHash;
 
                 out << YAML::Key << "Transition Duration"   << YAML::Value << transition->TransitionDuration;
@@ -644,6 +814,11 @@ namespace Louron::Animation
                 
                 States[state_hash]->Name = state["Name"].as<std::string>();
                 States[state_hash]->Deserialise(state);
+
+                if (state_hash == DefaultState)
+                {
+                    CreateTransition(m_DefaultEntryHash, state_hash);
+                }
             }            
         }
 
@@ -696,5 +871,11 @@ namespace Louron::Animation
                 }
             }
         }
+        
+        for (const auto& transition : Transitions)
+        {
+
+        }
+    
     }
 }

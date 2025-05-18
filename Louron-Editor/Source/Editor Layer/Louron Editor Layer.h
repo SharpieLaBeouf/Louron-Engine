@@ -107,6 +107,7 @@ private:
 	void DisplayConsoleWindow();
 	void DisplayAssetRegistryWindow();
 
+	void DisplayAnimatorStateMachineWindow();
 
 	void DisplayProjectProperties();
 	void DisplaySceneProperties();

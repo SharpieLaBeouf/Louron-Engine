@@ -86,7 +86,7 @@ namespace Louron::Animation
 		{
 			BlendState.x = state_params.at(BlendParam[0]).Value;
 		}
-		else
+		else if (BlendParam[0] != NULL_UUID)
 		{
 			L_CORE_WARN("Animation State Machine: Missing State Param (1:{}) for BlendTree.", BlendParam[0]);
 		}
@@ -97,7 +97,7 @@ namespace Louron::Animation
 			{
 				BlendState.y = state_params.at(BlendParam[1]).Value;
 			}
-			else
+			else if (BlendParam[1] != NULL_UUID)
 			{
 				L_CORE_WARN("Animation State Machine: Missing State Param (2:{}) for BlendTree.", BlendParam[1]);
 			}
@@ -209,9 +209,9 @@ namespace Louron::Animation
 			++it;
 		}
 
-		L_CORE_TRACE("BlendTree BlendState: ({}, {})", BlendState.x, BlendState.y);
-		for (const auto& motion : ChildNode)
-			L_CORE_TRACE("  Motion Blend: ({}, {}), FinalWeight: {}", motion->BlendPosition.x, motion->BlendPosition.y, motion->FinalWeight);
+		// L_CORE_TRACE("BlendTree BlendState: ({}, {})", BlendState.x, BlendState.y);
+		// for (const auto& motion : ChildNode)
+		// 	L_CORE_TRACE("  Motion Blend: ({}, {}), FinalWeight: {}", motion->BlendPosition.x, motion->BlendPosition.y, motion->FinalWeight);
 	}
 
     void BlendNode::CleanBlendNode()
@@ -270,6 +270,7 @@ namespace Louron::Animation
 
 	void BlendNode::Serialise(YAML::Emitter& out)
 	{
+		out << YAML::Key << "Blend Tree Name" << YAML::Value << Name;
 		out << YAML::Key << "Blend Tree Type" << YAML::Value << Utils::TreeTypeToString(BlendType);
 
 		out << YAML::Key << "Blend Param X" << YAML::Value << BlendParam[0];
@@ -290,7 +291,46 @@ namespace Louron::Animation
 
 	void BlendNode::Deserialise(const YAML::Node& data)
 	{
-		// TODO: Implement
+		if (data["Blend Tree Name"])
+			Name = data["Blend Tree Name"].as<std::string>();
+		
+		if (data["Blend Tree Type"])
+			BlendType = Utils::TreeTypeFromString(data["Blend Tree Type"].as<std::string>());
+			
+		if (data["Blend Param X"])
+			BlendParam[0] = data["Blend Param X"].as<StringHash>();
+		
+		if (data["Blend Param Y"])
+			BlendParam[1] = data["Blend Param Y"].as<StringHash>();
+			
+		if (auto motions_node = data["Motions"]; motions_node && motions_node.IsSequence())
+		{
+			for(const auto& motion : motions_node)
+			{
+				MotionType type = Utils::MotionTypeFromString(motion["Motion Type"].as<std::string>());
+
+				switch (type)
+				{
+					case MotionType::Clip:
+					{
+						std::unique_ptr<MotionAnimation> new_motion = std::make_unique<MotionAnimation>();
+						new_motion->Deserialise(motion);
+
+						ChildNode.push_back(std::move(new_motion));
+						break;
+					}
+					case MotionType::BlendTree:
+					{
+						std::unique_ptr<MotionBlendTree> new_motion = std::make_unique<MotionBlendTree>();
+						new_motion->Deserialise(motion);
+
+						ChildNode.push_back(std::move(new_motion));
+						break;
+					}
+				}
+			}
+		}
+		
 	}
 
     MotionBase *BlendNode::AddMotion(MotionType type)
@@ -375,7 +415,20 @@ namespace Louron::Animation
 
 	void MotionAnimation::Deserialise(const YAML::Node& data)
 	{
-		// TODO: Implement
+		if (data["Motion Blend Position X"])
+			BlendPosition.x = data["Motion Blend Position X"].as<float>();
+
+		if (data["Motion Blend Position Y"])
+			BlendPosition.y = data["Motion Blend Position Y"].as<float>();
+
+		if (data["Asset Handle"])
+			AnimClipHandle = data["Asset Handle"].as<uint32_t>();
+
+		if (data["Should Loop"])
+			IsLooping = data["Should Loop"].as<bool>();
+
+		if (data["Playback Speed"])
+			PlaybackSpeed = data["Playback Speed"].as<float>();
 	}
 
 #pragma endregion
@@ -384,12 +437,30 @@ namespace Louron::Animation
 
 	void MotionBlendTree::Serialise(YAML::Emitter& out)
 	{
-		RootNode.Serialise(out);
+		out << YAML::BeginMap;
+		{
+			out << YAML::Key << "Motion Type" << YAML::Value << Utils::MotionTypeToString(this->GetType());
+			out << YAML::Key << "Motion Blend Position X" << YAML::Value << BlendPosition.x;
+			out << YAML::Key << "Motion Blend Position Y" << YAML::Value << BlendPosition.y;
+
+			out << YAML::Key << "Motion Blend Tree" << YAML::BeginMap;
+			{
+				RootNode.Serialise(out);
+			}
+			out << YAML::EndMap;	
+		}
+		out << YAML::EndMap;		
 	}
 
 	void MotionBlendTree::Deserialise(const YAML::Node& data)
 	{
-		RootNode.Deserialise(data);
+		if (data["Motion Blend Position X"])
+			BlendPosition.x = data["Motion Blend Position X"].as<float>();
+
+		if (data["Motion Blend Position Y"])
+			BlendPosition.y = data["Motion Blend Position Y"].as<float>();
+
+		RootNode.Deserialise(data["Motion Blend Tree"]);
 	}
 
 #pragma endregion

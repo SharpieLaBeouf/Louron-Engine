@@ -54,6 +54,7 @@ namespace Louron::Animation
         void SetCurrentState(const StringHash& state_hash);
 
         StringHash CreateState(const std::string& state_name, StateType state_type);
+        void RenameState(const StringHash& state_hash, const std::string& state_new_name);
         void RemoveState(const std::string& state_name);
         void RemoveState(const StringHash& state_hash);
 
@@ -82,6 +83,13 @@ namespace Louron::Animation
         const std::vector<std::unique_ptr<AnimationTransition>>& GetAllTransitions() const { return Transitions; }
 
         StringHash AddParameter(const std::string& param_name, ParameterType param_type);
+        bool HasParameterNamed(const std::string& param_name);
+        void RenameParameter(const StringHash& param_hash, const std::string& param_new_name);
+        void RemoveParameter(const std::string& param_name);
+        void RemoveParameter(const StringHash& param_hash);
+
+        AnimationParameter* GetParameter(const StringHash& param_hash) { if (AnimationParameters.contains(param_hash)) { return &AnimationParameters[param_hash]; } return nullptr; }
+        const std::unordered_map<StringHash, AnimationParameter>& GetParameters() const { return AnimationParameters; }
 
         void SetBool(const std::string& param_name, bool value);
         void SetBool(const StringHash& param_hash, bool value);
@@ -94,6 +102,13 @@ namespace Louron::Animation
         
         void SetUInt(const std::string& param_name, uint32_t value);
         void SetUInt(const StringHash& param_hash, uint32_t value);
+
+        StringHash GetDefaultState() const { return DefaultState; }
+        void SetDefaultState(const StringHash& state_hash);
+
+        StringHash GetEntryHash() const { return m_DefaultEntryHash; }
+        StringHash GetAnyHash() const { return m_DefaultAnyHash; }
+        StringHash GetExitHash() const { return m_DefaultExitHash; }
 
         void Serialise(YAML::Emitter& out);
         void Deserialise(const YAML::Node& data);
