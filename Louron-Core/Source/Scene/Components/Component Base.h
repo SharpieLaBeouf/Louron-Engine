@@ -73,6 +73,7 @@ namespace Louron
     struct MeshRendererComponent;
 
     struct SkinnedMeshComponent;
+    struct BasicAnimationComponent;
     struct AnimatorComponent;
      
     struct LODMeshComponent;
@@ -106,6 +107,7 @@ namespace Louron
         LODMeshComponent,
 
         SkinnedMeshComponent,
+        BasicAnimationComponent,
         AnimatorComponent,
 
         SkyboxComponent,
@@ -135,6 +137,7 @@ namespace Louron
         MeshRendererComponent,
 
         SkinnedMeshComponent,
+        BasicAnimationComponent,
         AnimatorComponent,
 
         LODMeshComponent,

@@ -300,6 +300,7 @@ namespace Utils
             {"meshrenderercomponent", "FieldType::MeshRendererComponent"},
             {"lodmeshcomponent", "FieldType::LODMeshComponent"},
             {"skinnedmeshcomponent", "FieldType::SkinnedMeshComponent"},
+            {"basicanimationcomponent", "FieldType::BasicAnimationComponent"},
             {"animatorcomponent", "FieldType::AnimatorComponent"},
             {"skyboxcomponent", "FieldType::SkyboxComponent"},
             {"pointlightcomponent", "FieldType::PointLightComponent"},
@@ -321,6 +322,7 @@ namespace Utils
             {"audioclip", "FieldType::AudioClip"},
             {"skeleton", "FieldType::Skeleton"},
             {"animationclip", "FieldType::AnimationClip"},
+            {"statemachine", "FieldType::StateMachine"},
 
             // Primitive Types
             {"float", "FieldType::Float"},

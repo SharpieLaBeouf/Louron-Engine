@@ -7,6 +7,7 @@
 #include "Spatial Partitioning/OctreeBounds.h"
 
 #include "../Animation/Animations.h"
+#include "../Animation/Animation State Machine.h"
 
 #include "../Core/UUID.h"
 #include "../Core/Time.h"
@@ -777,7 +778,13 @@ namespace Louron {
 					}
 				}
 
-				// 1.s. Animator Component
+				// 1.s. BasicAnimationComponent
+				if (prefab_registry->all_of<BasicAnimationComponent>(start_prefab_entity)) {
+					auto& component = prefab_registry->get<BasicAnimationComponent>(start_prefab_entity);
+					instantiated_entity.AddComponent<BasicAnimationComponent>(component);
+				}
+
+				// 1.t. Animator Component
 				if (prefab_registry->all_of<AnimatorComponent>(start_prefab_entity)) {
 					auto& component = prefab_registry->get<AnimatorComponent>(start_prefab_entity);
 					instantiated_entity.AddComponent<AnimatorComponent>(component);
@@ -906,6 +913,15 @@ namespace Louron {
 				}
 			}
 		}
+
+		{
+			auto view = m_Registry.view<AnimatorComponent>();
+			for (const auto& e : view)
+			{
+				auto& component = view.get<AnimatorComponent>(e);
+				component.Init();
+			}
+		}
 	}
 
 	void Scene::OnRuntimeStop() {
@@ -916,6 +932,15 @@ namespace Louron {
 		ScriptManager::Get()->RemoveAllScriptInstances();
 		AssetManager::ClearRuntimeAssets();
 		OnPhysicsStop();
+
+		{
+			auto view = m_Registry.view<AnimatorComponent>();
+			for (const auto& e : view)
+			{
+				auto& component = view.get<AnimatorComponent>(e);
+				component.CleanUp();
+			}
+		}
 	}
 
 	// PHYSICS SIMULATION
@@ -924,6 +949,15 @@ namespace Louron {
 		m_IsSimulating = true;
 
 		OnPhysicsStart();
+
+		{
+			auto view = m_Registry.view<AnimatorComponent>();
+			for (const auto& e : view)
+			{
+				auto& component = view.get<AnimatorComponent>(e);
+				component.Init();
+			}
+		}
 	}
 
 	void Scene::OnSimulationStop() {
@@ -932,6 +966,15 @@ namespace Louron {
 		m_IsSimulating = false;
 
 		OnPhysicsStop();
+		
+		{
+			auto view = m_Registry.view<AnimatorComponent>();
+			for (const auto& e : view)
+			{
+				auto& component = view.get<AnimatorComponent>(e);
+				component.CleanUp();
+			}
+		}
 	}
 
 	void Scene::OnPhysicsStart() {
@@ -1091,65 +1134,85 @@ namespace Louron {
 		{
 			L_PROFILE_SCOPE("Scene - Animation");
 
-			if (m_LastFrameAnimationUpdateCounter) {
-				L_PROFILE_SCOPE("Scene - Animation Update Job Wait");
-				m_LastFrameAnimationUpdateCounter->Wait();
-				m_LastFrameAnimationUpdateCounter.reset();
-			}
-
-			std::shared_ptr<std::unordered_map<UUID, glm::mat4>> updated_bone_transformations; // Copy data
-
+			// Basic Animation
 			{
-				std::unique_lock<std::mutex> lock(m_BoneUpdateMutex);
-				updated_bone_transformations = std::make_shared<std::unordered_map<UUID, glm::mat4>>(m_BoneUpdates);
-			}
+				L_PROFILE_SCOPE("Scene - Animation::Basic Animations");
 
-			// === PHASE 1: Submit final bone transformation jobs (High Priority) ===
-			std::vector<std::pair<std::string, JobFunction>> animation_jobs;
-			auto animator_view = GetAllEntitiesWith<SkinnedMeshComponent, AnimatorComponent>();
-
-			const uint32_t total_entities = static_cast<uint32_t>(animator_view.size_hint());
-			const uint32_t hardware_threads = std::max(1u, std::thread::hardware_concurrency() / 2);
-
-			// Clamp to avoid oversaturation on extreme core counts
-			const uint32_t max_allowed_batches = 32;
-			const uint32_t target_batches = std::min<uint32_t>(std::min(total_entities, hardware_threads), max_allowed_batches);
-
-			// Dynamic batch size (round up)
-			size_t batch_size = target_batches > 0 ? (total_entities + target_batches - 1) / target_batches : total_entities;
-			batch_size = std::max<size_t>(1, batch_size); // Always at least 1
-
-			std::vector<entt::entity> current_batch;
-			for (const auto& entity_handle : animator_view)
-			{
-				Entity entity = { entity_handle, this };
-				if (!entity) continue;
-
-				auto& animator_component = entity.GetComponent<AnimatorComponent>();
-
-				switch (animator_component.CullingMode)
+				if (m_LastFrameAnimationUpdateCounter) {
+					L_PROFILE_SCOPE("Scene - Basic Animation Update Job Wait");
+					m_LastFrameAnimationUpdateCounter->Wait();
+					m_LastFrameAnimationUpdateCounter.reset();
+				}
+	
+				std::shared_ptr<std::unordered_map<UUID, glm::mat4>> updated_bone_transformations; // Copy data
+	
 				{
-					case AnimatorComponent::AnimationCullingMode::NoAnimateOffScreenContinueTimer:
-					case AnimatorComponent::AnimationCullingMode::NoAnimateOffScreenStopTimer:
+					std::unique_lock<std::mutex> lock(m_BoneUpdateMutex);
+					updated_bone_transformations = std::make_shared<std::unordered_map<UUID, glm::mat4>>(m_BoneUpdates);
+				}
+	
+				// === PHASE 1: Submit final bone transformation jobs (High Priority) ===
+				std::vector<std::pair<std::string, JobFunction>> animation_jobs;
+				auto animator_view = GetAllEntitiesWith<SkinnedMeshComponent, BasicAnimationComponent>();
+	
+				const uint32_t total_entities = static_cast<uint32_t>(animator_view.size_hint());
+				const uint32_t hardware_threads = std::max(1u, std::thread::hardware_concurrency() / 2);
+	
+				// Clamp to avoid oversaturation on extreme core counts
+				const uint32_t max_allowed_batches = 32;
+				const uint32_t target_batches = std::min<uint32_t>(std::min(total_entities, hardware_threads), max_allowed_batches);
+	
+				// Dynamic batch size (round up)
+				size_t batch_size = target_batches > 0 ? (total_entities + target_batches - 1) / target_batches : total_entities;
+				batch_size = std::max<size_t>(1, batch_size); // Always at least 1
+	
+				std::vector<entt::entity> current_batch;
+				for (const auto& entity_handle : animator_view)
+				{
+					Entity entity = { entity_handle, this };
+					if (!entity) continue;
+	
+					auto& animator_component = entity.GetComponent<BasicAnimationComponent>();
+	
+					switch (animator_component.CullingMode)
 					{
-						switch (m_SceneConfig.ScenePipelineType)
+						case BasicAnimationComponent::AnimationCullingMode::NoAnimateOffScreenContinueTimer:
+						case BasicAnimationComponent::AnimationCullingMode::NoAnimateOffScreenStopTimer:
 						{
-							case L_RENDER_PIPELINE::FORWARD_PLUS:
+							switch (m_SceneConfig.ScenePipelineType)
 							{
-								if (auto context = ForwardPlusPipeline::GetSceneContext(this); context && context->Entities_OverallVisible.count(entity.GetUUID()) == 0)
+								case L_RENDER_PIPELINE::FORWARD_PLUS:
 								{
-									continue;
+									if (auto context = ForwardPlusPipeline::GetSceneContext(this); context && context->Entities_OverallVisible.count(entity.GetUUID()) == 0)
+									{
+										continue;
+									}
+									break;
 								}
-								break;
 							}
+							break;
 						}
-						break;
+					}
+	
+					current_batch.push_back(entity_handle);
+	
+					if (current_batch.size() == batch_size)
+					{
+						animation_jobs.emplace_back("Animation Transform Updates", [scene_ref = this, batch = std::move(current_batch), updated_bone_transformations]() mutable
+							{
+								for (const auto& entity_handle : batch)
+								{
+									Entity entity = { entity_handle, scene_ref };
+									if (!entity) continue;
+	
+									entity.GetComponent<SkinnedMeshComponent>().ComputeFinalBoneTransformations(*updated_bone_transformations);
+								}
+							});
+						current_batch.clear();
 					}
 				}
-
-				current_batch.push_back(entity_handle);
-
-				if (current_batch.size() == batch_size)
+	
+				if (!current_batch.empty())
 				{
 					animation_jobs.emplace_back("Animation Transform Updates", [scene_ref = this, batch = std::move(current_batch), updated_bone_transformations]() mutable
 						{
@@ -1157,140 +1220,172 @@ namespace Louron {
 							{
 								Entity entity = { entity_handle, scene_ref };
 								if (!entity) continue;
-
+	
 								entity.GetComponent<SkinnedMeshComponent>().ComputeFinalBoneTransformations(*updated_bone_transformations);
 							}
 						});
-					current_batch.clear();
 				}
-			}
-
-			if (!current_batch.empty())
-			{
-				animation_jobs.emplace_back("Animation Transform Updates", [scene_ref = this, batch = std::move(current_batch), updated_bone_transformations]() mutable
+	
+				JobCounter job_counter = {};
+				JobSystem::Get()->SubmitJobs(animation_jobs, &job_counter, JobPriority::High);
+	
+				// === PHASE 2: Submit deferred animation step + bone update swap ===
+				m_LastFrameAnimationUpdateCounter = std::make_shared<JobCounter>();
+				JobSystem::Get()->SubmitJob("Animator Component Update - Job Kick", [&]()
 					{
-						for (const auto& entity_handle : batch)
-						{
-							Entity entity = { entity_handle, scene_ref };
-							if (!entity) continue;
-
-							entity.GetComponent<SkinnedMeshComponent>().ComputeFinalBoneTransformations(*updated_bone_transformations);
-						}
-					});
-			}
-
-			JobCounter job_counter = {};
-			JobSystem::Get()->SubmitJobs(animation_jobs, &job_counter, JobPriority::High);
-
-			// === PHASE 2: Submit deferred animation step + bone update swap ===
-			m_LastFrameAnimationUpdateCounter = std::make_shared<JobCounter>();
-			JobSystem::Get()->SubmitJob("Animator Component Update - Job Kick", [&]()
-				{
-					auto bone_map_mutex = std::make_shared<std::mutex>();
-					auto next_updated_bone_transformations = std::make_shared<std::unordered_map<UUID, glm::mat4>>();
-					next_updated_bone_transformations->reserve(m_BoneUpdates.size());
-
-					std::vector<std::pair<std::string, JobFunction>> animation_update_jobs;
-
-					auto animator_update_view = GetAllEntitiesWith<SkinnedMeshComponent, AnimatorComponent>();
-
-					const uint32_t total_entities = static_cast<uint32_t>(animator_update_view.size_hint());
-					const uint32_t hardware_threads = std::max(1u, std::thread::hardware_concurrency() / 2);
-
-					// Clamp to avoid oversaturation on extreme core counts
-					const uint32_t max_allowed_batches = 32;
-					const uint32_t target_batches = std::min<uint32_t>(std::min(total_entities, hardware_threads), max_allowed_batches);
-
-					// Dynamic batch size (round up)
-					size_t batch_size = target_batches > 0 ? (total_entities + target_batches - 1) / target_batches : total_entities;
-					batch_size = std::max<size_t>(1, batch_size); // Always at least 1
-
-					std::vector<entt::entity> current_batch;
-
-					// Shared work lambda
-					auto animation_worker = [scene_ref = this, bone_map_mutex, next_updated_bone_transformations](const std::vector<entt::entity>& batch)
-						{
-							for (const auto& entity_handle : batch)
+						auto bone_map_mutex = std::make_shared<std::mutex>();
+						auto next_updated_bone_transformations = std::make_shared<std::unordered_map<UUID, glm::mat4>>();
+						next_updated_bone_transformations->reserve(m_BoneUpdates.size());
+	
+						std::vector<std::pair<std::string, JobFunction>> animation_update_jobs;
+	
+						auto animator_update_view = GetAllEntitiesWith<SkinnedMeshComponent, BasicAnimationComponent>();
+	
+						const uint32_t total_entities = static_cast<uint32_t>(animator_update_view.size_hint());
+						const uint32_t hardware_threads = std::max(1u, std::thread::hardware_concurrency() / 2);
+	
+						// Clamp to avoid oversaturation on extreme core counts
+						const uint32_t max_allowed_batches = 32;
+						const uint32_t target_batches = std::min<uint32_t>(std::min(total_entities, hardware_threads), max_allowed_batches);
+	
+						// Dynamic batch size (round up)
+						size_t batch_size = target_batches > 0 ? (total_entities + target_batches - 1) / target_batches : total_entities;
+						batch_size = std::max<size_t>(1, batch_size); // Always at least 1
+	
+						std::vector<entt::entity> current_batch;
+	
+						// Shared work lambda
+						auto animation_worker = [scene_ref = this, bone_map_mutex, next_updated_bone_transformations](const std::vector<entt::entity>& batch)
 							{
-								Entity entity = { entity_handle, scene_ref };
-								if (!entity) continue;
-
-								auto& animator = entity.GetComponent<AnimatorComponent>();
-
-								if (!animator.IsPlaying || animator.CurrentClipIndex == -1)
-									continue;
-
-								// Visibility culling
-								switch (animator.CullingMode)
+								for (const auto& entity_handle : batch)
 								{
-									case AnimatorComponent::AnimationCullingMode::NoAnimateOffScreenContinueTimer:
+									Entity entity = { entity_handle, scene_ref };
+									if (!entity) continue;
+	
+									auto& animator = entity.GetComponent<BasicAnimationComponent>();
+	
+									if (!animator.IsPlaying || animator.CurrentClipIndex == -1)
+										continue;
+	
+									// Visibility culling
+									switch (animator.CullingMode)
 									{
-										if (scene_ref->m_SceneConfig.ScenePipelineType == L_RENDER_PIPELINE::FORWARD_PLUS)
+										case BasicAnimationComponent::AnimationCullingMode::NoAnimateOffScreenContinueTimer:
 										{
-											if (auto context = ForwardPlusPipeline::GetSceneContext(scene_ref);
-												context && context->Entities_OverallVisible.count(entity.GetUUID()) == 0)
+											if (scene_ref->m_SceneConfig.ScenePipelineType == L_RENDER_PIPELINE::FORWARD_PLUS)
 											{
-												if (AssetManager::IsAssetLoaded(animator.AnimationClipHandles[animator.CurrentClipIndex]))
+												if (auto context = ForwardPlusPipeline::GetSceneContext(scene_ref);
+													context && context->Entities_OverallVisible.count(entity.GetUUID()) == 0)
 												{
-													auto clip = AssetManager::GetAsset<AnimationClip>(animator.AnimationClipHandles[animator.CurrentClipIndex]);
-													animator.StepAnimationTimer(clip);
+													if (AssetManager::IsAssetLoaded(animator.AnimationClipHandles[animator.CurrentClipIndex]))
+													{
+														auto clip = AssetManager::GetAsset<AnimationClip>(animator.AnimationClipHandles[animator.CurrentClipIndex]);
+														animator.StepAnimationTimer(clip);
+													}
+													continue;
 												}
-												continue;
 											}
+											break;
 										}
-										break;
-									}
-									case AnimatorComponent::AnimationCullingMode::NoAnimateOffScreenStopTimer:
-									{
-										if (scene_ref->m_SceneConfig.ScenePipelineType == L_RENDER_PIPELINE::FORWARD_PLUS)
+										case BasicAnimationComponent::AnimationCullingMode::NoAnimateOffScreenStopTimer:
 										{
-											if (auto context = ForwardPlusPipeline::GetSceneContext(scene_ref);
-												context && context->Entities_OverallVisible.count(entity.GetUUID()) == 0)
-												continue;
+											if (scene_ref->m_SceneConfig.ScenePipelineType == L_RENDER_PIPELINE::FORWARD_PLUS)
+											{
+												if (auto context = ForwardPlusPipeline::GetSceneContext(scene_ref);
+													context && context->Entities_OverallVisible.count(entity.GetUUID()) == 0)
+													continue;
+											}
+											break;
 										}
-										break;
+										default: break;
 									}
-									default: break;
+	
+									auto result = animator.UpdateDeferred();
+	
+									std::lock_guard<std::mutex> lock(*bone_map_mutex);
+									next_updated_bone_transformations->insert(result.begin(), result.end());
 								}
-
-								auto result = animator.UpdateDeferred();
-
-								std::lock_guard<std::mutex> lock(*bone_map_mutex);
-								next_updated_bone_transformations->insert(result.begin(), result.end());
+							};
+	
+						// Batch entity processing jobs
+						for (const auto& entity_handle : animator_update_view)
+						{
+							current_batch.push_back(entity_handle);
+							if (current_batch.size() == batch_size)
+							{
+								animation_update_jobs.emplace_back("Animator Component Update - Job Work", [batch = std::move(current_batch), animation_worker]() mutable
+									{
+										animation_worker(batch);
+									});
+								current_batch.clear();
 							}
-						};
-
-					// Batch entity processing jobs
-					for (const auto& entity_handle : animator_update_view)
-					{
-						current_batch.push_back(entity_handle);
-						if (current_batch.size() == batch_size)
+						}
+						if (!current_batch.empty())
 						{
 							animation_update_jobs.emplace_back("Animator Component Update - Job Work", [batch = std::move(current_batch), animation_worker]() mutable
 								{
 									animation_worker(batch);
 								});
-							current_batch.clear();
 						}
-					}
-					if (!current_batch.empty())
+	
+						JobCounter job_counter = {};
+						JobSystem::Get()->SubmitJobs(animation_update_jobs, &job_counter, JobPriority::High, true);
+						job_counter.Wait();
+	
+						std::unique_lock<std::mutex> lock(m_BoneUpdateMutex);
+						m_BoneUpdates.swap(*next_updated_bone_transformations);
+	
+					}, m_LastFrameAnimationUpdateCounter.get(), JobPriority::Medium, true);
+	
+				job_counter.Wait(); // Wait on Transformation Updates Before Proceeding
+			
+			}
+			
+			// Animator
+			{
+				L_PROFILE_SCOPE("Scene - Animation::Animator State Machines");
+
+				auto view = m_Registry.view<AnimatorComponent, SkinnedMeshComponent>();
+				for (const auto& e : view)
+				{
+					Entity entity = { e, this };
+
+					auto& animator_component = view.get<AnimatorComponent>(e);
+					auto& skinned_mesh_component = view.get<SkinnedMeshComponent>(e);
+
+					// Validate if OK to animate
+					auto skeleton = AssetManager::GetAsset<Skeleton>(skinned_mesh_component.SkeletonHandle);
+					if (!skeleton ||!animator_component.m_StateMachineInstance || skinned_mesh_component.SkeletonHandle == NULL_UUID ||  !AssetManager::IsAssetHandleValid(skinned_mesh_component.SkeletonHandle) || !AssetManager::IsAssetHandleValid(skinned_mesh_component.StaticMeshHandle))
+						continue;
+					
+					// Update States 
+					animator_component.m_StateMachineInstance->UpdateStates(Time::GetDeltaTime());
+
+					AnimationPose evaluated_pose = {};
+					animator_component.m_StateMachineInstance->EvaluatePose(evaluated_pose);
+
+					std::unordered_map<UUID, glm::mat4> transform_update_map = {};
+					transform_update_map.reserve(evaluated_pose.Pose.bucket_count());
+
+					for (const auto& [bone_name, bone_transform] : evaluated_pose.Pose)
 					{
-						animation_update_jobs.emplace_back("Animator Component Update - Job Work", [batch = std::move(current_batch), animation_worker]() mutable
-							{
-								animation_worker(batch);
-							});
+						BoneLayout* bone_layout = skeleton->SkeletonLayout.find(bone_name);
+
+						if(!bone_layout)
+							continue;
+
+						UUID bone_id = bone_layout->BoneID;
+						UUID bone_entity_mapping = skinned_mesh_component.SkeletonBoneMapping[bone_id];
+
+						transform_update_map[bone_entity_mapping] =
+							glm::translate(glm::mat4(1.0f), bone_transform.Position) *
+							glm::mat4_cast(bone_transform.Orientation) *
+							glm::scale(glm::mat4(1.0f), bone_transform.Scale);
 					}
 
-					JobCounter job_counter = {};
-					JobSystem::Get()->SubmitJobs(animation_update_jobs, &job_counter, JobPriority::High, true);
-					job_counter.Wait();
-
-					std::unique_lock<std::mutex> lock(m_BoneUpdateMutex);
-					m_BoneUpdates.swap(*next_updated_bone_transformations);
-
-				}, m_LastFrameAnimationUpdateCounter.get(), JobPriority::Medium, true);
-
-			job_counter.Wait(); // Wait on Transformation Updates Before Proceeding
+					skinned_mesh_component.ComputeFinalBoneTransformations(transform_update_map);
+				}
+			}
 		}
 	}
 
@@ -1601,7 +1696,6 @@ namespace Louron {
 		glBindVertexArray(0);
 
 	}
-
 
 #pragma endregion
 

@@ -190,7 +190,13 @@ namespace Louron {
 		//}
 	}
 
-	void ForwardPlusPipeline::OnStopPipeline(Scene* scene) {
+	void ForwardPlusPipeline::OnStopPipeline(Scene* scene) 
+	{
+
+		if(s_SceneContext.contains(scene) && s_SceneContext[scene]->OctreeUpdate_Thread.joinable())
+		{
+			s_SceneContext[scene]->OctreeUpdate_Thread.join();
+		}
 		
 		s_SceneContext.erase(scene);
 		

@@ -68,6 +68,7 @@ namespace Louron
         LODMeshComponent,
 
         SkinnedMeshComponent,
+        BasicAnimationComponent,
         AnimatorComponent,
 
         SkyboxComponent,
@@ -93,6 +94,7 @@ namespace Louron
         AudioClip,
         Skeleton,
         AnimationClip,
+        StateMachine,
 
         // Unknown
         Unknown

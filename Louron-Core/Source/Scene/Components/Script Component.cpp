@@ -72,6 +72,7 @@ namespace Louron
                         case ScriptFieldType::MeshRendererComponent:
                         case ScriptFieldType::LODMeshComponent:
                         case ScriptFieldType::SkinnedMeshComponent:
+                        case ScriptFieldType::BasicAnimationComponent:
                         case ScriptFieldType::AnimatorComponent:
                         case ScriptFieldType::SkyboxComponent:
                         case ScriptFieldType::PointLightComponent:
@@ -355,6 +356,7 @@ namespace Louron
                             case ScriptFieldType::MeshRendererComponent:
                             case ScriptFieldType::LODMeshComponent:
                             case ScriptFieldType::SkinnedMeshComponent:
+                            case ScriptFieldType::BasicAnimationComponent:
                             case ScriptFieldType::AnimatorComponent:
                             case ScriptFieldType::SkyboxComponent:
                             case ScriptFieldType::PointLightComponent:

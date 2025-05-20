@@ -344,7 +344,13 @@ namespace Louron {
 				component.FinalBoneTransformations.clear();
 			}
 
-			// 1.s. Animator Component
+			// 1.s. Basic Animation Component
+			if (start_entity.HasComponent<BasicAnimationComponent>()) {
+				auto& component = start_entity.GetComponent<BasicAnimationComponent>();
+				component = m_PrefabRegistry.emplace_or_replace<BasicAnimationComponent>(prefab_entity_handle, component);
+			}
+
+			// 1.t. Animator Component
 			if (start_entity.HasComponent<AnimatorComponent>()) {
 				auto& component = start_entity.GetComponent<AnimatorComponent>();
 				component = m_PrefabRegistry.emplace_or_replace<AnimatorComponent>(prefab_entity_handle, component);
@@ -451,6 +457,10 @@ namespace Louron {
 
 		if (HasComponent<SkinnedMeshComponent>(entity)) {
 			GetComponent<SkinnedMeshComponent>(entity).Serialize(out);
+		}
+
+		if (HasComponent<BasicAnimationComponent>(entity)) {
+			GetComponent<BasicAnimationComponent>(entity).Serialize(out);
 		}
 
 		if (HasComponent<AnimatorComponent>(entity)) {
@@ -563,13 +573,23 @@ namespace Louron {
 				L_CORE_WARN("Deserialisation of Skinned Mesh Component Not Complete.");
 		}
 
+		// Basic Animation Component
+		auto basicAnimationComponent = entity_node["BasicAnimationComponent"];
+		if (basicAnimationComponent) {
+
+			auto& entityBasicAnimationComponent = AddComponent<BasicAnimationComponent>(entity);
+
+			if (!entityBasicAnimationComponent.Deserialize(basicAnimationComponent))
+				L_CORE_WARN("Deserialisation of Basic Animation Component Not Complete.");
+		}
+
 		// Animator Component
 		auto animatorComponent = entity_node["AnimatorComponent"];
 		if (animatorComponent) {
 
-			auto& entityAnimatorComponent = AddComponent<AnimatorComponent>(entity);
+			auto& entityAnimatorComponentComponent = AddComponent<AnimatorComponent>(entity);
 
-			if (!entityAnimatorComponent.Deserialize(animatorComponent))
+			if (!entityAnimatorComponentComponent.Deserialize(animatorComponent))
 				L_CORE_WARN("Deserialisation of Animator Component Not Complete.");
 		}
 

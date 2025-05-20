@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "LVectors.h"
 #include "LMatrices.h"
 #include "LBounds.h"
@@ -213,6 +215,22 @@ namespace Louron
 		RightSuper = 347,
 		Menu = 348
 	};
+	
+	namespace Utils
+	{
+		static inline uint32_t fnv1a_hash(const std::string &str)
+		{
+			uint32_t hash = 2166136261u;
+			for (char c : str)
+				hash ^= static_cast<uint8_t>(c), hash *= 16777619u;
+			return hash;
+		}
+	}
+
+	namespace Animation
+	{
+		using StringHash = uint32_t;
+	}
 }
 
 namespace BackEndAPI
@@ -256,36 +274,38 @@ namespace BackEndAPI
 		Mat4,
 
 		// ECS Types
-		Entity,
+        Entity,
 
-		IDComponent,
-		TagComponent,
-		HierarchyComponent,
-		ScriptComponent,
-		TransformComponent,
+        IDComponent,
+        TagComponent,
+        HierarchyComponent,
+        ScriptComponent,
+        TransformComponent,
 
-		CameraComponent,
+        CameraComponent,
 
-		AudioListenerComponent,
-		AudioEmitterComponent,
+        AudioListenerComponent,
+        AudioEmitterComponent,
 
-		MeshFilterComponent,
-		MeshRendererComponent,
-		LODMeshComponent,
+        MeshFilterComponent,
+        MeshRendererComponent,
+        LODMeshComponent,
 
-		SkinnedMeshComponent,
-		AnimatorComponent,
+        SkinnedMeshComponent,
+        BasicAnimationComponent,
+        AnimatorComponent,
 
-		SkyboxComponent,
+        SkyboxComponent,
 
-		PointLightComponent,
-		SpotLightComponent,
-		DirectionalLightComponent,
+        PointLightComponent,
+        SpotLightComponent,
+        DirectionalLightComponent,
 
-		RigidbodyComponent,
-		BoxColliderComponent,
-		SphereColliderComponent,
-		Component,
+        RigidbodyComponent,
+        BoxColliderComponent,
+        SphereColliderComponent,
+
+        Component,
 
 		// Asset Types
 		Prefab,
@@ -298,6 +318,7 @@ namespace BackEndAPI
 		AudioClip,
 		Skeleton,
 		AnimationClip,
+        StateMachine,
 
 		// Unknown
 		Unknown

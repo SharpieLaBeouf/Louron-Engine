@@ -19,12 +19,134 @@
 
 namespace Louron
 {
+#pragma region Animator Component
 
-	void AnimatorComponent::Play(int clip_index, bool should_loop)
+    AnimatorComponent::AnimatorComponent(const AnimatorComponent &other)
+    {
+		StateMachineHandle = other.StateMachineHandle;
+		CullingMode = other.CullingMode;
+
+		m_StateMachineInstance.reset();
+		m_StateMachineInstance = nullptr;
+
+		if (other.m_StateMachineInstance && StateMachineHandle != NULL_UUID && AssetManager::IsAssetHandleValid(StateMachineHandle))
+		{
+			auto machine_asset = AssetManager::GetAsset<Animation::StateMachine>(StateMachineHandle);
+			if(machine_asset)
+			{
+				m_StateMachineInstance = std::make_unique<Animation::StateMachine>(*machine_asset.get()); // Copy asset into component instance
+			}
+		}
+    }
+
+    AnimatorComponent &AnimatorComponent::operator=(const AnimatorComponent &other)
+    {
+		if (this == &other)
+			return *this;
+
+		StateMachineHandle = other.StateMachineHandle;
+		CullingMode = other.CullingMode;
+
+		m_StateMachineInstance.reset();
+		m_StateMachineInstance = nullptr;
+
+		if (other.m_StateMachineInstance && StateMachineHandle != NULL_UUID && AssetManager::IsAssetHandleValid(StateMachineHandle))
+		{
+			auto machine_asset = AssetManager::GetAsset<Animation::StateMachine>(StateMachineHandle);
+			if(machine_asset)
+			{
+				m_StateMachineInstance = std::make_unique<Animation::StateMachine>(*machine_asset.get()); // Copy asset into component instance
+			}
+		}
+
+		return *this;
+    }
+
+    void AnimatorComponent::Init()
+    {
+		m_StateMachineInstance.reset();
+		m_StateMachineInstance = nullptr;
+
+		if (StateMachineHandle != NULL_UUID && AssetManager::IsAssetHandleValid(StateMachineHandle))
+		{
+			auto machine_asset = AssetManager::GetAsset<Animation::StateMachine>(StateMachineHandle);
+			if(machine_asset)
+			{
+				m_StateMachineInstance = std::make_unique<Animation::StateMachine>(*machine_asset.get()); // Copy asset into component instance
+			}
+		}
+	}
+
+	void AnimatorComponent::CleanUp()
+	{
+		m_StateMachineInstance.reset();
+		m_StateMachineInstance = nullptr;		
+	}
+
+	void AnimatorComponent::Serialize(YAML::Emitter& out)
+	{
+		out << YAML::Key << "AnimatorComponent" << YAML::Value;
+		out << YAML::BeginMap;
+		{
+			out << YAML::Key << "StateMachineHandle" << YAML::Value << StateMachineHandle;
+
+			switch (CullingMode)
+			{
+				case AnimationCullingMode::AlwaysAnimate:
+				{
+					out << YAML::Key << "CullingMode" << YAML::Value << "AlwaysAnimate";
+					break;
+				}
+				case AnimationCullingMode::NoAnimateOffScreenContinueTimer:
+				{
+					out << YAML::Key << "CullingMode" << YAML::Value << "NoAnimateOffScreenContinueTimer";
+					break;
+				}
+				default:
+				case AnimationCullingMode::NoAnimateOffScreenStopTimer:
+				{
+					out << YAML::Key << "CullingMode" << YAML::Value << "NoAnimateOffScreenStopTimer";
+					break;
+				}
+			}
+
+		}
+		out << YAML::EndMap;
+	}
+
+	bool AnimatorComponent::Deserialize(const YAML::Node data)
+	{
+		YAML::Node component = data;
+
+		if (component["StateMachineHandle"]) 
+		{
+			StateMachineHandle = component["StateMachineHandle"].as<uint32_t>();
+		}
+
+		if (component["CullingMode"]) 
+		{
+			std::string culling_mode = component["CullingMode"].as<std::string>();
+
+			if (culling_mode == "AlwaysAnimate")
+				CullingMode = AnimationCullingMode::AlwaysAnimate;
+			else if (culling_mode == "NoAnimateOffScreenContinueTimer")
+				CullingMode = AnimationCullingMode::NoAnimateOffScreenContinueTimer;
+			else if (culling_mode == "NoAnimateOffScreenStopTimer")
+				CullingMode = AnimationCullingMode::NoAnimateOffScreenStopTimer;
+		}
+
+		return true;
+	}
+
+#pragma endregion
+
+#pragma region Basic Animation Component
+
+	void BasicAnimationComponent::Play(int clip_index, bool should_loop)
 	{
 		if (clip_index < 0 || clip_index >= AnimationClipHandles.size())
 		{
-			L_CORE_WARN("AnimatorComponent::Play - Clip Index Invalid.");
+			L_CORE_WARN("BasicAnimationComponent::Play - Clip Index Invalid.");
 			return;
 		}
 
@@ -34,7 +156,7 @@ namespace Louron
 		IsLooping = should_loop;
 	}
 
-	void AnimatorComponent::Play(const char* clip_name, bool should_loop)
+	void BasicAnimationComponent::Play(const char* clip_name, bool should_loop)
 	{
 		uint32_t found_index = NULL_UUID;
 		for (auto it = AnimationClipHandles.begin(); it != AnimationClipHandles.end(); )
@@ -56,7 +178,7 @@ namespace Louron
 
 		if(found_index == NULL_UUID)
 		{
-			L_CORE_WARN("AnimatorComponent::Play - Could Not Find \"{}\" in Animation Clips.", clip_name);
+			L_CORE_WARN("BasicAnimationComponent::Play - Could Not Find \"{}\" in Animation Clips.", clip_name);
 			return;
 		}
 
@@ -66,7 +188,7 @@ namespace Louron
 		IsLooping = should_loop;
 	}
 
-	void AnimatorComponent::Update()
+	void BasicAnimationComponent::Update()
 	{
 		// Check if Valid State to Animate
 		if (!IsPlaying || CurrentClipIndex == -1) 
@@ -94,7 +216,7 @@ namespace Louron
 		UpdateBoneHierarchy(asset_skeleton->SkeletonLayout, asset_skeleton, skinned_mesh_component.SkeletonBoneMapping, *animation_clip_asset.get(), CurrentTime);
 	}
 
-	std::unordered_map<UUID, glm::mat4> AnimatorComponent::UpdateDeferred()
+	std::unordered_map<UUID, glm::mat4> BasicAnimationComponent::UpdateDeferred()
 	{
 
 		// Check if Valid State to Animate
@@ -141,7 +263,7 @@ namespace Louron
 		return transform_update_map;
 	}
 
-	void AnimatorComponent::StepAnimationTimer(const std::shared_ptr<AnimationClip>& animation_clip)
+	void BasicAnimationComponent::StepAnimationTimer(const std::shared_ptr<AnimationClip>& animation_clip)
 	{
 		// Increment Current Animation Time
 		CurrentTime += Time::GetDeltaTime() * animation_clip->GetTicksPerSecond() * PlaybackSpeed;
@@ -161,9 +283,9 @@ namespace Louron
 		}
 	}
 
-	void AnimatorComponent::Serialize(YAML::Emitter& out)
+	void BasicAnimationComponent::Serialize(YAML::Emitter& out)
 	{
-		out << YAML::Key << "AnimatorComponent";
+		out << YAML::Key << "BasicAnimationComponent";
 		out << YAML::BeginMap;
 
 		out << YAML::Key << "CurrentClipIndex" << YAML::Value << CurrentClipIndex;
@@ -207,7 +329,7 @@ namespace Louron
 		out << YAML::EndMap;
 	}
 
-	bool AnimatorComponent::Deserialize(const YAML::Node data)
+	bool BasicAnimationComponent::Deserialize(const YAML::Node data)
 	{
 		YAML::Node component = data;
 
@@ -265,12 +387,12 @@ namespace Louron
 		return true;
 	}
 
-	void AnimatorComponent::UpdateBoneHierarchy(const BoneLayout& current_bone, std::shared_ptr<Skeleton> skeleton_asset, const std::unordered_map<UUID, UUID>& bone_mapping, const AnimationClip& animation_clip, float time)
+	void BasicAnimationComponent::UpdateBoneHierarchy(const BoneLayout& current_bone, std::shared_ptr<Skeleton> skeleton_asset, const std::unordered_map<UUID, UUID>& bone_mapping, const AnimationClip& animation_clip, float time)
 	{
 		// Check Current Entity Valid
 		if (!GetEntity())
 		{
-			L_CORE_ERROR("AnimatorComponent::UpdateBoneHierarchy Could Not Update Bone Hierarchy - Entity Reference is Invalid!");
+			L_CORE_ERROR("BasicAnimationComponent::UpdateBoneHierarchy Could Not Update Bone Hierarchy - Entity Reference is Invalid!");
 			return;
 		}
 
@@ -278,13 +400,13 @@ namespace Louron
 		Scene* scene_ref = GetEntity()->GetScene();
 		if (!scene_ref)
 		{
-			L_CORE_ERROR("AnimatorComponent::UpdateBoneHierarchy Could Not Update Bone Hierarchy - Scene Reference is Invalid!");
+			L_CORE_ERROR("BasicAnimationComponent::UpdateBoneHierarchy Could Not Update Bone Hierarchy - Scene Reference is Invalid!");
 			return;
 		}
 
 		if (bone_mapping.count(current_bone.BoneID) == 0)
 		{
-			L_CORE_ERROR("AnimatorComponent::UpdateBoneHierarchy Could Not Find Entity Mapped to Bone.");
+			L_CORE_ERROR("BasicAnimationComponent::UpdateBoneHierarchy Could Not Find Entity Mapped to Bone.");
 			return;
 		}
 
@@ -293,7 +415,7 @@ namespace Louron
 
 		if(!bone_entity)
 		{
-			L_CORE_ERROR("AnimatorComponent::UpdateBoneHierarchy Could Not Update Bone Hierarchy - Bone Entity ID in Skeleton Invalid {}!", std::to_string(bone_mapping.at(current_bone.BoneID)));
+			L_CORE_ERROR("BasicAnimationComponent::UpdateBoneHierarchy Could Not Update Bone Hierarchy - Bone Entity ID in Skeleton Invalid {}!", std::to_string(bone_mapping.at(current_bone.BoneID)));
 			return;
 		}
 
@@ -328,7 +450,7 @@ namespace Louron
 		}
 	}
 
-	void AnimatorComponent::UpdateBoneHierarchyDeferred(std::unordered_map<UUID, glm::mat4>& transform_update_map, const BoneLayout& current_bone, std::shared_ptr<Skeleton> skeleton_asset, const std::unordered_map<UUID, UUID>& bone_mapping, const AnimationClip& animation_clip, float time)
+	void BasicAnimationComponent::UpdateBoneHierarchyDeferred(std::unordered_map<UUID, glm::mat4>& transform_update_map, const BoneLayout& current_bone, std::shared_ptr<Skeleton> skeleton_asset, const std::unordered_map<UUID, UUID>& bone_mapping, const AnimationClip& animation_clip, float time)
 	{
 		// Validate scene reference early to prevent redundant calls
 		Scene* scene_ref = GetEntity() ? GetEntity()->GetScene() : nullptr;
@@ -337,7 +459,7 @@ namespace Louron
 			static bool error_logged = false;
 			if (!error_logged)
 			{
-				L_CORE_ERROR("AnimatorComponent::UpdateBoneHierarchy: Scene reference is invalid!");
+				L_CORE_ERROR("BasicAnimationComponent::UpdateBoneHierarchy: Scene reference is invalid!");
 				error_logged = true;
 			}
 			return;
@@ -347,7 +469,7 @@ namespace Louron
 		auto it = bone_mapping.find(current_bone.BoneID);
 		if (it == bone_mapping.end())
 		{
-			L_CORE_ERROR("AnimatorComponent::UpdateBoneHierarchy: BoneID {} not found in mapping.", std::to_string(current_bone.BoneID));
+			L_CORE_ERROR("BasicAnimationComponent::UpdateBoneHierarchy: BoneID {} not found in mapping.", std::to_string(current_bone.BoneID));
 			return;
 		}
 
@@ -355,7 +477,7 @@ namespace Louron
 		Entity bone_entity = scene_ref->FindEntityByUUID(bone_entity_uuid);
 		if (!bone_entity)
 		{
-			L_CORE_ERROR("AnimatorComponent::UpdateBoneHierarchy: Invalid Bone Entity ID {}!", std::to_string(bone_entity_uuid));
+			L_CORE_ERROR("BasicAnimationComponent::UpdateBoneHierarchy: Invalid Bone Entity ID {}!", std::to_string(bone_entity_uuid));
 			return;
 		}
 
@@ -393,7 +515,7 @@ namespace Louron
 		}
 	}
 
-	glm::vec3 AnimatorComponent::InterpolatePositionTransform(const AnimationClip& animation_clip, const std::string& bone_name, float time)
+	glm::vec3 BasicAnimationComponent::InterpolatePositionTransform(const AnimationClip& animation_clip, const std::string& bone_name, float time)
 	{
 		// Find keyframes for this bone
 		const auto& bone_keyframes = animation_clip.GetBonePositionKeyframes(bone_name);
@@ -429,7 +551,7 @@ namespace Louron
 		return glm::vec3(FLT_MAX);
 	}
 
-	glm::quat AnimatorComponent::InterpolateRotationTransform(const AnimationClip& animation_clip, const std::string& bone_name, float time)
+	glm::quat BasicAnimationComponent::InterpolateRotationTransform(const AnimationClip& animation_clip, const std::string& bone_name, float time)
 	{
 		// Find keyframes for this bone
 		const auto& bone_keyframes = animation_clip.GetBoneRotationKeyframes(bone_name);
@@ -465,7 +587,7 @@ namespace Louron
 		return glm::quat(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
 	}
 
-	glm::vec3 AnimatorComponent::InterpolateScaleTransform(const AnimationClip& animation_clip, const std::string& bone_name, float time)
+	glm::vec3 BasicAnimationComponent::InterpolateScaleTransform(const AnimationClip& animation_clip, const std::string& bone_name, float time)
 	{
 		// Find keyframes for this bone
 		const auto& bone_keyframes = animation_clip.GetBoneScaleKeyframes(bone_name);
@@ -500,4 +622,7 @@ namespace Louron
 
 		return glm::vec3(FLT_MAX);
 	}
+
+#pragma endregion
+
 }

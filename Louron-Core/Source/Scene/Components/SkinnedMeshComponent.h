@@ -130,7 +130,7 @@ namespace Louron
 		/// <summary>
 		/// Final vector of bone transformations to be provided to vertex shader for bone weight blending
 		/// 
-		/// This will persist even without an AnimatorComponent, hence being contained in this component
+		/// This will persist even without an BasicAnimationComponent, hence being contained in this component
 		/// </summary>
 		std::vector<glm::mat4> FinalBoneTransformations = {};
 

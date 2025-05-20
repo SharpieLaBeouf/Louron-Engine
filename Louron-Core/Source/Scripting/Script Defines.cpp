@@ -104,6 +104,7 @@ namespace Louron
                 case ScriptFieldType::MeshRendererComponent: return "MeshRendererComponent";
                 case ScriptFieldType::LODMeshComponent: return "LODMeshComponent";
                 case ScriptFieldType::SkinnedMeshComponent: return "SkinnedMeshComponent";
+                case ScriptFieldType::BasicAnimationComponent: return "BasicAnimationComponent";
                 case ScriptFieldType::AnimatorComponent: return "AnimatorComponent";
                 case ScriptFieldType::SkyboxComponent: return "SkyboxComponent";
                 case ScriptFieldType::PointLightComponent: return "PointLightComponent";
@@ -180,6 +181,7 @@ namespace Louron
             MATCH_TYPE("MeshRendererComponent", MeshRendererComponent);
             MATCH_TYPE("LODMeshComponent", LODMeshComponent);
             MATCH_TYPE("SkinnedMeshComponent", SkinnedMeshComponent);
+            MATCH_TYPE("BasicAnimationComponent", BasicAnimationComponent);
             MATCH_TYPE("AnimatorComponent", AnimatorComponent);
             MATCH_TYPE("SkyboxComponent", SkyboxComponent);
             MATCH_TYPE("PointLightComponent", PointLightComponent);
@@ -257,6 +259,7 @@ namespace Louron
                 case ScriptFieldType::MeshRendererComponent:
                 case ScriptFieldType::LODMeshComponent:
                 case ScriptFieldType::SkinnedMeshComponent:
+                case ScriptFieldType::BasicAnimationComponent:
                 case ScriptFieldType::AnimatorComponent:
                 case ScriptFieldType::SkyboxComponent:
                 case ScriptFieldType::PointLightComponent:

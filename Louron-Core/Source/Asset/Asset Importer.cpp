@@ -1170,12 +1170,12 @@ namespace Louron {
 			loaded_animation_handles.insert(animation_clip_handle);
 		}
 
-		auto& animator_component = model_prefab->AddComponent<AnimatorComponent>(model_prefab->GetRootEntity());
-		animator_component.AnimationClipHandles.reserve(loaded_animation_handles.size());
-		animator_component.AnimationClipHandles.insert(animator_component.AnimationClipHandles.begin(), loaded_animation_handles.begin(), loaded_animation_handles.end());
+		auto& basic_animation_component = model_prefab->AddComponent<BasicAnimationComponent>(model_prefab->GetRootEntity());
+		basic_animation_component.AnimationClipHandles.reserve(loaded_animation_handles.size());
+		basic_animation_component.AnimationClipHandles.insert(basic_animation_component.AnimationClipHandles.begin(), loaded_animation_handles.begin(), loaded_animation_handles.end());
 
-		if (animator_component.AnimationClipHandles.size() != 0)
-			animator_component.CurrentClipIndex = 0;
+		if (basic_animation_component.AnimationClipHandles.size() != 0)
+		basic_animation_component.CurrentClipIndex = 0;
 	}
 
 #pragma endregion

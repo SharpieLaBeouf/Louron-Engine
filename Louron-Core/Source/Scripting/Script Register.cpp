@@ -354,25 +354,30 @@ namespace Louron
 
 #pragma region Animator
 
-        register_function("AnimatorComponent_PlayAnimation_Index", reinterpret_cast<void*>(&AnimatorComponent_PlayAnimation_Index));
-        register_function("AnimatorComponent_PlayAnimation_Name", reinterpret_cast<void*>(&AnimatorComponent_PlayAnimation_Name));
+        register_function("BasicAnimationComponent_PlayAnimation_Index", reinterpret_cast<void*>(&BasicAnimationComponent_PlayAnimation_Index));
+        register_function("BasicAnimationComponent_PlayAnimation_Name", reinterpret_cast<void*>(&BasicAnimationComponent_PlayAnimation_Name));
 
-        register_function("AnimatorComponent_PauseAnimation", reinterpret_cast<void*>(&AnimatorComponent_PauseAnimation));
-        register_function("AnimatorComponent_ResumeAnimation", reinterpret_cast<void*>(&AnimatorComponent_ResumeAnimation));
-        register_function("AnimatorComponent_StopAnimation", reinterpret_cast<void*>(&AnimatorComponent_StopAnimation));
+        register_function("BasicAnimationComponent_PauseAnimation", reinterpret_cast<void*>(&BasicAnimationComponent_PauseAnimation));
+        register_function("BasicAnimationComponent_ResumeAnimation", reinterpret_cast<void*>(&BasicAnimationComponent_ResumeAnimation));
+        register_function("BasicAnimationComponent_StopAnimation", reinterpret_cast<void*>(&BasicAnimationComponent_StopAnimation));
 
-        register_function("AnimatorComponent_IsPlaying", reinterpret_cast<void*>(&AnimatorComponent_IsPlaying));
-        register_function("AnimatorComponent_IsLooping", reinterpret_cast<void*>(&AnimatorComponent_IsLooping));
-        register_function("AnimatorComponent_SetIsLooping", reinterpret_cast<void*>(&AnimatorComponent_SetIsLooping));
+        register_function("BasicAnimationComponent_IsPlaying", reinterpret_cast<void*>(&BasicAnimationComponent_IsPlaying));
+        register_function("BasicAnimationComponent_IsLooping", reinterpret_cast<void*>(&BasicAnimationComponent_IsLooping));
+        register_function("BasicAnimationComponent_SetIsLooping", reinterpret_cast<void*>(&BasicAnimationComponent_SetIsLooping));
 
-        register_function("AnimatorComponent_GetPlaybackSpeed", reinterpret_cast<void*>(&AnimatorComponent_GetPlaybackSpeed));
-        register_function("AnimatorComponent_SetPlaybackSpeed", reinterpret_cast<void*>(&AnimatorComponent_SetPlaybackSpeed));
+        register_function("BasicAnimationComponent_GetPlaybackSpeed", reinterpret_cast<void*>(&BasicAnimationComponent_GetPlaybackSpeed));
+        register_function("BasicAnimationComponent_SetPlaybackSpeed", reinterpret_cast<void*>(&BasicAnimationComponent_SetPlaybackSpeed));
 
-        register_function("AnimatorComponent_GetCurrentTimestep", reinterpret_cast<void*>(&AnimatorComponent_GetCurrentTimestep));
-        register_function("AnimatorComponent_SetCurrentTimestep", reinterpret_cast<void*>(&AnimatorComponent_SetCurrentTimestep));
+        register_function("BasicAnimationComponent_GetCurrentTimestep", reinterpret_cast<void*>(&BasicAnimationComponent_GetCurrentTimestep));
+        register_function("BasicAnimationComponent_SetCurrentTimestep", reinterpret_cast<void*>(&BasicAnimationComponent_SetCurrentTimestep));
         
-        register_function("AnimatorComponent_GetCurrentClipIndex", reinterpret_cast<void*>(&AnimatorComponent_GetCurrentClipIndex));
-        register_function("AnimatorComponent_GetCurrentClipName", reinterpret_cast<void*>(&AnimatorComponent_GetCurrentClipName));
+        register_function("BasicAnimationComponent_GetCurrentClipIndex", reinterpret_cast<void*>(&BasicAnimationComponent_GetCurrentClipIndex));
+        register_function("BasicAnimationComponent_GetCurrentClipName", reinterpret_cast<void*>(&BasicAnimationComponent_GetCurrentClipName));
+        
+        register_function("AnimatorComponent_SetBool", reinterpret_cast<void*>(&AnimatorComponent_SetBool));
+        register_function("AnimatorComponent_SetFloat", reinterpret_cast<void*>(&AnimatorComponent_SetFloat));
+        register_function("AnimatorComponent_SetUInt", reinterpret_cast<void*>(&AnimatorComponent_SetUInt));
+        register_function("AnimatorComponent_SetInt", reinterpret_cast<void*>(&AnimatorComponent_SetInt));
 
 #pragma endregion
 
@@ -671,6 +676,7 @@ namespace Louron
             case ScriptFieldType::MeshRendererComponent:        entity.AddComponent<MeshRendererComponent>();       break;
             case ScriptFieldType::LODMeshComponent:             entity.AddComponent<LODMeshComponent>();            break;
             case ScriptFieldType::SkinnedMeshComponent:         entity.AddComponent<SkinnedMeshComponent>();        break;
+            case ScriptFieldType::BasicAnimationComponent:      entity.AddComponent<BasicAnimationComponent>();     break;
             case ScriptFieldType::AnimatorComponent:            entity.AddComponent<AnimatorComponent>();           break;
             case ScriptFieldType::SkyboxComponent:              entity.AddComponent<SkyboxComponent>();             break;
             case ScriptFieldType::PointLightComponent:          entity.AddComponent<PointLightComponent>();         break;
@@ -700,12 +706,13 @@ namespace Louron
             case ScriptFieldType::ScriptComponent:              entity.RemoveComponent<ScriptComponent>();             break;
             case ScriptFieldType::TransformComponent:           entity.RemoveComponent<TransformComponent>();          break;
             case ScriptFieldType::CameraComponent:              entity.RemoveComponent<CameraComponent>();             break;
-            case ScriptFieldType::AudioListenerComponent:       entity.RemoveComponent<AudioListenerComponent>();               break;
-            case ScriptFieldType::AudioEmitterComponent:        entity.RemoveComponent<AudioEmitterComponent>();                break;
+            case ScriptFieldType::AudioListenerComponent:       entity.RemoveComponent<AudioListenerComponent>();      break;
+            case ScriptFieldType::AudioEmitterComponent:        entity.RemoveComponent<AudioEmitterComponent>();       break;
             case ScriptFieldType::MeshFilterComponent:          entity.RemoveComponent<MeshFilterComponent>();         break;
             case ScriptFieldType::MeshRendererComponent:        entity.RemoveComponent<MeshRendererComponent>();       break;
             case ScriptFieldType::LODMeshComponent:             entity.RemoveComponent<LODMeshComponent>();            break;
             case ScriptFieldType::SkinnedMeshComponent:         entity.RemoveComponent<SkinnedMeshComponent>();        break;
+            case ScriptFieldType::BasicAnimationComponent:      entity.RemoveComponent<BasicAnimationComponent>();     break;
             case ScriptFieldType::AnimatorComponent:            entity.RemoveComponent<AnimatorComponent>();           break;
             case ScriptFieldType::SkyboxComponent:              entity.RemoveComponent<SkyboxComponent>();             break;
             case ScriptFieldType::PointLightComponent:          entity.RemoveComponent<PointLightComponent>();         break;
@@ -735,12 +742,13 @@ namespace Louron
             case ScriptFieldType::ScriptComponent:              return entity.HasComponent<ScriptComponent>();             break;
             case ScriptFieldType::TransformComponent:           return entity.HasComponent<TransformComponent>();          break;
             case ScriptFieldType::CameraComponent:              return entity.HasComponent<CameraComponent>();             break;
-            case ScriptFieldType::AudioListenerComponent:       return entity.HasComponent<AudioListenerComponent>();               break;
-            case ScriptFieldType::AudioEmitterComponent:        return entity.HasComponent<AudioEmitterComponent>();                break;
+            case ScriptFieldType::AudioListenerComponent:       return entity.HasComponent<AudioListenerComponent>();      break;
+            case ScriptFieldType::AudioEmitterComponent:        return entity.HasComponent<AudioEmitterComponent>();       break;
             case ScriptFieldType::MeshFilterComponent:          return entity.HasComponent<MeshFilterComponent>();         break;
             case ScriptFieldType::MeshRendererComponent:        return entity.HasComponent<MeshRendererComponent>();       break;
             case ScriptFieldType::LODMeshComponent:             return entity.HasComponent<LODMeshComponent>();            break;
             case ScriptFieldType::SkinnedMeshComponent:         return entity.HasComponent<SkinnedMeshComponent>();        break;
+            case ScriptFieldType::BasicAnimationComponent:      return entity.HasComponent<BasicAnimationComponent>();     break;
             case ScriptFieldType::AnimatorComponent:            return entity.HasComponent<AnimatorComponent>();           break;
             case ScriptFieldType::SkyboxComponent:              return entity.HasComponent<SkyboxComponent>();             break;
             case ScriptFieldType::PointLightComponent:          return entity.HasComponent<PointLightComponent>();         break;
@@ -777,6 +785,7 @@ namespace Louron
             case ScriptFieldType::MeshRendererComponent:       { auto component_entity = entity.GetComponentInParent<MeshRendererComponent>().GetEntity();     return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
             case ScriptFieldType::LODMeshComponent:            { auto component_entity = entity.GetComponentInParent<LODMeshComponent>().GetEntity();          return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
             case ScriptFieldType::SkinnedMeshComponent:        { auto component_entity = entity.GetComponentInParent<SkinnedMeshComponent>().GetEntity();      return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
+            case ScriptFieldType::BasicAnimationComponent:     { auto component_entity = entity.GetComponentInParent<BasicAnimationComponent>().GetEntity();   return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
             case ScriptFieldType::AnimatorComponent:           { auto component_entity = entity.GetComponentInParent<AnimatorComponent>().GetEntity();         return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
             case ScriptFieldType::SkyboxComponent:             { auto component_entity = entity.GetComponentInParent<SkyboxComponent>().GetEntity();           return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
             case ScriptFieldType::PointLightComponent:         { auto component_entity = entity.GetComponentInParent<PointLightComponent>().GetEntity();       return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
@@ -816,6 +825,7 @@ namespace Louron
             case ScriptFieldType::MeshRendererComponent:       { auto component_entity = entity.GetComponentInChild<MeshRendererComponent>().GetEntity();     return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
             case ScriptFieldType::LODMeshComponent:            { auto component_entity = entity.GetComponentInChild<LODMeshComponent>().GetEntity();          return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
             case ScriptFieldType::SkinnedMeshComponent:        { auto component_entity = entity.GetComponentInChild<SkinnedMeshComponent>().GetEntity();      return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
+            case ScriptFieldType::BasicAnimationComponent:     { auto component_entity = entity.GetComponentInChild<BasicAnimationComponent>().GetEntity();   return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
             case ScriptFieldType::AnimatorComponent:           { auto component_entity = entity.GetComponentInChild<AnimatorComponent>().GetEntity();         return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
             case ScriptFieldType::SkyboxComponent:             { auto component_entity = entity.GetComponentInChild<SkyboxComponent>().GetEntity();           return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
             case ScriptFieldType::PointLightComponent:         { auto component_entity = entity.GetComponentInChild<PointLightComponent>().GetEntity();       return component_entity ? (uint32_t)component_entity->GetUUID() : NULL_UUID;  break;}
@@ -878,6 +888,7 @@ namespace Louron
             case ScriptFieldType::MeshRendererComponent:       return CacheAndReturn<MeshRendererComponent>(entity, cache_key, count, true);
             case ScriptFieldType::LODMeshComponent:            return CacheAndReturn<LODMeshComponent>(entity, cache_key, count, true);
             case ScriptFieldType::SkinnedMeshComponent:        return CacheAndReturn<SkinnedMeshComponent>(entity, cache_key, count, true);
+            case ScriptFieldType::BasicAnimationComponent:     return CacheAndReturn<BasicAnimationComponent>(entity, cache_key, count, true);
             case ScriptFieldType::AnimatorComponent:           return CacheAndReturn<AnimatorComponent>(entity, cache_key, count, true);
             case ScriptFieldType::SkyboxComponent:             return CacheAndReturn<SkyboxComponent>(entity, cache_key, count, true);
             case ScriptFieldType::PointLightComponent:         return CacheAndReturn<PointLightComponent>(entity, cache_key, count, true);
@@ -920,6 +931,7 @@ namespace Louron
             case ScriptFieldType::MeshRendererComponent:       return CacheAndReturn<MeshRendererComponent>(entity, cache_key, count, false);
             case ScriptFieldType::LODMeshComponent:            return CacheAndReturn<LODMeshComponent>(entity, cache_key, count, false);
             case ScriptFieldType::SkinnedMeshComponent:        return CacheAndReturn<SkinnedMeshComponent>(entity, cache_key, count, false);
+            case ScriptFieldType::BasicAnimationComponent:     return CacheAndReturn<BasicAnimationComponent>(entity, cache_key, count, false);
             case ScriptFieldType::AnimatorComponent:           return CacheAndReturn<AnimatorComponent>(entity, cache_key, count, false);
             case ScriptFieldType::SkyboxComponent:             return CacheAndReturn<SkyboxComponent>(entity, cache_key, count, false);
             case ScriptFieldType::PointLightComponent:         return CacheAndReturn<PointLightComponent>(entity, cache_key, count, false);
@@ -2330,197 +2342,249 @@ namespace Louron
 
 #pragma region Animator
 
-    void ScriptRegister::AnimatorComponent_PlayAnimation_Index(UUID entity_uuid, int32_t clip_index, bool should_loop)
+    void ScriptRegister::BasicAnimationComponent_PlayAnimation_Index(UUID entity_uuid, int32_t clip_index, bool should_loop)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return;
 
-        entity.GetComponent<AnimatorComponent>().Play(clip_index, should_loop);
+        entity.GetComponent<BasicAnimationComponent>().Play(clip_index, should_loop);
     }
 
-    void ScriptRegister::AnimatorComponent_PlayAnimation_Name(UUID entity_uuid, const char *clip_name, bool should_loop)
+    void ScriptRegister::BasicAnimationComponent_PlayAnimation_Name(UUID entity_uuid, const char *clip_name, bool should_loop)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return;
 
-        entity.GetComponent<AnimatorComponent>().Play(clip_name, should_loop);
+        entity.GetComponent<BasicAnimationComponent>().Play(clip_name, should_loop);
     }
 
-    void ScriptRegister::AnimatorComponent_PauseAnimation(UUID entity_uuid)
+    void ScriptRegister::BasicAnimationComponent_PauseAnimation(UUID entity_uuid)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return;
 
-        entity.GetComponent<AnimatorComponent>().Pause();
+        entity.GetComponent<BasicAnimationComponent>().Pause();
     }
 
-    void ScriptRegister::AnimatorComponent_ResumeAnimation(UUID entity_uuid)
+    void ScriptRegister::BasicAnimationComponent_ResumeAnimation(UUID entity_uuid)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return;
 
-        entity.GetComponent<AnimatorComponent>().Resume();
+        entity.GetComponent<BasicAnimationComponent>().Resume();
     }
 
-    void ScriptRegister::AnimatorComponent_StopAnimation(UUID entity_uuid)
+    void ScriptRegister::BasicAnimationComponent_StopAnimation(UUID entity_uuid)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return;
 
-        entity.GetComponent<AnimatorComponent>().Stop();
+        entity.GetComponent<BasicAnimationComponent>().Stop();
     }
 
-    bool ScriptRegister::AnimatorComponent_IsPlaying(UUID entity_uuid)
+    bool ScriptRegister::BasicAnimationComponent_IsPlaying(UUID entity_uuid)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return false;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return false;
 
-        return entity.GetComponent<AnimatorComponent>().IsPlaying;
+        return entity.GetComponent<BasicAnimationComponent>().IsPlaying;
     }
 
-    bool ScriptRegister::AnimatorComponent_IsLooping(UUID entity_uuid)
+    bool ScriptRegister::BasicAnimationComponent_IsLooping(UUID entity_uuid)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return false;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return false;
 
-        return entity.GetComponent<AnimatorComponent>().IsLooping;
+        return entity.GetComponent<BasicAnimationComponent>().IsLooping;
     }
 
-    void ScriptRegister::AnimatorComponent_SetIsLooping(UUID entity_uuid, bool should_loop)
-    {
-        auto scene_ref = Project::GetActiveScene();
-        if (!scene_ref)
-            return;
-
-        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
-            return;
-
-        entity.GetComponent<AnimatorComponent>().IsLooping = should_loop;
-    }
-
-    float ScriptRegister::AnimatorComponent_GetPlaybackSpeed(UUID entity_uuid)
-    {
-        auto scene_ref = Project::GetActiveScene();
-        if (!scene_ref)
-            return false;
-
-        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
-            return false;
-
-        return entity.GetComponent<AnimatorComponent>().PlaybackSpeed;
-    }
-
-    void ScriptRegister::AnimatorComponent_SetPlaybackSpeed(UUID entity_uuid, float playback_speed)
+    void ScriptRegister::BasicAnimationComponent_SetIsLooping(UUID entity_uuid, bool should_loop)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return;
 
-        entity.GetComponent<AnimatorComponent>().PlaybackSpeed = playback_speed;
+        entity.GetComponent<BasicAnimationComponent>().IsLooping = should_loop;
     }
 
-    float ScriptRegister::AnimatorComponent_GetCurrentTimestep(UUID entity_uuid)
+    float ScriptRegister::BasicAnimationComponent_GetPlaybackSpeed(UUID entity_uuid)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return false;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return false;
 
-        return entity.GetComponent<AnimatorComponent>().CurrentTime;
+        return entity.GetComponent<BasicAnimationComponent>().PlaybackSpeed;
     }
 
-    void ScriptRegister::AnimatorComponent_SetCurrentTimestep(UUID entity_uuid, float normalised_time_step)
+    void ScriptRegister::BasicAnimationComponent_SetPlaybackSpeed(UUID entity_uuid, float playback_speed)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
+            return;
+
+        entity.GetComponent<BasicAnimationComponent>().PlaybackSpeed = playback_speed;
+    }
+
+    float ScriptRegister::BasicAnimationComponent_GetCurrentTimestep(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return false;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
+            return false;
+
+        return entity.GetComponent<BasicAnimationComponent>().CurrentTime;
+    }
+
+    void ScriptRegister::BasicAnimationComponent_SetCurrentTimestep(UUID entity_uuid, float normalised_time_step)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return;
         
-        auto& animator = entity.GetComponent<AnimatorComponent>();
+        auto& animator = entity.GetComponent<BasicAnimationComponent>();
         auto animation_clip = AssetManager::GetAsset<AnimationClip>(animator.AnimationClipHandles[animator.CurrentClipIndex]);
         if (animation_clip)
         {
-            entity.GetComponent<AnimatorComponent>().CurrentTime = glm::clamp(normalised_time_step, 0.0f, 1.0f) * animation_clip->GetDuration();
+            entity.GetComponent<BasicAnimationComponent>().CurrentTime = glm::clamp(normalised_time_step, 0.0f, 1.0f) * animation_clip->GetDuration();
         }
     }
 
-    uint32_t ScriptRegister::AnimatorComponent_GetCurrentClipIndex(UUID entity_uuid)
+    uint32_t ScriptRegister::BasicAnimationComponent_GetCurrentClipIndex(UUID entity_uuid)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return NULL_UUID;
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return NULL_UUID;
         
-        return entity.GetComponent<AnimatorComponent>().CurrentClipIndex;
+        return entity.GetComponent<BasicAnimationComponent>().CurrentClipIndex;
     }
 
-    const char *ScriptRegister::AnimatorComponent_GetCurrentClipName(UUID entity_uuid)
+    const char *ScriptRegister::BasicAnimationComponent_GetCurrentClipName(UUID entity_uuid)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
             return "";
 
         Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
-        if (!entity || !entity.HasComponent<AnimatorComponent>())
+        if (!entity || !entity.HasComponent<BasicAnimationComponent>())
             return "";
             
-        auto& animator_component = entity.GetComponent<AnimatorComponent>();
+        auto& animator_component = entity.GetComponent<BasicAnimationComponent>();
 		if (animator_component.CurrentClipIndex < 0 || 
             animator_component.CurrentClipIndex >= animator_component.AnimationClipHandles.size())
             return "";
         
         const auto& animation_clip_meta_data = Project::GetActiveProject()->GetEditorAssetManager()->GetMetadata(animator_component.AnimationClipHandles[animator_component.CurrentClipIndex]);        
         return animation_clip_meta_data.AssetName.c_str();
+    }
+
+    void ScriptRegister::AnimatorComponent_SetBool(UUID entity_uuid, Animation::StringHash param_hash, bool value)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>() || !entity.GetComponent<AnimatorComponent>().m_StateMachineInstance)
+            return;
+
+        entity.GetComponent<AnimatorComponent>().m_StateMachineInstance->SetBool(param_hash, value);
+    }
+
+    void ScriptRegister::AnimatorComponent_SetFloat(UUID entity_uuid, Animation::StringHash param_hash, float value)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>() || !entity.GetComponent<AnimatorComponent>().m_StateMachineInstance)
+            return;
+
+        entity.GetComponent<AnimatorComponent>().m_StateMachineInstance->SetFloat(param_hash, value);
+    }
+
+    void ScriptRegister::AnimatorComponent_SetUInt(UUID entity_uuid, Animation::StringHash param_hash, uint32_t value)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>() || !entity.GetComponent<AnimatorComponent>().m_StateMachineInstance)
+            return;
+
+        entity.GetComponent<AnimatorComponent>().m_StateMachineInstance->SetUInt(param_hash, value);
+    }
+
+    void ScriptRegister::AnimatorComponent_SetInt(UUID entity_uuid, Animation::StringHash param_hash, int32_t value)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>() || !entity.GetComponent<AnimatorComponent>().m_StateMachineInstance)
+            return;
+
+        entity.GetComponent<AnimatorComponent>().m_StateMachineInstance->SetInt(param_hash, value);
     }
 
 #pragma endregion

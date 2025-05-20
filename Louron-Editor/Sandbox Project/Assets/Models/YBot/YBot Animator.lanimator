@@ -1,12 +1,12 @@
-Default State: New Blend Tree State
+Default State: Locomotion
 Animation Parameters:
-  - Name: IsJumping
-    Hash: 3340040579
-    Type: Bool
-    Value: 0
   - Name: Velocity X
     Hash: 3414385514
     Type: Float
+    Value: 0
+  - Name: IsJumping
+    Hash: 3340040579
+    Type: Bool
     Value: 0
   - Name: Velocity Z
     Hash: 3380830276
@@ -20,13 +20,13 @@ Animation States:
   - Name: Jump
     Hash: 236909357
     Type: Clip
-    Asset Handle: 4294967295
-    Should Loop: false
+    Asset Handle: 2008768937
+    Should Loop: true
     Playback Speed: 1
-  - Name: New Blend Tree State
-    Hash: 873981011
+  - Name: Locomotion
+    Hash: 1989750836
     Type: BlendTree
-    Blend Tree Name: New Blend Tree State
+    Blend Tree Name: Locomotion
     Blend Tree Type: TwoDimensionalFreeForm
     Blend Param X: 3414385514
     Blend Param Y: 3380830276
@@ -82,15 +82,15 @@ Animation States:
 Animation Transitions:
   - Source Name: Entry State
     Source Hash: 24476269
-    Destination Name: New Blend Tree State
-    Destination Hash: 873981011
+    Destination Name: Locomotion
+    Destination Hash: 1989750836
     Transition Duration: 0.3
     Has Exit Time: false
     Exit Time: 0
     Conditions:
       []
-  - Source Name: New Blend Tree State
-    Source Hash: 873981011
+  - Source Name: Locomotion
+    Source Hash: 1989750836
     Destination Name: Jump
     Destination Hash: 236909357
     Transition Duration: 0.3
@@ -103,8 +103,8 @@ Animation Transitions:
         Reference Threshold: 1
   - Source Name: Jump
     Source Hash: 236909357
-    Destination Name: New Blend Tree State
-    Destination Hash: 873981011
+    Destination Name: Locomotion
+    Destination Hash: 1989750836
     Transition Duration: 1
     Has Exit Time: true
     Exit Time: 0.75
@@ -113,8 +113,8 @@ Animation Transitions:
         Parameter Hash: 3340040579
         Comparison Operation: NotEqual
         Reference Threshold: 1
-  - Source Name: New Blend Tree State
-    Source Hash: 873981011
+  - Source Name: Locomotion
+    Source Hash: 1989750836
     Destination Name: Exit State
     Destination Hash: 2055323235
     Transition Duration: 0

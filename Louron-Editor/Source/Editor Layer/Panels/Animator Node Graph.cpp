@@ -909,7 +909,7 @@ void AnimatorPanel::Draw(bool& show_window)
                 ImGui::Separator();
                 
                 const char* table_id = "##BlendMotionsTable";
-                int column_count = (blend_node.BlendType == TreeType::OneDimensional) ? 4 : 5;
+                int column_count = (blend_node.BlendType == TreeType::OneDimensional) ? 3 : 4;
                 if (ImGui::BeginTable(table_id, column_count, ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchProp))
                 {
                     // Column sizing: give "Motion" more space, others minimal
@@ -923,7 +923,6 @@ void AnimatorPanel::Draw(bool& show_window)
                         ImGui::TableSetupColumn("Pos X", ImGuiTableColumnFlags_WidthFixed, 80.0f);
                         ImGui::TableSetupColumn("Pos Y", ImGuiTableColumnFlags_WidthFixed, 80.0f);
                     }
-                    ImGui::TableSetupColumn("Loop", ImGuiTableColumnFlags_WidthFixed, 50.0f);
                     ImGui::TableSetupColumn("Speed", ImGuiTableColumnFlags_WidthFixed, 80.0f);
                     ImGui::TableHeadersRow();
                 
@@ -1041,11 +1040,8 @@ void AnimatorPanel::Draw(bool& show_window)
                 
                         auto* anim = dynamic_cast<MotionAnimation*>(motion.get());
                         if (anim)
-                        {
+                        {                
                             ImGui::TableSetColumnIndex((blend_node.BlendType == TreeType::OneDimensional) ? 2 : 3);
-                            ImGui::Checkbox(("##Loop" + std::to_string(i)).c_str(), &anim->IsLooping);
-                
-                            ImGui::TableSetColumnIndex((blend_node.BlendType == TreeType::OneDimensional) ? 3 : 4);
                             ImGui::SetNextItemWidth(-FLT_MIN);
                             ImGui::DragFloat(("##Speed" + std::to_string(i)).c_str(), &anim->PlaybackSpeed, 0.01f, 0.1f, 10.0f);
                         }

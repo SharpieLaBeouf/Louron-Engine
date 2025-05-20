@@ -6327,9 +6327,9 @@ Entities:
     CameraComponent:
       Camera:
         Projection Type: Perspective
-        FOV: 10
-        Near: -1
-        Far: 1
+        FOV: 60.000004
+        Near: 0.1
+        Far: 200
       Primary: true
       DisplayToMainViewport: true
       ClearFlag: Skybox
@@ -6911,7 +6911,7 @@ Entities:
         Bone 168:
           Bone Index: 168
           Bone Entity Reference: 261501027
-    AnimatorComponent:
+    BasicAnimationComponent:
       CurrentClipIndex: 11
       CurrentTime: 0
       PlaybackSpeed: 1

@@ -41,6 +41,7 @@ namespace Louron
 	template MeshFilterComponent&			ComponentBase::GetComponent<MeshFilterComponent>() const;
 	template MeshRendererComponent&			ComponentBase::GetComponent<MeshRendererComponent>() const;
 	template SkinnedMeshComponent&			ComponentBase::GetComponent<SkinnedMeshComponent>() const;
+	template BasicAnimationComponent&		ComponentBase::GetComponent<BasicAnimationComponent>() const;
 	template AnimatorComponent&				ComponentBase::GetComponent<AnimatorComponent>() const;
 	template LODMeshComponent&				ComponentBase::GetComponent<LODMeshComponent>() const;
 	template SkyboxComponent&				ComponentBase::GetComponent<SkyboxComponent>() const;
@@ -64,6 +65,7 @@ namespace Louron
 	template MeshFilterComponent&			ComponentBase::GetComponentInParent<MeshFilterComponent>() const;
 	template MeshRendererComponent&			ComponentBase::GetComponentInParent<MeshRendererComponent>() const;
 	template SkinnedMeshComponent&			ComponentBase::GetComponentInParent<SkinnedMeshComponent>() const;
+	template BasicAnimationComponent&		ComponentBase::GetComponentInParent<BasicAnimationComponent>() const;
 	template AnimatorComponent&				ComponentBase::GetComponentInParent<AnimatorComponent>() const;
 	template LODMeshComponent&				ComponentBase::GetComponentInParent<LODMeshComponent>() const;
 	template SkyboxComponent&				ComponentBase::GetComponentInParent<SkyboxComponent>() const;
@@ -87,6 +89,7 @@ namespace Louron
 	template MeshFilterComponent&			ComponentBase::GetComponentInChild<MeshFilterComponent>() const;
 	template MeshRendererComponent&			ComponentBase::GetComponentInChild<MeshRendererComponent>() const;
 	template SkinnedMeshComponent&			ComponentBase::GetComponentInChild<SkinnedMeshComponent>() const;
+	template BasicAnimationComponent&		ComponentBase::GetComponentInChild<BasicAnimationComponent>() const;
 	template AnimatorComponent&				ComponentBase::GetComponentInChild<AnimatorComponent>() const;
 	template LODMeshComponent&				ComponentBase::GetComponentInChild<LODMeshComponent>() const;
 	template SkyboxComponent&				ComponentBase::GetComponentInChild<SkyboxComponent>() const;
@@ -110,6 +113,7 @@ namespace Louron
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<MeshFilterComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<MeshRendererComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<SkinnedMeshComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInParents<BasicAnimationComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<AnimatorComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<LODMeshComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInParents<SkyboxComponent>() const;
@@ -133,6 +137,7 @@ namespace Louron
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<MeshFilterComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<MeshRendererComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<SkinnedMeshComponent>() const;
+	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<BasicAnimationComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<AnimatorComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<LODMeshComponent>() const;
 	template std::vector<Entity>			ComponentBase::GetComponentsInChildren<SkyboxComponent>() const;

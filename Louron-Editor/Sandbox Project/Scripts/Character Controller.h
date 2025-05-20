@@ -20,7 +20,7 @@ public:
     [[ExposedInEditor]] float rotation_speed = 90.0f;
     [[ExposedInEditor]] float rotation_smoothing = 1.0f;
 
-    AnimatorComponent animator;
+    BasicAnimationComponent animator;
 
     enum class MovementState : uint8_t
     {
@@ -40,7 +40,7 @@ public:
 
     void OnCreate() override
     {
-        animator = GetComponent<AnimatorComponent>();
+        animator = GetComponent<BasicAnimationComponent>();
     }
 
     void OnUpdate() override

@@ -10,6 +10,8 @@
 
 #include "../Scene/Entity.h"
 
+#include "../Animation/Animation Base Types.h"
+
 #include "glm/glm.hpp"
 
 namespace Louron
@@ -401,25 +403,30 @@ namespace Louron
 
 #pragma region Animator
 
-        static void AnimatorComponent_PlayAnimation_Index(UUID entity_uuid, int32_t clip_index, bool should_loop);
-        static void AnimatorComponent_PlayAnimation_Name(UUID entity_uuid, const char* clip_name, bool should_loop);
+        static void BasicAnimationComponent_PlayAnimation_Index(UUID entity_uuid, int32_t clip_index, bool should_loop);
+        static void BasicAnimationComponent_PlayAnimation_Name(UUID entity_uuid, const char* clip_name, bool should_loop);
 
-        static void AnimatorComponent_PauseAnimation(UUID entity_uuid);
-        static void AnimatorComponent_ResumeAnimation(UUID entity_uuid);
-        static void AnimatorComponent_StopAnimation(UUID entity_uuid);
+        static void BasicAnimationComponent_PauseAnimation(UUID entity_uuid);
+        static void BasicAnimationComponent_ResumeAnimation(UUID entity_uuid);
+        static void BasicAnimationComponent_StopAnimation(UUID entity_uuid);
 
-        static bool AnimatorComponent_IsPlaying(UUID entity_uuid);
-        static bool AnimatorComponent_IsLooping(UUID entity_uuid);
-        static void AnimatorComponent_SetIsLooping(UUID entity_uuid, bool should_loop);
+        static bool BasicAnimationComponent_IsPlaying(UUID entity_uuid);
+        static bool BasicAnimationComponent_IsLooping(UUID entity_uuid);
+        static void BasicAnimationComponent_SetIsLooping(UUID entity_uuid, bool should_loop);
 
-        static float AnimatorComponent_GetPlaybackSpeed(UUID entity_uuid);
-        static void AnimatorComponent_SetPlaybackSpeed(UUID entity_uuid, float playback_speed);
+        static float BasicAnimationComponent_GetPlaybackSpeed(UUID entity_uuid);
+        static void BasicAnimationComponent_SetPlaybackSpeed(UUID entity_uuid, float playback_speed);
         
-        static float AnimatorComponent_GetCurrentTimestep(UUID entity_uuid);
-        static void AnimatorComponent_SetCurrentTimestep(UUID entity_uuid, float normalised_time_step);
+        static float BasicAnimationComponent_GetCurrentTimestep(UUID entity_uuid);
+        static void BasicAnimationComponent_SetCurrentTimestep(UUID entity_uuid, float normalised_time_step);
         
-        static uint32_t AnimatorComponent_GetCurrentClipIndex(UUID entity_uuid);
-        static const char* AnimatorComponent_GetCurrentClipName(UUID entity_uuid);
+        static uint32_t BasicAnimationComponent_GetCurrentClipIndex(UUID entity_uuid);
+        static const char* BasicAnimationComponent_GetCurrentClipName(UUID entity_uuid);
+
+        static void AnimatorComponent_SetBool(UUID entity_uuid, Animation::StringHash param_hash, bool value);
+        static void AnimatorComponent_SetFloat(UUID entity_uuid, Animation::StringHash param_hash, float value);
+        static void AnimatorComponent_SetUInt(UUID entity_uuid, Animation::StringHash param_hash, uint32_t value);
+        static void AnimatorComponent_SetInt(UUID entity_uuid, Animation::StringHash param_hash, int32_t value);
 
 #pragma endregion
 

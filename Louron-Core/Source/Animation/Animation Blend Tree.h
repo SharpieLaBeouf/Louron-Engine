@@ -31,7 +31,7 @@ namespace Louron::Animation
         
         // Functional
         virtual MotionType GetType() = 0;
-        virtual void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) = 0;
+        virtual void Update(float blend_tree_normalised_time, const std::unordered_map<StringHash, AnimationParameter>& state_params) = 0;
         virtual void CleanMotion() = 0;
         virtual void EvaluatePose(Louron::AnimationPose& evaluated_pose) = 0;
         
@@ -48,6 +48,9 @@ namespace Louron::Animation
         // Use when you want to step the animation 
         // timer even if there is no contribution
         bool UpdateWhenNoContribution = false;
+
+        float Magnitude = 0.0f;
+        float Angle = 0.0f;
     };
     
     /// -------- BLEND NODE --------
@@ -83,6 +86,8 @@ namespace Louron::Animation
         std::array<StringHash, 2> BlendParam = { NULL_UUID, NULL_UUID };
 
         std::string Name = "Blend Tree Node";
+
+        float NormalisedTime = 0.0f;
     };
 
     /// -------- MOTION --------
@@ -101,7 +106,7 @@ namespace Louron::Animation
 
         // Functional
         MotionType GetType() override { return MotionType::Clip; }
-        void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) override;
+        void Update(float blend_tree_normalised_time, const std::unordered_map<StringHash, AnimationParameter>& state_params) override;
         void CleanMotion() override;
 
         void EvaluatePose(Louron::AnimationPose& evaluated_pose) override;
@@ -111,9 +116,6 @@ namespace Louron::Animation
 
         // Data
         AssetHandle AnimClipHandle = NULL_UUID;
-
-        bool IsPlaying = false;
-        bool IsLooping = false;
 
         float CurrentTime = 0.0f;
         float PlaybackSpeed = 1.0f;

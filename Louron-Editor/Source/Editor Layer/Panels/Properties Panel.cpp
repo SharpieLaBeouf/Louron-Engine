@@ -60,7 +60,12 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 					selected_entity.AddComponent<SkinnedMeshComponent>();
 			}
 
-			if (ImGui::MenuItem("Add Animator")) {
+			if (ImGui::MenuItem("Add Basic Animation Component")) {
+				if (!selected_entity.HasComponent<BasicAnimationComponent>())
+					selected_entity.AddComponent<BasicAnimationComponent>();
+			}
+
+			if (ImGui::MenuItem("Add Animator Component")) {
 				if (!selected_entity.HasComponent<AnimatorComponent>())
 					selected_entity.AddComponent<AnimatorComponent>();
 			}
@@ -1347,15 +1352,15 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 		ImGui::Separator();
 	}
 
-	if (selected_entity.HasComponent<AnimatorComponent>())
+	if (selected_entity.HasComponent<BasicAnimationComponent>())
 	{
 		ImGui::Dummy({ 0.0f, 5.0f });
-		ImGui::BeginChild("##Animator Component Child", {}, ImGuiChildFlags_AutoResizeY);
+		ImGui::BeginChild("##BasicAnimationComponent Child", {}, ImGuiChildFlags_AutoResizeY);
 
-		if (ImGui::TreeNodeEx(("Animator Component##" + selected_entity.GetName()).c_str(), tree_node_flags))
+		if (ImGui::TreeNodeEx(("Basic Animation Component##" + selected_entity.GetName()).c_str(), tree_node_flags))
 		{
 			ImGui::Indent();
-			auto& component = selected_entity.GetComponent<AnimatorComponent>();
+			auto& component = selected_entity.GetComponent<BasicAnimationComponent>();
 
 			ImVec4 text_colour = ImGui::GetStyleColorVec4(ImGuiCol_Text);
 
@@ -1405,7 +1410,7 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 					if (ImGui::Selectable(culling_modes[n], is_selected))
 					{
 						item_current = n;
-						component.CullingMode = static_cast<AnimatorComponent::AnimationCullingMode>(item_current);
+						component.CullingMode = static_cast<BasicAnimationComponent::AnimationCullingMode>(item_current);
 					}
 
 					// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -1510,6 +1515,125 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 
 
 			ImGui::Unindent();
+			ImGui::TreePop();
+		}
+
+		ImGui::EndChild();
+
+		ShowComponentContextPopup<BasicAnimationComponent>("Basic Animation Component Options", selected_entity);
+
+		ImGui::Dummy({ 0.0f, 5.0f });
+		ImGui::Separator();
+	}
+
+	if (selected_entity.HasComponent<AnimatorComponent>())
+	{
+		ImGui::Dummy({ 0.0f, 5.0f });
+		ImGui::BeginChild("##Animator Component Child", {}, ImGuiChildFlags_AutoResizeY);
+
+		if (ImGui::TreeNodeEx(("Animator Component##" + selected_entity.GetName()).c_str(), tree_node_flags))
+		{
+			ImGui::Indent();
+			auto& component = selected_entity.GetComponent<AnimatorComponent>();
+
+			std::string state_machine_name;
+			ImVec4 text_colour = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+
+			if (component.StateMachineHandle != NULL_UUID && Project::GetStaticEditorAssetManager()->IsAssetHandleValid(component.StateMachineHandle)) {
+				state_machine_name = Project::GetStaticEditorAssetManager()->GetMetadata(component.StateMachineHandle).AssetName;
+			}
+			else if (component.StateMachineHandle != NULL_UUID) {
+				state_machine_name = "Asset Handle Invalid: " + std::to_string(component.StateMachineHandle);
+				text_colour = { 1.0f, 0.35f, 0.35f, 1.0f };
+			}
+			else {
+				state_machine_name = "None";
+			}
+
+			char asset_name_buf[256];
+
+		#if defined(L_PLATFORM_WINDOWS)
+			strncpy_s(asset_name_buf, state_machine_name.c_str(), sizeof(asset_name_buf));
+		#else
+			strncpy(asset_name_buf, state_machine_name.c_str(), sizeof(asset_name_buf));
+		#endif
+
+			asset_name_buf[sizeof(asset_name_buf) - 1] = '\0'; // Ensure null-termination
+			
+			ImGui::Columns(2, "animator_component_cols", false);
+			ImGui::SetColumnWidth(-1, first_coloumn_width);
+			ImGui::Text("State Machine");
+			ImGui::NextColumn();
+
+			ImGui::PushStyleColor(ImGuiCol_Text, text_colour);
+			ImGui::PushStyleVar(ImGuiStyleVar_DisabledAlpha, 1.0f);
+
+			ImGui::BeginDisabled(true);
+			{
+				float buttonWidth = ImGui::CalcTextSize("...").x + ImGui::GetStyle().FramePadding.x * 2;
+				float availableWidth = ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x;
+				ImGui::PushItemWidth(availableWidth);
+
+				ImGui::InputText("##StateMachineName", asset_name_buf, sizeof(asset_name_buf), ImGuiInputTextFlags_ReadOnly);
+
+				ImGui::PopItemWidth();
+			}
+			ImGui::EndDisabled();
+			ImGui::PopStyleVar();
+			ImGui::PopStyleColor();
+
+			// Drag target
+			if (ImGui::BeginDragDropTarget()) 
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE")) 
+				{
+					AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+
+					if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::Mesh) 
+					{
+						component.StateMachineHandle= dropped_asset_handle;
+					}
+					else 
+					{
+						L_APP_WARN("Invalid Asset Type Dropped on AnimationStateMachine Target.");
+					}
+				}
+
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) 
+				{
+					std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+					std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+
+					if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) 
+					{
+						AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
+
+						if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::AnimationStateMachine) 
+						{
+							component.StateMachineHandle = dropped_asset_handle;
+						}
+						else 
+						{
+							L_APP_WARN("Invalid Asset Type Dropped on AnimationStateMachine Target.");
+						}
+					}
+					else 
+					{
+						L_APP_WARN("Invalid File Path Dropped on AnimationStateMachine Target.");
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+
+			ImGui::SameLine();
+			if (ImGui::Button("...")) 
+			{
+				L_APP_INFO("Lets Implement Opening an Asset Directory Window - FOR STATE MACHINES!");
+			}
+
+			ImGui::Columns(1);
+
 			ImGui::TreePop();
 		}
 
@@ -3242,7 +3366,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					case ScriptFieldType::LODMeshComponent:
 
 					case ScriptFieldType::SkinnedMeshComponent:
-					case ScriptFieldType::AnimatorComponent:
+					case ScriptFieldType::BasicAnimationComponent:
 
 					case ScriptFieldType::SkyboxComponent:
 
@@ -3975,7 +4099,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 				case ScriptFieldType::LODMeshComponent:
 
 				case ScriptFieldType::SkinnedMeshComponent:
-				case ScriptFieldType::AnimatorComponent:
+				case ScriptFieldType::BasicAnimationComponent:
 
 				case ScriptFieldType::SkyboxComponent:
 

@@ -34,7 +34,7 @@ namespace Louron::Animation
             }
             else
             {    
-                CurrentTime += ts * PlaybackSpeed;
+                CurrentTime += ts * PlaybackSpeed + animation_clip->GetTicksPerSecond();
             }
         }
     }
@@ -79,6 +79,7 @@ namespace Louron::Animation
     
     AnimationState_BlendTree::AnimationState_BlendTree(const AnimationState_BlendTree &other)
     {
+        Name = other.Name;
         AnimBlendTree.reset();
 
         if(other.AnimBlendTree)
@@ -93,6 +94,7 @@ namespace Louron::Animation
         if (this == &other)
             return *this;
         
+        Name = other.Name;
         AnimBlendTree.reset();
 
         if(other.AnimBlendTree)

@@ -853,18 +853,39 @@ namespace Louron
 
 		};
 
+		class AnimatorComponent : public Component
+		{
+
+		public:
+
+			static BackEndAPI::FieldType GetType() { return BackEndAPI::FieldType::AnimatorComponent; }
+
+			void SetBool(const Animation::StringHash& param_hash, bool value) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint32_t, bool), AnimatorComponent_SetBool, m_EntityID, param_hash, value); }
+			void SetBool(const std::string& param_name, bool value) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint32_t, bool), AnimatorComponent_SetBool, m_EntityID, Utils::fnv1a_hash(param_name), value); }
+			
+			void SetFloat(const Animation::StringHash& param_hash, float value) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint32_t, float), AnimatorComponent_SetFloat, m_EntityID, param_hash, value); }
+			void SetFloat(const std::string& param_name, float value) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint32_t, float), AnimatorComponent_SetFloat, m_EntityID, Utils::fnv1a_hash(param_name), value); }
+			
+			void SetUInt(const Animation::StringHash& param_hash, uint32_t value) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint32_t, uint32_t), AnimatorComponent_SetUInt, m_EntityID, param_hash, value); }
+			void SetUInt(const std::string& param_name, uint32_t value) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint32_t, uint32_t), AnimatorComponent_SetUInt, m_EntityID, Utils::fnv1a_hash(param_name), value); }
+			
+			void SetInt(const Animation::StringHash& param_hash, int32_t value) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint32_t, int32_t), AnimatorComponent_SetBool, m_EntityID, param_hash, value); }
+			void SetInt(const std::string& param_name, int32_t value) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint32_t, int32_t), AnimatorComponent_SetBool, m_EntityID, Utils::fnv1a_hash(param_name), value); }
+
+		};
+
 		/**
 		* @brief Component to access animator information.
 		*
 		* This allows the user to access data associated with an animator component.
 		*/
-		class AnimatorComponent : public Component
+		class BasicAnimationComponent : public Component
 		{
 			// Leaving this for now as I need to rethink the animation system
 
 		public:
 
-			static BackEndAPI::FieldType GetType() { return BackEndAPI::FieldType::AnimatorComponent; }
+			static BackEndAPI::FieldType GetType() { return BackEndAPI::FieldType::BasicAnimationComponent; }
 
 			/**
 			 * @brief Play an animation.
@@ -876,7 +897,7 @@ namespace Louron
 			 * animator_component.PlayAnimation(0, false); // This will play animation at index 0 on the animator component animations.
 			 * @endcode
 			 */
-			void PlayAnimation(int clip_index, bool should_loop = true) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, int32_t, bool), AnimatorComponent_PlayAnimation_Index, m_EntityID, clip_index, should_loop); }
+			void PlayAnimation(int clip_index, bool should_loop = true) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, int32_t, bool), BasicAnimationComponent_PlayAnimation_Index, m_EntityID, clip_index, should_loop); }
 			
 			/**
 			 * @brief Play an animation.
@@ -888,7 +909,7 @@ namespace Louron
 			 * animator_component.PlayAnimation("Taunt_Dance_01", false); // This will play the "Taunt_Dance_01" animation on animator component if exists.
 			 * @endcode
 			 */
-			void PlayAnimation(const char* clip_name, bool should_loop = true) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const char*, bool), AnimatorComponent_PlayAnimation_Name, m_EntityID, clip_name, should_loop); }
+			void PlayAnimation(const char* clip_name, bool should_loop = true) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const char*, bool), BasicAnimationComponent_PlayAnimation_Name, m_EntityID, clip_name, should_loop); }
 			
 			/**
 			 * @brief Pause any currently running animations.
@@ -900,7 +921,7 @@ namespace Louron
 			 * }
 			 * @endcode
 			 */
-			void PauseAnimation() const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t), AnimatorComponent_PauseAnimation, m_EntityID); }
+			void PauseAnimation() const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t), BasicAnimationComponent_PauseAnimation, m_EntityID); }
 			
 			/**
 			 * @brief Resume animator component.
@@ -914,40 +935,40 @@ namespace Louron
 			 * }
 			 * @endcode
 			 */
-			void ResumeAnimation() const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t), AnimatorComponent_ResumeAnimation, m_EntityID); }
+			void ResumeAnimation() const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t), BasicAnimationComponent_ResumeAnimation, m_EntityID); }
 			
 			/**
 			 * @brief Stop any currently running animation, and reset the current timestep to reset the animation.
 			 */
-			void StopAnimation() const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t), AnimatorComponent_StopAnimation, m_EntityID); }
+			void StopAnimation() const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t), BasicAnimationComponent_StopAnimation, m_EntityID); }
 
 			/**
 			 * @brief Checks if the animator is currently playing an animation.
 			 * 
 			 * @return True if playing, false if not. 
 			 */
-			bool IsPlaying() const { return ENGINE_SAFE_CALL_RET(bool, bool(*)(uint32_t), AnimatorComponent_IsPlaying, m_EntityID); }
+			bool IsPlaying() const { return ENGINE_SAFE_CALL_RET(bool, bool(*)(uint32_t), BasicAnimationComponent_IsPlaying, m_EntityID); }
 			
 			/**
 			 * @brief Checks if the animator is currently looping an animation.
 			 * 
 			 * @return True if looping, false if not. 
 			 */
-			bool IsLooping() const { return ENGINE_SAFE_CALL_RET(bool, bool(*)(uint32_t), AnimatorComponent_IsLooping, m_EntityID); }
+			bool IsLooping() const { return ENGINE_SAFE_CALL_RET(bool, bool(*)(uint32_t), BasicAnimationComponent_IsLooping, m_EntityID); }
 			
 			/**
 			 * @brief Checks if the animator is currently looping an animation.
 			 * 
 			 * @param should_loop Should the animation loop indefinetly
 			 */
-			void SetIsLooping(bool should_loop) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, bool), AnimatorComponent_SetIsLooping, m_EntityID, should_loop); }
+			void SetIsLooping(bool should_loop) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, bool), BasicAnimationComponent_SetIsLooping, m_EntityID, should_loop); }
 
 			/**
 			 * @brief Gets the playback speed of the Animator Component.
 			 * 
 			 * @return The playback speed.
 			 */
-			float GetPlaybackSpeed() const { return ENGINE_SAFE_CALL_RET(float, float(*)(uint32_t), AnimatorComponent_GetPlaybackSpeed, m_EntityID); }
+			float GetPlaybackSpeed() const { return ENGINE_SAFE_CALL_RET(float, float(*)(uint32_t), BasicAnimationComponent_GetPlaybackSpeed, m_EntityID); }
 			
 			/**
 			 * @brief Sets the playback speed of the Animator Component.
@@ -961,7 +982,7 @@ namespace Louron
 			 * }
 			 * @endcode
 			 */
-			void SetPlaybackSpeed(float playback_speed) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, float), AnimatorComponent_SetPlaybackSpeed, m_EntityID, playback_speed); }
+			void SetPlaybackSpeed(float playback_speed) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, float), BasicAnimationComponent_SetPlaybackSpeed, m_EntityID, playback_speed); }
 
 			/**
 			 * @brief Gets the current normalised time step of the animation clip.
@@ -970,7 +991,7 @@ namespace Louron
 			 * 
 			 * @return The normalised timestep of the animation.
 			 */
-			float GetCurrentTimestep() const { return ENGINE_SAFE_CALL_RET(float, float(*)(uint32_t), AnimatorComponent_GetCurrentTimestep, m_EntityID); }
+			float GetCurrentTimestep() const { return ENGINE_SAFE_CALL_RET(float, float(*)(uint32_t), BasicAnimationComponent_GetCurrentTimestep, m_EntityID); }
 			
 			/**
 			 * @brief Sets the current normalised time step of the animation clip.
@@ -979,14 +1000,14 @@ namespace Louron
 			 * 
 			 * @param normalised_time_step The timestep you wish to set the animation to
 			 */
-			void SetCurrentTimestep(float normalised_time_step) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, float), AnimatorComponent_SetCurrentTimestep, m_EntityID, normalised_time_step); }
+			void SetCurrentTimestep(float normalised_time_step) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, float), BasicAnimationComponent_SetCurrentTimestep, m_EntityID, normalised_time_step); }
 
 			/**
 			 * @brief Gets the index of the current playing animation.
 			 * 
 			 * @return The index of the current playing animation or -1 if no animation playing.
 			 */
-			uint32_t GetCurrentClipIndex() const { return ENGINE_SAFE_CALL_RET(uint32_t, uint32_t(*)(uint32_t), AnimatorComponent_GetCurrentClipIndex, m_EntityID); }
+			uint32_t GetCurrentClipIndex() const { return ENGINE_SAFE_CALL_RET(uint32_t, uint32_t(*)(uint32_t), BasicAnimationComponent_GetCurrentClipIndex, m_EntityID); }
 			
 			/**
 			 * @brief Gets the name of the current playing animation.
@@ -994,7 +1015,7 @@ namespace Louron
 			 * @return The name of the current playing animation or "" if no animation playing.
 			 */
 			std::string GetCurrentClipName() const {
-				return std::string(ENGINE_SAFE_CALL_RET_PTR(const char*, const char*(*)(uint32_t), AnimatorComponent_GetCurrentClipName, m_EntityID)); 
+				return std::string(ENGINE_SAFE_CALL_RET_PTR(const char*, const char*(*)(uint32_t), BasicAnimationComponent_GetCurrentClipName, m_EntityID)); 
 			}
 		};
 

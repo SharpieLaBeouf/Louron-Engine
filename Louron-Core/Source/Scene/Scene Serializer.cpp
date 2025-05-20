@@ -171,6 +171,10 @@ namespace Louron {
 			entity.GetComponent<SkinnedMeshComponent>().Serialize(out);
 		}
 
+		if (entity.HasComponent<BasicAnimationComponent>()) {
+			entity.GetComponent<BasicAnimationComponent>().Serialize(out);
+		}
+
 		if (entity.HasComponent<AnimatorComponent>()) {
 			entity.GetComponent<AnimatorComponent>().Serialize(out);
 		}
@@ -370,12 +374,22 @@ namespace Louron {
 
 					}
 
+					// Basic Animation Component
+					auto basicAnimationComponent = entity["BasicAnimationComponent"];
+					if (basicAnimationComponent) {
+
+						auto& entityBasicAnimationComponent = deserializedEntity.AddComponent<BasicAnimationComponent>();
+
+						if (!entityBasicAnimationComponent.Deserialize(basicAnimationComponent))
+							L_CORE_WARN("Deserialisation of Basic Animation Component Not Complete.");
+					}
+
 					// Animator Component
 					auto animatorComponent = entity["AnimatorComponent"];
 					if (animatorComponent) {
-
+			
 						auto& entityAnimatorComponent = deserializedEntity.AddComponent<AnimatorComponent>();
-
+			
 						if (!entityAnimatorComponent.Deserialize(animatorComponent))
 							L_CORE_WARN("Deserialisation of Animator Component Not Complete.");
 					}

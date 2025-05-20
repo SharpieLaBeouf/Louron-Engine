@@ -5,6 +5,10 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include "../Core/Engine.h"
+
+#include <numeric>
+
 namespace Louron::Animation
 {
 
@@ -26,6 +30,15 @@ namespace Louron::Animation
 
     BlendNode::BlendNode(const BlendNode& other)
     {
+		BlendType = other.BlendType;
+
+		BlendState = other.BlendState;
+		BlendParam = other.BlendParam;
+
+		Name = other.Name;
+
+		NormalisedTime = other.NormalisedTime;
+
         ChildNode.clear();
         for (const auto& motion : other.ChildNode)
         {
@@ -53,6 +66,15 @@ namespace Louron::Animation
         if (this == &other)
             return *this;
 
+		BlendType = other.BlendType;
+
+		BlendState = other.BlendState;
+		BlendParam = other.BlendParam;
+
+		NormalisedTime = other.NormalisedTime;
+
+		Name = other.Name;
+
 		ChildNode.clear();
 		for (const auto& motion : other.ChildNode)
 		{
@@ -79,139 +101,141 @@ namespace Louron::Animation
 
 	void BlendNode::Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params)
 	{
-		// TODO: Find the weight to be stored in ChildNode->Second based on the params
-
-		// 1. Update Blend State's
-		if(state_params.contains(BlendParam[0]))
-		{
+		// 1. Update Blend Parameters
+		if (state_params.contains(BlendParam[0]))
 			BlendState.x = state_params.at(BlendParam[0]).Value;
-		}
 		else if (BlendParam[0] != NULL_UUID)
-		{
 			L_CORE_WARN("Animation State Machine: Missing State Param (1:{}) for BlendTree.", BlendParam[0]);
-		}
-		
+	
 		if (BlendType == TreeType::TwoDimensionalFreeForm)
 		{
-			if(state_params.contains(BlendParam[1]))
-			{
+			if (state_params.contains(BlendParam[1]))
 				BlendState.y = state_params.at(BlendParam[1]).Value;
-			}
 			else if (BlendParam[1] != NULL_UUID)
-			{
 				L_CORE_WARN("Animation State Machine: Missing State Param (2:{}) for BlendTree.", BlendParam[1]);
-			}
 		}
-
-		// 2. Calculate Blend Contribution
+	
+		// 2. Calculate Blend Contributions
 		for (auto& motion : ChildNode)
 			motion->FinalWeight = 0.0f;
-		
+	
 		constexpr float constant_epsilon = 0.0001f;
-
-		switch(BlendType)
+	
+		switch (BlendType)
 		{
-			case TreeType::OneDimensional:
-			{
-				// Find two nearest motions by BlendState.x
-				MotionBase* lower = nullptr;
-				MotionBase* upper = nullptr;
-			
-				float lower_val = -std::numeric_limits<float>::infinity();
-				float upper_val = std::numeric_limits<float>::infinity();
-			
+			case TreeType::TwoDimensionalFreeForm:
+			{	
+				float blend_mag = glm::length(BlendState);
+				glm::vec2 blend_dir = (blend_mag > constant_epsilon) ? glm::normalize(BlendState) : glm::vec2(0.0f);
+				float total_weight = 0.0f;
+	
 				for (auto& motion : ChildNode)
 				{
-					float x = motion->BlendPosition.x;
-			
-					if (x <= BlendState.x && x > lower_val)
+					if (!motion) continue;
+	
+					float motion_mag = motion->Magnitude;
+	
+					float angle_weight = 1.0f;
+					float mag_weight = 1.0f;
+	
+					if (motion_mag < constant_epsilon)
 					{
-						lower = motion.get();
-						lower_val = x;
-					}
-			
-					if (x >= BlendState.x && x < upper_val)
-					{
-						upper = motion.get();
-						upper_val = x;
-					}
-				}
-			
-				if (lower && upper && lower != upper)
-				{
-					float range = upper_val - lower_val;
-					if (range > constant_epsilon)
-					{
-						float t = (BlendState.x - lower_val) / range;
-						lower->FinalWeight = 1.0f - t;
-						upper->FinalWeight = t;
+						// Idle motion at origin
+						mag_weight = glm::clamp(1.0f - blend_mag, 0.0f, 1.0f);
+						mag_weight *= mag_weight * mag_weight; // cubic falloff
 					}
 					else
 					{
-						lower->FinalWeight = 0.5f;
-						upper->FinalWeight = 0.5f;
+						glm::vec2 motion_dir = glm::normalize(motion->BlendPosition);
+						angle_weight = glm::clamp(glm::dot(blend_dir, motion_dir), 0.0f, 1.0f);
+						angle_weight *= angle_weight;
+	
+						float mag_diff = std::abs(blend_mag - motion_mag);
+						mag_weight = glm::clamp(1.0f - mag_diff, 0.0f, 1.0f);
+						mag_weight *= mag_weight * mag_weight; // cubic falloff
 					}
-				}
-				else if (lower)
-				{
-					lower->FinalWeight = 1.0f;
-				}
-				else if (upper)
-				{
-					upper->FinalWeight = 1.0f;
-				}
-
-				break;
-			}
-			case TreeType::TwoDimensionalFreeForm:
-			{
-				float total_weight = 0.0f;
-			
-				for (auto& motion : ChildNode)
-				{
-					float distance = glm::distance(BlendState, motion->BlendPosition);
-					float weight = 1.0f / (distance + constant_epsilon); // Ensure No Division by Zero
+	
+					float weight = angle_weight * mag_weight;
 					motion->FinalWeight = weight;
 					total_weight += weight;
 				}
-			
-				// Normalize
-				if (total_weight > 0.0f)
+	
+				// Normalize weights
+				if (total_weight > constant_epsilon)
 				{
 					for (auto& motion : ChildNode)
-					{
 						motion->FinalWeight /= total_weight;
+				}
+				else
+				{
+					// Fallback to Idle (origin motion)
+					for (auto& motion : ChildNode)
+					{
+						if (motion->Magnitude < constant_epsilon)
+						{
+							motion->FinalWeight = 1.0f;
+							break;
+						}
 					}
 				}
-
+	
 				break;
 			}
 		}
-		
+	
 		// 3. Step Animation Timers
 		for (auto it = ChildNode.begin(); it != ChildNode.end(); )
 		{
 			MotionBase* motion = it->get();
-		
 			if (!motion)
 			{
 				it = ChildNode.erase(it);
 				L_CORE_ERROR("Animation State Machine: Child Node Is Null!");
 				continue;
 			}
-		
-			// Only update if contributing
-			if (motion->FinalWeight > constant_epsilon || motion->UpdateWhenNoContribution)
-			{
+	
+			if (motion->GetType() == MotionType::Clip)
+				motion->Update(NormalisedTime, state_params);
+			else if (motion->GetType() == MotionType::BlendTree)
 				motion->Update(ts, state_params);
-			}
-		
+	
 			++it;
 		}
-
-		// L_CORE_TRACE("BlendTree BlendState: ({}, {})", BlendState.x, BlendState.y);
-		// for (const auto& motion : ChildNode)
-		// 	L_CORE_TRACE("  Motion Blend: ({}, {}), FinalWeight: {}", motion->BlendPosition.x, motion->BlendPosition.y, motion->FinalWeight);
+	
+		// 4. BlendTree Duration & Time Step	
+		float weighted_duration = 0.0f;
+		float total_weight = 0.0f;
+	
+		for (auto& motion : ChildNode)
+		{
+			if (!motion || motion->FinalWeight < 0.0001f)
+				continue;
+	
+			float duration_seconds = 1.0f;
+	
+			if (motion->GetType() == MotionType::Clip)
+			{
+				auto* clip_motion = static_cast<MotionAnimation*>(motion.get());
+				auto clip = AssetManager::GetAsset<AnimationClip>(clip_motion->AnimClipHandle);
+				if (clip && clip->GetTicksPerSecond() > 0)
+					duration_seconds = clip->GetDuration() / static_cast<float>(clip->GetTicksPerSecond());
+			}
+			else if (motion->GetType() == MotionType::BlendTree)
+			{
+				duration_seconds = 1.0f; // optional: support nested duration
+			}
+	
+			weighted_duration += motion->FinalWeight * duration_seconds;
+			total_weight += motion->FinalWeight;
+		}
+	
+		if (total_weight > 0.0f)
+			weighted_duration /= total_weight;
+		else
+			weighted_duration = 1.0f;
+	
+		float step = ts / weighted_duration;
+		NormalisedTime = glm::mod(NormalisedTime + step, 1.0f);
 	}
 
     void BlendNode::CleanBlendNode()
@@ -245,25 +269,43 @@ namespace Louron::Animation
 	
 			motion->EvaluatePose(child_poses[i]);
 		}
-	
-		// Blend child poses into out_pose
-		for (size_t i = 0; i < ChildNode.size(); ++i)
-		{
-			auto& motion = ChildNode[i];
-			if(!motion) 
-				continue;
+		
+		std::vector<size_t> sorted_indices(ChildNode.size());
+		std::iota(sorted_indices.begin(), sorted_indices.end(), 0);
+		
+		std::sort(sorted_indices.begin(), sorted_indices.end(),
+			[&](size_t a, size_t b)
+			{
+				return (ChildNode[a] && ChildNode[b]) ?
+					(ChildNode[a]->FinalWeight > ChildNode[b]->FinalWeight) : false;
+			});
 
-			float weight = motion ? motion->FinalWeight : 0.0f;
+		// Blend child poses into out_pose
+		for (size_t index : sorted_indices)
+		{
+			auto& motion = ChildNode[index];
+			if (!motion) continue;
+		
+			float weight = motion->FinalWeight;
 			if (weight <= constant_epsilon && !motion->UpdateWhenNoContribution)
 				continue;
-	
-			for (const auto& [bone_name, transform] : child_poses[i].Pose)
+		
+			for (auto& [bone, xf] : child_poses[index].Pose)
 			{
-				auto& final_transform = evaluated_pose.Pose[bone_name];
-	
-				final_transform.Position   	+= transform.Position * weight;
-				final_transform.Orientation  = glm::slerp(final_transform.Orientation, transform.Orientation, weight);
-				final_transform.Scale      	+= transform.Scale * weight;
+				if (evaluated_pose.Pose.contains(bone))
+				{
+					auto& out = evaluated_pose.Pose[bone];
+					out.Position += xf.Position * weight;
+					out.Scale = glm::mix(out.Scale, xf.Scale, weight);
+					out.Orientation = glm::slerp(out.Orientation, xf.Orientation, weight);
+				}
+				else
+				{
+					auto& out = evaluated_pose.Pose[bone];
+					out.Position = xf.Position * weight;
+					out.Scale = xf.Scale;
+					out.Orientation = xf.Orientation;
+				}
 			}
 		}
 	}
@@ -329,8 +371,16 @@ namespace Louron::Animation
 					}
 				}
 			}
+
+			for (auto& motion : ChildNode)
+			{
+				if(!motion)
+					continue;
+				
+				motion->Magnitude = glm::length(motion->BlendPosition);
+				motion->Angle = std::atan2f(motion->BlendPosition.y, motion->BlendPosition.x);
+			}
 		}
-		
 	}
 
     MotionBase *BlendNode::AddMotion(MotionType type)
@@ -356,46 +406,32 @@ namespace Louron::Animation
 
 #pragma region Motion Animation
 
-    void MotionAnimation::Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params)
+    void MotionAnimation::Update(float blend_tree_normalised_time, const std::unordered_map<StringHash, AnimationParameter>& state_params)
 	{
 		auto animation_clip = AssetManager::GetAsset<AnimationClip>(AnimClipHandle);
 		if (!animation_clip)
 			return;
-
-		if (IsPlaying)
-		{
-			if (CurrentTime >= animation_clip->GetDuration())
-			{
-				if (IsLooping)
-				{
-					CurrentTime = 0.0f;
-				}
-				else
-				{
-					IsPlaying = false;
-					CurrentTime = 0.0f;
-				}
-			}
-			else
-			{    
-				CurrentTime += ts * PlaybackSpeed;
-			}
-		}            
+	
+		// Clamp normalized time to [0,1]
+		blend_tree_normalised_time = glm::clamp(blend_tree_normalised_time, 0.0f, 1.0f);
+	
+		// Sample time = normalized time * animation duration
+		float scaled_time = fmod(blend_tree_normalised_time * PlaybackSpeed, 1.0f);
+		CurrentTime = scaled_time * animation_clip->GetDuration();
 	}
 
     void MotionAnimation::CleanMotion()
 	{
-		IsPlaying = false;
 		CurrentTime = 0.0f;
 	}
 
 	void MotionAnimation::EvaluatePose(Louron::AnimationPose& evaluated_pose)
 	{
-		auto clip = AssetManager::GetAsset<AnimationClip>(AnimClipHandle);
-		if (!clip || !IsPlaying)
+		auto animation_clip = AssetManager::GetAsset<AnimationClip>(AnimClipHandle);
+		if (!animation_clip)
 			return;
 	
-		clip->SamplePose(CurrentTime, evaluated_pose);
+		animation_clip->SamplePose(CurrentTime, evaluated_pose);
 	}
 
 	void MotionAnimation::Serialise(YAML::Emitter& out)
@@ -407,7 +443,6 @@ namespace Louron::Animation
 			out << YAML::Key << "Motion Blend Position Y" << YAML::Value << BlendPosition.y;
 
 			out << YAML::Key << "Asset Handle" << YAML::Value << AnimClipHandle;
-			out << YAML::Key << "Should Loop" << YAML::Value << IsLooping;
 			out << YAML::Key << "Playback Speed" << YAML::Value << PlaybackSpeed;
 		}
 		out << YAML::EndMap;
@@ -423,9 +458,6 @@ namespace Louron::Animation
 
 		if (data["Asset Handle"])
 			AnimClipHandle = data["Asset Handle"].as<uint32_t>();
-
-		if (data["Should Loop"])
-			IsLooping = data["Should Loop"].as<bool>();
 
 		if (data["Playback Speed"])
 			PlaybackSpeed = data["Playback Speed"].as<float>();

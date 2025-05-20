@@ -5,6 +5,8 @@
 
 #include "../../Asset/Asset.h"
 
+#include "../../Animation/Animation State Machine.h"
+
 // C++ Standard Library Headers
 #include <vector>
 #include <unordered_map>
@@ -21,16 +23,65 @@ namespace Louron
 
 	struct AnimatorComponent : public ComponentBase
 	{
+		
+	public:
 		// --- Constructors & Assignment Operators ---
 
 		AnimatorComponent() = default;
-		AnimatorComponent(const AnimatorComponent& other) = default;
+		AnimatorComponent(const AnimatorComponent& other);
 		AnimatorComponent(AnimatorComponent&& other) noexcept = default;
 
-		AnimatorComponent& operator=(const AnimatorComponent& other) = default;
+		AnimatorComponent& operator=(const AnimatorComponent& other);
 		AnimatorComponent& operator=(AnimatorComponent&& other) noexcept = default;
 
 		// --- AnimatorComponent Functions ---
+
+		void Update();
+		
+		void Serialize(YAML::Emitter& out);
+		bool Deserialize(const YAML::Node data);
+
+		// --- Data of AnimatorComponent Struct ---
+
+		AssetHandle StateMachineHandle = NULL_UUID;
+
+		enum class AnimationCullingMode : uint8_t
+		{
+			AlwaysAnimate = 0,					// Animations are procesed 
+			NoAnimateOffScreenContinueTimer,	// No Animations are processed - animation timer is continued
+			NoAnimateOffScreenStopTimer			// No Animations are processed - animation timer is stopped
+		};
+
+		AnimationCullingMode CullingMode = AnimationCullingMode::AlwaysAnimate;
+
+	private:
+
+		// --- Data of AnimatorComponent Struct ---
+
+		std::unique_ptr<Animation::StateMachine> m_StateMachineInstance = nullptr;
+
+		// --- Helper Functions ---
+
+		void Init();
+		void CleanUp();
+		
+		friend class Scene;
+		friend class ScriptRegister;
+
+	};
+
+	struct BasicAnimationComponent : public ComponentBase
+	{
+		// --- Constructors & Assignment Operators ---
+
+		BasicAnimationComponent() = default;
+		BasicAnimationComponent(const BasicAnimationComponent& other) = default;
+		BasicAnimationComponent(BasicAnimationComponent&& other) noexcept = default;
+
+		BasicAnimationComponent& operator=(const BasicAnimationComponent& other) = default;
+		BasicAnimationComponent& operator=(BasicAnimationComponent&& other) noexcept = default;
+
+		// --- BasicAnimationComponent Functions ---
 
 		void Play(int clip_index, bool should_loop = true);
 		void Play(const char* clip_name, bool should_loop = true);
@@ -55,7 +106,7 @@ namespace Louron
 		/// </summary>
 		void StepAnimationTimer(const std::shared_ptr<AnimationClip>& animation_clip);
 
-		// --- Data of SkinnedMeshComponent Struct ---
+		// --- Data of BasicAnimationComponent Struct ---
 
 		/// <summary>
 		/// A Vector of References to Animation Assets

@@ -13,6 +13,9 @@ namespace Louron::Animation
         States.clear();
         Transitions.clear();
 
+        AnimationParameters.clear();
+        AnimationParameters = other.AnimationParameters;
+
         for(const auto& [string_hash, state] : other.States)
         {
             if (!state || string_hash == NULL_UUID)
@@ -32,6 +35,9 @@ namespace Louron::Animation
         DefaultState = other.DefaultState;
         CurrentState = other.CurrentState;
         PreviousState = NULL_UUID;
+
+        TargetState = other.TargetState;
+        TransitionCompletion = other.TransitionCompletion;
     }
 
     StateMachine &StateMachine::operator=(const StateMachine &other)
@@ -42,6 +48,9 @@ namespace Louron::Animation
         States.clear();
         Transitions.clear();
 
+        AnimationParameters.clear();
+        AnimationParameters = other.AnimationParameters;
+
         for(const auto& [string_hash, state] : other.States)
         {
             if (!state || string_hash == NULL_UUID)
@@ -61,6 +70,9 @@ namespace Louron::Animation
         DefaultState = other.DefaultState;
         CurrentState = other.CurrentState;
         PreviousState = NULL_UUID;
+
+        TargetState = other.TargetState;
+        TransitionCompletion = other.TransitionCompletion;
 
         return *this;
     }
