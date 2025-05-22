@@ -112,6 +112,16 @@ namespace Louron
         register_function("TransformComponent_SetRotation", reinterpret_cast<void*>(&TransformComponent_SetRotation));
         register_function("TransformComponent_GetScale", reinterpret_cast<void*>(&TransformComponent_GetScale));
         register_function("TransformComponent_SetScale", reinterpret_cast<void*>(&TransformComponent_SetScale));
+
+        register_function("TransformComponent_GetGlobalTransform",  reinterpret_cast<void*>(&TransformComponent_GetGlobalTransform));
+        register_function("TransformComponent_SetGlobalTransform",  reinterpret_cast<void*>(&TransformComponent_SetGlobalTransform));
+        register_function("TransformComponent_GetGlobalPosition",   reinterpret_cast<void*>(&TransformComponent_GetGlobalPosition));
+        register_function("TransformComponent_SetGlobalPosition",   reinterpret_cast<void*>(&TransformComponent_SetGlobalPosition));
+        register_function("TransformComponent_GetGlobalRotation",   reinterpret_cast<void*>(&TransformComponent_GetGlobalRotation));
+        register_function("TransformComponent_SetGlobalRotation",   reinterpret_cast<void*>(&TransformComponent_SetGlobalRotation));
+        register_function("TransformComponent_GetGlobalScale",      reinterpret_cast<void*>(&TransformComponent_GetGlobalScale));
+        register_function("TransformComponent_SetGlobalScale",      reinterpret_cast<void*>(&TransformComponent_SetGlobalScale));
+
         register_function("TransformComponent_GetFront", reinterpret_cast<void*>(&TransformComponent_GetFront));
         register_function("TransformComponent_SetFront", reinterpret_cast<void*>(&TransformComponent_SetFront));
         register_function("TransformComponent_GetUp", reinterpret_cast<void*>(&TransformComponent_GetUp));
@@ -378,6 +388,7 @@ namespace Louron
         register_function("AnimatorComponent_SetFloat", reinterpret_cast<void*>(&AnimatorComponent_SetFloat));
         register_function("AnimatorComponent_SetUInt", reinterpret_cast<void*>(&AnimatorComponent_SetUInt));
         register_function("AnimatorComponent_SetInt", reinterpret_cast<void*>(&AnimatorComponent_SetInt));
+        register_function("AnimatorComponent_ResetMachine", reinterpret_cast<void*>(&AnimatorComponent_ResetMachine));
 
 #pragma endregion
 
@@ -1000,6 +1011,39 @@ namespace Louron
         transform.SetScale(value->scale);
     }
 
+    ScriptRegister::_Transform ScriptRegister::TransformComponent_GetGlobalTransform(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return {};
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity)
+            return {};
+
+        auto& transform = entity.GetTransform();
+        return { transform.GetGlobalPosition(), transform.GetGlobalRotation(), transform.GetGlobalScale() };
+    }
+
+    void ScriptRegister::TransformComponent_SetGlobalTransform(UUID entity_uuid, const _Transform *value)
+    {
+        if(!value)
+            return;
+
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity)
+            return;
+
+        auto& transform = entity.GetTransform();
+        transform.SetGlobalPosition(value->position);
+        transform.SetGlobalRotation(value->rotation);
+        transform.SetGlobalScale(value->scale);
+    }
+
     glm::vec3 ScriptRegister::TransformComponent_GetPosition(UUID entity_uuid) 
     {
         auto scene_ref = Project::GetActiveScene();
@@ -1027,6 +1071,35 @@ namespace Louron
             return;
 
         entity.GetTransform().SetPosition(*value);
+    }
+
+    glm::vec3 ScriptRegister::TransformComponent_GetGlobalPosition(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return {};
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity)
+            return {};
+
+        return entity.GetTransform().GetGlobalPosition();
+    }
+
+    void ScriptRegister::TransformComponent_SetGlobalPosition(UUID entity_uuid, const glm::vec3 *value)
+    {
+        if(!value)
+            return;
+
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity)
+            return;
+
+        entity.GetTransform().SetGlobalPosition(*value);
     }
 
     glm::vec3 ScriptRegister::TransformComponent_GetRotation(UUID entity_uuid)
@@ -1058,6 +1131,35 @@ namespace Louron
         entity.GetTransform().SetRotation(*value);
     }
 
+    glm::vec3 ScriptRegister::TransformComponent_GetGlobalRotation(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return {};
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity)
+            return {};
+
+        return entity.GetTransform().GetGlobalRotation();
+    }
+
+    void ScriptRegister::TransformComponent_SetGlobalRotation(UUID entity_uuid, const glm::vec3 *value)
+    {
+        if(!value)
+            return;
+
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity)
+            return;
+
+        entity.GetTransform().SetGlobalRotation(*value);
+    }
+
     glm::vec3 ScriptRegister::TransformComponent_GetScale(UUID entity_uuid)
     {
         auto scene_ref = Project::GetActiveScene();
@@ -1085,6 +1187,35 @@ namespace Louron
             return;
 
         entity.GetTransform().SetScale(*value);
+    }
+
+    glm::vec3 ScriptRegister::TransformComponent_GetGlobalScale(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return { 1.0f, 1.0f, 1.0f };
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity)
+            return { 1.0f, 1.0f, 1.0f };
+
+        return entity.GetTransform().GetGlobalScale();
+    }
+
+    void ScriptRegister::TransformComponent_SetGlobalScale(UUID entity_uuid, const glm::vec3 *value)
+    {
+        if(!value)
+            return;
+
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity)
+            return;
+
+        entity.GetTransform().SetGlobalScale(*value);
     }
 
     glm::vec3 ScriptRegister::TransformComponent_GetFront(UUID entity_uuid)
@@ -2078,7 +2209,11 @@ namespace Louron
         if (!entity || !entity.HasComponent<RigidbodyComponent>())
             return;
 
-        entity.GetComponent<RigidbodyComponent>().ApplyForce({force->x, force->y, force->z}, static_cast<physx::PxForceMode::Enum>(forceMode));
+        glm::vec3 force_copy = *force;
+        Engine::Get().SubmitToMainThread([entity, force_copy, forceMode]() -> void
+        {
+            entity.GetComponent<RigidbodyComponent>().ApplyForce({force_copy.x, force_copy.y, force_copy.z}, static_cast<physx::PxForceMode::Enum>(forceMode));
+        });
     }
 
     void ScriptRegister::RigidbodyComponent_ApplyTorque(UUID entity_uuid, const glm::vec3* torque)
@@ -2094,7 +2229,11 @@ namespace Louron
         if (!entity || !entity.HasComponent<RigidbodyComponent>())
             return;
 
-        entity.GetComponent<RigidbodyComponent>().ApplyTorque(*torque);
+        glm::vec3 torque_copy = *torque;
+        Engine::Get().SubmitToMainThread([entity, torque_copy]() -> void
+        {
+            entity.GetComponent<RigidbodyComponent>().ApplyTorque(torque_copy);
+        });
     }
 
 #pragma endregion
@@ -2585,6 +2724,19 @@ namespace Louron
             return;
 
         entity.GetComponent<AnimatorComponent>().m_StateMachineInstance->SetInt(param_hash, value);
+    }
+
+    void ScriptRegister::AnimatorComponent_ResetMachine(UUID entity_uuid)
+    {
+        auto scene_ref = Project::GetActiveScene();
+        if (!scene_ref)
+            return;
+
+        Entity entity = scene_ref->FindEntityByUUID(entity_uuid);
+        if (!entity || !entity.HasComponent<AnimatorComponent>() || !entity.GetComponent<AnimatorComponent>().m_StateMachineInstance)
+            return;
+
+        entity.GetComponent<AnimatorComponent>().m_StateMachineInstance->ResetMachine();
     }
 
 #pragma endregion

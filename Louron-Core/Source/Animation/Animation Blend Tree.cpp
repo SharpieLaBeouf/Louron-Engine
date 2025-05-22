@@ -12,20 +12,6 @@
 namespace Louron::Animation
 {
 
-#pragma region Blend Tree
-
-	void BlendTree::Serialise(YAML::Emitter& out)
-	{
-		RootNode.Serialise(out);
-	}
-
-	void BlendTree::Deserialise(const YAML::Node& data)
-	{
-		RootNode.Deserialise(data);
-	}
-
-#pragma endregion
-
 #pragma region BlendNode
 
     BlendNode::BlendNode(const BlendNode& other)
@@ -36,8 +22,6 @@ namespace Louron::Animation
 		BlendParam = other.BlendParam;
 
 		Name = other.Name;
-
-		NormalisedTime = other.NormalisedTime;
 
         ChildNode.clear();
         for (const auto& motion : other.ChildNode)
@@ -71,8 +55,6 @@ namespace Louron::Animation
 		BlendState = other.BlendState;
 		BlendParam = other.BlendParam;
 
-		NormalisedTime = other.NormalisedTime;
-
 		Name = other.Name;
 
 		ChildNode.clear();
@@ -99,7 +81,7 @@ namespace Louron::Animation
         return *this;
     }
 
-	void BlendNode::Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params)
+	void BlendNode::Update(float ts, float& normalised_time, const std::unordered_map<StringHash, AnimationParameter>& state_params)
 	{
 		// 1. Update Blend Parameters
 		if (state_params.contains(BlendParam[0]))
@@ -123,6 +105,58 @@ namespace Louron::Animation
 	
 		switch (BlendType)
 		{
+			case TreeType::OneDimensional:
+			{
+				// Find two nearest motions by BlendState.x
+				MotionBase* lower = nullptr;
+				MotionBase* upper = nullptr;
+			
+				float lower_val = -std::numeric_limits<float>::infinity();
+				float upper_val = std::numeric_limits<float>::infinity();
+			
+				for (auto& motion : ChildNode)
+				{
+					float x = motion->BlendPosition.x;
+			
+					if (x <= BlendState.x && x > lower_val)
+					{
+						lower = motion.get();
+						lower_val = x;
+					}
+			
+					if (x >= BlendState.x && x < upper_val)
+					{
+						upper = motion.get();
+						upper_val = x;
+					}
+				}
+			
+				if (lower && upper && lower != upper)
+				{
+					float range = upper_val - lower_val;
+					if (range > constant_epsilon)
+					{
+						float t = (BlendState.x - lower_val) / range;
+						lower->FinalWeight = 1.0f - t;
+						upper->FinalWeight = t;
+					}
+					else
+					{
+						lower->FinalWeight = 0.5f;
+						upper->FinalWeight = 0.5f;
+					}
+				}
+				else if (lower)
+				{
+					lower->FinalWeight = 1.0f;
+				}
+				else if (upper)
+				{
+					upper->FinalWeight = 1.0f;
+				}
+
+				break;
+			}
 			case TreeType::TwoDimensionalFreeForm:
 			{	
 				float blend_mag = glm::length(BlendState);
@@ -194,10 +228,11 @@ namespace Louron::Animation
 				continue;
 			}
 	
-			if (motion->GetType() == MotionType::Clip)
-				motion->Update(NormalisedTime, state_params);
-			else if (motion->GetType() == MotionType::BlendTree)
-				motion->Update(ts, state_params);
+			// No Need to Update Animation Clips as the normalised time is
+			// sampled from the parent blend trees normalised time, so motion
+			// animation need not update any internal timings, only child blend trees
+			if (motion->GetType() == MotionType::BlendTree)
+				motion->Update(ts, state_params); // Update Child BLend Trees
 	
 			++it;
 		}
@@ -235,7 +270,7 @@ namespace Louron::Animation
 			weighted_duration = 1.0f;
 	
 		float step = ts / weighted_duration;
-		NormalisedTime = glm::mod(NormalisedTime + step, 1.0f);
+		normalised_time = glm::mod<float>(normalised_time + step, 1.0f);
 	}
 
     void BlendNode::CleanBlendNode()
@@ -244,7 +279,12 @@ namespace Louron::Animation
 		{
 			if (it->get())
 			{
-				it->get()->CleanMotion();
+				if (it->get()->GetType() == MotionType::BlendTree)
+				{
+					auto motion_blend = reinterpret_cast<MotionBlendTree*>(it->get());
+					motion_blend->NormalisedMotionTime = 0.0f;
+					motion_blend->RootNode.CleanBlendNode();
+				}
 			}
 			else
 			{
@@ -255,7 +295,7 @@ namespace Louron::Animation
 		}
 	}
 
-	void BlendNode::EvaluatePose(Louron::AnimationPose& evaluated_pose)
+	void BlendNode::EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time)
 	{
 		constexpr float constant_epsilon = 0.0001f;
 
@@ -267,7 +307,10 @@ namespace Louron::Animation
 			if (!motion || motion->FinalWeight < constant_epsilon)
 				continue;
 	
-			motion->EvaluatePose(child_poses[i]);
+			if (motion->GetType() == MotionType::Clip)
+				motion->EvaluatePose(child_poses[i], normalised_time); // Use This Blend Node's Normalised Time
+			else if (motion->GetType() == MotionType::BlendTree)
+				motion->EvaluatePose(child_poses[i], reinterpret_cast<MotionBlendTree*>(motion.get())->NormalisedMotionTime); // Use Child BLend Tree's Normalised Time
 		}
 		
 		std::vector<size_t> sorted_indices(ChildNode.size());
@@ -406,32 +449,13 @@ namespace Louron::Animation
 
 #pragma region Motion Animation
 
-    void MotionAnimation::Update(float blend_tree_normalised_time, const std::unordered_map<StringHash, AnimationParameter>& state_params)
+	void MotionAnimation::EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time)
 	{
 		auto animation_clip = AssetManager::GetAsset<AnimationClip>(AnimClipHandle);
 		if (!animation_clip)
 			return;
 	
-		// Clamp normalized time to [0,1]
-		blend_tree_normalised_time = glm::clamp(blend_tree_normalised_time, 0.0f, 1.0f);
-	
-		// Sample time = normalized time * animation duration
-		float scaled_time = fmod(blend_tree_normalised_time * PlaybackSpeed, 1.0f);
-		CurrentTime = scaled_time * animation_clip->GetDuration();
-	}
-
-    void MotionAnimation::CleanMotion()
-	{
-		CurrentTime = 0.0f;
-	}
-
-	void MotionAnimation::EvaluatePose(Louron::AnimationPose& evaluated_pose)
-	{
-		auto animation_clip = AssetManager::GetAsset<AnimationClip>(AnimClipHandle);
-		if (!animation_clip)
-			return;
-	
-		animation_clip->SamplePose(CurrentTime, evaluated_pose);
+		animation_clip->SamplePose(normalised_time * animation_clip->GetDuration(), evaluated_pose);
 	}
 
 	void MotionAnimation::Serialise(YAML::Emitter& out)

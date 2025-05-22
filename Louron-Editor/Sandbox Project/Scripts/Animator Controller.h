@@ -16,15 +16,33 @@ public:
 
     [[ExposedInEditor]] AnimatorComponent animator;
 
+    [[ExposedInEditor]] Entity shoot_entity;
+    [[ExposedInEditor]] Prefab bullet_prefab;
+
     Animation::StringHash vel_x_hash = Utils::fnv1a_hash("Velocity X");
     Animation::StringHash vel_z_hash = Utils::fnv1a_hash("Velocity Z"); 
     Animation::StringHash jump_hash = Utils::fnv1a_hash("IsJumping"); 
+    Animation::StringHash dead_hash = Utils::fnv1a_hash("IsDead"); 
 
     bool has_jumped = false;
+    bool is_dead = false;
 
     void OnCreate() override
     {
         animator = GetComponent<AnimatorComponent>();
+
+        if (!shoot_entity)
+        {
+            auto children = GetChildren();
+            for(const auto& child : children)
+            {
+                if (child.GetTag() == "Shoot")
+                {
+                    shoot_entity = child;
+                    break;
+                }
+            }
+        }
     } 
 
     float Approach(float current, float target, float delta)
@@ -39,6 +57,43 @@ public:
     float current_speed = 0.0f;
     
     void OnUpdate() override
+    {
+        if(Input::GetKeyDown(KeyCode::R))
+        {
+            is_dead = false;
+            animator.SetBool(dead_hash, is_dead);
+
+            has_jumped = false;
+            animator.SetBool(jump_hash, has_jumped);
+            
+            animator.ResetMachine();
+        }
+
+        if (is_dead)
+            return;
+
+        Shoot();
+        Animate();
+    }
+
+    void Shoot()
+    {
+        if (!shoot_entity || !bullet_prefab)
+        {
+            Debug::Log("Shoot Entity or Bullet Prefab Not Set In Editor!", 2);
+            return;
+        }    
+
+        if (Input::GetMouseButtonDown(MouseButtonCode::Mouse_Button_Left))
+        {
+            Entity bullet = Instantiate(bullet_prefab);
+            bullet.SetPosition(shoot_entity.GetGlobalPosition());
+            bullet.SetRotation(shoot_entity.GetGlobalRotation());
+            bullet.GetComponent<RigidbodyComponent>().ApplyForce(shoot_entity.GetFront() * 75.0f, RigidbodyComponent::ForceMode::Impulse);
+        }
+    }
+
+    void Animate()
     {
         constexpr float deadzone        = 0.0001f;
         constexpr float decay_speed     = 3.0f;
@@ -60,6 +115,18 @@ public:
         {
             has_jumped = false;
             animator.SetBool(jump_hash, has_jumped);
+        }
+
+        if(Input::GetKeyDown(KeyCode::Space))
+        {
+            has_jumped = true;
+            animator.SetBool(jump_hash, has_jumped);
+        }
+
+        if(Input::GetKeyDown(KeyCode::K))
+        {
+            is_dead = true;
+            animator.SetBool(dead_hash, is_dead);
         }
     
         float dt = Time::GetDeltaTime();
@@ -124,13 +191,14 @@ public:
         SetPosition(position);
     
         // -- Rotation --
-        static float last_mouse_x = Input::GetMousePosition().x;
-        float current_mouse_x = Input::GetMousePosition().x;
+        static float last_mouse_x = -Input::GetMousePosition().x;
+        float current_mouse_x = -Input::GetMousePosition().x;
         float delta_mouse_x = current_mouse_x - last_mouse_x;
         last_mouse_x = current_mouse_x;
     
         rotation.y += delta_mouse_x * mouse_sensitivity;
         SetRotation(rotation);
+
     }
 
     void OnLateUpdate() override

@@ -23,8 +23,16 @@ namespace Louron::Animation
         StringHash DestStateHash = NULL_UUID;
 
         float TransitionDuration = 0.3f;
+        
+        // Exit time is when in the state animation time that it will begin
+        // transitioning to another state, e.g., can't blend from middle of jump
+        // animation to idle, need to wait till jump is atleast finished and
+        // landed before blending back to idle.
         bool HasExitTime = false;
-        float ExitTime = 0.0f;
+
+        // Normalised between 0.0 -> 1.0 
+        // 0.0 == start of States Animation, 1.0 == end of States Animation
+        float ExitTime = 0.0f; 
         
         std::vector<TransitionCondition> Conditions;
         
@@ -81,6 +89,7 @@ namespace Louron::Animation
             }
             return true; // All conditions passed == all flipped conditions failed
         }
+    
     };
     
 }

@@ -30,7 +30,13 @@ namespace Louron::Animation
         virtual void Serialise(YAML::Emitter& out) = 0;
         virtual void Deserialise(const YAML::Node& data) = 0;
 
+        // Name of the State
         std::string Name = "";
+
+        // This is the normalised time of the Animation/Blend Tree completion.
+        // 0.0f == Start of Animation / Blend Tree
+        // 1.0f == End of Animation / Blend Tree
+        float NormalisedStateTime = 0.0f;
     };
 
     struct AnimationState_Clip : public AnimationState
@@ -58,12 +64,10 @@ namespace Louron::Animation
 
         bool IsPlaying = false;
         bool IsLooping = false;
-
-        float CurrentTime = 0.0f;
+        
         float PlaybackSpeed = 1.0f;
     };
     
-    // TODO: Finish Blend Tree Animation State
     struct AnimationState_BlendTree : public AnimationState
     {
         StateType GetType() override { return StateType::BlendTree; }
@@ -86,13 +90,8 @@ namespace Louron::Animation
         void Serialise(YAML::Emitter& out) override;
         void Deserialise(const YAML::Node& data) override;
 
-        BlendNode* GetBlendTree() const 
-        {
-            if(AnimBlendTree)
-                return &AnimBlendTree->RootNode;
-            return nullptr;
-        }
+        BlendNode& GetBlendTree() { return AnimBlendTree; }
 
-        std::unique_ptr<BlendTree> AnimBlendTree = std::make_unique<BlendTree>();
+        BlendNode AnimBlendTree;
     };
 }

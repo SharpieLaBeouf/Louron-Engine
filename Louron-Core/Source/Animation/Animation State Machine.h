@@ -50,6 +50,8 @@ namespace Louron::Animation
         void UpdateStates(float ts);
         void EvaluatePose(Louron::AnimationPose& evaluated_pose);
 
+        void ResetMachine();
+
         void SetCurrentState(const std::string& state_name);
         void SetCurrentState(const StringHash& state_hash);
 
@@ -121,11 +123,14 @@ namespace Louron::Animation
         std::vector<std::unique_ptr<AnimationTransition>> Transitions = {};
 
         StringHash DefaultState = m_DefaultEntryHash;
+        
         StringHash CurrentState = m_DefaultEntryHash;
         StringHash PreviousState = NULL_UUID;
-
         StringHash TargetState = NULL_UUID;
-        float TransitionCompletion = 0.0f; // This will contral the influence of blending CurrentState to TargetState
+
+        float TransitionCompletion = 0.0f;      // This will contral the influence of blending CurrentState to TargetState
+        float ExitTimeCompletion = 0.0f;        // Completion of the exit time, this counts where we are at in the exit time when a transition has an exit time of 0.0-1.0+
+        float PreviousNormalisedTime = 0.0f;    // Storing last normalised time as StateNormalisedTime wraps from 1.0 -> 0.0 when going above 1.0
 
         // StringHash == hash of parameter name, Params stored
         // as floats for ease of comparison operations

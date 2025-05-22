@@ -31,9 +31,8 @@ namespace Louron::Animation
         
         // Functional
         virtual MotionType GetType() = 0;
-        virtual void Update(float blend_tree_normalised_time, const std::unordered_map<StringHash, AnimationParameter>& state_params) = 0;
-        virtual void CleanMotion() = 0;
-        virtual void EvaluatePose(Louron::AnimationPose& evaluated_pose) = 0;
+        virtual void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) = 0;
+        virtual void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time) = 0;
         
         virtual void Serialise(YAML::Emitter& out) = 0;
         virtual void Deserialise(const YAML::Node& data) = 0;
@@ -67,10 +66,10 @@ namespace Louron::Animation
         BlendNode& operator=(BlendNode&& other) = default;
         
         // Functional
-        void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params);
+        void Update(float ts, float& normalised_time, const std::unordered_map<StringHash, AnimationParameter>& state_params);
         void CleanBlendNode();
 
-        void EvaluatePose(Louron::AnimationPose& evaluated_pose);
+        void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time);
         
         void Serialise(YAML::Emitter& out);
         void Deserialise(const YAML::Node& data);
@@ -86,8 +85,6 @@ namespace Louron::Animation
         std::array<StringHash, 2> BlendParam = { NULL_UUID, NULL_UUID };
 
         std::string Name = "Blend Tree Node";
-
-        float NormalisedTime = 0.0f;
     };
 
     /// -------- MOTION --------
@@ -106,18 +103,16 @@ namespace Louron::Animation
 
         // Functional
         MotionType GetType() override { return MotionType::Clip; }
-        void Update(float blend_tree_normalised_time, const std::unordered_map<StringHash, AnimationParameter>& state_params) override;
-        void CleanMotion() override;
+        void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) override { /*Do Nothing - timer driven by parent blend tree normalised time*/}
 
-        void EvaluatePose(Louron::AnimationPose& evaluated_pose) override;
+        void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time) override;
 
         void Serialise(YAML::Emitter& out) override;
         void Deserialise(const YAML::Node& data) override;
 
         // Data
         AssetHandle AnimClipHandle = NULL_UUID;
-
-        float CurrentTime = 0.0f;
+        
         float PlaybackSpeed = 1.0f;
     };
 
@@ -135,41 +130,17 @@ namespace Louron::Animation
 
         // Functional
         MotionType GetType() override { return MotionType::BlendTree; }
-        void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) override { RootNode.Update(ts, state_params); }
-        void CleanMotion() override { RootNode.CleanBlendNode(); }
+        void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) override { RootNode.Update(ts, NormalisedMotionTime, state_params); }
 
-        void EvaluatePose(Louron::AnimationPose& evaluated_pose) override { RootNode.EvaluatePose(evaluated_pose); }
+        void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time) override { RootNode.EvaluatePose(evaluated_pose, normalised_time); }
 
         void Serialise(YAML::Emitter& out) override;
         void Deserialise(const YAML::Node& data) override;
         
         // Data
         BlendNode RootNode;
-    };
-    
-    /// -------- BLEND TREE --------
 
-    struct BlendTree
-    {
-        // Constructors
-        BlendTree() = default;
-        ~BlendTree() = default;
-        
-        BlendTree(const BlendTree& other) = default;
-        BlendTree(BlendTree&& other) = default;
-        BlendTree& operator=(const BlendTree& other) = default;
-        BlendTree& operator=(BlendTree&& other) = default;
-        
-        void Serialise(YAML::Emitter& out);
-        void Deserialise(const YAML::Node& data);
-
-        // Functional
-        void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) { RootNode.Update(ts, state_params); }
-        void CleanBlendTree() { RootNode.CleanBlendNode(); }
-        void EvaluatePose(Louron::AnimationPose& evaluated_pose) { RootNode.EvaluatePose(evaluated_pose); }
-
-        // Data
-        BlendNode RootNode;
+        float NormalisedMotionTime = 0.0f;
     };
 
 }

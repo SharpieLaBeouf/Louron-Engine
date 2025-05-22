@@ -38,6 +38,8 @@ namespace Louron::Animation
 
         TargetState = other.TargetState;
         TransitionCompletion = other.TransitionCompletion;
+        ExitTimeCompletion = other.ExitTimeCompletion;
+        PreviousNormalisedTime = other.PreviousNormalisedTime;
     }
 
     StateMachine &StateMachine::operator=(const StateMachine &other)
@@ -73,89 +75,151 @@ namespace Louron::Animation
 
         TargetState = other.TargetState;
         TransitionCompletion = other.TransitionCompletion;
+        ExitTimeCompletion = other.ExitTimeCompletion;
+        PreviousNormalisedTime = other.PreviousNormalisedTime;
 
         return *this;
     }
 
     void StateMachine::UpdateStates(float ts)
     {
+        if (CurrentState == m_DefaultExitHash)
+            return; // No Updates - StateMachine Exited! To restart, use StateMachine::SetCurrentState(StateMachine::GetEntryHash());
+
         if (DefaultState == m_DefaultEntryHash)
         {
             L_CORE_WARN("Animation State Machine: No State Linked to Entry!");
             return;
         }
 
-        // First Update - Go From Entry To Default State
         if (CurrentState == m_DefaultEntryHash)
             SetCurrentState(DefaultState);
-        
-        // This will traverse transitions once we are in a state completely. We
-        // will find a state to transition to, or not to transition at all, and
-        // if we are we will start a transitioning timer and ensure the state
-        // correctly transitions to that state prior to checking again for other
-        // transitions from the next node.
+
+        bool is_transition_blending = false;
+
+        const float curr_norm = States[CurrentState]->NormalisedStateTime;
+        float delta_norm = curr_norm - PreviousNormalisedTime;
+        if (delta_norm < 0.0f)
+            delta_norm += 1.0f;
+
+        PreviousNormalisedTime = curr_norm;
+
+        // Check for transition
         if (TargetState == NULL_UUID)
         {
             for (const auto& transition : Transitions)
             {
-                if (!transition)
+                if (!transition || transition->SourceStateHash != CurrentState)
                     continue;
-                
-                if (transition->SourceStateHash == CurrentState)
+
+                if (!transition->CheckTransitionConditionsValid(AnimationParameters))
+                    continue;
+
+                TargetState = transition->DestStateHash;
+                TransitionCompletion = 0.0f;
+
+                if (transition->HasExitTime)
                 {
-                    if (transition->CheckTransitionConditionsValid(AnimationParameters) && States.contains(transition->DestStateHash))
-                    {
-                        States[transition->DestStateHash]->CleanState(); // Ensure State is Cleaned Before Transitioning Into It
+                    // Compute effective exitTime for looping vs non-looping
+                    float exit_time_value = transition->ExitTime;
+                    auto state_type = States[CurrentState]->GetType();
+                    bool looping_state = (state_type == StateType::Clip && reinterpret_cast<AnimationState_Clip*>(States[CurrentState].get())->IsLooping) || (state_type == StateType::BlendTree);
 
-                        TargetState = transition->DestStateHash;
+                    if (!looping_state && exit_time_value > 1.0f)
+                        exit_time_value = fmod(exit_time_value, 1.0f);
 
-                        TransitionCompletion = (transition->TransitionDuration > 0.0f) ? 0.0f : 1.0f;
-
-                        break;
-                    }
+                    // Initialize the counter to align with current playhead
+                    if (curr_norm < exit_time_value)
+                        ExitTimeCompletion = curr_norm;
+                    else if (exit_time_value == curr_norm)
+                        ExitTimeCompletion = exit_time_value;
+                    else
+                        ExitTimeCompletion = curr_norm - 1.0f;
                 }
+                else
+                {
+                    ExitTimeCompletion = 0.0f;
+                }
+
+                break; // only arm one transition
             }
         }
-        
-        // Check if new target state still invalid after checking for potential transitions, if it isn't we should start transitioning.
+
+        // If a transition is armed, see if we can start blending
         if (TargetState != NULL_UUID)
         {
             auto transition = GetTransition(CurrentState, TargetState);
             if (transition)
             {
-                if (transition->TransitionDuration > 0.0f)
-                    TransitionCompletion = std::min(1.0f, TransitionCompletion + (ts / transition->TransitionDuration));
-                else
-                    TransitionCompletion = 1.0f;
+                bool can_start_blend = false;
 
-                if(TransitionCompletion >= 1.0f)
+                if (!transition->HasExitTime)
                 {
-                    SetCurrentState(TargetState);
+                    can_start_blend = true;
                 }
                 else
                 {
-                    States[TargetState]->Update(ts, AnimationParameters);
+                    // Recompute effective exitTimeValue
+                    float exit_time_value = transition->ExitTime;
+                    auto state_type = States[CurrentState]->GetType();
+                    bool looping_state = (state_type == StateType::Clip && reinterpret_cast<AnimationState_Clip*>(States[CurrentState].get())->IsLooping) || (state_type == StateType::BlendTree);
+
+                    if (!looping_state && exit_time_value > 1.0f)
+                        exit_time_value = fmod(exit_time_value, 1.0f);
+
+                    // Accumulate wrapped delta
+                    ExitTimeCompletion += delta_norm;
+                    if (ExitTimeCompletion >= exit_time_value)
+                        can_start_blend = true;
+                }
+
+                if (can_start_blend)
+                {
+                    // Clean target state once at start of blend
+                    if (TransitionCompletion == 0.0f && States[TargetState])
+                        States[TargetState]->CleanState();
+
+                    // Advance blend
+                    if (transition->TransitionDuration > 0.0f)
+                    {
+                        TransitionCompletion = std::min(1.0f, TransitionCompletion + (ts / transition->TransitionDuration));
+                        is_transition_blending = true;
+                    }
+                    else
+                    {
+                        TransitionCompletion = 1.0f;
+                    }
+
+                    // Complete or continue blend
+                    if (TransitionCompletion >= 1.0f)
+                    {
+                        SetCurrentState(TargetState);
+                    }
+                    else if (States[TargetState])
+                    {
+                        States[TargetState]->Update(ts, AnimationParameters);
+                    }
                 }
             }
             else
             {
+                // Invalid transition, reset
                 TargetState = NULL_UUID;
                 TransitionCompletion = 0.0f;
+                ExitTimeCompletion = 0.0f;
             }
         }
 
-        if(States.contains(CurrentState) && States[CurrentState])
+        // Always update current state
+        if (States.contains(CurrentState) && States[CurrentState])
         {
             States[CurrentState]->Update(ts, AnimationParameters);
         }
-        else
+        else if (CurrentState != m_DefaultExitHash)
         {
-            CurrentState = m_DefaultEntryHash;
-            PreviousState = NULL_UUID;
-            TargetState = NULL_UUID;
-            TransitionCompletion = 0.0f;
-
-            L_CORE_ERROR("Animation State Machine: We have been transitioned into a state that does not exist! Resetting State Machine...");
+            // Fallback for invalid current state
+            ResetMachine();
+            L_CORE_ERROR("Animation State Machine: Transitioned into a state that does not exist! Resetting State Machine...");
         }
     }
 
@@ -169,6 +233,9 @@ namespace Louron::Animation
         }
         else
         {
+            if (CurrentState == m_DefaultExitHash && States.contains(PreviousState) && States[PreviousState])
+                States[PreviousState]->EvaluatePose(pose_a);
+
             return;
         }
     
@@ -187,21 +254,60 @@ namespace Louron::Animation
         }
     }
 
-    void StateMachine::BlendPoses(const AnimationPose &a, const AnimationPose &b, float t, AnimationPose &result)
+    void StateMachine::ResetMachine()
     {
+        CurrentState              = m_DefaultEntryHash;
+        PreviousState             = NULL_UUID;
+        TargetState               = NULL_UUID;
+        
+        TransitionCompletion      = 0.0f;
+        ExitTimeCompletion        = 0.0f;
+        PreviousNormalisedTime    = 0.0f;
+
+        for (auto& [hash, state] : States)
+        {
+            if (state)
+            {
+                state->CleanState();
+            }
+        }
+    }
+
+    void StateMachine::BlendPoses(const AnimationPose& a, const AnimationPose& b, float t, AnimationPose& result)
+    {
+        result.Pose.clear();
+
         std::unordered_set<std::string> all_bones;
-    
-        for (const auto& [bone_name, transform] : a.Pose) all_bones.insert(bone_name);
-        for (const auto& [bone_name, transform] : b.Pose) all_bones.insert(bone_name);
-    
+
+        for (const auto& [bone_name, _] : a.Pose) all_bones.insert(bone_name);
+        for (const auto& [bone_name, _] : b.Pose) all_bones.insert(bone_name);
+
         for (const auto& bone_name : all_bones)
         {
-            const auto& ta = a.Pose.contains(bone_name) ? a.Pose.at(bone_name) : AnimationPose::AnimationTransform{};
-            const auto& tb = b.Pose.contains(bone_name) ? b.Pose.at(bone_name) : AnimationPose::AnimationTransform{};
-    
-            result.Pose[bone_name].Position    = glm::mix(ta.Position, tb.Position, t);
-            result.Pose[bone_name].Orientation = glm::slerp(ta.Orientation, tb.Orientation, t);
-            result.Pose[bone_name].Scale       = glm::mix(ta.Scale, tb.Scale, t);
+            const bool has_a = a.Pose.contains(bone_name);
+            const bool has_b = b.Pose.contains(bone_name);
+
+            AnimationPose::AnimationTransform out;
+
+            if (has_a && has_b)
+            {
+                const auto& ta = a.Pose.at(bone_name);
+                const auto& tb = b.Pose.at(bone_name);
+
+                out.Position    = glm::mix(ta.Position, tb.Position, t);
+                out.Orientation = glm::slerp(ta.Orientation, tb.Orientation, t);
+                out.Scale       = glm::mix(ta.Scale, tb.Scale, t);
+            }
+            else if (has_a)
+            {
+                out = a.Pose.at(bone_name);
+            }
+            else if (has_b)
+            {
+                out = b.Pose.at(bone_name);
+            }
+
+            result.Pose[bone_name] = out;
         }
     }
 
@@ -221,7 +327,7 @@ namespace Louron::Animation
 
     void StateMachine::SetCurrentState(const StringHash &state_hash)
     {
-        if (States.contains(state_hash)) 
+        if (States.contains(state_hash) || state_hash == m_DefaultExitHash) 
         {  
             PreviousState = CurrentState;
             CurrentState = state_hash;
@@ -507,10 +613,7 @@ namespace Louron::Animation
                     };
                     
                     auto state_blend_tree = reinterpret_cast<AnimationState_BlendTree*>(state.get());
-                    if (auto blend_tree = state_blend_tree->AnimBlendTree.get(); blend_tree)
-                    {
-                        rename_params_recursive(blend_tree->RootNode);
-                    }
+                    rename_params_recursive(state_blend_tree->AnimBlendTree);
                     break;
                 }
             }

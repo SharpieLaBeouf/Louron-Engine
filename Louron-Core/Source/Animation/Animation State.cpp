@@ -18,23 +18,28 @@ namespace Louron::Animation
         if (!animation_clip)
             return;
 
+        const float duration = animation_clip->GetDuration();
+        if (duration <= 0.0f)
+            return;
+
         if (IsPlaying)
         {
-            if (CurrentTime >= animation_clip->GetDuration())
+            float time_advance = ts * PlaybackSpeed * animation_clip->GetTicksPerSecond();
+            float normalised_advance = time_advance / duration;
+
+            NormalisedStateTime += normalised_advance;
+
+            if (NormalisedStateTime >= 1.0f)
             {
                 if (IsLooping)
                 {
-                    CurrentTime = 0.0f;
+                    NormalisedStateTime = glm::mod<float>(NormalisedStateTime, 1.0f);
                 }
                 else
                 {
                     IsPlaying = false;
-                    CurrentTime = 0.0f;
+                    NormalisedStateTime = 1.0f;
                 }
-            }
-            else
-            {    
-                CurrentTime += ts * PlaybackSpeed + animation_clip->GetTicksPerSecond();
             }
         }
     }
@@ -42,16 +47,16 @@ namespace Louron::Animation
     void AnimationState_Clip::CleanState()
     {
         IsPlaying = true;
-        CurrentTime = 0.0f;
+        NormalisedStateTime = 0.0f;
     }
 
     void AnimationState_Clip::EvaluatePose(Louron::AnimationPose& evaluated_pose)
     {
 		auto clip = AssetManager::GetAsset<AnimationClip>(AnimClipHandle);
-		if (!clip || !IsPlaying)
+		if (!clip)
 			return;
-	
-		clip->SamplePose(CurrentTime, evaluated_pose);
+
+        clip->SamplePose(NormalisedStateTime * clip->GetDuration(), evaluated_pose);
     }
 
     void AnimationState_Clip::Serialise(YAML::Emitter& out)
@@ -80,13 +85,8 @@ namespace Louron::Animation
     AnimationState_BlendTree::AnimationState_BlendTree(const AnimationState_BlendTree &other)
     {
         Name = other.Name;
-        AnimBlendTree.reset();
-
-        if(other.AnimBlendTree)
-        {
-            AnimBlendTree = std::make_unique<BlendTree>();
-            AnimBlendTree->RootNode = other.AnimBlendTree->RootNode;
-        }
+        NormalisedStateTime = other.NormalisedStateTime;
+        AnimBlendTree = other.AnimBlendTree;
     }
 
     AnimationState_BlendTree &AnimationState_BlendTree::operator=(const AnimationState_BlendTree &other)
@@ -95,44 +95,36 @@ namespace Louron::Animation
             return *this;
         
         Name = other.Name;
-        AnimBlendTree.reset();
-
-        if(other.AnimBlendTree)
-        {
-            AnimBlendTree = std::make_unique<BlendTree>(*other.AnimBlendTree.get());
-        }
+        NormalisedStateTime = other.NormalisedStateTime;
+        AnimBlendTree = other.AnimBlendTree;
 
         return *this;
     }
     
     void AnimationState_BlendTree::Update(float ts, const std::unordered_map<StringHash, AnimationParameter> state_params)
     {
-        if(AnimBlendTree)
-            AnimBlendTree->Update(ts, state_params);
+        AnimBlendTree.Update(ts, NormalisedStateTime, state_params);
     }
 
     void AnimationState_BlendTree::CleanState()
     {
-        if(AnimBlendTree)
-            AnimBlendTree->CleanBlendTree();
+        AnimBlendTree.CleanBlendNode();
+        NormalisedStateTime = 0.0f;
     }
 
     void AnimationState_BlendTree::EvaluatePose(Louron::AnimationPose& evaluated_pose)
     {
-        if(AnimBlendTree)
-            AnimBlendTree->EvaluatePose(evaluated_pose);
+        AnimBlendTree.EvaluatePose(evaluated_pose, NormalisedStateTime);
     }
 
     void AnimationState_BlendTree::Serialise(YAML::Emitter& out)
     {
-        if(AnimBlendTree)
-            AnimBlendTree->Serialise(out);
+        AnimBlendTree.Serialise(out);
     }
     
     void AnimationState_BlendTree::Deserialise(const YAML::Node& data)
     {
-        if(AnimBlendTree)
-            AnimBlendTree->Deserialise(data);        
+        AnimBlendTree.Deserialise(data);        
     }
 
 #pragma endregion

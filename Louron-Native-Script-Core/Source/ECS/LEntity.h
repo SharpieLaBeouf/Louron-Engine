@@ -133,6 +133,54 @@ namespace Louron
 		void SetScale(const Vectors::Vector3& scale) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), TransformComponent_SetScale, m_EntityID, &scale); }
 
 		/**
+		* @brief Get the global world space transform of the entity.
+		* @return Transform The transform of the entity.
+		*/
+		Transform GetGlobalTransform() const { return ENGINE_SAFE_CALL_RET(Transform, Transform(*)(uint32_t), TransformComponent_GetGlobalTransform, m_EntityID); }
+
+		/**
+		* @brief Set the global world space transform of the entity.
+		* @param transform The new transform of the entity.
+		*/
+		void SetGlobalTransform(const Transform& transform) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Transform*), TransformComponent_SetGlobalTransform, m_EntityID, &transform); }
+
+		/**
+		* @brief Get the global world space position of the entity.
+		* @return Vectors::Vector3 The position of the entity.
+		*/
+		Vectors::Vector3 GetGlobalPosition() const { return ENGINE_SAFE_CALL_RET(Vectors::Vector3, Vectors::Vector3(*)(uint32_t), TransformComponent_GetGlobalPosition, m_EntityID); }
+
+		/**
+		* @brief Set the global world space position of the entity.
+		* @param position The new position of the entity.
+		*/
+		void SetGlobalPosition(const Vectors::Vector3& position) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), TransformComponent_SetGlobalPosition, m_EntityID, &position); }
+
+		/**
+		* @brief Get the global world space rotation of the entity.
+		* @return Vectors::Vector3 The rotation of the entity.
+		*/
+		Vectors::Vector3 GetGlobalRotation() const { return ENGINE_SAFE_CALL_RET(Vectors::Vector3, Vectors::Vector3(*)(uint32_t), TransformComponent_GetGlobalRotation, m_EntityID); }
+
+		/**
+		* @brief Set the global world space rotation of the entity.
+		* @param rotation The new rotation of the entity.
+		*/
+		void SetGlobalRotation(const Vectors::Vector3& rotation) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), TransformComponent_SetGlobalRotation, m_EntityID, &rotation); }
+
+		/**
+		* @brief Get the global world space scale of the entity.
+		* @return Vectors::Vector3 The scale of the entity.
+		*/
+		Vectors::Vector3 GetGlobalScale() const { return ENGINE_SAFE_CALL_RET(Vectors::Vector3, Vectors::Vector3(*)(uint32_t), TransformComponent_GetGlobalScale, m_EntityID); }
+
+		/**
+		* @brief Set the global world space scale of the entity.
+		* @param scale The new scale of the entity.
+		*/
+		void SetGlobalScale(const Vectors::Vector3& scale) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), TransformComponent_SetGlobalScale, m_EntityID, &scale); }
+
+		/**
 		* @brief Get the front vector of the entity.
 		* @return Vectors::Vector3 The front vector of the entity.
 		*/
@@ -167,6 +215,28 @@ namespace Louron
 		* @param parent_entity The new parent entity.
 		*/
 		void SetParent(Entity parent_entity) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint32_t), Entity_SetParent, m_EntityID, parent_entity.m_EntityID); }
+
+		std::vector<Entity> GetChildren() const
+		{
+			std::vector<Entity> children{};
+
+			size_t child_count = 0;
+			uint64_t cache_key = ENGINE_SAFE_CALL_RET(uint64_t, uint64_t(*)(uint32_t, uint8_t, size_t*), Entity_GetComponentsInChildrenCount, m_EntityID, static_cast<uint8_t>(::BackEndAPI::FieldType::IDComponent), &child_count);
+
+			children.reserve(child_count);
+			if (child_count > 0 && cache_key != uint64_t(-1))
+			{
+				std::unique_ptr<uint32_t[]> entity_array(new uint32_t[child_count]);
+				ENGINE_SAFE_CALL_VOID(void(*)(uint32_t*, size_t, uint64_t), Entity_GetComponentsInHierarchyCopy, entity_array.get(), child_count, cache_key);
+
+				for (size_t i = 0; i < child_count; ++i)
+				{
+					children.push_back(std::move(Entity(entity_array[i])));
+				}
+			}
+
+			return children;
+		}
 
 #pragma endregion
 

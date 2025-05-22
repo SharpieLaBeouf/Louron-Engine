@@ -79,7 +79,7 @@ void AnimatorPanel::Draw(bool& show_window)
             ImGui::PopStyleColor(2);
             ImGui::PopStyleVar();
 
-            BlendNode* blend_node = &reinterpret_cast<AnimationState_BlendTree*>(blend_state)->AnimBlendTree->RootNode;
+            BlendNode* blend_node = &reinterpret_cast<AnimationState_BlendTree*>(blend_state)->AnimBlendTree;
 
             for (int i = 0; i < s_BlendTreeChildLevel.size(); i++)
             {
@@ -350,41 +350,27 @@ void AnimatorPanel::Draw(bool& show_window)
 
             if (auto blend_state = machine_asset->GetAnimationState(s_StateBlendTreeNode); s_StateBlendTreeNode != NULL_UUID && blend_state && blend_state->GetType() == StateType::BlendTree)
             {
-                if (auto& blend_tree = reinterpret_cast<AnimationState_BlendTree*>(blend_state)->AnimBlendTree; blend_tree)
-                {
-                    BlendNode* node = &blend_tree->RootNode;
+                BlendNode* node = &reinterpret_cast<AnimationState_BlendTree*>(blend_state)->AnimBlendTree;
 
-                    for (int i = 0; i < s_BlendTreeChildLevel.size(); i++)
+                for (int i = 0; i < s_BlendTreeChildLevel.size(); i++)
+                {
+                    const size_t& index = s_BlendTreeChildLevel[i];
+                    if (!node->ChildNode.empty() && index >= 0 && index < node->ChildNode.size())
                     {
-                        const size_t& index = s_BlendTreeChildLevel[i];
-                        if (!node->ChildNode.empty() && index >= 0 && index < node->ChildNode.size())
+                        if (node->ChildNode[index] && node->ChildNode[index]->GetType() == MotionType::BlendTree)
                         {
-                            if (node->ChildNode[index] && node->ChildNode[index]->GetType() == MotionType::BlendTree)
-                            {
-                                node = &reinterpret_cast<MotionBlendTree*>(node->ChildNode[index].get())->RootNode;
-                                continue;
-                            }
-                            else
-                            {
-                                s_BlendTreeChildLevel.erase(s_BlendTreeChildLevel.begin() + i, s_BlendTreeChildLevel.end());
-                                break;
-                            }
+                            node = &reinterpret_cast<MotionBlendTree*>(node->ChildNode[index].get())->RootNode;
+                            continue;
+                        }
+                        else
+                        {
+                            s_BlendTreeChildLevel.erase(s_BlendTreeChildLevel.begin() + i, s_BlendTreeChildLevel.end());
+                            break;
                         }
                     }
-
-                    DrawBlendTree(*node);
-                }
-                else
-                {
-                    if (s_StateBlendTreeNode != NULL_UUID)
-                        s_StateBlendTreeNode = NULL_UUID;
-    
-                    if (!s_BlendTreeChildLevel.empty())
-                        s_BlendTreeChildLevel.clear();
-    
-                    AnimatorPanel::DrawGraph(*machine_asset.get());
                 }
 
+                DrawBlendTree(*node);
             }
             else
             {
@@ -502,18 +488,13 @@ void AnimatorPanel::Draw(bool& show_window)
                             if (ImGui::Checkbox("##IsLooping", &state_clip->IsLooping)) 
                                 s_Edited = true;
                             
-                            ImGui::Text("Current Time: ");
+                            ImGui::Text("Current Normalised State Time: ");
                             ImGui::SameLine();
-                            
-                            float max_duration = 1.0f;
         
-                            if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(state_clip->AnimClipHandle))
-                            {
-                                max_duration = AssetManager::GetAsset<AnimationClip>(state_clip->AnimClipHandle) ->GetDuration();
-                            }
-        
-                            ImGui::SliderFloat("##CurrentTime", &state_clip->CurrentTime, 0.0f, max_duration, "%.2f");
-        
+                            ImGui::BeginDisabled();
+                            ImGui::SliderFloat("##CurrentTime", &state_clip->NormalisedStateTime, 0.0f, 1.0f, "%.2f");
+                            ImGui::EndDisabled();
+
                             ImGui::Text("Playback Speed: ");
                             ImGui::SameLine();
                             if (ImGui::DragFloat("##PlaybackSpeed", &state_clip->PlaybackSpeed, 0.01f, 0.1f, 10.0f, "%.2f")) 
@@ -580,6 +561,14 @@ void AnimatorPanel::Draw(bool& show_window)
                         case StateType::BlendTree:
                         {
                             ImGui::Text("State Type: Blend Tree");
+                            
+                            ImGui::Text("Current Normalised State Time: ");
+                            ImGui::SameLine();
+        
+                            ImGui::BeginDisabled();
+                            ImGui::SliderFloat("##CurrentTime", &state->NormalisedStateTime, 0.0f, 1.0f, "%.2f");
+                            ImGui::EndDisabled();
+
                             break;
                         }
                     }
@@ -615,7 +604,7 @@ void AnimatorPanel::Draw(bool& show_window)
                         
                         ImGui::Text("Exit Time:");
                         ImGui::SameLine();
-                        if (ImGui::DragFloat("##Exit Time", &transition->ExitTime, 1.0f, 0.0f, FLT_MAX, "%.2f")) 
+                        if (ImGui::DragFloat("##Exit Time", &transition->ExitTime, 0.001f, 0.0f, 1.0f, "%.2f")) 
                             s_Edited = true;
     
                         ImGui::Dummy({0.0f, 1.5f});
@@ -1075,35 +1064,27 @@ void AnimatorPanel::Draw(bool& show_window)
 
             if (auto blend_state = machine_asset->GetAnimationState(s_StateBlendTreeNode); s_StateBlendTreeNode != NULL_UUID && blend_state && blend_state->GetType() == StateType::BlendTree)
             {
-                if (auto& blend_tree = reinterpret_cast<AnimationState_BlendTree*>(blend_state)->AnimBlendTree; blend_tree)
-                {
-                    BlendNode* node = &blend_tree->RootNode;
+                BlendNode* node = &reinterpret_cast<AnimationState_BlendTree*>(blend_state)->AnimBlendTree;
 
-                    for (int i = 0; i < s_BlendTreeChildLevel.size(); i++)
+                for (int i = 0; i < s_BlendTreeChildLevel.size(); i++)
+                {
+                    const size_t& index = s_BlendTreeChildLevel[i];
+                    if (!node->ChildNode.empty() && index >= 0 && index < node->ChildNode.size())
                     {
-                        const size_t& index = s_BlendTreeChildLevel[i];
-                        if (!node->ChildNode.empty() && index >= 0 && index < node->ChildNode.size())
+                        if (node->ChildNode[index] && node->ChildNode[index]->GetType() == MotionType::BlendTree)
                         {
-                            if (node->ChildNode[index] && node->ChildNode[index]->GetType() == MotionType::BlendTree)
-                            {
-                                node = &reinterpret_cast<MotionBlendTree*>(node->ChildNode[index].get())->RootNode;
-                                continue;
-                            }
-                            else
-                            {
-                                s_BlendTreeChildLevel.erase(s_BlendTreeChildLevel.begin() + i, s_BlendTreeChildLevel.end());
-                                break;
-                            }
+                            node = &reinterpret_cast<MotionBlendTree*>(node->ChildNode[index].get())->RootNode;
+                            continue;
+                        }
+                        else
+                        {
+                            s_BlendTreeChildLevel.erase(s_BlendTreeChildLevel.begin() + i, s_BlendTreeChildLevel.end());
+                            break;
                         }
                     }
-
-                    draw_blend_node_inspector(*node);
-                }
-                else
-                {                    
-                    draw_base_inspector();
                 }
 
+                draw_blend_node_inspector(*node);
             }
             else
             {
@@ -1510,7 +1491,7 @@ void AnimatorPanel::DrawGraph(Animation::StateMachine& machine)
             
                 draw_list->AddRectFilled(top_left, bottom_right, fill, style.NodeRounding);
 
-                if (ImGui::IsMouseHoveringRect(top_left, bottom_right) && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && machine.GetAnimationState(hash)->GetType() == StateType::BlendTree)
+                if (ImGui::IsMouseHoveringRect(top_left, bottom_right) && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && machine.GetAnimationState(hash) && machine.GetAnimationState(hash)->GetType() == StateType::BlendTree)
                 {
                     s_StateBlendTreeNode = hash;
                     s_BlendTreeChildLevel.clear();

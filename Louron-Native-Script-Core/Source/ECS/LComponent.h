@@ -872,6 +872,8 @@ namespace Louron
 			void SetInt(const Animation::StringHash& param_hash, int32_t value) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint32_t, int32_t), AnimatorComponent_SetBool, m_EntityID, param_hash, value); }
 			void SetInt(const std::string& param_name, int32_t value) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, uint32_t, int32_t), AnimatorComponent_SetBool, m_EntityID, Utils::fnv1a_hash(param_name), value); }
 
+			void ResetMachine() const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t), AnimatorComponent_ResetMachine, m_EntityID); }
+
 		};
 
 		/**

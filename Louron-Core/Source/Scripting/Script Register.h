@@ -134,15 +134,27 @@ namespace Louron
         static _Transform TransformComponent_GetTransform(UUID entity_uuid);
         static void TransformComponent_SetTransform(UUID entity_uuid, const _Transform* value);
 
+        static _Transform TransformComponent_GetGlobalTransform(UUID entity_uuid);
+        static void TransformComponent_SetGlobalTransform(UUID entity_uuid, const _Transform* value);
+
         static glm::vec3 TransformComponent_GetPosition(UUID entity_uuid);
         static void TransformComponent_SetPosition(UUID entity_uuid, const glm::vec3* value);
+        
+        static glm::vec3 TransformComponent_GetGlobalPosition(UUID entity_uuid);
+        static void TransformComponent_SetGlobalPosition(UUID entity_uuid, const glm::vec3* value);
 
         static glm::vec3 TransformComponent_GetRotation(UUID entity_uuid);
         static void TransformComponent_SetRotation(UUID entity_uuid, const glm::vec3* value);
+        
+        static glm::vec3 TransformComponent_GetGlobalRotation(UUID entity_uuid);
+        static void TransformComponent_SetGlobalRotation(UUID entity_uuid, const glm::vec3* value);
 
         static glm::vec3 TransformComponent_GetScale(UUID entity_uuid);
         static void TransformComponent_SetScale(UUID entity_uuid, const glm::vec3* value);
 
+        static glm::vec3 TransformComponent_GetGlobalScale(UUID entity_uuid);
+        static void TransformComponent_SetGlobalScale(UUID entity_uuid, const glm::vec3* value);
+        
         static glm::vec3 TransformComponent_GetFront(UUID entity_uuid);
         static void TransformComponent_SetFront(UUID entity_uuid, const glm::vec3* value);
 
@@ -427,6 +439,8 @@ namespace Louron
         static void AnimatorComponent_SetFloat(UUID entity_uuid, Animation::StringHash param_hash, float value);
         static void AnimatorComponent_SetUInt(UUID entity_uuid, Animation::StringHash param_hash, uint32_t value);
         static void AnimatorComponent_SetInt(UUID entity_uuid, Animation::StringHash param_hash, int32_t value);
+
+        static void AnimatorComponent_ResetMachine(UUID entity_uuid);
 
 #pragma endregion
 
