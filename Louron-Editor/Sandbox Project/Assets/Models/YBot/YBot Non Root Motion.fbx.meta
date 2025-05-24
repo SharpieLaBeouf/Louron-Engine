@@ -17,6 +17,9 @@ Composite Assets:
   - Asset Name: Run Left_Final
     Asset Handle: 193969959
     Asset Type: AssetType::AnimationClip
+  - Asset Name: Crouch Pose.001_Final
+    Asset Handle: 379988091
+    Asset Type: AssetType::AnimationClip
   - Asset Name: Alpha_Joints_MAT.001
     Asset Handle: 475266045
     Asset Type: AssetType::Material_Standard
@@ -32,9 +35,6 @@ Composite Assets:
   - Asset Name: Walk Right_Final
     Asset Handle: 2473008050
     Asset Type: AssetType::AnimationClip
-  - Asset Name: T-Pose_Final
-    Asset Handle: 2517060239
-    Asset Type: AssetType::AnimationClip
   - Asset Name: Walk Forward_Final
     Asset Handle: 2661767933
     Asset Type: AssetType::AnimationClip
@@ -44,6 +44,9 @@ Composite Assets:
   - Asset Name: Game_Rig
     Asset Handle: 3795262308
     Asset Type: AssetType::Skeleton
+  - Asset Name: T-Pose_Final.001
+    Asset Handle: 3905742638
+    Asset Type: AssetType::AnimationClip
   - Asset Name: Walk Left_Final
     Asset Handle: 3965387159
     Asset Type: AssetType::AnimationClip

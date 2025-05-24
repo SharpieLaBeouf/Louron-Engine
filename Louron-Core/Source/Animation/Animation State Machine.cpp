@@ -8,13 +8,14 @@
 namespace Louron::Animation
 {
 
-    StateMachine::StateMachine(const StateMachine& other)
+    StringHash StateMachine::DefaultEntryHash = Louron::Utils::fnv1a_hash("DEFAULT_ENTRY");
+    StringHash StateMachine::DefaultAnyHash   = Louron::Utils::fnv1a_hash("DEFAULT_ANY");
+    StringHash StateMachine::DefaultExitHash  = Louron::Utils::fnv1a_hash("DEFAULT_EXIT");
+
+    StateMachine::Layer::Layer(const Layer &other)
     {
         States.clear();
         Transitions.clear();
-
-        AnimationParameters.clear();
-        AnimationParameters = other.AnimationParameters;
 
         for(const auto& [string_hash, state] : other.States)
         {
@@ -40,9 +41,17 @@ namespace Louron::Animation
         TransitionCompletion = other.TransitionCompletion;
         ExitTimeCompletion = other.ExitTimeCompletion;
         PreviousNormalisedTime = other.PreviousNormalisedTime;
+
+        LayerName = other.LayerName;
+        LayerWeight = other.LayerWeight;
+        BlendType = other.BlendType;
+        SyncLayer = other.SyncLayer;
+        LayerIndex = other.LayerIndex;
+        UseOwnLayerTiming = other.UseOwnLayerTiming;
+        UsingIK = other.UsingIK;
     }
 
-    StateMachine &StateMachine::operator=(const StateMachine &other)
+    StateMachine::Layer& StateMachine::Layer::operator=(const Layer &other)
     {
         if (this == &other)
             return *this;
@@ -50,14 +59,11 @@ namespace Louron::Animation
         States.clear();
         Transitions.clear();
 
-        AnimationParameters.clear();
-        AnimationParameters = other.AnimationParameters;
-
         for(const auto& [string_hash, state] : other.States)
         {
             if (!state || string_hash == NULL_UUID)
                 continue;
-            
+
             States[string_hash] = state->Clone();
         }
 
@@ -65,7 +71,7 @@ namespace Louron::Animation
         {
             if (!transition)
                 continue;
-            
+
             Transitions.emplace_back(std::make_unique<AnimationTransition>(*transition.get()));
         }
 
@@ -78,152 +84,287 @@ namespace Louron::Animation
         ExitTimeCompletion = other.ExitTimeCompletion;
         PreviousNormalisedTime = other.PreviousNormalisedTime;
 
+        LayerName = other.LayerName;
+        LayerWeight = other.LayerWeight;
+        BlendType = other.BlendType;
+        SyncLayer = other.SyncLayer;
+        LayerIndex = other.LayerIndex;
+        UseOwnLayerTiming = other.UseOwnLayerTiming;
+        UsingIK = other.UsingIK;
+
         return *this;
     }
 
+#pragma region Constructors and Operators
+
+    StateMachine::StateMachine(const StateMachine &other)
+    {
+        m_Layers.clear();
+        m_Layers.reserve(other.m_Layers.size());
+
+        m_Layers = other.m_Layers;
+
+        m_AnimationParameters.clear();
+        m_AnimationParameters = other.m_AnimationParameters;
+    }
+
+    StateMachine& StateMachine::operator=(const StateMachine &other)
+    {
+        if (this == &other)
+            return *this;
+       
+            m_Layers.clear();
+        m_Layers.reserve(other.m_Layers.size());
+
+        m_Layers = other.m_Layers;
+
+        m_AnimationParameters.clear();
+        m_AnimationParameters = other.m_AnimationParameters;
+
+        return *this;
+    }
+
+#pragma endregion
+
+#pragma region General Functionality
+
     void StateMachine::UpdateStates(float ts)
     {
-        if (CurrentState == m_DefaultExitHash)
-            return; // No Updates - StateMachine Exited! To restart, use StateMachine::SetCurrentState(StateMachine::GetEntryHash());
-
-        if (DefaultState == m_DefaultEntryHash)
-        {
-            L_CORE_WARN("Animation State Machine: No State Linked to Entry!");
+        if (m_Layers.empty())
             return;
-        }
-
-        if (CurrentState == m_DefaultEntryHash)
-            SetCurrentState(DefaultState);
-
-        bool is_transition_blending = false;
-
-        const float curr_norm = States[CurrentState]->NormalisedStateTime;
-        float delta_norm = curr_norm - PreviousNormalisedTime;
-        if (delta_norm < 0.0f)
-            delta_norm += 1.0f;
-
-        PreviousNormalisedTime = curr_norm;
-
-        // Check for transition
-        if (TargetState == NULL_UUID)
+            
+        for (int layer_index = 0; layer_index < m_Layers.size(); ++layer_index)
         {
-            for (const auto& transition : Transitions)
+            auto& layer = m_Layers[layer_index];
+
+            if (layer.CurrentState == StateMachine::DefaultExitHash)
+                return; // No Updates - StateMachine Exited! To restart, use StateMachine::SetCurrentState(StateMachine::GetEntryHash());
+
+            if (layer.DefaultState == StateMachine::DefaultEntryHash)
             {
-                if (!transition || transition->SourceStateHash != CurrentState)
-                    continue;
-
-                if (!transition->CheckTransitionConditionsValid(AnimationParameters))
-                    continue;
-
-                TargetState = transition->DestStateHash;
-                TransitionCompletion = 0.0f;
-
-                if (transition->HasExitTime)
-                {
-                    // Compute effective exitTime for looping vs non-looping
-                    float exit_time_value = transition->ExitTime;
-                    auto state_type = States[CurrentState]->GetType();
-                    bool looping_state = (state_type == StateType::Clip && reinterpret_cast<AnimationState_Clip*>(States[CurrentState].get())->IsLooping) || (state_type == StateType::BlendTree);
-
-                    if (!looping_state && exit_time_value > 1.0f)
-                        exit_time_value = fmod(exit_time_value, 1.0f);
-
-                    // Initialize the counter to align with current playhead
-                    if (curr_norm < exit_time_value)
-                        ExitTimeCompletion = curr_norm;
-                    else if (exit_time_value == curr_norm)
-                        ExitTimeCompletion = exit_time_value;
-                    else
-                        ExitTimeCompletion = curr_norm - 1.0f;
-                }
-                else
-                {
-                    ExitTimeCompletion = 0.0f;
-                }
-
-                break; // only arm one transition
+                L_CORE_WARN("Animation State Machine: No State Linked to Entry!");
+                return;
             }
-        }
 
-        // If a transition is armed, see if we can start blending
-        if (TargetState != NULL_UUID)
-        {
-            auto transition = GetTransition(CurrentState, TargetState);
-            if (transition)
+            if (layer.CurrentState == StateMachine::DefaultEntryHash)
+                SetCurrentState(layer_index, layer.DefaultState);
+
+            bool is_transition_blending = false;
+
+            const float curr_norm = layer.States[layer.CurrentState]->NormalisedStateTime;
+            float delta_norm = curr_norm - layer.PreviousNormalisedTime;
+            if (delta_norm < 0.0f)
+                delta_norm += 1.0f;
+
+            layer.PreviousNormalisedTime = curr_norm;
+
+            // Check for transition
+            if (layer.TargetState == NULL_UUID)
             {
-                bool can_start_blend = false;
-
-                if (!transition->HasExitTime)
+                for (const auto& transition : layer.Transitions)
                 {
-                    can_start_blend = true;
+                    if (!transition || transition->SourceStateHash != layer.CurrentState)
+                        continue;
+
+                    if (!transition->CheckTransitionConditionsValid(m_AnimationParameters))
+                        continue;
+
+                    layer.TargetState = transition->DestStateHash;
+                    layer.TransitionCompletion = 0.0f;
+
+                    if (transition->HasExitTime)
+                    {
+                        // Compute effective exitTime for looping vs non-looping
+                        float exit_time_value = transition->ExitTime;
+                        auto state_type = layer.States[layer.CurrentState]->GetType();
+                        bool looping_state = (state_type == StateType::Clip && reinterpret_cast<AnimationState_Clip*>(layer.States[layer.CurrentState].get())->IsLooping) || (state_type == StateType::BlendTree);
+
+                        if (!looping_state && exit_time_value > 1.0f)
+                            exit_time_value = fmod(exit_time_value, 1.0f);
+
+                        // Initialize the counter to align with current playhead
+                        if (curr_norm < exit_time_value)
+                            layer.ExitTimeCompletion = curr_norm;
+                        else if (exit_time_value == curr_norm)
+                            layer.ExitTimeCompletion = exit_time_value;
+                        else
+                            layer.ExitTimeCompletion = curr_norm - 1.0f;
+                    }
+                    else
+                    {
+                        layer.ExitTimeCompletion = 0.0f;
+                    }
+
+                    break; // only arm one transition
                 }
-                else
+            }
+
+            // If a transition is armed, see if we can start blending
+            if (layer.TargetState != NULL_UUID)
+            {
+                auto transition = GetTransition(layer_index, layer.CurrentState, layer.TargetState);
+                if (transition)
                 {
-                    // Recompute effective exitTimeValue
-                    float exit_time_value = transition->ExitTime;
-                    auto state_type = States[CurrentState]->GetType();
-                    bool looping_state = (state_type == StateType::Clip && reinterpret_cast<AnimationState_Clip*>(States[CurrentState].get())->IsLooping) || (state_type == StateType::BlendTree);
+                    bool can_start_blend = false;
 
-                    if (!looping_state && exit_time_value > 1.0f)
-                        exit_time_value = fmod(exit_time_value, 1.0f);
-
-                    // Accumulate wrapped delta
-                    ExitTimeCompletion += delta_norm;
-                    if (ExitTimeCompletion >= exit_time_value)
+                    if (!transition->HasExitTime)
+                    {
                         can_start_blend = true;
-                }
-
-                if (can_start_blend)
-                {
-                    // Clean target state once at start of blend
-                    if (TransitionCompletion == 0.0f && States[TargetState])
-                        States[TargetState]->CleanState();
-
-                    // Advance blend
-                    if (transition->TransitionDuration > 0.0f)
-                    {
-                        TransitionCompletion = std::min(1.0f, TransitionCompletion + (ts / transition->TransitionDuration));
-                        is_transition_blending = true;
                     }
                     else
                     {
-                        TransitionCompletion = 1.0f;
+                        // Recompute effective exitTimeValue
+                        float exit_time_value = transition->ExitTime;
+                        auto state_type = layer.States[layer.CurrentState]->GetType();
+                        bool looping_state = (state_type == StateType::Clip && reinterpret_cast<AnimationState_Clip*>(layer.States[layer.CurrentState].get())->IsLooping) || (state_type == StateType::BlendTree);
+
+                        if (!looping_state && exit_time_value > 1.0f)
+                            exit_time_value = fmod(exit_time_value, 1.0f);
+
+                        // Accumulate wrapped delta
+                        layer.ExitTimeCompletion += delta_norm;
+                        if (layer.ExitTimeCompletion >= exit_time_value)
+                            can_start_blend = true;
                     }
 
-                    // Complete or continue blend
-                    if (TransitionCompletion >= 1.0f)
+                    if (can_start_blend)
                     {
-                        SetCurrentState(TargetState);
-                    }
-                    else if (States[TargetState])
-                    {
-                        States[TargetState]->Update(ts, AnimationParameters);
+                        // Clean target state once at start of blend
+                        if (layer.TransitionCompletion == 0.0f && layer.States[layer.TargetState])
+                            layer.States[layer.TargetState]->CleanState();
+
+                        // Advance blend
+                        if (transition->TransitionDuration > 0.0f)
+                        {
+                            layer.TransitionCompletion = std::min(1.0f, layer.TransitionCompletion + (ts / transition->TransitionDuration));
+                            is_transition_blending = true;
+                        }
+                        else
+                        {
+                            layer.TransitionCompletion = 1.0f;
+                        }
+
+                        // Complete or continue blend
+                        if (layer.TransitionCompletion >= 1.0f)
+                        {
+                            SetCurrentState(layer_index, layer.TargetState);
+                        }
+                        else if (layer.States[layer.TargetState])
+                        {
+                            layer.States[layer.TargetState]->Update(ts, m_AnimationParameters);
+                        }
                     }
                 }
+                else
+                {
+                    // Invalid transition, reset
+                    layer.TargetState = NULL_UUID;
+                    layer.TransitionCompletion = 0.0f;
+                    layer.ExitTimeCompletion = 0.0f;
+                }
             }
-            else
-            {
-                // Invalid transition, reset
-                TargetState = NULL_UUID;
-                TransitionCompletion = 0.0f;
-                ExitTimeCompletion = 0.0f;
-            }
-        }
 
-        // Always update current state
-        if (States.contains(CurrentState) && States[CurrentState])
-        {
-            States[CurrentState]->Update(ts, AnimationParameters);
-        }
-        else if (CurrentState != m_DefaultExitHash)
-        {
-            // Fallback for invalid current state
-            ResetMachine();
-            L_CORE_ERROR("Animation State Machine: Transitioned into a state that does not exist! Resetting State Machine...");
+            // Always update current state
+            if (layer.States.contains(layer.CurrentState) && layer.States[layer.CurrentState])
+            {
+                layer.States[layer.CurrentState]->Update(ts, m_AnimationParameters);
+            }
+            else if (layer.CurrentState != StateMachine::DefaultExitHash)
+            {
+                // Fallback for invalid current state
+                ResetMachine();
+                L_CORE_ERROR("Animation State Machine: Transitioned into a state that does not exist! Resetting State Machine...");
+            }
+
         }
     }
 
     void StateMachine::EvaluatePose(Louron::AnimationPose &evaluated_pose)
+    {
+        if (m_Layers.empty())
+            return;
+        
+        using Contribution = std::tuple<Layer*, float>;
+        std::vector<Contribution> layer_contributions;
+
+        // -------------------------------
+        // STEP 1: Determine contributions
+        // -------------------------------
+        float remaining_budget = 1.0f;
+
+        for (int i = static_cast<int>(m_Layers.size()) - 1; i >= 0; --i)
+        {
+            Layer& layer = m_Layers[i];
+            
+            if (i == 0) 
+                layer.LayerWeight = 1.0f; // Always enforce full strength on base layer.
+
+            if (layer.BlendType == Layer::LayerBlendType::Override)
+            {
+                float contribution = remaining_budget * layer.LayerWeight;
+
+                if (contribution > 0.0f)
+                    layer_contributions.emplace_back(&layer, contribution);
+
+                // If layer wants more than what's left, give it the rest and stop
+                if (contribution >= remaining_budget)
+                {
+                    remaining_budget = 0.0f;
+                    break;
+                }
+
+                // Otherwise, continue
+                remaining_budget -= contribution;
+            }
+            else if (layer.LayerWeight > 0.0f)
+            {
+                // TODO: layer_contributions.emplace_back(&layer, layer.LayerWeight);
+            }
+        }
+
+        // -------------------------------
+        // STEP 2: Blend poses front-to-back
+        // -------------------------------
+        Louron::AnimationPose blended_pose;
+        float blend_total_weight = 0.0f;
+
+        for (int i = static_cast<int>(layer_contributions.size()) - 1; i >= 0; --i)
+        {
+            Layer* layer = std::get<0>(layer_contributions[i]);
+            float weight = std::get<1>(layer_contributions[i]);
+
+            Louron::AnimationPose layer_pose;
+            layer->EvaluatePose(layer_pose);
+
+            if (layer->BlendType == Layer::LayerBlendType::Override)
+            {
+                float new_total_weight = blend_total_weight + weight;
+
+                if (blend_total_weight == 0.0f)
+                {
+                    // First pose sets the base pose to full strength
+                    blended_pose = layer_pose;
+                }
+                else
+                {
+                    float t = weight / new_total_weight; // Proportion of new pose in the updated blend
+                    AnimationPose out_pose;
+                    StateMachine::BlendPoses(blended_pose, layer_pose, t, out_pose);
+                    blended_pose = std::move(out_pose);
+                }
+
+                blend_total_weight = new_total_weight;
+            }
+            else
+            {
+                // TODO: Additive Blending, Need to Add Additive Reference Poses
+            }
+        }
+
+        evaluated_pose = blended_pose;
+    }
+
+    void StateMachine::Layer::EvaluatePose(AnimationPose& evaluated_pose)
     {
         AnimationPose pose_a, pose_b;
 
@@ -233,20 +374,30 @@ namespace Louron::Animation
         }
         else
         {
-            if (CurrentState == m_DefaultExitHash && States.contains(PreviousState) && States[PreviousState])
+            if (CurrentState == StateMachine::DefaultExitHash && States.contains(PreviousState) && States[PreviousState])
                 States[PreviousState]->EvaluatePose(pose_a);
 
             return;
         }
     
-        auto target_state = (TargetState != NULL_UUID) ? States[TargetState].get() : nullptr;
-        auto transition = (target_state) ? GetTransition(CurrentState, TargetState) : nullptr;
+        auto target_state = (TargetState != NULL_UUID && States.contains(TargetState)) ? States[TargetState].get() : nullptr;
+        AnimationTransition* transition = nullptr;
+
+        for(const auto& t : Transitions)
+        {
+            if (!t)
+                continue;
+            
+            if (t->SourceStateHash == CurrentState && t->DestStateHash == TargetState)
+                transition =  t.get(); // Found existing transition between two states
+        }
+
         if (target_state && transition && transition->TransitionDuration > 0.0f)
         {
             target_state->EvaluatePose(pose_b);
     
             float t = TransitionCompletion / transition->TransitionDuration;
-            BlendPoses(pose_a, pose_b, t, evaluated_pose);
+            StateMachine::BlendPoses(pose_a, pose_b, t, evaluated_pose);
         }
         else
         {
@@ -256,21 +407,32 @@ namespace Louron::Animation
 
     void StateMachine::ResetMachine()
     {
-        CurrentState              = m_DefaultEntryHash;
-        PreviousState             = NULL_UUID;
-        TargetState               = NULL_UUID;
-        
-        TransitionCompletion      = 0.0f;
-        ExitTimeCompletion        = 0.0f;
-        PreviousNormalisedTime    = 0.0f;
-
-        for (auto& [hash, state] : States)
+        for (auto& layer : m_Layers)
         {
-            if (state)
+            layer.CurrentState              = StateMachine::DefaultEntryHash;
+            layer.PreviousState             = NULL_UUID;
+            layer.TargetState               = NULL_UUID;
+            
+            layer.TransitionCompletion      = 0.0f;
+            layer.ExitTimeCompletion        = 0.0f;
+            layer.PreviousNormalisedTime    = 0.0f;
+
+            for (auto& [hash, state] : layer.States)
             {
-                state->CleanState();
+                if (state)
+                {
+                    state->CleanState();
+                }
             }
         }
+    }
+    
+    bool StateMachine::ValidLayer(size_t layer_index) const 
+    {
+        bool result = (layer_index >= 0 && layer_index < m_Layers.size());
+        if(!result)
+            L_CORE_WARN("Animation State Machine: Invalid Layer Index. Index Passed: {} - Total Layer Stack Size: {}", std::to_string(layer_index), std::to_string(m_Layers.size()));
+        return result;
     }
 
     void StateMachine::BlendPoses(const AnimationPose& a, const AnimationPose& b, float t, AnimationPose& result)
@@ -310,14 +472,21 @@ namespace Louron::Animation
             result.Pose[bone_name] = out;
         }
     }
+    
+#pragma endregion
 
-    void StateMachine::SetCurrentState(const std::string &state_name) 
-    { 
+#pragma region --State-- Getter and Setters
+
+    void StateMachine::SetCurrentState(size_t layer_index, const std::string& state_name) 
+    {
+        if (!ValidLayer(layer_index))
+            return;
+
         auto state_hash = Louron::Utils::fnv1a_hash(state_name); 
-        if (States.contains(state_hash)) 
+        if (m_Layers[layer_index].States.contains(state_hash)) 
         {  
-            PreviousState = CurrentState;
-            CurrentState = state_hash;
+            m_Layers[layer_index].PreviousState = m_Layers[layer_index].CurrentState;
+            m_Layers[layer_index].CurrentState = state_hash;
         } 
         else
         {
@@ -325,75 +494,90 @@ namespace Louron::Animation
         }
     }
 
-    void StateMachine::SetCurrentState(const StringHash &state_hash)
+    void StateMachine::SetCurrentState(size_t layer_index, const StringHash& state_hash)
     {
-        if (States.contains(state_hash) || state_hash == m_DefaultExitHash) 
+        if (!ValidLayer(layer_index))
+            return;
+            
+        auto& layer = m_Layers[layer_index];
+
+        if (layer.States.contains(state_hash) || state_hash == StateMachine::DefaultExitHash) 
         {  
-            PreviousState = CurrentState;
-            CurrentState = state_hash;
+            layer.PreviousState = layer.CurrentState;
+            layer.CurrentState = state_hash;
         } 
         else
         {
             L_CORE_WARN("Animation State Machine: State Hash Does Not Exist in Animation State Machine: {}", state_hash);
         }
         
-        TargetState = NULL_UUID;
-        TransitionCompletion = 0.0f;
+        layer.TargetState = NULL_UUID;
+        layer.TransitionCompletion = 0.0f;
     }
 
-    StringHash StateMachine::CreateState(const std::string &state_name, StateType state_type)
+    StringHash StateMachine::CreateState(size_t layer_index, const std::string& state_name, StateType state_type)
     {
+        if (!ValidLayer(layer_index))
+            return NULL_UUID;
+            
+        auto& layer = m_Layers[layer_index];
+
         StringHash state_hash = Louron::Utils::fnv1a_hash(state_name);
-        if (States.size() == 0)
-            DefaultState = state_hash;
+        if (layer.States.size() == 0)
+            layer.DefaultState = state_hash;
 
         switch(state_type)
         {
             case StateType::Clip:
             {
-                States[state_hash] = std::make_unique<AnimationState_Clip>();
+                layer.States[state_hash] = std::make_unique<AnimationState_Clip>();
                 break;
             }
             case StateType::BlendTree:
             {
-                States[state_hash] = std::make_unique<AnimationState_BlendTree>();
+                layer.States[state_hash] = std::make_unique<AnimationState_BlendTree>();
                 break;
             }
         }
 
-        if (DefaultState == state_hash)
+        if (layer.DefaultState == state_hash)
         {
-            CreateTransition(m_DefaultEntryHash, state_hash);
+            CreateTransition(layer_index, StateMachine::DefaultEntryHash, state_hash);
         }
 
-        States[state_hash]->Name = state_name;
+        layer.States[state_hash]->Name = state_name;
 
         return state_hash;
     }
 
-    void StateMachine::RenameState(const StringHash &state_hash, const std::string &state_new_name)
+    void StateMachine::RenameState(size_t layer_index, const StringHash& state_hash, const std::string& state_new_name)
     {
-        if (!States.contains(state_hash)) // Current State Does Not Exist
+        if (!ValidLayer(layer_index))
+            return;
+
+        auto& layer = m_Layers[layer_index];
+
+        if (!layer.States.contains(state_hash)) // Current State Does Not Exist
             return;
 
         StringHash state_new_hash = Louron::Utils::fnv1a_hash(state_new_name);
-        if (States.contains(state_new_hash)) // Already Exists!
+        if (layer.States.contains(state_new_hash)) // Already Exists!
             return;
 
-        States[state_new_hash] = std::move(States[state_hash]);
-        States[state_new_hash]->Name = state_new_name;
-        States.erase(state_hash);
+        layer.States[state_new_hash] = std::move(layer.States[state_hash]);
+        layer.States[state_new_hash]->Name = state_new_name;
+        layer.States.erase(state_hash);
 
-        if (DefaultState == state_hash)
-            DefaultState = state_new_hash;
+        if (layer.DefaultState == state_hash)
+            layer.DefaultState = state_new_hash;
 
-        if (PreviousState == state_hash)
-            PreviousState = state_new_hash;
+        if (layer.PreviousState == state_hash)
+            layer.PreviousState = state_new_hash;
 
-        if (TargetState == state_hash)
-            TargetState = state_new_hash;
+        if (layer.TargetState == state_hash)
+            layer.TargetState = state_new_hash;
 
-        for (auto& transition : Transitions)
+        for (auto& transition : layer.Transitions)
         {
             if  (!transition)
                 continue;
@@ -406,56 +590,154 @@ namespace Louron::Animation
         }
     }
 
-    void StateMachine::RemoveState(const std::string &state_name)
+    void StateMachine::RemoveState(size_t layer_index, const std::string& state_name)
     {
-        RemoveState(Louron::Utils::fnv1a_hash(state_name));
+        RemoveState(layer_index, Louron::Utils::fnv1a_hash(state_name));
     }
 
-    void StateMachine::RemoveState(const StringHash &state_hash)
+    void StateMachine::RemoveState(size_t layer_index, const StringHash& state_hash)
     {
-        if (States.contains(state_hash))
-        {
-            RemoveAllTransitionTo(state_hash);
-            RemoveAllTransitionFrom(state_hash);
+        if (!ValidLayer(layer_index))
+            return;
 
-            States.erase(state_hash);
+        auto& layer = m_Layers[layer_index];
+
+        if (layer.States.contains(state_hash))
+        {
+            RemoveAllTransitionTo(layer_index, state_hash);
+            RemoveAllTransitionFrom(layer_index, state_hash);
+
+            layer.States.erase(state_hash);
         }
     }
 
-    AnimationState* StateMachine::GetAnimationState(const StringHash &state_hash)
+    StringHash StateMachine::GetDefaultStateHash(size_t layer_index) const
     {
-        if (!States.contains(state_hash) || state_hash == NULL_UUID)
+        return ValidLayer(layer_index) ? m_Layers[layer_index].DefaultState : NULL_UUID;
+    }
+
+    void StateMachine::SetDefaultStateHash(size_t layer_index, const StringHash &state_hash)
+    {
+        if (!ValidLayer(layer_index))
+            return;
+
+        auto& layer = m_Layers[layer_index];
+
+        if(!layer.States.contains(state_hash))
+            return;
+        
+        layer.DefaultState = state_hash;
+    }
+
+    const StateMachine::StateMap& StateMachine::GetAllStates(size_t layer_index) const
+    {
+        if (!ValidLayer(layer_index))
+        {
+            static StateMap s_NullStateMap = {};
+            return s_NullStateMap;
+        }
+
+        return m_Layers[layer_index].States;
+    }
+
+    AnimationState* StateMachine::GetAnimationState(size_t layer_index, const std::string &state_name)
+    { 
+        return GetAnimationState(layer_index, Louron::Utils::fnv1a_hash(state_name)); 
+    }
+
+    AnimationState* StateMachine::GetAnimationState(size_t layer_index, const StringHash &state_hash)
+    {
+        if (!ValidLayer(layer_index))
             return nullptr;
-        return States[state_hash].get();
+
+        auto& layer = m_Layers[layer_index];
+
+        if (!layer.States.contains(state_hash) || state_hash == NULL_UUID)
+            return nullptr;
+
+        return layer.States[state_hash].get();
     }
 
-    AnimationTransition *StateMachine::CreateTransition(const std::string &state_name_from, const std::string &state_name_to)
+    AnimationState* StateMachine::GetCurrentAnimationState(size_t layer_index)
     {
-        return CreateTransition(Louron::Utils::fnv1a_hash(state_name_from), Louron::Utils::fnv1a_hash(state_name_to));
+        if (!ValidLayer(layer_index))
+            return nullptr;
+
+        auto& layer = m_Layers[layer_index];
+
+        if (!layer.States.contains(layer.CurrentState))
+            return nullptr;
+
+        return layer.States[layer.CurrentState].get();
     }
 
-    AnimationTransition* StateMachine::CreateTransition(const StringHash &state_hash_from, const StringHash &state_hash_to)
+    AnimationState* StateMachine::GetPreviousAnimationState(size_t layer_index)
+    { 
+        if (!ValidLayer(layer_index))
+            return nullptr;
+
+        auto& layer = m_Layers[layer_index];
+
+        if (!layer.States.contains(layer.PreviousState))
+            return nullptr;
+
+        return layer.States[layer.PreviousState].get();
+    }
+
+    AnimationState* StateMachine::GetTargetAnimationState(size_t layer_index)
     {
-        if (auto found_transition = GetTransition(state_hash_from, state_hash_to); found_transition)
+        if (!ValidLayer(layer_index))
+            return nullptr;
+
+        auto& layer = m_Layers[layer_index];
+
+        if (!layer.States.contains(layer.TargetState))
+            return nullptr;
+
+        return layer.States[layer.TargetState].get();
+    }
+
+#pragma endregion
+
+#pragma region --Transition-- Getter and Setters
+
+    AnimationTransition* StateMachine::CreateTransition(size_t layer_index, const std::string& state_name_from, const std::string& state_name_to)
+    {
+        return CreateTransition(layer_index, Louron::Utils::fnv1a_hash(state_name_from), Louron::Utils::fnv1a_hash(state_name_to));
+    }
+
+    AnimationTransition* StateMachine::CreateTransition(size_t layer_index, const StringHash& state_hash_from, const StringHash& state_hash_to)
+    {
+        if (!ValidLayer(layer_index))
+            return nullptr;
+
+        auto& layer = m_Layers[layer_index];
+
+        if (auto found_transition = GetTransition(layer_index, state_hash_from, state_hash_to); found_transition)
             return found_transition;
 
         auto transition = std::make_unique<AnimationTransition>();
         transition->SourceStateHash = state_hash_from;
         transition->DestStateHash = state_hash_to;
 
-        Transitions.emplace_back(std::move(transition));
+        layer.Transitions.emplace_back(std::move(transition));
         
-        return Transitions.back().get();
+        return layer.Transitions.back().get();
     }
 
-    void StateMachine::RemoveTransition(const std::string &state_name_from, const std::string &state_name_to)
+    void StateMachine::RemoveTransition(size_t layer_index, const std::string& state_name_from, const std::string& state_name_to)
     {
-        RemoveTransition(Louron::Utils::fnv1a_hash(state_name_from), Louron::Utils::fnv1a_hash(state_name_to));
+        RemoveTransition(layer_index, Louron::Utils::fnv1a_hash(state_name_from), Louron::Utils::fnv1a_hash(state_name_to));
     }
     
-    void StateMachine::RemoveTransition(const StringHash &state_hash_from, const StringHash &state_hash_to)
+    void StateMachine::RemoveTransition(size_t layer_index, const StringHash& state_hash_from, const StringHash& state_hash_to)
     {
-        for(auto it = Transitions.begin(); it != Transitions.end(); )
+        if (!ValidLayer(layer_index))
+            return;
+
+        auto& layer = m_Layers[layer_index];
+
+        for(auto it = layer.Transitions.begin(); it != layer.Transitions.end(); )
         {
             if (!it->get())
             {
@@ -464,20 +746,25 @@ namespace Louron::Animation
             }
 
             if (it->get()->SourceStateHash == state_hash_from && it->get()->DestStateHash == state_hash_to)
-                it = Transitions.erase(it);
+                it = layer.Transitions.erase(it);
             else
                 ++it;
         }
     }
 
-    void StateMachine::RemoveAllTransitionFrom(const std::string &state_name)
+    void StateMachine::RemoveAllTransitionFrom(size_t layer_index, const std::string& state_name)
     {
-        RemoveAllTransitionFrom(Louron::Utils::fnv1a_hash(state_name));
+        RemoveAllTransitionFrom(layer_index, Louron::Utils::fnv1a_hash(state_name));
     }
 
-    void StateMachine::RemoveAllTransitionFrom(const StringHash &state_hash)
+    void StateMachine::RemoveAllTransitionFrom(size_t layer_index, const StringHash& state_hash)
     {
-        for (auto it = Transitions.begin(); it != Transitions.end(); )
+        if (!ValidLayer(layer_index))
+            return;
+
+        auto& layer = m_Layers[layer_index];
+
+        for (auto it = layer.Transitions.begin(); it != layer.Transitions.end(); )
         {
             if (!it->get())
             {
@@ -486,20 +773,25 @@ namespace Louron::Animation
             }
 
             if (it->get()->SourceStateHash == state_hash)
-                it = Transitions.erase(it);
+                it = layer.Transitions.erase(it);
             else
                 ++it;
         }
     }
 
-    void StateMachine::RemoveAllTransitionTo(const std::string &state_name)
+    void StateMachine::RemoveAllTransitionTo(size_t layer_index, const std::string& state_name)
     {
-        RemoveAllTransitionTo(Louron::Utils::fnv1a_hash(state_name));
+        RemoveAllTransitionTo(layer_index, Louron::Utils::fnv1a_hash(state_name));
     }
 
-    void StateMachine::RemoveAllTransitionTo(const StringHash &state_hash)
+    void StateMachine::RemoveAllTransitionTo(size_t layer_index, const StringHash& state_hash)
     {
-        for (auto it = Transitions.begin(); it != Transitions.end(); )
+        if (!ValidLayer(layer_index))
+            return;
+
+        auto& layer = m_Layers[layer_index];
+
+        for (auto it = layer.Transitions.begin(); it != layer.Transitions.end(); )
         {
             if (!it->get())
             {
@@ -508,20 +800,25 @@ namespace Louron::Animation
             }
 
             if (it->get()->DestStateHash == state_hash)
-                it = Transitions.erase(it);
+                it = layer.Transitions.erase(it);
             else
                 ++it;
         }
     }
 
-    AnimationTransition* StateMachine::GetTransition(const std::string &state_name_from, const std::string &state_name_to)
+    AnimationTransition* StateMachine::GetTransition(size_t layer_index, const std::string& state_name_from, const std::string& state_name_to)
     {
-        return GetTransition(Louron::Utils::fnv1a_hash(state_name_from), Louron::Utils::fnv1a_hash(state_name_to));
+        return GetTransition(layer_index, Louron::Utils::fnv1a_hash(state_name_from), Louron::Utils::fnv1a_hash(state_name_to));
     }
 
-    AnimationTransition* StateMachine::GetTransition(const StringHash &state_hash_from, const StringHash &state_hash_to)
+    AnimationTransition* StateMachine::GetTransition(size_t layer_index, const StringHash& state_hash_from, const StringHash& state_hash_to)
     {
-        for(const auto& transition : Transitions)
+        if (!ValidLayer(layer_index))
+            return nullptr;
+
+        auto& layer = m_Layers[layer_index];
+
+        for(const auto& transition : layer.Transitions)
         {
             if (!transition)
                 continue;
@@ -533,105 +830,118 @@ namespace Louron::Animation
         return nullptr;
     }
 
+    std::vector<std::unique_ptr<AnimationTransition>>* StateMachine::GetAllTransitions(size_t layer_index)
+    {
+        if (!ValidLayer(layer_index))
+            return nullptr;
+
+        return &m_Layers[layer_index].Transitions;
+    }
+
+#pragma endregion
+
+#pragma region --Transition-- Getter and Setters
+
     StringHash StateMachine::AddParameter(const std::string &param_name, ParameterType param_type)
     {
         StringHash param_hash = Louron::Utils::fnv1a_hash(param_name);
 
-        if (AnimationParameters.contains(param_hash)) 
+        if (m_AnimationParameters.contains(param_hash)) 
             return param_hash;
 
-        AnimationParameters[param_hash] = { param_name, 0.0f, param_type };
+        m_AnimationParameters[param_hash] = { param_name, 0.0f, param_type };
         return param_hash;
     }
 
     bool StateMachine::HasParameterNamed(const std::string &param_name)
     {
-        return AnimationParameters.contains(Louron::Utils::fnv1a_hash(param_name));
+        return m_AnimationParameters.contains(Louron::Utils::fnv1a_hash(param_name));
     }
 
     void StateMachine::RenameParameter(const StringHash &param_hash, const std::string &param_new_name)
     {
-        if (!AnimationParameters.contains(param_hash)) // Current Param Does Not Exist
+        if (!m_AnimationParameters.contains(param_hash)) // Current Param Does Not Exist
             return;
 
         StringHash param_new_hash = Louron::Utils::fnv1a_hash(param_new_name);
-        if (AnimationParameters.contains(param_new_hash)) // Already Exists!
+        if (m_AnimationParameters.contains(param_new_hash)) // Already Exists!
             return;
 
-        AnimationParameters[param_new_hash] = AnimationParameters[param_hash];
-        AnimationParameters[param_new_hash].Name = param_new_name;
-        AnimationParameters.erase(param_hash);
+        m_AnimationParameters[param_new_hash] = m_AnimationParameters[param_hash];
+        m_AnimationParameters[param_new_hash].Name = param_new_name;
+        m_AnimationParameters.erase(param_hash);
 
-        // Traverse the State Machine and any recursive blend trees to update the param references!
-
-        for (auto& [hash, state] : States)
+        for (auto& layer : m_Layers)
         {
-            if (!state)
-                continue;
-
-            switch (state->GetType())
+            // Traverse the State Machine and any recursive blend trees to update the param references!
+            for (auto& [hash, state] : layer.States)
             {
-                case StateType::Clip:
+                if (!state)
+                    continue;
+
+                switch (state->GetType())
                 {
-                    // Do nothing
-                    break;
-                }
-                case StateType::BlendTree:
-                {
-                    std::function<void(Louron::Animation::BlendNode&)> rename_params_recursive = [&](Louron::Animation::BlendNode& blend_node) -> void
+                    case StateType::Clip:
                     {
-                        if (blend_node.BlendParam[0] == param_hash)
+                        // Do nothing
+                        break;
+                    }
+                    case StateType::BlendTree:
+                    {
+                        std::function<void(Louron::Animation::BlendNode&)> rename_params_recursive = [&](Louron::Animation::BlendNode& blend_node) -> void
                         {
-                            blend_node.BlendParam[0] = param_new_hash;
-                        }
-
-                        if (blend_node.BlendParam[1] == param_hash)
-                        {
-                            blend_node.BlendParam[1] = param_new_hash;
-                        }
-
-                        for(auto& motion : blend_node.ChildNode)
-                        {
-                            if (!motion)
-                                continue;
-                            
-                            switch (motion->GetType())
+                            if (blend_node.BlendParam[0] == param_hash)
                             {
-                                case MotionType::Clip:
+                                blend_node.BlendParam[0] = param_new_hash;
+                            }
+
+                            if (blend_node.BlendParam[1] == param_hash)
+                            {
+                                blend_node.BlendParam[1] = param_new_hash;
+                            }
+
+                            for(auto& motion : blend_node.ChildNode)
+                            {
+                                if (!motion)
+                                    continue;
+                                
+                                switch (motion->GetType())
                                 {
-                                    // Do nothing
-                                    break;
-                                }
-                                case MotionType::BlendTree:
-                                {
-                                    auto motion_blend_tree = reinterpret_cast<MotionBlendTree*>(motion.get());
-                                    rename_params_recursive(motion_blend_tree->RootNode);
-                                    break;
+                                    case MotionType::Clip:
+                                    {
+                                        // Do nothing
+                                        break;
+                                    }
+                                    case MotionType::BlendTree:
+                                    {
+                                        auto motion_blend_tree = reinterpret_cast<MotionBlendTree*>(motion.get());
+                                        rename_params_recursive(motion_blend_tree->RootNode);
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                    };
-                    
-                    auto state_blend_tree = reinterpret_cast<AnimationState_BlendTree*>(state.get());
-                    rename_params_recursive(state_blend_tree->AnimBlendTree);
-                    break;
+                        };
+                        
+                        auto state_blend_tree = reinterpret_cast<AnimationState_BlendTree*>(state.get());
+                        rename_params_recursive(state_blend_tree->AnimBlendTree);
+                        break;
+                    }
                 }
             }
-        }
 
-        // Update Transitions & Conditions
-
-        for (auto& transition : Transitions)
-        {
-            if (!transition)
-                continue;
-
-            for (auto& condition : transition->Conditions)
+            // Update Transitions & Conditions
+            for (auto& transition : layer.Transitions)
             {
-                if (condition.ParameterHash == param_hash)
+                if (!transition)
+                    continue;
+
+                for (auto& condition : transition->Conditions)
                 {
-                    condition.ParameterHash = param_new_hash;
-                    condition.ParameterName = param_new_name;
+                    if (condition.ParameterHash == param_hash)
+                    {
+                        condition.ParameterHash = param_new_hash;
+                        condition.ParameterName = param_new_name;
+                    }
                 }
             }
         }
@@ -645,18 +955,32 @@ namespace Louron::Animation
 
     void StateMachine::RemoveParameter(const StringHash &param_hash)
     {
-        if (AnimationParameters.contains(param_hash))
+        if (m_AnimationParameters.contains(param_hash))
         {
-            AnimationParameters.erase(param_hash);
+            m_AnimationParameters.erase(param_hash);
         }
+    }
+
+    AnimationParameter *StateMachine::GetParameter(const StringHash &param_hash)
+    {
+        if (m_AnimationParameters.contains(param_hash)) 
+        { 
+            return &m_AnimationParameters[param_hash]; 
+        } 
+        return nullptr;
+    }
+
+    const std::unordered_map<StringHash, AnimationParameter> &StateMachine::GetParameters() const
+    {
+        return m_AnimationParameters;
     }
 
     void StateMachine::SetBool(const std::string& param_name, bool value)
     {
         StringHash param_hash = Louron::Utils::fnv1a_hash(param_name); 
-        if (AnimationParameters.contains(param_hash) && AnimationParameters[param_hash].Type == ParameterType::Bool)
+        if (m_AnimationParameters.contains(param_hash) && m_AnimationParameters[param_hash].Type == ParameterType::Bool)
         {
-            AnimationParameters[param_hash].Value = ((value) ? 1.0f : 0.0f);
+            m_AnimationParameters[param_hash].Value = ((value) ? 1.0f : 0.0f);
         }
         else
         {
@@ -666,9 +990,9 @@ namespace Louron::Animation
 
     void StateMachine::SetBool(const StringHash &param_hash, bool value)
     {
-        if (AnimationParameters.contains(param_hash) && AnimationParameters[param_hash].Type == ParameterType::Bool)
+        if (m_AnimationParameters.contains(param_hash) && m_AnimationParameters[param_hash].Type == ParameterType::Bool)
         {
-            AnimationParameters[param_hash].Value = ((value) ? 1.0f : 0.0f);
+            m_AnimationParameters[param_hash].Value = ((value) ? 1.0f : 0.0f);
         }
         else
         {
@@ -679,9 +1003,9 @@ namespace Louron::Animation
     void StateMachine::SetFloat(const std::string& param_name, float value)
     {
         StringHash param_hash = Louron::Utils::fnv1a_hash(param_name); 
-        if (AnimationParameters.contains(param_hash) && AnimationParameters[param_hash].Type == ParameterType::Float)
+        if (m_AnimationParameters.contains(param_hash) && m_AnimationParameters[param_hash].Type == ParameterType::Float)
         {
-            AnimationParameters[param_hash].Value = value;
+            m_AnimationParameters[param_hash].Value = value;
         }
         else
         {
@@ -691,9 +1015,9 @@ namespace Louron::Animation
 
     void StateMachine::SetFloat(const StringHash &param_hash, float value)
     {
-        if (AnimationParameters.contains(param_hash) && AnimationParameters[param_hash].Type == ParameterType::Float)
+        if (m_AnimationParameters.contains(param_hash) && m_AnimationParameters[param_hash].Type == ParameterType::Float)
         {
-            AnimationParameters[param_hash].Value = value;
+            m_AnimationParameters[param_hash].Value = value;
         }
         else
         {
@@ -704,9 +1028,9 @@ namespace Louron::Animation
     void StateMachine::SetInt(const std::string& param_name, int32_t value)
     {
         StringHash param_hash = Louron::Utils::fnv1a_hash(param_name); 
-        if (AnimationParameters.contains(param_hash) && AnimationParameters[param_hash].Type == ParameterType::Int)
+        if (m_AnimationParameters.contains(param_hash) && m_AnimationParameters[param_hash].Type == ParameterType::Int)
         {
-            AnimationParameters[param_hash].Value = static_cast<float>(value);
+            m_AnimationParameters[param_hash].Value = static_cast<float>(value);
         }
         else
         {
@@ -716,9 +1040,9 @@ namespace Louron::Animation
 
     void StateMachine::SetInt(const StringHash &param_hash, int32_t value)
     {
-        if (AnimationParameters.contains(param_hash) && AnimationParameters[param_hash].Type == ParameterType::Int)
+        if (m_AnimationParameters.contains(param_hash) && m_AnimationParameters[param_hash].Type == ParameterType::Int)
         {
-            AnimationParameters[param_hash].Value = static_cast<float>(value);
+            m_AnimationParameters[param_hash].Value = static_cast<float>(value);
         }
         else
         {
@@ -729,9 +1053,9 @@ namespace Louron::Animation
     void StateMachine::SetUInt(const std::string& param_name, uint32_t value)
     {
         StringHash param_hash = Louron::Utils::fnv1a_hash(param_name); 
-        if (AnimationParameters.contains(param_hash) && AnimationParameters[param_hash].Type == ParameterType::UInt)
+        if (m_AnimationParameters.contains(param_hash) && m_AnimationParameters[param_hash].Type == ParameterType::UInt)
         {
-            AnimationParameters[param_hash].Value = static_cast<float>(value);
+            m_AnimationParameters[param_hash].Value = static_cast<float>(value);
         }
         else
         {
@@ -741,9 +1065,9 @@ namespace Louron::Animation
     
     void StateMachine::SetUInt(const StringHash &param_hash, uint32_t value)
     {
-        if (AnimationParameters.contains(param_hash) && AnimationParameters[param_hash].Type == ParameterType::UInt)
+        if (m_AnimationParameters.contains(param_hash) && m_AnimationParameters[param_hash].Type == ParameterType::UInt)
         {
-            AnimationParameters[param_hash].Value = static_cast<float>(value);
+            m_AnimationParameters[param_hash].Value = static_cast<float>(value);
         }
         else
         {
@@ -751,33 +1075,15 @@ namespace Louron::Animation
         }
     }
 
-    void StateMachine::SetDefaultState(const StringHash &state_hash)
-    {
-        if(!States.contains(state_hash))
-            return;
-        
-        DefaultState = state_hash;
-    }
+#pragma endregion
 
     void StateMachine::Serialise(YAML::Emitter &out)
     {
-        std::string default_state_name;
-        if(DefaultState == m_DefaultEntryHash)
-        {
-            default_state_name = "DEFAULT_ENTRY";
-        }
-        else
-        {
-            default_state_name = (States.contains(DefaultState) && States[DefaultState]) ? States[DefaultState]->Name : "DEFAULT_ENTRY";
-        }
-
-		out << YAML::Key << "Default State" << YAML::Value << default_state_name;
-
         out << YAML::Key << "Animation Parameters" << YAML::Value;
         {
             out << YAML::BeginSeq;
 
-            for (const auto& [hash, param] : AnimationParameters)
+            for (const auto& [hash, param] : m_AnimationParameters)
             {
                 out << YAML::BeginMap;
 
@@ -791,92 +1097,125 @@ namespace Louron::Animation
 
             out << YAML::EndSeq;
         }
-        
-        out << YAML::Key << "Animation States" << YAML::Value;
+
+        out << YAML::Key << "State Machine Layers" << YAML::Value;
+        out << YAML::BeginSeq;
+
+        for(size_t i = 0; i < m_Layers.size(); ++i)
         {
-            out << YAML::BeginSeq;
+            Layer& layer = m_Layers[i];
 
-            for (const auto& [hash, state] : States)
+            out << YAML::BeginMap;
+
+            out << YAML::Key << "Layer Name" << YAML::Value << layer.LayerName; 
+            out << YAML::Key << "Layer Weight" << YAML::Value << layer.LayerWeight;
+            out << YAML::Key << "Layer Blend Type" << YAML::Value << (layer.BlendType == Layer::LayerBlendType::Override ? "Override" : "Additive");
+            
+            out << YAML::Key << "Layer Sync Layer" << YAML::Value << layer.SyncLayer;
+            out << YAML::Key << "Layer Sync Index" << YAML::Value << layer.LayerIndex;
+            out << YAML::Key << "Layer Use Own Timing" << YAML::Value << layer.UseOwnLayerTiming;
+            out << YAML::Key << "Layer Using IK" << YAML::Value << layer.UsingIK;
+
             {
-                if(!state) continue;
+                std::string default_state_name;
+                if(layer.DefaultState == StateMachine::DefaultEntryHash)
+                {
+                    default_state_name = "DEFAULT_ENTRY";
+                }
+                else
+                {
+                    default_state_name = (layer.States.contains(layer.DefaultState) && layer.States[layer.DefaultState]) ? layer.States[layer.DefaultState]->Name : "DEFAULT_ENTRY";
+                }
 
-                out << YAML::BeginMap;
-
-                out << YAML::Key << "Name" << YAML::Value << state->Name;
-                out << YAML::Key << "Hash" << YAML::Value << hash;
-                out << YAML::Key << "Type" << YAML::Value << Utils::StateTypeToString(state->GetType());
-
-                state->Serialise(out);
-
-                out << YAML::EndMap;
-            }
-
-            out << YAML::EndSeq;
-        }
-        
-        out << YAML::Key << "Animation Transitions" << YAML::Value;
-        {
-            out << YAML::BeginSeq;
-
-            for (const auto& transition : Transitions)
-            {
-                if (!transition)
-                    continue;
-
-                const auto& source_hash = transition->SourceStateHash;
-                const auto& dest_hash = transition->DestStateHash;
-        
-                bool source_valid = (source_hash == m_DefaultEntryHash) || (States.contains(source_hash) && States[source_hash]);
-                bool dest_valid = (dest_hash == m_DefaultExitHash) || (States.contains(dest_hash) && States[dest_hash]);
-        
-                if (!source_valid || !dest_valid)
-                    continue;
-                        
-                out << YAML::BeginMap;
-
-                out << YAML::Key << "Source Name" << YAML::Value << ((source_hash == m_DefaultEntryHash) ? "Entry State" : States[transition->SourceStateHash]->Name);
-                out << YAML::Key << "Source Hash" << YAML::Value << transition->SourceStateHash;
-
-                out << YAML::Key << "Destination Name" << YAML::Value << ((dest_hash == m_DefaultExitHash) ? "Exit State" : States[transition->DestStateHash]->Name);
-                out << YAML::Key << "Destination Hash" << YAML::Value << transition->DestStateHash;
-
-                out << YAML::Key << "Transition Duration"   << YAML::Value << transition->TransitionDuration;
-                out << YAML::Key << "Has Exit Time"         << YAML::Value << transition->HasExitTime;
-                out << YAML::Key << "Exit Time"             << YAML::Value << transition->ExitTime;
-
-                out << YAML::Key << "Conditions" << YAML::Value;
+                out << YAML::Key << "Layer Default State" << YAML::Value << default_state_name;
+                
+                out << YAML::Key << "Layer Animation States" << YAML::Value;
                 {
                     out << YAML::BeginSeq;
 
-                    for (const auto& condition : transition->Conditions)
+                    for (const auto& [hash, state] : layer.States)
                     {
+                        if(!state) continue;
+
                         out << YAML::BeginMap;
-    
-                        out << YAML::Key << "Parameter Name"        << YAML::Value << condition.ParameterName;
-                        out << YAML::Key << "Parameter Hash"        << YAML::Value << condition.ParameterHash;
-                        out << YAML::Key << "Comparison Operation"  << YAML::Value << Utils::ComparisonTypeToString(condition.Operation);
-                        out << YAML::Key << "Reference Threshold"   << YAML::Value << condition.ReferenceThreshold;
-                        
+
+                        out << YAML::Key << "Name" << YAML::Value << state->Name;
+                        out << YAML::Key << "Hash" << YAML::Value << hash;
+                        out << YAML::Key << "Type" << YAML::Value << Utils::StateTypeToString(state->GetType());
+
+                        state->Serialise(out);
+
                         out << YAML::EndMap;
                     }
-                    
+
+                    out << YAML::EndSeq;
+                }
+                
+                out << YAML::Key << "Layer Animation Transitions" << YAML::Value;
+                {
+                    out << YAML::BeginSeq;
+
+                    for (const auto& transition : layer.Transitions)
+                    {
+                        if (!transition)
+                            continue;
+
+                        StringHash source_hash = transition->SourceStateHash;
+                        StringHash dest_hash = transition->DestStateHash;
+                
+                        bool source_valid = (source_hash == StateMachine::DefaultEntryHash) || (layer.States.contains(source_hash) && layer.States[source_hash]);
+                        bool dest_valid = (dest_hash == StateMachine::DefaultExitHash) || (layer.States.contains(dest_hash) && layer.States[dest_hash]);
+                
+                        if (!source_valid || !dest_valid)
+                            continue;
+                                
+                        out << YAML::BeginMap;
+
+                        out << YAML::Key << "Source Name" << YAML::Value << ((source_hash == StateMachine::DefaultEntryHash) ? "Entry State" : layer.States[transition->SourceStateHash]->Name);
+                        out << YAML::Key << "Source Hash" << YAML::Value << transition->SourceStateHash;
+
+                        out << YAML::Key << "Destination Name" << YAML::Value << ((dest_hash == StateMachine::DefaultExitHash) ? "Exit State" : layer.States[transition->DestStateHash]->Name);
+                        out << YAML::Key << "Destination Hash" << YAML::Value << transition->DestStateHash;
+
+                        out << YAML::Key << "Transition Duration"   << YAML::Value << transition->TransitionDuration;
+                        out << YAML::Key << "Has Exit Time"         << YAML::Value << transition->HasExitTime;
+                        out << YAML::Key << "Exit Time"             << YAML::Value << transition->ExitTime;
+
+                        out << YAML::Key << "Conditions" << YAML::Value;
+                        {
+                            out << YAML::BeginSeq;
+
+                            for (const auto& condition : transition->Conditions)
+                            {
+                                out << YAML::BeginMap;
+            
+                                out << YAML::Key << "Parameter Name"        << YAML::Value << condition.ParameterName;
+                                out << YAML::Key << "Parameter Hash"        << YAML::Value << condition.ParameterHash;
+                                out << YAML::Key << "Comparison Operation"  << YAML::Value << Utils::ComparisonTypeToString(condition.Operation);
+                                out << YAML::Key << "Reference Threshold"   << YAML::Value << condition.ReferenceThreshold;
+                                
+                                out << YAML::EndMap;
+                            }
+                            
+                            out << YAML::EndSeq;
+                        }
+
+                        out << YAML::EndMap;
+                    }
+
                     out << YAML::EndSeq;
                 }
 
-                out << YAML::EndMap;
             }
-
-            out << YAML::EndSeq;
+            out << YAML::EndMap;
         }
+    
+        out << YAML::EndSeq;
     }
 
+    // TODO: Fix this to work with new Serialise
     void StateMachine::Deserialise(const YAML::Node &data)
     {
-        if (data["Default State"])
-        {
-            DefaultState = Louron::Utils::fnv1a_hash(data["Default State"].as<std::string>());
-        }
-
         if (data["Animation Parameters"])
         {
             for(const auto& parameter : data["Animation Parameters"])
@@ -899,98 +1238,170 @@ namespace Louron::Animation
                 {
                     param.Value = parameter["Value"].as<float>();
                 }
-                AnimationParameters[param_hash] = std::move(param);
+                m_AnimationParameters[param_hash] = std::move(param);
             }
         }
 
-        if (data["Animation States"])
+        for (const auto& layer_node : data["State Machine Layers"])
         {
-            for(const auto& state : data["Animation States"])
+            m_Layers.push_back({});
+            Layer& layer = m_Layers.back();
+
+            if (layer_node["Layer Name"])
             {
-                StringHash state_hash = NULL_UUID;
-                StateType type = StateType::Unknown;
+                layer.LayerName = layer_node["Layer Name"].as<std::string>();
+            }
 
-                if(state["Type"])
-                {
-                    type = Utils::StateTypeFromString(state["Type"].as<std::string>());
-                } else continue;
-
-                if (state["Hash"])
-                {
-                    state_hash = state["Hash"].as<StringHash>();
-                } else continue;
-
-                switch (type)
-                {
-                    case StateType::Clip: States[state_hash] = std::make_unique<AnimationState_Clip>(); break; 
-                    case StateType::BlendTree: States[state_hash] = std::make_unique<AnimationState_BlendTree>(); break; 
-                    case StateType::Unknown: continue; 
-                }
-                
-                States[state_hash]->Name = state["Name"].as<std::string>();
-                States[state_hash]->Deserialise(state);
-
-                if (state_hash == DefaultState)
-                {
-                    CreateTransition(m_DefaultEntryHash, state_hash);
-                }
-            }            
-        }
-
-        if (data["Animation Transitions"])
-        {
-            for(const auto& transition : data["Animation Transitions"])
+            if (layer_node["Layer Weight"])
             {
-                StringHash source_hash = NULL_UUID;
-                StringHash dest_hash = NULL_UUID;
-                
-                if(transition["Source Hash"])
-                    source_hash = transition["Source Hash"].as<StringHash>();
-                
-                if(transition["Destination Hash"])
-                    dest_hash = transition["Destination Hash"].as<StringHash>();
+                layer.LayerWeight = layer_node["Layer Weight"].as<float>();
+            }
 
-                if (source_hash == NULL_UUID || dest_hash == NULL_UUID)
-                    continue;
-                
-                auto transition_ptr = CreateTransition(source_hash, dest_hash);
-                if(!transition_ptr)
-                    continue;
+            if (layer_node["Layer Blend Type"])
+            {
+                layer.BlendType = (layer_node["Layer Blend Type"].as<std::string>() == "Additive" ? Layer::LayerBlendType::Additive : Layer::LayerBlendType::Override);
+            }
 
-                if(transition["Transition Duration"])
-                    transition_ptr->TransitionDuration = transition["Transition Duration"].as<float>();
+            if (layer_node["Layer Sync Layer"])
+            {
+                layer.SyncLayer = layer_node["Layer Sync Layer"].as<bool>();
+            }
 
-                if(transition["Has Exit Time"])
-                    transition_ptr->HasExitTime = transition["Has Exit Time"].as<bool>();
+            if (layer_node["Layer Sync Index"])
+            {
+                layer.LayerIndex = layer_node["Layer Sync Index"].as<size_t>();
+            }
 
-                if(transition["Exit Time"])
-                    transition_ptr->ExitTime = transition["Exit Time"].as<float>();
+            if (layer_node["Layer Use Own Timing"])
+            {
+                layer.UseOwnLayerTiming = layer_node["Layer Use Own Timing"].as<bool>();
+            }
 
-                for(const auto& condition : transition["Conditions"])
+            if (layer_node["Layer Using IK"])
+            {
+                layer.UsingIK = layer_node["Layer Using IK"].as<bool>();
+            }
+
+            if (layer_node["Layer Default State"])
+            {
+                layer.DefaultState = Louron::Utils::fnv1a_hash(layer_node["Layer Default State"].as<std::string>());
+            }
+
+            if (layer_node["Layer Animation States"])
+            {
+                for(const auto& state : layer_node["Layer Animation States"])
                 {
-                    TransitionCondition cond{};
+                    StringHash state_hash = NULL_UUID;
+                    StateType type = StateType::Unknown;
 
-                    if(condition["Parameter Name"])
-                        cond.ParameterName = condition["Parameter Name"].as<std::string>();
+                    if(state["Type"])
+                    {
+                        type = Utils::StateTypeFromString(state["Type"].as<std::string>());
+                    } else continue;
 
-                    if(condition["Parameter Hash"])
-                        cond.ParameterHash = condition["Parameter Hash"].as<StringHash>();
+                    if (state["Hash"])
+                    {
+                        state_hash = state["Hash"].as<StringHash>();
+                    } else continue;
 
-                    if(condition["Comparison Operation"])
-                        cond.Operation = Utils::ComparisonTypeFromString(condition["Comparison Operation"].as<std::string>());
+                    switch (type)
+                    {
+                        case StateType::Clip: layer.States[state_hash] = std::make_unique<AnimationState_Clip>(); break; 
+                        case StateType::BlendTree: layer.States[state_hash] = std::make_unique<AnimationState_BlendTree>(); break; 
+                        case StateType::Unknown: continue; 
+                    }
+                    
+                    layer.States[state_hash]->Name = state["Name"].as<std::string>();
+                    layer.States[state_hash]->Deserialise(state);
 
-                    if(condition["Reference Threshold"])
-                        cond.ReferenceThreshold = condition["Reference Threshold"].as<float>();
+                    if (state_hash == layer.DefaultState)
+                    {
+                        CreateTransition(m_Layers.size() - 1, StateMachine::DefaultEntryHash, state_hash);
+                    }
+                }            
+            }
 
-                    transition_ptr->Conditions.emplace_back(std::move(cond));
+            if (layer_node["Layer Animation Transitions"])
+            {
+                for(const auto& transition : layer_node["Layer Animation Transitions"])
+                {
+                    StringHash source_hash = NULL_UUID;
+                    StringHash dest_hash = NULL_UUID;
+                    
+                    if(transition["Source Hash"])
+                        source_hash = transition["Source Hash"].as<StringHash>();
+                    
+                    if(transition["Destination Hash"])
+                        dest_hash = transition["Destination Hash"].as<StringHash>();
+
+                    if (source_hash == NULL_UUID || dest_hash == NULL_UUID)
+                        continue;
+                    
+                    auto transition_ptr = CreateTransition(m_Layers.size() - 1, source_hash, dest_hash);
+                    if(!transition_ptr)
+                        continue;
+
+                    if(transition["Transition Duration"])
+                        transition_ptr->TransitionDuration = transition["Transition Duration"].as<float>();
+
+                    if(transition["Has Exit Time"])
+                        transition_ptr->HasExitTime = transition["Has Exit Time"].as<bool>();
+
+                    if(transition["Exit Time"])
+                        transition_ptr->ExitTime = transition["Exit Time"].as<float>();
+
+                    for(const auto& condition : transition["Conditions"])
+                    {
+                        TransitionCondition cond{};
+
+                        if(condition["Parameter Name"])
+                            cond.ParameterName = condition["Parameter Name"].as<std::string>();
+
+                        if(condition["Parameter Hash"])
+                            cond.ParameterHash = condition["Parameter Hash"].as<StringHash>();
+
+                        if(condition["Comparison Operation"])
+                            cond.Operation = Utils::ComparisonTypeFromString(condition["Comparison Operation"].as<std::string>());
+
+                        if(condition["Reference Threshold"])
+                            cond.ReferenceThreshold = condition["Reference Threshold"].as<float>();
+
+                        transition_ptr->Conditions.emplace_back(std::move(cond));
+                    }
                 }
             }
         }
-        
-        for (const auto& transition : Transitions)
-        {
-
-        }
-    
     }
+    
+    #pragma region --State-- Getter and Setters
+
+        void StateMachine::AddLayer(const std::string& layer_name)
+        {
+            m_Layers.push_back({});
+            m_Layers.back().LayerName = layer_name;
+        }
+
+        void StateMachine::RemoveLayer(size_t layer_index)
+        {
+            if (!ValidLayer(layer_index))
+                return;
+            
+            m_Layers.erase(m_Layers.begin() + layer_index);
+        }
+
+        StateMachine::Layer* StateMachine::GetLayer(size_t layer_index)
+        {
+            if (!ValidLayer(layer_index))
+                return nullptr;
+
+            return &m_Layers[layer_index];
+        }
+
+        std::vector<StateMachine::Layer> &StateMachine::GetLayers()
+        {
+            return m_Layers;
+        }
+
+#pragma endregion
+
 }

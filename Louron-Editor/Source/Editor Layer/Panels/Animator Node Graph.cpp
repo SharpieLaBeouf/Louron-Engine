@@ -42,6 +42,14 @@ void AnimatorPanel::Draw(bool& show_window)
     if (!machine_asset)
         return;
 
+    if (!machine_asset->GetLayer(s_SelectedLayer))
+    {
+        s_NodeMap.clear();
+        s_TransitionMap.clear();
+        s_SelectedLayer = 0; // Reset to Base Layer
+        return;
+    }
+
     ImGuiWindowFlags window_flags = (s_Edited) ? ImGuiWindowFlags_UnsavedDocument : 0;
     if (ImGui::Begin("AnimatorStateMachine", &show_window, window_flags)) 
     {
@@ -63,7 +71,7 @@ void AnimatorPanel::Draw(bool& show_window)
         ImGui::PopStyleColor(2);
         ImGui::PopStyleVar();
 
-        if (auto blend_state = machine_asset->GetAnimationState(s_StateBlendTreeNode); s_StateBlendTreeNode != NULL_UUID && blend_state)
+        if (auto blend_state = machine_asset->GetAnimationState(s_SelectedLayer, s_StateBlendTreeNode); s_StateBlendTreeNode != NULL_UUID && blend_state)
         {
             ImGui::SameLine();
             ImGui::Text("/");
@@ -137,208 +145,489 @@ void AnimatorPanel::Draw(bool& show_window)
             ImGui::TableSetupColumn("Graph"     , ImGuiTableColumnFlags_WidthStretch, 1.0f);
             ImGui::TableSetupColumn("Details"   , ImGuiTableColumnFlags_WidthFixed,  0.20f);
 
-        #pragma region Parameter Panel
-        
-            static int new_param_counter = 1;
-            static ParameterType new_param_type = ParameterType::Float;
-            static std::vector<Louron::Animation::StringHash> parameters_to_remove;
+        #pragma region Left Panel - Parameters and Layers
 
-            ImGui::TableNextColumn();
-            ImGui::BeginChild("##LeftPane", ImVec2(0,0), true);
-            ImGui::Text("Parameters");
+        ImGui::TableNextColumn();
+        ImGui::BeginChild("##LeftPane", ImVec2(0,0), true);
 
-            ImGui::Dummy({0.0f, 1.5f});
-            ImGui::Separator();
-            ImGui::Dummy({0.0f, 1.5f});
+        // Setup Tabs
+        if (ImGui::BeginTabBar("##TabBar", ImGuiTabBarFlags_DrawSelectedOverline))
+        {
+            static bool open_settings_popup = false;
+            static int popup_layer_index = -1;
+            
+            static bool renaming_layer = false;
+            static int renaming_layer_index = -1;
 
-            static bool renaming = false;
-            static char renaming_buf[256];
-            static StringHash renaming_hash = NULL_UUID;
-
-            if(static bool once = true; once)
+            if (ImGui::BeginTabItem("Parameters"))
             {
-                memset(renaming_buf, 0, sizeof(renaming_buf));
-                once = false;
-            }
+                #pragma region Parameters
 
-            if (!renaming && renaming_hash != NULL_UUID)
-            {
-                if (renaming_buf[0] != '\0')
+                static int new_param_counter = 1;
+                static ParameterType new_param_type = ParameterType::Float;
+                static std::vector<Louron::Animation::StringHash> parameters_to_remove;
+
+                ImGui::TableNextColumn();
+                ImGui::BeginChild("##LeftPane_Params", ImVec2(0, 0), true);
+
+                static bool renaming = false;
+                static char renaming_buf[256];
+                static StringHash renaming_hash = NULL_UUID;
+
+                if (static bool once = true; once)
                 {
-                    std::string base_name = renaming_buf;
-                    std::string new_param_name = base_name;
-                    int i = 1;
-                    while (machine_asset->HasParameterNamed(new_param_name))
-                    {
-                        new_param_name = base_name + " " + std::to_string(i++);
-                    }
-    
-                    machine_asset->RenameParameter(renaming_hash, new_param_name);
+                    memset(renaming_buf, 0, sizeof(renaming_buf));
+                    once = false;
                 }
 
-                renaming_hash = NULL_UUID;
-                memset(renaming_buf, 0, sizeof(renaming_buf));
+                if (!renaming && renaming_hash != NULL_UUID)
+                {
+                    if (renaming_buf[0] != '\0')
+                    {
+                        std::string base_name = renaming_buf;
+                        std::string new_param_name = base_name;
+                        int i = 1;
+                        while (machine_asset->HasParameterNamed(new_param_name))
+                        {
+                            new_param_name = base_name + " " + std::to_string(i++);
+                        }
+
+                        machine_asset->RenameParameter(renaming_hash, new_param_name);
+                    }
+
+                    renaming_hash = NULL_UUID;
+                    memset(renaming_buf, 0, sizeof(renaming_buf));
+                }
+
+                const auto& parameters = machine_asset->GetParameters();
+                for (const auto& [hash, parameter] : parameters)
+                {
+                    ImGui::PushID(static_cast<int>(hash));
+
+                    ImGui::Dummy({0.0f, 1.5f});
+                    ImGui::BeginGroup();
+
+                    if (renaming && hash == renaming_hash)
+                    {
+                        if (ImGui::InputText("##ParamName", renaming_buf, sizeof(renaming_buf), ImGuiInputTextFlags_EnterReturnsTrue))
+                        {
+                            renaming = false;
+                        }
+
+                        if (!ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+                        {
+                            renaming = false;
+                        }
+                    }
+                    else
+                    {
+                        std::string label = parameter.Name + " (" + Louron::Animation::Utils::ParamTypeToString(parameter.Type) + "):";
+                        ImGui::TextUnformatted(label.c_str());
+
+                        if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                        {
+                            renaming = true;
+                            renaming_hash = hash;
+
+                        #if defined(L_PLATFORM_WINDOWS)
+                            strncpy_s(renaming_buf, parameter.Name.c_str(), sizeof(renaming_buf));
+                        #else
+                            strncpy(renaming_buf, parameter.Name.c_str(), sizeof(renaming_buf));
+                        #endif
+                        }
+                    }
+
+                    ImGui::SameLine();
+
+                    const float button_width = ImGui::CalcTextSize("X").x + ImGui::GetStyle().FramePadding.x * 2.0f;
+                    const float spacing = ImGui::GetStyle().ItemSpacing.x;
+
+                    float total_available_width = ImGui::GetContentRegionAvail().x;
+                    float input_width = total_available_width - button_width - spacing;
+
+                    switch (parameter.Type)
+                    {
+                        case ParameterType::Bool:
+                        {
+                            bool value = static_cast<bool>(parameter.Value);
+                            if (ImGui::Checkbox("##Value", &value))
+                            {
+                                machine_asset->SetBool(hash, value);
+                                s_Edited = true;
+                            }
+                            break;
+                        }
+                        case ParameterType::Int:
+                        {
+                            int32_t value = static_cast<int32_t>(parameter.Value);
+                            ImGui::SetNextItemWidth(input_width);
+                            if (ImGui::InputScalar("##Value", ImGuiDataType_S32, &value))
+                            {
+                                machine_asset->SetInt(hash, value);
+                                s_Edited = true;
+                            }
+                            break;
+                        }
+                        case ParameterType::UInt:
+                        {
+                            uint32_t value = static_cast<uint32_t>(parameter.Value);
+                            ImGui::SetNextItemWidth(input_width);
+                            if (ImGui::InputScalar("##Value", ImGuiDataType_U32, &value))
+                            {
+                                machine_asset->SetUInt(hash, value);
+                                s_Edited = true;
+                            }
+                            break;
+                        }
+                        case ParameterType::Float:
+                        {
+                            float value = static_cast<float>(parameter.Value);
+                            ImGui::SetNextItemWidth(input_width);
+                            if (ImGui::InputFloat("##Value", &value))
+                            {
+                                machine_asset->SetFloat(hash, value);
+                                s_Edited = true;
+                            }
+                            break;
+                        }
+                    }
+
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("X"))
+                    {
+                        parameters_to_remove.push_back(hash);
+                    }
+
+                    ImGui::EndGroup();
+                    ImGui::PopID();
+                }
+
+                ImGui::Dummy({0.0f, 5.0f});
+                ImGui::Separator();
+                ImGui::Dummy({0.0f, 2.0f});
+
+                ImGui::Text("Add New Parameter");
+
+                if (ImGui::BeginCombo("##NewType", Louron::Animation::Utils::ParamTypeToString(new_param_type).c_str()))
+                {
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        auto type = static_cast<ParameterType>(i);
+                        bool selected = (type == new_param_type);
+                        if (ImGui::Selectable(Louron::Animation::Utils::ParamTypeToString(type).c_str(), selected))
+                            new_param_type = type;
+                        if (selected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
+                static char buf[256] = {};
+
+                ImGui::Text("Parameter Name");
+                ImGui::InputText("##ParamName", buf, sizeof(buf));
+
+                if (ImGui::Button("Add"))
+                {
+                    std::string base_name = buf;
+                    std::string new_name = base_name;
+
+                    while(machine_asset->HasParameterNamed(new_name))
+                    {
+                        new_name = base_name + " " + std::to_string(new_param_counter++);
+                    }
+
+                    machine_asset->AddParameter(new_name, new_param_type);
+                    s_Edited = true;
+
+                    memset(buf, 0, sizeof(buf));
+                }
+
+                ImGui::EndChild();
+
+                for (const auto& hash : parameters_to_remove)
+                {
+                    machine_asset->RemoveParameter(hash);
+                    s_Edited = true;
+                }
+                parameters_to_remove.clear();
+
+                #pragma endregion
+
+                ImGui::EndTabItem();
             }
 
-            const auto& parameters = machine_asset->GetParameters();
-            for (const auto& [hash, parameter] : parameters)
+            if (ImGui::BeginTabItem("Layers"))
             {
-                ImGui::PushID(static_cast<int>(hash));
+                ImGui::TableNextColumn();
+                ImGui::BeginChild("##LeftPane_Layers", ImVec2(0, 0), true);
+
+                auto& layers = machine_asset->GetLayers();
+                for (int i = 0; i < layers.size(); ++i)
+                {
+                    ImGui::PushID(i);
+
+                    ImGui::BeginGroup();
+                    ImVec2 content_region = ImGui::GetContentRegionAvail();
+                    float line_height = 30.0f;
+                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 8.0f));
+
+                    bool selected = (s_SelectedLayer == i);
+                    if (ImGui::Selectable("##LayerSelectable", selected, 0, ImVec2(content_region.x, line_height)))
+                    {
+                        s_SelectedLayer = i;
+                        s_NodeMap.clear();
+                        s_TransitionMap.clear();
+                    }
+
+                    static int context_popup_layer = -1;
+                    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+                    {
+                        ImGui::OpenPopup("LayerContextPopup");
+                        context_popup_layer = i;
+                    }
+
+                    if (ImGui::BeginPopup("LayerContextPopup"))
+                    {
+                        if (ImGui::MenuItem("Rename Layer"))
+                        {
+                            renaming_layer = true;
+                            renaming_layer_index = context_popup_layer;
+
+                            context_popup_layer = -1;
+                        }
+
+                        if (context_popup_layer == 0)
+                            ImGui::BeginDisabled();
+
+                        if (ImGui::MenuItem("Delete Layer"))
+                        {
+                            machine_asset->RemoveLayer(static_cast<size_t>(context_popup_layer));
+                            --i;
+						    ImGui::EndPopup();
+                            context_popup_layer = -1;
+                            ImGui::EndGroup();
+                            ImGui::PopID();
+                            ImGui::PopStyleVar();
+                            continue;
+                        }
+                        
+                        if (context_popup_layer == 0)
+                            ImGui::EndDisabled();
+
+						ImGui::EndPopup();
+                    }
+
+                    ImGui::PopStyleVar();
+
+                    ImGui::SameLine(10);
+
+                    ImGui::TextUnformatted(layers[i].LayerName.c_str());
+
+                    ImGui::SameLine(content_region.x - 30 - ImGui::CalcTextSize("Options").x);
+
+                    // Highlight if hovered
+                    static bool options_hovered = false;
+
+                    if (options_hovered)
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered));
+                    else
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_Button));
+
+                    ImGui::Button(("Options##" + std::to_string(i)).c_str());
+
+                    if (!ImGui::IsMouseClicked(ImGuiMouseButton_Left)) // Bloody ImGui so difficult to work with sometimes...
+                        options_hovered = ImGui::IsItemHovered();
+
+                    bool first_click_options_button = false;
+                    if (options_hovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
+                    {
+                        first_click_options_button = true;
+                        open_settings_popup = true;
+                        popup_layer_index = i;
+                    } 
+
+                    ImGui::PopStyleColor();
+
+                    if (open_settings_popup && popup_layer_index == i)
+                    {
+                        ImGui::OpenPopup("LayerSettingsPopup");
+
+                        ImGui::SetNextWindowSize({ 400.0f, 200.0f });
+                    }
+
+                    bool is_window_opened = false;
+                    bool is_window_hovered = false;
+                    if (ImGui::BeginPopup("LayerSettingsPopup"))
+                    {
+                        is_window_opened = true;
+                        is_window_hovered = ImGui::IsWindowHovered();
+
+                        ImGui::Columns(2, "LayerOptionsCols", false);
+		                ImGui::SetColumnWidth(-1, ImGui::CalcTextSize("Use Own Layer Timing:").x + 10.0f);
+
+                        if (popup_layer_index == 0)
+                            ImGui::BeginDisabled();
+
+                        ImGui::Text("Weight:");
+
+                        ImGui::NextColumn();
+                        
+                        ImGui::SetNextItemWidth(-1.0f);
+                        ImGui::SliderFloat(("##LayerWeightSlider" + std::to_string(popup_layer_index)).c_str(), &layers[i].LayerWeight, 0.0f, 1.0f, "%.2f");
+
+                        ImGui::NextColumn();
+                        
+                        std::array<const char*, 2> layer_blend_types = { "Override", "Additive" };
+                        uint8_t item_current = static_cast<uint8_t>(layers[i].BlendType);
+                        ImGui::Text("Blend Type:");
+                        
+                        ImGui::NextColumn();
+                        ImGui::SetNextItemWidth(-1.0f);
+                        
+                        if (ImGui::BeginCombo("##LayerBlendTypeCombo", layer_blend_types[item_current])) {
+
+                            for (int n = 0; n < layer_blend_types.size(); n++)
+                            {
+                                const bool is_selected = (item_current == n);
+                                if (ImGui::Selectable(layer_blend_types[n], is_selected))
+                                {
+                                    item_current = n;
+                                    layers[i].BlendType = static_cast<StateMachine::Layer::LayerBlendType>(item_current);
+                                }
+
+                                // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                                if (is_selected)
+                                    ImGui::SetItemDefaultFocus();
+                            }
+
+                            ImGui::EndCombo();
+                        }
+                        
+                        ImGui::NextColumn();
+
+                        ImGui::Text("Sync:");
+
+                        ImGui::NextColumn();
+                        ImGui::SetNextItemWidth(-1.0f);
+
+                        if (ImGui::Checkbox("##SyncLayerCheck", &layers[i].SyncLayer) && layers[i].SyncLayer)
+                        {
+                            layers[i].LayerIndex = 0;
+                        }
+
+                        ImGui::NextColumn();
+
+                        if (layers[i].SyncLayer)
+                        {                            
+                            std::vector<std::string> layer_names;
+                            layer_names.reserve(layers.size());
+
+                            for (int j = 0; j < layers.size(); j++)
+                            {
+                                layer_names.push_back(layers[j].LayerName);
+                            }
+
+                            uint8_t item_current = layers[i].LayerIndex;
+                            ImGui::Text("State to Sync:");
+                            
+                            ImGui::NextColumn();
+                            ImGui::SetNextItemWidth(-1.0f);
+                            
+                            if (ImGui::BeginCombo("##StateToSyncCombo", ((item_current >= 0 && item_current < layer_names.size()) ? layer_names[item_current].c_str() : "None"))) 
+                            {
+                                for (int n = 0; n < layer_names.size(); n++)
+                                {
+                                    const bool is_selected = (item_current == n);
+                                    if (ImGui::Selectable(layer_names[n].c_str(), is_selected))
+                                    {
+                                        item_current = n;
+                                        layers[i].LayerIndex = item_current;
+                                    }
+
+                                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                                    if (is_selected)
+                                        ImGui::SetItemDefaultFocus();
+                                }
+
+                                ImGui::EndCombo();
+                            }
+
+                            ImGui::NextColumn();
+
+                            ImGui::Text("Use Own Layer Timing:");
+                            
+                            ImGui::NextColumn();
+                            ImGui::SetNextItemWidth(-1.0f);
+
+                            ImGui::Checkbox("##UseOwnTimingButton", &layers[i].UseOwnLayerTiming);
+                        
+                            ImGui::NextColumn();
+
+                        }
+                        else
+                        {
+                            layers[i].LayerIndex = -1;
+                        }
+
+                        ImGui::Text("Using IK:");
+                            
+                        ImGui::NextColumn();
+                        ImGui::SetNextItemWidth(-1.0f);
+
+                        ImGui::Checkbox("##UsingIKButton", &layers[i].UsingIK);
+
+                        ImGui::NextColumn();
+                        
+                        if (popup_layer_index == 0)
+                            ImGui::EndDisabled();
+
+                        ImGui::Columns(1);
+
+                        ImGui::EndPopup();
+                    }
+                    
+                    if (is_window_opened && !is_window_hovered && !first_click_options_button && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+                    {
+                        open_settings_popup = false;
+                        popup_layer_index = -1;
+                    }
+
+                    ImGui::EndGroup();
+                    ImGui::PopID();
+                }
 
                 ImGui::Dummy({0.0f, 1.5f});
-                ImGui::BeginGroup();
+                ImGui::Separator();
+                ImGui::Dummy({0.0f, 1.5f});
 
-                if (renaming && hash == renaming_hash)
+                // HERE: Implement Add Layer Button, Centered
+
+                ImGui::SetCursorPosX((ImGui::GetContentRegionAvail().x * 0.5f) - (ImGui::CalcTextSize("Add Layer").x + ImGui::GetStyle().FramePadding.x * 2.0f) * 0.5f);
+                if(ImGui::Button("Add Layer"))
                 {
-                    if (ImGui::InputText("##ParamName", renaming_buf, sizeof(renaming_buf), ImGuiInputTextFlags_EnterReturnsTrue))
-                    {
-                        renaming = false;
-                    }
+                    machine_asset->AddLayer("New Layer");
 
-                    if (!ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-                    {
-                        renaming = false;
-                    }
-                }
-                else
-                {
-                    std::string label = parameter.Name + " (" + Louron::Animation::Utils::ParamTypeToString(parameter.Type) + "):";
-                    ImGui::TextUnformatted(label.c_str());
-    
-                    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-                    {
-                        renaming = true;
-                        renaming_hash = hash;
+                    layers = machine_asset->GetLayers();
+                    size_t layer_index = layers.size() - 1;
 
-                    #if defined(L_PLATFORM_WINDOWS)
-                        strncpy_s(renaming_buf, parameter.Name.c_str(), sizeof(renaming_buf));
-                    #else
-                        strncpy(renaming_buf, parameter.Name.c_str(), sizeof(renaming_buf));
-                    #endif
-                    
-                    }
+                    layers[layer_index].LayerWeight = 1.0f;
+                    machine_asset->CreateState(layer_index, "Default Animation State", Louron::Animation::StateType::Clip);
+                    machine_asset->CreateState(layer_index, "Default Blend Tree State", Louron::Animation::StateType::BlendTree);
+
+                    s_SelectedLayer = layer_index;
+                    s_NodeMap.clear();
+                    s_TransitionMap.clear();
                 }
 
-                ImGui::SameLine();
-                
-                // Constants for button size
-                const float button_width = ImGui::CalcTextSize("X").x + ImGui::GetStyle().FramePadding.x * 2.0f;
-                const float spacing = ImGui::GetStyle().ItemSpacing.x;
-
-                // Get available width in the current column
-                float total_available_width = ImGui::GetContentRegionAvail().x;
-                float input_width = total_available_width - button_width - spacing;
-
-                switch (parameter.Type)
-                {
-                    case ParameterType::Bool:
-                    {
-                        bool value = static_cast<bool>(parameter.Value);
-                        if (ImGui::Checkbox("##Value", &value))
-                        {
-                            machine_asset->SetBool(hash, value);
-                            s_Edited = true;
-                        }
-                        break;
-                    }
-                    case ParameterType::Int:
-                    {
-                        int32_t value = static_cast<int32_t>(parameter.Value);
-                        ImGui::SetNextItemWidth(input_width);
-                        if (ImGui::InputScalar("##Value", ImGuiDataType_S32, &value))
-                        {
-                            machine_asset->SetInt(hash, value);
-                            s_Edited = true;
-                        }
-                        break;
-                    }
-                    case ParameterType::UInt:
-                    {
-                        uint32_t value = static_cast<uint32_t>(parameter.Value);
-                        ImGui::SetNextItemWidth(input_width);
-                        if (ImGui::InputScalar("##Value", ImGuiDataType_U32, &value))
-                        {
-                            machine_asset->SetUInt(hash, value);
-                            s_Edited = true;
-                        }
-                        break;
-                    }
-                    case ParameterType::Float:
-                    {
-                        float value = static_cast<float>(parameter.Value);
-                        ImGui::SetNextItemWidth(input_width);
-                        if (ImGui::InputFloat("##Value", &value))
-                        {
-                            machine_asset->SetFloat(hash, value);
-                            s_Edited = true;
-                        }
-                        break;
-                    }
-                }
-
-                ImGui::SameLine();
-                if (ImGui::SmallButton("X"))
-                {
-                    parameters_to_remove.push_back(hash); // Defer deletion
-                }
-
-                ImGui::EndGroup();
-                ImGui::PopID();
+                ImGui::EndChild();
+                ImGui::EndTabItem();
             }
 
-            ImGui::Dummy({0.0f, 5.0f});
-            ImGui::Separator();
-            ImGui::Dummy({0.0f, 2.0f});
+            ImGui::EndTabBar();
+        }
 
-            // Add New Parameter Section
-            ImGui::Text("Add New Parameter");
-
-            if (ImGui::BeginCombo("##NewType", Louron::Animation::Utils::ParamTypeToString(new_param_type).c_str()))
-            {
-                for (int i = 0; i < 4; ++i)
-                {
-                    auto type = static_cast<ParameterType>(i);
-                    bool selected = (type == new_param_type);
-                    if (ImGui::Selectable(Louron::Animation::Utils::ParamTypeToString(type).c_str(), selected))
-                        new_param_type = type;
-                    if (selected)
-                        ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndCombo();
-            }
-
-            static char buf[256] = {};
-
-            ImGui::Text("Parameter Name");
-            ImGui::InputText("##ParamName", buf, sizeof(buf));
-
-            if (ImGui::Button("Add"))
-            {
-                std::string base_name = buf;
-                std::string new_name = base_name;
-            
-                // Ensure unique name
-                while(machine_asset->HasParameterNamed(new_name))
-                {
-                    new_name = base_name + " " + std::to_string(new_param_counter++);
-                }
-            
-                machine_asset->AddParameter(new_name, new_param_type);
-                s_Edited = true;
-            
-                // Clear the input buffer
-                memset(buf, 0, sizeof(buf));
-            }
-
-            ImGui::EndChild();
-
-            // --- Remove parameters outside the loop ---
-            for (const auto& hash : parameters_to_remove)
-            {
-                machine_asset->RemoveParameter(hash);
-                s_Edited = true;
-            }
-            parameters_to_remove.clear();
+        ImGui::EndChild();
 
         #pragma endregion
 
@@ -348,7 +637,7 @@ void AnimatorPanel::Draw(bool& show_window)
             ImGuiWindowFlags centerFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
             ImGui::BeginChild("##GraphPane", ImVec2(0,0), false, centerFlags);
 
-            if (auto blend_state = machine_asset->GetAnimationState(s_StateBlendTreeNode); s_StateBlendTreeNode != NULL_UUID && blend_state && blend_state->GetType() == StateType::BlendTree)
+            if (auto blend_state = machine_asset->GetAnimationState(s_SelectedLayer, s_StateBlendTreeNode); s_StateBlendTreeNode != NULL_UUID && blend_state && blend_state->GetType() == StateType::BlendTree)
             {
                 BlendNode* node = &reinterpret_cast<AnimationState_BlendTree*>(blend_state)->AnimBlendTree;
 
@@ -406,7 +695,7 @@ void AnimatorPanel::Draw(bool& show_window)
                 if (!s_BlendTreeChildLevel.empty())
                     s_BlendTreeChildLevel.clear();
 
-                if (auto state = machine_asset->GetAnimationState(s_SelectedNode); s_SelectedNode != NULL_UUID && state)
+                if (auto state = machine_asset->GetAnimationState(s_SelectedLayer, s_SelectedNode); s_SelectedNode != NULL_UUID && state)
                 {
                     ImGui::Text("State Name:");
     
@@ -434,12 +723,12 @@ void AnimatorPanel::Draw(bool& show_window)
     
                     if (ImGui::InputText("##StateNameInput", state_name_buf, sizeof(state_name_buf), ImGuiInputTextFlags_EnterReturnsTrue) || (!ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)))
                     {
-                        machine_asset->RenameState(s_SelectedNode, state_name_buf);
+                        machine_asset->RenameState(s_SelectedLayer, s_SelectedNode, state_name_buf);
     
                         s_SelectedNode = Louron::Utils::fnv1a_hash(state_name_buf);
                         previous_node = s_SelectedNode;
     
-                        state = machine_asset->GetAnimationState(state_name_buf);
+                        state = machine_asset->GetAnimationState(s_SelectedLayer, state_name_buf);
     
                         s_NodeMap.clear();
                         s_TransitionMap.clear();
@@ -448,14 +737,14 @@ void AnimatorPanel::Draw(bool& show_window)
                     ImGui::Text("Default State:");
                     ImGui::SameLine();
     
-                    bool is_current_default = (machine_asset->GetDefaultState() == s_SelectedNode);
+                    bool is_current_default = (machine_asset->GetDefaultStateHash(s_SelectedLayer) == s_SelectedNode);
                     bool make_default = is_current_default;
                     
                     if (!is_current_default)
                     {
                         if (ImGui::Checkbox("##DefaultStateCheckbox", &make_default) && make_default)
                         {
-                            machine_asset->SetDefaultState(s_SelectedNode);
+                            machine_asset->SetDefaultStateHash(s_SelectedLayer, s_SelectedNode);
     
                             s_NodeMap.clear();
                             s_TransitionMap.clear();
@@ -576,14 +865,14 @@ void AnimatorPanel::Draw(bool& show_window)
         
                 if (s_SelectedTransition.IsValid())
                 {
-                    auto transition = machine_asset->GetTransition(s_SelectedTransition.source_node.Get(), s_SelectedTransition.dest_node.Get());
+                    auto transition = machine_asset->GetTransition(s_SelectedLayer, s_SelectedTransition.source_node.Get(), s_SelectedTransition.dest_node.Get());
                     if(transition)
                     {
-                        auto source_state = machine_asset->GetAnimationState(transition->SourceStateHash);
-                        auto dest_state = machine_asset->GetAnimationState(transition->DestStateHash);
+                        auto source_state = machine_asset->GetAnimationState(s_SelectedLayer, transition->SourceStateHash);
+                        auto dest_state = machine_asset->GetAnimationState(s_SelectedLayer, transition->DestStateHash);
     
-                        const std::string& source_name = (transition->SourceStateHash == machine_asset->GetEntryHash()) ? "Entry State" : (source_state) ? source_state->Name : "Null State";
-                        const std::string& dest_name = (transition->DestStateHash == machine_asset->GetExitHash()) ? "Exit State" : (dest_state) ? dest_state->Name : "Null State";
+                        const std::string& source_name = (transition->SourceStateHash == StateMachine::DefaultEntryHash) ? "Entry State" : (source_state) ? source_state->Name : "Null State";
+                        const std::string& dest_name = (transition->DestStateHash == StateMachine::DefaultExitHash) ? "Exit State" : (dest_state) ? dest_state->Name : "Null State";
         
                         ImGui::Text("Source State: %s", source_name.c_str());
                         ImGui::Text("Dest State: %s", dest_name.c_str());
@@ -792,7 +1081,7 @@ void AnimatorPanel::Draw(bool& show_window)
                 {
                     memset(blend_node_name_buf, 0, sizeof(blend_node_name_buf));
                     
-                    const std::string& blend_tree_name = (s_BlendTreeChildLevel.empty()) ? machine_asset->GetAnimationState(s_StateBlendTreeNode)->Name : blend_node.Name;
+                    const std::string& blend_tree_name = (s_BlendTreeChildLevel.empty()) ? machine_asset->GetAnimationState(s_SelectedLayer, s_StateBlendTreeNode)->Name : blend_node.Name;
 
                 #if defined(L_PLATFORM_WINDOWS)
                     strncpy_s(blend_node_name_buf, blend_tree_name.c_str(), sizeof(blend_node_name_buf));
@@ -805,7 +1094,7 @@ void AnimatorPanel::Draw(bool& show_window)
 
                 if (old_level != s_BlendTreeChildLevel)
                 {
-                    const std::string& blend_tree_name = (s_BlendTreeChildLevel.empty()) ? machine_asset->GetAnimationState(s_StateBlendTreeNode)->Name : blend_node.Name;
+                    const std::string& blend_tree_name = (s_BlendTreeChildLevel.empty()) ? machine_asset->GetAnimationState(s_SelectedLayer, s_StateBlendTreeNode)->Name : blend_node.Name;
 
                     #if defined(L_PLATFORM_WINDOWS)
                         strncpy_s(blend_node_name_buf, blend_tree_name.c_str(), sizeof(blend_node_name_buf));
@@ -822,7 +1111,7 @@ void AnimatorPanel::Draw(bool& show_window)
                 {
                     if (s_BlendTreeChildLevel.empty())
                     {
-                        machine_asset->RenameState(s_StateBlendTreeNode, blend_node_name_buf);
+                        machine_asset->RenameState(s_SelectedLayer, s_StateBlendTreeNode, blend_node_name_buf);
 
                         if(s_SelectedNode == s_StateBlendTreeNode)
                             s_SelectedNode = Louron::Utils::fnv1a_hash(blend_node_name_buf);
@@ -1062,7 +1351,7 @@ void AnimatorPanel::Draw(bool& show_window)
                 }
             };
 
-            if (auto blend_state = machine_asset->GetAnimationState(s_StateBlendTreeNode); s_StateBlendTreeNode != NULL_UUID && blend_state && blend_state->GetType() == StateType::BlendTree)
+            if (auto blend_state = machine_asset->GetAnimationState(s_SelectedLayer, s_StateBlendTreeNode); s_StateBlendTreeNode != NULL_UUID && blend_state && blend_state->GetType() == StateType::BlendTree)
             {
                 BlendNode* node = &reinterpret_cast<AnimationState_BlendTree*>(blend_state)->AnimBlendTree;
 
@@ -1106,7 +1395,7 @@ void AnimatorPanel::Draw(bool& show_window)
                 {
                     s_OldVersions.push_back(*machine_asset.get()); // Copy into old versions
 
-                    machine_asset->RemoveState(s_SelectedNode);
+                    machine_asset->RemoveState(s_SelectedLayer, s_SelectedNode);
                     s_SelectedNode = NULL_UUID;
     
                     // Also clear any transitions and UI data related to it if needed
@@ -1124,7 +1413,7 @@ void AnimatorPanel::Draw(bool& show_window)
                     StringHash src = s_SelectedTransition.source_node.Get();
                     StringHash dst = s_SelectedTransition.dest_node.Get();
     
-                    machine_asset->RemoveTransition(src, dst);
+                    machine_asset->RemoveTransition(s_SelectedLayer, src, dst);
                     s_SelectedTransition = {};
                     
                     s_NodeMap.clear();
@@ -1283,38 +1572,38 @@ void AnimatorPanel::DrawGraph(Animation::StateMachine& machine)
 
     if (s_NodeMap.empty())
     {
-        for (auto& [hash,state] : machine.GetAllStates())
+        for (auto& [hash,state] : machine.GetAllStates(s_SelectedLayer))
             s_NodeMap[hash] = Node{
                 state->Name,
                 hash,
                 Louron::Utils::fnv1a_hash(std::to_string(hash) + "In"),
                 Louron::Utils::fnv1a_hash(std::to_string(hash) + "Out"),
-                hash == machine.GetDefaultState(),
+                hash == machine.GetDefaultStateHash(s_SelectedLayer),
                 state->GetType()
             };
             
-        s_NodeMap[machine.GetEntryHash()] = Node{
+        s_NodeMap[StateMachine::DefaultEntryHash] = Node{
             "Entry State", 
-            machine.GetEntryHash(), 
+            StateMachine::DefaultEntryHash, 
             NULL_UUID,
-            Louron::Utils::fnv1a_hash(std::to_string(machine.GetEntryHash()) + "Out"),
+            Louron::Utils::fnv1a_hash(std::to_string(StateMachine::DefaultEntryHash) + "Out"),
             false, 
             StateType::Unknown
         };
 
-        s_NodeMap[machine.GetExitHash()] = Node{
+        s_NodeMap[StateMachine::DefaultExitHash] = Node{
             "Exit State",
-            machine.GetExitHash(), 
-            Louron::Utils::fnv1a_hash(std::to_string(machine.GetExitHash()) + "In"),
+            StateMachine::DefaultExitHash, 
+            Louron::Utils::fnv1a_hash(std::to_string(StateMachine::DefaultExitHash) + "In"),
             NULL_UUID,
             false, 
             StateType::Unknown
         };
     }
 
-    if (s_TransitionMap.empty())
+    if (auto all_transitions = machine.GetAllTransitions(s_SelectedLayer); all_transitions && s_TransitionMap.empty())
     {
-        for (auto& t : machine.GetAllTransitions())
+        for (auto& t : *all_transitions)
         {
             if (!t) continue;
         
@@ -1396,7 +1685,7 @@ void AnimatorPanel::DrawGraph(Animation::StateMachine& machine)
             centres[hash] = (top_left + bottom_right) * 0.5f;
 
             // right‐click starts transition
-            if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right) && hash != machine.GetExitHash())
+            if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right) && hash != StateMachine::DefaultExitHash)
             {
                 creating_link     = true;
                 creating_link_source_node  = hash;
@@ -1411,12 +1700,12 @@ void AnimatorPanel::DrawGraph(Animation::StateMachine& machine)
                 auto& src = s_NodeMap[creating_link_source_node];
 
                 // Avoid creating a duplicate transition
-                if (machine.GetTransition(creating_link_source_node, hash) == nullptr && hash != machine.GetEntryHash())
+                if (machine.GetTransition(s_SelectedLayer, creating_link_source_node, hash) == nullptr && hash != StateMachine::DefaultEntryHash)
                 {
                     std::string id_string = std::to_string(src.node_id.Get()) + "->" + std::to_string(s_NodeMap[hash].node_id.Get());
                     ImGuiID link_id = ImHashStr(id_string.c_str());
             
-                    machine.CreateTransition(creating_link_source_node, hash);
+                    machine.CreateTransition(s_SelectedLayer, creating_link_source_node, hash);
 
                     s_Edited = true;
             
@@ -1486,12 +1775,12 @@ void AnimatorPanel::DrawGraph(Animation::StateMachine& machine)
             {
                 ImU32 fill = IM_COL32(80,80,80,255);
                 if (node.default_node)              fill = IM_COL32(255,165, 0,255);
-                if (hash == machine.GetEntryHash()) fill = IM_COL32( 50,200,80,255);
-                if (hash == machine.GetExitHash())  fill = IM_COL32(200, 50,50,255);
+                if (hash == StateMachine::DefaultEntryHash) fill = IM_COL32( 50,200,80,255);
+                if (hash == StateMachine::DefaultExitHash)  fill = IM_COL32(200, 50,50,255);
             
                 draw_list->AddRectFilled(top_left, bottom_right, fill, style.NodeRounding);
 
-                if (ImGui::IsMouseHoveringRect(top_left, bottom_right) && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && machine.GetAnimationState(hash) && machine.GetAnimationState(hash)->GetType() == StateType::BlendTree)
+                if (ImGui::IsMouseHoveringRect(top_left, bottom_right) && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && machine.GetAnimationState(s_SelectedLayer, hash) && machine.GetAnimationState(s_SelectedLayer, hash)->GetType() == StateType::BlendTree)
                 {
                     s_StateBlendTreeNode = hash;
                     s_BlendTreeChildLevel.clear();
@@ -1585,11 +1874,11 @@ void AnimatorPanel::DrawGraph(Animation::StateMachine& machine)
             ed::Link(link.link_id, from_pin, to_pin, ImVec4(1, 1, 1, 1), 2.0f);
 
             // Flow Highlight
-            auto source_state = machine.GetAnimationState((StringHash)link.source_node.Get());
-            auto target_state = machine.GetAnimationState((StringHash)link.dest_node.Get());
+            auto source_state = machine.GetAnimationState(s_SelectedLayer, (StringHash)link.source_node.Get());
+            auto target_state = machine.GetAnimationState(s_SelectedLayer, (StringHash)link.dest_node.Get());
             if (source_state && target_state && 
-                source_state == machine.GetCurrentAnimationState() &&
-                target_state == machine.GetTargetAnimationState())
+                source_state == machine.GetCurrentAnimationState(s_SelectedLayer) &&
+                target_state == machine.GetTargetAnimationState(s_SelectedLayer))
             {
                 ed::Flow(link.link_id);
             }
@@ -1678,28 +1967,28 @@ void AnimatorPanel::DrawGraph(Animation::StateMachine& machine)
         {
             if (ImGui::MenuItem("Create New Animation Clip State"))
             {
-                StringHash hash = machine.CreateState("New Animation State", StateType::Clip);
+                StringHash hash = machine.CreateState(s_SelectedLayer, "New Animation State", StateType::Clip);
                 s_NodeMap[hash] = Node
                 {
                     "New Animation State",
                     hash,
                     Louron::Utils::fnv1a_hash(std::to_string(hash) + "In"),
                     Louron::Utils::fnv1a_hash(std::to_string(hash) + "Out"),
-                    hash == machine.GetDefaultState(),
+                    hash == machine.GetDefaultStateHash(s_SelectedLayer),
                     StateType::Clip
                 };
             }
 
             if (ImGui::MenuItem("Create New Blend Tree State"))
             {
-                StringHash hash = machine.CreateState("New Blend Tree State", StateType::BlendTree);
+                StringHash hash = machine.CreateState(s_SelectedLayer, "New Blend Tree State", StateType::BlendTree);
                 s_NodeMap[hash] = Node
                 {
                     "New Blend Tree State",
                     hash,
                     Louron::Utils::fnv1a_hash(std::to_string(hash) + "In"),
                     Louron::Utils::fnv1a_hash(std::to_string(hash) + "Out"),
-                    hash == machine.GetDefaultState(),
+                    hash == machine.GetDefaultStateHash(s_SelectedLayer),
                     StateType::BlendTree
                 };
             }

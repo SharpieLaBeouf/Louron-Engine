@@ -1,4 +1,3 @@
-Default State: Locomotion
 Animation Parameters:
   - Name: Velocity X
     Hash: 3414385514
@@ -16,131 +15,165 @@ Animation Parameters:
     Hash: 2309383031
     Type: Bool
     Value: 0
-Animation States:
-  - Name: Jump
-    Hash: 236909357
-    Type: Clip
-    Asset Handle: 2008768937
-    Should Loop: false
-    Playback Speed: 1
-  - Name: Locomotion
-    Hash: 1989750836
-    Type: BlendTree
-    Blend Tree Name: Locomotion
-    Blend Tree Type: TwoDimensionalFreeForm
-    Blend Param X: 3414385514
-    Blend Param Y: 3380830276
-    Motions:
-      - Motion Type: Clip
-        Motion Blend Position X: 0
-        Motion Blend Position Y: 0
-        Asset Handle: 89794127
+State Machine Layers:
+  - Layer Name: New State
+    Layer Weight: 0
+    Layer Blend Type: Override
+    Layer Sync Layer: false
+    Layer Sync Index: 18446744073709551615
+    Layer Use Own Timing: false
+    Layer Using IK: false
+    Layer Default State: Locomotion
+    Layer Animation States:
+      - Name: Locomotion
+        Hash: 1989750836
+        Type: BlendTree
+        Blend Tree Name: Default Blend Tree State
+        Blend Tree Type: TwoDimensionalFreeForm
+        Blend Param X: 3414385514
+        Blend Param Y: 3380830276
+        Motions:
+          - Motion Type: Clip
+            Motion Blend Position X: 0
+            Motion Blend Position Y: 0
+            Asset Handle: 89794127
+            Playback Speed: 1
+          - Motion Type: Clip
+            Motion Blend Position X: 0
+            Motion Blend Position Y: 0.5
+            Asset Handle: 2661767933
+            Playback Speed: 1
+          - Motion Type: Clip
+            Motion Blend Position X: 0
+            Motion Blend Position Y: 1
+            Asset Handle: 3059000749
+            Playback Speed: 1
+          - Motion Type: Clip
+            Motion Blend Position X: 0
+            Motion Blend Position Y: -0.5
+            Asset Handle: 4142736987
+            Playback Speed: 1
+          - Motion Type: Clip
+            Motion Blend Position X: -1
+            Motion Blend Position Y: 0
+            Asset Handle: 193969959
+            Playback Speed: 1
+          - Motion Type: Clip
+            Motion Blend Position X: -0.5
+            Motion Blend Position Y: 0
+            Asset Handle: 3965387159
+            Playback Speed: 1
+          - Motion Type: Clip
+            Motion Blend Position X: 0.5
+            Motion Blend Position Y: 0
+            Asset Handle: 2473008050
+            Playback Speed: 1
+          - Motion Type: Clip
+            Motion Blend Position X: 1
+            Motion Blend Position Y: 0
+            Asset Handle: 2182967682
+            Playback Speed: 1
+      - Name: Jumping
+        Hash: 1846982131
+        Type: Clip
+        Asset Handle: 2008768937
+        Should Loop: false
         Playback Speed: 1
-      - Motion Type: Clip
-        Motion Blend Position X: 0
-        Motion Blend Position Y: 0.5
-        Asset Handle: 2661767933
+      - Name: Dying
+        Hash: 1099095730
+        Type: Clip
+        Asset Handle: 3905742638
+        Should Loop: false
         Playback Speed: 1
-      - Motion Type: Clip
-        Motion Blend Position X: 0
-        Motion Blend Position Y: 1
-        Asset Handle: 3059000749
+    Layer Animation Transitions:
+      - Source Name: Entry State
+        Source Hash: 24476269
+        Destination Name: Locomotion
+        Destination Hash: 1989750836
+        Transition Duration: 0.3
+        Has Exit Time: false
+        Exit Time: 0
+        Conditions:
+          []
+      - Source Name: Locomotion
+        Source Hash: 1989750836
+        Destination Name: Jumping
+        Destination Hash: 1846982131
+        Transition Duration: 1
+        Has Exit Time: false
+        Exit Time: 0
+        Conditions:
+          - Parameter Name: ""
+            Parameter Hash: 3340040579
+            Comparison Operation: Equal
+            Reference Threshold: 1
+      - Source Name: Jumping
+        Source Hash: 1846982131
+        Destination Name: Locomotion
+        Destination Hash: 1989750836
+        Transition Duration: 1
+        Has Exit Time: true
+        Exit Time: 0.9
+        Conditions:
+          - Parameter Name: ""
+            Parameter Hash: 3340040579
+            Comparison Operation: Equal
+            Reference Threshold: 0
+      - Source Name: Locomotion
+        Source Hash: 1989750836
+        Destination Name: Dying
+        Destination Hash: 1099095730
+        Transition Duration: 0.3
+        Has Exit Time: false
+        Exit Time: 0
+        Conditions:
+          - Parameter Name: ""
+            Parameter Hash: 2309383031
+            Comparison Operation: Equal
+            Reference Threshold: 1
+      - Source Name: Jumping
+        Source Hash: 1846982131
+        Destination Name: Dying
+        Destination Hash: 1099095730
+        Transition Duration: 1
+        Has Exit Time: true
+        Exit Time: 0.9
+        Conditions:
+          - Parameter Name: ""
+            Parameter Hash: 2309383031
+            Comparison Operation: Equal
+            Reference Threshold: 1
+      - Source Name: Dying
+        Source Hash: 1099095730
+        Destination Name: Exit State
+        Destination Hash: 2055323235
+        Transition Duration: 0
+        Has Exit Time: true
+        Exit Time: 1
+        Conditions:
+          []
+  - Layer Name: New Layer
+    Layer Weight: 1
+    Layer Blend Type: Additive
+    Layer Sync Layer: false
+    Layer Sync Index: 18446744073709551615
+    Layer Use Own Timing: false
+    Layer Using IK: false
+    Layer Default State: Crouch Pose
+    Layer Animation States:
+      - Name: Crouch Pose
+        Hash: 3483973344
+        Type: Clip
+        Asset Handle: 379988091
+        Should Loop: true
         Playback Speed: 1
-      - Motion Type: Clip
-        Motion Blend Position X: 0
-        Motion Blend Position Y: -0.75
-        Asset Handle: 4142736987
-        Playback Speed: 1
-      - Motion Type: Clip
-        Motion Blend Position X: -1
-        Motion Blend Position Y: 0
-        Asset Handle: 193969959
-        Playback Speed: 1
-      - Motion Type: Clip
-        Motion Blend Position X: -0.5
-        Motion Blend Position Y: 0
-        Asset Handle: 3965387159
-        Playback Speed: 1
-      - Motion Type: Clip
-        Motion Blend Position X: 0.5
-        Motion Blend Position Y: 0
-        Asset Handle: 2473008050
-        Playback Speed: 1
-      - Motion Type: Clip
-        Motion Blend Position X: 1
-        Motion Blend Position Y: 0
-        Asset Handle: 2182967682
-        Playback Speed: 1
-  - Name: Dying Animation
-    Hash: 3799486740
-    Type: Clip
-    Asset Handle: 2517060239
-    Should Loop: false
-    Playback Speed: 1
-Animation Transitions:
-  - Source Name: Entry State
-    Source Hash: 24476269
-    Destination Name: Locomotion
-    Destination Hash: 1989750836
-    Transition Duration: 0.3
-    Has Exit Time: false
-    Exit Time: 0
-    Conditions:
-      []
-  - Source Name: Locomotion
-    Source Hash: 1989750836
-    Destination Name: Jump
-    Destination Hash: 236909357
-    Transition Duration: 1
-    Has Exit Time: false
-    Exit Time: 0
-    Conditions:
-      - Parameter Name: ""
-        Parameter Hash: 3340040579
-        Comparison Operation: Equal
-        Reference Threshold: 1
-  - Source Name: Jump
-    Source Hash: 236909357
-    Destination Name: Locomotion
-    Destination Hash: 1989750836
-    Transition Duration: 1
-    Has Exit Time: true
-    Exit Time: 0.9
-    Conditions:
-      - Parameter Name: ""
-        Parameter Hash: 3340040579
-        Comparison Operation: NotEqual
-        Reference Threshold: 1
-  - Source Name: Locomotion
-    Source Hash: 1989750836
-    Destination Name: Dying Animation
-    Destination Hash: 3799486740
-    Transition Duration: 1
-    Has Exit Time: false
-    Exit Time: 0
-    Conditions:
-      - Parameter Name: ""
-        Parameter Hash: 2309383031
-        Comparison Operation: Equal
-        Reference Threshold: 1
-  - Source Name: Dying Animation
-    Source Hash: 3799486740
-    Destination Name: Exit State
-    Destination Hash: 2055323235
-    Transition Duration: 0
-    Has Exit Time: true
-    Exit Time: 1
-    Conditions:
-      []
-  - Source Name: Jump
-    Source Hash: 236909357
-    Destination Name: Dying Animation
-    Destination Hash: 3799486740
-    Transition Duration: 1
-    Has Exit Time: true
-    Exit Time: 0.9
-    Conditions:
-      - Parameter Name: ""
-        Parameter Hash: 2309383031
-        Comparison Operation: Equal
-        Reference Threshold: 1
+    Layer Animation Transitions:
+      - Source Name: Entry State
+        Source Hash: 24476269
+        Destination Name: Crouch Pose
+        Destination Hash: 3483973344
+        Transition Duration: 0.3
+        Has Exit Time: false
+        Exit Time: 0
+        Conditions:
+          []

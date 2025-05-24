@@ -17,6 +17,15 @@ namespace Louron
 {
     struct AnimationPose
     {
+        AnimationPose() = default;
+        ~AnimationPose() = default;
+
+        AnimationPose(const AnimationPose& other) = default;
+        AnimationPose(AnimationPose&& other) = default;
+
+        AnimationPose& operator=(const AnimationPose& other) = default;
+        AnimationPose& operator=(AnimationPose&& other) = default;
+
         struct AnimationTransform
         {
             glm::vec3 Position;
@@ -26,7 +35,7 @@ namespace Louron
         
         // Key = Bone Name
         // Value = Local Transform
-        std::unordered_map<std::string, AnimationTransform> Pose;
+        std::unordered_map<std::string, AnimationTransform> Pose = {};
     };
 
     struct Keyframe_Position

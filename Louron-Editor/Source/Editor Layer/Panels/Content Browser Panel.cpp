@@ -750,8 +750,11 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 
 								Louron::Animation::StateMachine machine{};
 
-								machine.CreateState("Default Animation State", Louron::Animation::StateType::Clip);
-								machine.CreateState("Default Blend Tree State", Louron::Animation::StateType::Clip);
+								machine.AddLayer("Base Layer");
+
+								machine.GetLayer(0)->LayerWeight = 1.0f;
+								machine.CreateState(0, "Default Animation State", Louron::Animation::StateType::Clip);
+								machine.CreateState(0, "Default Blend Tree State", Louron::Animation::StateType::BlendTree);
 
 								YAML::Emitter out;
 								{

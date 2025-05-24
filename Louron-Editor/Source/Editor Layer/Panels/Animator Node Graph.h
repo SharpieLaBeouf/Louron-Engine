@@ -48,8 +48,9 @@ private:
     static inline std::unordered_map<Louron::Animation::StringHash, Node> s_NodeMap = {};
     static inline std::vector<TransitionLinks> s_TransitionMap = {};
 
-    static inline Louron::Animation::StringHash s_SelectedNode = NULL_UUID;
+    static inline size_t s_SelectedLayer = 0;
     static inline TransitionLinks s_SelectedTransition = {};
+    static inline Louron::Animation::StringHash s_SelectedNode = NULL_UUID;
 
     // These two are used to determine a. what blend tree state in the state
     // machine are we traversing into, and b. what child of child blend trees
