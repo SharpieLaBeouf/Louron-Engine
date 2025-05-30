@@ -213,30 +213,42 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 		ImGui::Text("Rotation");
 		ImGui::NextColumn();
 
-		value = entity_transform.GetLocalRotation();
+		glm::quat current_rot = entity_transform.GetLocalRotation();
+		glm::vec3 new_rot_euler = glm::degrees(glm::eulerAngles(current_rot));
 		updated = false;
 
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
 		label = "##Local RotationX" + std::to_string(selected_entity.GetUUID());
-		if (ImGui::DragFloat(label.c_str(), &value.x, 0.1f, 0, 0, "%.2f")) updated = true;
+		if (ImGui::DragFloat(label.c_str(), &new_rot_euler.x, 0.1f, 0, 0, "%.2f")) updated = true;
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
 		label = "##Local RotationY" + std::to_string(selected_entity.GetUUID());
-		if (ImGui::DragFloat(label.c_str(), &value.y, 0.1f, 0, 0, "%.2f")) updated = true;
+		if (ImGui::DragFloat(label.c_str(), &new_rot_euler.y, 0.1f, 0, 0, "%.2f")) updated = true;
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(columnWidth / 3); // Set width to one-third of column width
 		label = "##Local RotationZ" + std::to_string(selected_entity.GetUUID());
-		if (ImGui::DragFloat(label.c_str(), &value.z, 0.1f, 0, 0, "%.2f")) updated = true;
+		if (ImGui::DragFloat(label.c_str(), &new_rot_euler.z, 0.1f, 0, 0, "%.2f")) updated = true;
 
-		if (updated) entity_transform.SetRotation(value);
+		if (updated) 
+		{
+			glm::vec3 delta_degrees = new_rot_euler - glm::degrees(glm::eulerAngles(current_rot));
+
+			glm::quat delta_x = glm::angleAxis(glm::radians(delta_degrees.x), glm::vec3(1, 0, 0));
+			glm::quat delta_y = glm::angleAxis(glm::radians(delta_degrees.y), glm::vec3(0, 1, 0));
+			glm::quat delta_z = glm::angleAxis(glm::radians(delta_degrees.z), glm::vec3(0, 0, 1));
+
+			glm::quat delta_rotation = delta_y * delta_x * delta_z;
+
+			entity_transform.SetRotation(glm::normalize(delta_rotation * current_rot));
+		}
 
 		ImGui::NextColumn();
 		ImGui::Text("Scale");

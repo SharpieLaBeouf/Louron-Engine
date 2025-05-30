@@ -24,7 +24,7 @@ namespace Louron::Animation
 {
 
     class StateMachine : public Asset
-    { 
+    {
 
     public:
 
@@ -203,6 +203,7 @@ namespace Louron::Animation
     
         bool ValidLayer(size_t layer_index) const;
         static void BlendPoses(const AnimationPose& a, const AnimationPose& b, float t, AnimationPose& result);
+        static void AdditiveBlend(const AnimationPose& a, const AnimationPose& b, float weight, AnimationPose& result);
 
         // Vector of Layers
         std::vector<Layer> m_Layers = {};

@@ -181,18 +181,18 @@ namespace Louron {
     void RigidDynamic::SetGlobalPose(TransformComponent& transform) {
         if (m_Actor) {
             glm::vec3 position = transform.GetGlobalPosition();
-            glm::quat quaternion = glm::quat(glm::radians(transform.GetGlobalRotation()));
-            m_Actor->setGlobalPose(PxTransform(position.x, position.y, position.z, PxQuat(quaternion.x, quaternion.y, quaternion.z, quaternion.w)));
+            glm::quat rotation = transform.GetGlobalRotation();
+            m_Actor->setGlobalPose(PxTransform(position.x, position.y, position.z, PxQuat(rotation.x, rotation.y, rotation.z, rotation.w)));
         }
         else {
             L_CORE_ERROR("Cannot Set Pose - Actor is Nullptr.");
         }
     }
 
-    void RigidDynamic::SetGlobalPose(const glm::vec3& position, const glm::vec3& rotation) {
-        if (m_Actor) {
-            glm::quat quaternion = glm::quat(glm::radians(rotation));
-            m_Actor->setGlobalPose(PxTransform(position.x, position.y, position.z, PxQuat(quaternion.x, quaternion.y, quaternion.z, quaternion.w)));
+    void RigidDynamic::SetGlobalPose(const glm::vec3& position, const glm::quat& rotation) {
+        if (m_Actor) 
+        {
+            m_Actor->setGlobalPose(PxTransform(position.x, position.y, position.z, PxQuat(rotation.x, rotation.y, rotation.z, rotation.w)));
         }
         else {
             L_CORE_ERROR("Cannot Set Pose - Actor is Nullptr.");
@@ -584,24 +584,22 @@ namespace Louron {
         L_CORE_ERROR("Cannot Set Pose - Shape is Nullptr.");
     }
 
-    void PhysicsShape::SetLocalPose(const glm::vec3& local_position, const glm::vec3& local_rotation) {
+    void PhysicsShape::SetLocalPose(const glm::vec3& local_position, const glm::quat& local_rotation) {
         if (m_Shape) {
 
             auto rb_ref = m_RigidbodyRef.lock();
             if (rb_ref && *rb_ref)
                 rb_ref->GetActor()->detachShape(*m_Shape);
-            
-            glm::quat quaternion = glm::quat(glm::radians(local_rotation));
-            m_Shape->setLocalPose(
+                        m_Shape->setLocalPose(
                 PxTransform(
                     local_position.x,
                     local_position.y,
                     local_position.z,
                 PxQuat(
-                    quaternion.x,
-                    quaternion.y,
-                    quaternion.z,
-                    quaternion.w))
+                    local_rotation.x,
+                    local_rotation.y,
+                    local_rotation.z,
+                    local_rotation.w))
             );
 
             if (rb_ref && *rb_ref)
@@ -620,17 +618,17 @@ namespace Louron {
                 rb_ref->GetActor()->detachShape(*m_Shape);
 
             glm::vec3 local_position = transform.GetLocalPosition();
-            glm::quat quaternion = glm::quat(glm::radians(transform.GetLocalRotation()));
+            glm::quat local_rotation = transform.GetLocalRotation();
             m_Shape->setLocalPose(
                 PxTransform(
                     local_position.x,
                     local_position.y,
                     local_position.z,
                 PxQuat(
-                    quaternion.x,
-                    quaternion.y,
-                    quaternion.z,
-                    quaternion.w))
+                    local_rotation.x,
+                    local_rotation.y,
+                    local_rotation.z,
+                    local_rotation.w))
             );
 
             if (rb_ref && *rb_ref)
@@ -702,13 +700,15 @@ namespace Louron {
         L_CORE_ERROR("Cannot Set PxShapeFlags - Shape is Invalid.");
     }
 
-    void PhysicsShape::SetMaterials(PxMaterial* const* materials, PxU32 materialCount) {
-        if (m_Shape) {
+    void PhysicsShape::SetMaterial(PxMaterial* material) 
+    {
+        if (m_Shape && material)
+        {
             auto rb_ref = m_RigidbodyRef.lock();
             if (rb_ref && *rb_ref)
                 rb_ref->GetActor()->detachShape(*m_Shape);
 
-            m_Shape->setMaterials(materials, materialCount);
+            m_Shape->setMaterials(&material, 1);
 
             if (rb_ref && *rb_ref)
                 rb_ref->GetActor()->attachShape(*m_Shape);

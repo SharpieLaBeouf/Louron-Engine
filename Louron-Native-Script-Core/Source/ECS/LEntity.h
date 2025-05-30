@@ -112,13 +112,13 @@ namespace Louron
 		* @brief Get the rotation of the entity.
 		* @return Vectors::Vector3 The rotation of the entity.
 		*/
-		Vectors::Vector3 GetRotation() const { return ENGINE_SAFE_CALL_RET(Vectors::Vector3, Vectors::Vector3(*)(uint32_t), TransformComponent_GetRotation, m_EntityID); }
+		Quaternion GetRotation() const { return ENGINE_SAFE_CALL_RET(Quaternion, Quaternion(*)(uint32_t), TransformComponent_GetRotation, m_EntityID); }
 
 		/**
 		* @brief Set the rotation of the entity.
 		* @param rotation The new rotation of the entity.
 		*/
-		void SetRotation(const Vectors::Vector3& rotation) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), TransformComponent_SetRotation, m_EntityID, &rotation); }
+		void SetRotation(const Quaternion& rotation) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Quaternion*), TransformComponent_SetRotation, m_EntityID, &rotation); }
 
 		/**
 		* @brief Get the scale of the entity.
@@ -160,13 +160,13 @@ namespace Louron
 		* @brief Get the global world space rotation of the entity.
 		* @return Vectors::Vector3 The rotation of the entity.
 		*/
-		Vectors::Vector3 GetGlobalRotation() const { return ENGINE_SAFE_CALL_RET(Vectors::Vector3, Vectors::Vector3(*)(uint32_t), TransformComponent_GetGlobalRotation, m_EntityID); }
+		Quaternion GetGlobalRotation() const { return ENGINE_SAFE_CALL_RET(Quaternion, Quaternion(*)(uint32_t), TransformComponent_GetGlobalRotation, m_EntityID); }
 
 		/**
 		* @brief Set the global world space rotation of the entity.
 		* @param rotation The new rotation of the entity.
 		*/
-		void SetGlobalRotation(const Vectors::Vector3& rotation) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Vectors::Vector3*), TransformComponent_SetGlobalRotation, m_EntityID, &rotation); }
+		void SetGlobalRotation(const Quaternion& rotation) const { ENGINE_SAFE_CALL_VOID(void(*)(uint32_t, const Quaternion*), TransformComponent_SetGlobalRotation, m_EntityID, &rotation); }
 
 		/**
 		* @brief Get the global world space scale of the entity.
@@ -292,7 +292,7 @@ namespace Louron
 				if (entity.m_EntityID != NULL_UUID)
 				{
 					entity.SetParent(parent.m_EntityID);
-					entity.SetTransform(Transform{ Vectors::Vector3(0.0f), Vectors::Vector3(0.0f), Vectors::Vector3(1.0f) });
+					entity.SetTransform(Transform{ Vectors::Vector3(0.0f), Quaternion(1.0f, 0.0f, 0.0f, 0.0f), Vectors::Vector3(1.0f) });
 				}
 				return entity;
 			}

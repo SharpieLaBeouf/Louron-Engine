@@ -12,89 +12,6 @@ namespace Louron::Animation
     StringHash StateMachine::DefaultAnyHash   = Louron::Utils::fnv1a_hash("DEFAULT_ANY");
     StringHash StateMachine::DefaultExitHash  = Louron::Utils::fnv1a_hash("DEFAULT_EXIT");
 
-    StateMachine::Layer::Layer(const Layer &other)
-    {
-        States.clear();
-        Transitions.clear();
-
-        for(const auto& [string_hash, state] : other.States)
-        {
-            if (!state || string_hash == NULL_UUID)
-                continue;
-
-            States[string_hash] = state->Clone();
-        }
-
-        for(const auto& transition : other.Transitions)
-        {
-            if (!transition)
-                continue;
-
-            Transitions.emplace_back(std::make_unique<AnimationTransition>(*transition.get()));
-        }
-
-        DefaultState = other.DefaultState;
-        CurrentState = other.CurrentState;
-        PreviousState = NULL_UUID;
-
-        TargetState = other.TargetState;
-        TransitionCompletion = other.TransitionCompletion;
-        ExitTimeCompletion = other.ExitTimeCompletion;
-        PreviousNormalisedTime = other.PreviousNormalisedTime;
-
-        LayerName = other.LayerName;
-        LayerWeight = other.LayerWeight;
-        BlendType = other.BlendType;
-        SyncLayer = other.SyncLayer;
-        LayerIndex = other.LayerIndex;
-        UseOwnLayerTiming = other.UseOwnLayerTiming;
-        UsingIK = other.UsingIK;
-    }
-
-    StateMachine::Layer& StateMachine::Layer::operator=(const Layer &other)
-    {
-        if (this == &other)
-            return *this;
-
-        States.clear();
-        Transitions.clear();
-
-        for(const auto& [string_hash, state] : other.States)
-        {
-            if (!state || string_hash == NULL_UUID)
-                continue;
-
-            States[string_hash] = state->Clone();
-        }
-
-        for(const auto& transition : other.Transitions)
-        {
-            if (!transition)
-                continue;
-
-            Transitions.emplace_back(std::make_unique<AnimationTransition>(*transition.get()));
-        }
-
-        DefaultState = other.DefaultState;
-        CurrentState = other.CurrentState;
-        PreviousState = NULL_UUID;
-
-        TargetState = other.TargetState;
-        TransitionCompletion = other.TransitionCompletion;
-        ExitTimeCompletion = other.ExitTimeCompletion;
-        PreviousNormalisedTime = other.PreviousNormalisedTime;
-
-        LayerName = other.LayerName;
-        LayerWeight = other.LayerWeight;
-        BlendType = other.BlendType;
-        SyncLayer = other.SyncLayer;
-        LayerIndex = other.LayerIndex;
-        UseOwnLayerTiming = other.UseOwnLayerTiming;
-        UsingIK = other.UsingIK;
-
-        return *this;
-    }
-
 #pragma region Constructors and Operators
 
     StateMachine::StateMachine(const StateMachine &other)
@@ -318,7 +235,7 @@ namespace Louron::Animation
             }
             else if (layer.LayerWeight > 0.0f)
             {
-                // TODO: layer_contributions.emplace_back(&layer, layer.LayerWeight);
+                layer_contributions.emplace_back(&layer, layer.LayerWeight);
             }
         }
 
@@ -347,7 +264,7 @@ namespace Louron::Animation
                 }
                 else
                 {
-                    float t = weight / new_total_weight; // Proportion of new pose in the updated blend
+                    float t = weight / new_total_weight;
                     AnimationPose out_pose;
                     StateMachine::BlendPoses(blended_pose, layer_pose, t, out_pose);
                     blended_pose = std::move(out_pose);
@@ -357,7 +274,9 @@ namespace Louron::Animation
             }
             else
             {
-                // TODO: Additive Blending, Need to Add Additive Reference Poses
+                AnimationPose out_pose;
+                StateMachine::AdditiveBlend(blended_pose, layer_pose, weight, out_pose); // Add the delta pose from the additive layer onto the current blended pose
+                blended_pose = std::move(out_pose);
             }
         }
 
@@ -370,12 +289,12 @@ namespace Louron::Animation
 
         if(States.contains(CurrentState) && States[CurrentState])
         {
-            States[CurrentState]->EvaluatePose(pose_a);
+            States[CurrentState]->EvaluatePose(pose_a, BlendType == LayerBlendType::Additive);
         }
         else
         {
             if (CurrentState == StateMachine::DefaultExitHash && States.contains(PreviousState) && States[PreviousState])
-                States[PreviousState]->EvaluatePose(pose_a);
+                States[PreviousState]->EvaluatePose(pose_a, BlendType == LayerBlendType::Additive);
 
             return;
         }
@@ -394,7 +313,7 @@ namespace Louron::Animation
 
         if (target_state && transition && transition->TransitionDuration > 0.0f)
         {
-            target_state->EvaluatePose(pose_b);
+            target_state->EvaluatePose(pose_b, BlendType == LayerBlendType::Additive);
     
             float t = TransitionCompletion / transition->TransitionDuration;
             StateMachine::BlendPoses(pose_a, pose_b, t, evaluated_pose);
@@ -472,7 +391,53 @@ namespace Louron::Animation
             result.Pose[bone_name] = out;
         }
     }
-    
+
+    void StateMachine::AdditiveBlend(const AnimationPose& base_pose, const AnimationPose& delta_pose, float weight, AnimationPose& result)
+    {
+        result.Pose.clear();
+
+        std::unordered_set<std::string> all_bones;
+
+        for (const auto& [bone_name, _] : base_pose.Pose) all_bones.insert(bone_name);
+        for (const auto& [bone_name, _] : delta_pose.Pose) all_bones.insert(bone_name);
+
+        for (const auto& bone_name : all_bones)
+        {
+            const bool has_base = base_pose.Pose.contains(bone_name);
+            const bool has_delta = delta_pose.Pose.contains(bone_name);
+
+            AnimationPose::AnimationTransform out;
+
+            if (has_base && has_delta)
+            {
+                const auto& base = base_pose.Pose.at(bone_name);
+                const auto& delta = delta_pose.Pose.at(bone_name);
+
+                out.Position = glm::mix(base.Position, base.Position + delta.Position, weight);
+
+                glm::quat delta_blend = glm::slerp(glm::quat(1, 0, 0, 0), delta.Orientation, weight);
+                out.Orientation = glm::normalize(base.Orientation * delta_blend);
+                
+                out.Scale = glm::mix(base.Scale, base.Scale + delta.Scale, weight);
+            }
+            else if (has_base)
+            {
+                out = base_pose.Pose.at(bone_name);
+            }
+            else if (has_delta)
+            {
+                // If applying delta to a bone without a base, treat base as identity
+                const auto& delta = delta_pose.Pose.at(bone_name);
+
+                out.Position    = delta.Position * weight;
+                out.Orientation = glm::slerp(glm::quat(1, 0, 0, 0), delta.Orientation, weight);
+                out.Scale       = delta.Scale * weight;
+            }
+
+            result.Pose[bone_name] = out;
+        }
+    }
+
 #pragma endregion
 
 #pragma region --State-- Getter and Setters
@@ -1213,7 +1178,6 @@ namespace Louron::Animation
         out << YAML::EndSeq;
     }
 
-    // TODO: Fix this to work with new Serialise
     void StateMachine::Deserialise(const YAML::Node &data)
     {
         if (data["Animation Parameters"])
@@ -1373,34 +1337,117 @@ namespace Louron::Animation
         }
     }
     
-    #pragma region --State-- Getter and Setters
+    #pragma region --Layers--
 
-        void StateMachine::AddLayer(const std::string& layer_name)
+    StateMachine::Layer::Layer(const Layer &other)
+    {
+        States.clear();
+        Transitions.clear();
+
+        for(const auto& [string_hash, state] : other.States)
         {
-            m_Layers.push_back({});
-            m_Layers.back().LayerName = layer_name;
+            if (!state || string_hash == NULL_UUID)
+                continue;
+
+            States[string_hash] = state->Clone();
         }
 
-        void StateMachine::RemoveLayer(size_t layer_index)
+        for(const auto& transition : other.Transitions)
         {
-            if (!ValidLayer(layer_index))
-                return;
-            
-            m_Layers.erase(m_Layers.begin() + layer_index);
+            if (!transition)
+                continue;
+
+            Transitions.emplace_back(std::make_unique<AnimationTransition>(*transition.get()));
         }
 
-        StateMachine::Layer* StateMachine::GetLayer(size_t layer_index)
-        {
-            if (!ValidLayer(layer_index))
-                return nullptr;
+        DefaultState = other.DefaultState;
+        CurrentState = other.CurrentState;
+        PreviousState = NULL_UUID;
 
-            return &m_Layers[layer_index];
+        TargetState = other.TargetState;
+        TransitionCompletion = other.TransitionCompletion;
+        ExitTimeCompletion = other.ExitTimeCompletion;
+        PreviousNormalisedTime = other.PreviousNormalisedTime;
+
+        LayerName = other.LayerName;
+        LayerWeight = other.LayerWeight;
+        BlendType = other.BlendType;
+        SyncLayer = other.SyncLayer;
+        LayerIndex = other.LayerIndex;
+        UseOwnLayerTiming = other.UseOwnLayerTiming;
+        UsingIK = other.UsingIK;
+    }
+
+    StateMachine::Layer& StateMachine::Layer::operator=(const Layer &other)
+    {
+        if (this == &other)
+            return *this;
+
+        States.clear();
+        Transitions.clear();
+
+        for(const auto& [string_hash, state] : other.States)
+        {
+            if (!state || string_hash == NULL_UUID)
+                continue;
+
+            States[string_hash] = state->Clone();
         }
 
-        std::vector<StateMachine::Layer> &StateMachine::GetLayers()
+        for(const auto& transition : other.Transitions)
         {
-            return m_Layers;
+            if (!transition)
+                continue;
+
+            Transitions.emplace_back(std::make_unique<AnimationTransition>(*transition.get()));
         }
+
+        DefaultState = other.DefaultState;
+        CurrentState = other.CurrentState;
+        PreviousState = NULL_UUID;
+
+        TargetState = other.TargetState;
+        TransitionCompletion = other.TransitionCompletion;
+        ExitTimeCompletion = other.ExitTimeCompletion;
+        PreviousNormalisedTime = other.PreviousNormalisedTime;
+
+        LayerName = other.LayerName;
+        LayerWeight = other.LayerWeight;
+        BlendType = other.BlendType;
+        SyncLayer = other.SyncLayer;
+        LayerIndex = other.LayerIndex;
+        UseOwnLayerTiming = other.UseOwnLayerTiming;
+        UsingIK = other.UsingIK;
+
+        return *this;
+    }
+
+    void StateMachine::AddLayer(const std::string& layer_name)
+    {
+        m_Layers.push_back({});
+        m_Layers.back().LayerName = layer_name;
+    }
+
+    void StateMachine::RemoveLayer(size_t layer_index)
+    {
+        if (!ValidLayer(layer_index))
+            return;
+        
+        m_Layers.erase(m_Layers.begin() + layer_index);
+    }
+
+    StateMachine::Layer* StateMachine::GetLayer(size_t layer_index)
+    {
+        if (!ValidLayer(layer_index))
+            return nullptr;
+
+        return &m_Layers[layer_index];
+    }
+
+    std::vector<StateMachine::Layer> &StateMachine::GetLayers()
+    {
+        return m_Layers;
+    }
 
 #pragma endregion
 

@@ -32,9 +32,9 @@ namespace Louron {
 		m_PhysScene = scene;
 
 		glm::vec3 position = transform->GetGlobalPosition();
-		glm::quat quaternion = glm::quat(glm::radians(transform->GetGlobalRotation()));
+		glm::quat rotation = transform->GetGlobalRotation();
 		
-		PxTransform trans = { position.x, position.y, position.z, PxQuat(quaternion.x, quaternion.y, quaternion.z, quaternion.w) };
+		PxTransform trans = { position.x, position.y, position.z, PxQuat(rotation.x, rotation.y, rotation.z, rotation.w) };
 		m_RigidDynamic = std::make_shared<RigidDynamic>();
 		
 		m_RigidDynamic->Init(trans);

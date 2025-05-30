@@ -67,7 +67,7 @@ namespace Louron
         struct _Transform
         {
             glm::vec3 position;
-            glm::vec3 rotation;
+            glm::quat rotation;
             glm::vec3 scale;
         };
 
@@ -143,11 +143,11 @@ namespace Louron
         static glm::vec3 TransformComponent_GetGlobalPosition(UUID entity_uuid);
         static void TransformComponent_SetGlobalPosition(UUID entity_uuid, const glm::vec3* value);
 
-        static glm::vec3 TransformComponent_GetRotation(UUID entity_uuid);
-        static void TransformComponent_SetRotation(UUID entity_uuid, const glm::vec3* value);
+        static glm::quat TransformComponent_GetRotation(UUID entity_uuid);
+        static void TransformComponent_SetRotation(UUID entity_uuid, const glm::quat* value);
         
-        static glm::vec3 TransformComponent_GetGlobalRotation(UUID entity_uuid);
-        static void TransformComponent_SetGlobalRotation(UUID entity_uuid, const glm::vec3* value);
+        static glm::quat TransformComponent_GetGlobalRotation(UUID entity_uuid);
+        static void TransformComponent_SetGlobalRotation(UUID entity_uuid, const glm::quat* value);
 
         static glm::vec3 TransformComponent_GetScale(UUID entity_uuid);
         static void TransformComponent_SetScale(UUID entity_uuid, const glm::vec3* value);

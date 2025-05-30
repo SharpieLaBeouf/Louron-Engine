@@ -142,16 +142,28 @@ public:
         }
         
         // WINNERS SPIN!
-        switch(Winner)
+        switch (Winner)
         {
             case 0:
             {
-                Players[0].SetRotation(Players[0].GetRotation() + Vector3(Time::GetDeltaTime() * 30.0f, 0.0f, Time::GetDeltaTime() * 40.0f));
+                Quaternion current_rot = Players[0].GetRotation();
+                Vector3 euler = current_rot.ToEuler();
+
+                euler.x += Time::GetDeltaTime() * 30.0f;
+                euler.z += Time::GetDeltaTime() * 40.0f;
+
+                Players[0].SetRotation(Quaternion::Euler(euler));
                 break;
             }
             case 1:
             {
-                Players[1].SetRotation(Players[1].GetRotation() + Vector3(Time::GetDeltaTime() * 30.0f, 0.0f, Time::GetDeltaTime() * 40.0f));
+                Quaternion current_rot = Players[1].GetRotation();
+                Vector3 euler = current_rot.ToEuler();
+
+                euler.x += Time::GetDeltaTime() * 30.0f;
+                euler.z += Time::GetDeltaTime() * 40.0f;
+
+                Players[1].SetRotation(Quaternion::Euler(euler));
                 break;
             }
             default: break;

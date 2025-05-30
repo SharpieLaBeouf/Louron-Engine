@@ -117,6 +117,8 @@ namespace Louron {
 
 		void OnViewportResize(const glm::ivec2& new_size);
 
+		void SetPaused(bool is_paused) { m_IsPaused = is_paused; }
+
 	public:
 
 		template<typename... Components>

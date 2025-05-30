@@ -1,22 +1,21 @@
-Scene Name: YBot Character
-Scene Pipeline Type: 1
-Entities:
-  - Entity: 2898167317
+Prefab Name: YBot Non Root Motion
+PrefabEntities:
+  - Entity: 84
     TagComponent:
       Tag: Shoot
     HierarchyComponent:
-      Parent: 1900330409
+      Parent: 0
       Children:
         []
     TransformComponent:
       Translation: [0, 1.3588102, 0.6852448]
       Rotation: [-0.00017243624, 0, 1, 0]
       Scale: [1, 1, 1]
-  - Entity: 3168732996
+  - Entity: 83
     TagComponent:
       Tag: Main Camera
     HierarchyComponent:
-      Parent: 1900330409
+      Parent: 0
       Children:
         []
     TransformComponent:
@@ -35,954 +34,949 @@ Entities:
       ClearColour: [0.1764, 0.3294, 0.5607, 1]
       CameraViewport: [0, 0, 1, 1]
     CameraDepth: "\x00"
-  - Entity: 315352436
+  - Entity: 82
     TagComponent:
       Tag: DEF-toe.R
     HierarchyComponent:
-      Parent: 2487981899
+      Parent: 81
       Children:
         []
     TransformComponent:
       Translation: [-1.2154942e-08, 0.17554127, -9.487849e-09]
       Rotation: [0.0023537828, 0.018001743, 0.99108446, -0.1319925]
       Scale: [0.99999994, 1, 1]
-  - Entity: 2487981899
+  - Entity: 81
     TagComponent:
       Tag: DEF-foot.R
     HierarchyComponent:
-      Parent: 4026388085
+      Parent: 80
       Children:
-        - 315352436
+        - 82
     TransformComponent:
       Translation: [4.962203e-09, 0.15099919, 1.3969839e-09]
       Rotation: [0.73443246, -0.6786292, -0.0065397206, -0.0053522154]
       Scale: [0.99999994, 0.99999994, 0.99999994]
-  - Entity: 4026388085
+  - Entity: 80
     TagComponent:
       Tag: DEF-shin.R.002
     HierarchyComponent:
-      Parent: 380099525
+      Parent: 79
       Children:
-        - 2487981899
+        - 81
     TransformComponent:
       Translation: [9.429641e-09, 0.1509991, -6.0535967e-09]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 380099525
+  - Entity: 79
     TagComponent:
       Tag: DEF-shin.R.001
     HierarchyComponent:
-      Parent: 2426223695
+      Parent: 78
       Children:
-        - 4026388085
+        - 80
     TransformComponent:
       Translation: [3.3469405e-10, 0.1509991, -1.1641532e-09]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 2426223695
+  - Entity: 78
     TagComponent:
       Tag: DEF-shin.R
     HierarchyComponent:
-      Parent: 87833066
+      Parent: 77
       Children:
-        - 380099525
+        - 79
     TransformComponent:
       Translation: [-1.1175871e-08, 0.13587621, -1.5133992e-08]
       Rotation: [0.9892167, 0.14645971, 7.0195523e-07, -1.0392887e-07]
       Scale: [1, 0.99999994, 0.99999994]
-  - Entity: 87833066
+  - Entity: 77
     TagComponent:
       Tag: DEF-thigh.R.002
     HierarchyComponent:
-      Parent: 2875721693
+      Parent: 76
       Children:
-        - 2426223695
+        - 78
     TransformComponent:
       Translation: [4.307367e-09, 0.13587622, 1.6298145e-09]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 2875721693
+  - Entity: 76
     TagComponent:
       Tag: DEF-thigh.R.001
     HierarchyComponent:
-      Parent: 1998981664
+      Parent: 75
       Children:
-        - 87833066
+        - 77
     TransformComponent:
       Translation: [1.9441359e-08, 0.1358761, 2.0954758e-09]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 1998981664
+  - Entity: 75
     TagComponent:
       Tag: DEF-thigh.R
     HierarchyComponent:
-      Parent: 2898972917
+      Parent: 2
       Children:
-        - 2875721693
+        - 76
     TransformComponent:
       Translation: [0.09124454, -0.06599265, 0.008720076]
       Rotation: [-0.003314163, -0.019185366, 0.016234865, 0.9996787]
       Scale: [1, 1, 1]
-  - Entity: 368477405
+  - Entity: 74
     TagComponent:
       Tag: DEF-toe.L
     HierarchyComponent:
-      Parent: 4105691830
+      Parent: 73
       Children:
         []
     TransformComponent:
       Translation: [-2.9370426e-09, 0.17554131, 1.717126e-08]
       Rotation: [-0.0023887749, -0.018018683, 0.9910856, -0.13198116]
       Scale: [0.99999994, 1, 0.99999994]
-  - Entity: 4105691830
+  - Entity: 73
     TagComponent:
       Tag: DEF-foot.L
     HierarchyComponent:
-      Parent: 1271323766
+      Parent: 72
       Children:
-        - 368477405
+        - 74
     TransformComponent:
       Translation: [1.0171789e-08, 0.15099847, 1.3271347e-08]
       Rotation: [0.7344427, -0.6786181, 0.006519999, 0.0053769806]
       Scale: [0.99999994, 1, 1]
-  - Entity: 1271323766
+  - Entity: 72
     TagComponent:
       Tag: DEF-shin.L.002
     HierarchyComponent:
-      Parent: 3616262695
+      Parent: 71
       Children:
-        - 4105691830
+        - 73
     TransformComponent:
       Translation: [-1.4551915e-09, 0.15099837, -1.6298145e-09]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 3616262695
+  - Entity: 71
     TagComponent:
       Tag: DEF-shin.L.001
     HierarchyComponent:
-      Parent: 365019615
+      Parent: 70
       Children:
-        - 1271323766
+        - 72
     TransformComponent:
       Translation: [-1.2223609e-09, 0.15099841, 6.9849193e-10]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 365019615
+  - Entity: 70
     TagComponent:
       Tag: DEF-shin.L
     HierarchyComponent:
-      Parent: 3307105374
+      Parent: 69
       Children:
-        - 3616262695
+        - 71
     TransformComponent:
       Translation: [2.4447218e-08, 0.13587584, -1.7695129e-08]
       Rotation: [0.98922116, 0.14642908, -1.052557e-06, -1.988853e-08]
       Scale: [1, 1, 1]
-  - Entity: 3307105374
+  - Entity: 69
     TagComponent:
       Tag: DEF-thigh.L.002
     HierarchyComponent:
-      Parent: 2946555426
+      Parent: 68
       Children:
-        - 365019615
+        - 70
     TransformComponent:
       Translation: [1.3969839e-08, 0.13587591, 1.1641532e-09]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 2946555426
+  - Entity: 68
     TagComponent:
       Tag: DEF-thigh.L.001
     HierarchyComponent:
-      Parent: 2290984935
+      Parent: 67
       Children:
-        - 3307105374
+        - 69
     TransformComponent:
       Translation: [9.080395e-09, 0.13587572, 4.4237822e-09]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 2290984935
+  - Entity: 67
     TagComponent:
       Tag: DEF-thigh.L
     HierarchyComponent:
-      Parent: 2898972917
+      Parent: 2
       Children:
-        - 2946555426
+        - 68
     TransformComponent:
       Translation: [-0.09124454, -0.06599282, 0.008719911]
       Rotation: [0.0033137947, 0.019189104, 0.01625092, 0.9996783]
       Scale: [1, 0.99999994, 1]
-  - Entity: 2312190349
+  - Entity: 66
     TagComponent:
       Tag: DEF-pelvis.R
     HierarchyComponent:
-      Parent: 2898972917
+      Parent: 2
       Children:
         []
     TransformComponent:
       Translation: [0, 0, 0]
       Rotation: [0.75090516, -0.38854262, -0.48435572, -0.22489028]
       Scale: [1, 1, 1]
-  - Entity: 2182609122
+  - Entity: 65
     TagComponent:
       Tag: DEF-pelvis.L
     HierarchyComponent:
-      Parent: 2898972917
+      Parent: 2
       Children:
         []
     TransformComponent:
       Translation: [0, 0, 0]
       Rotation: [0.7509053, -0.38854334, 0.48435453, 0.22489107]
       Scale: [1, 0.99999994, 1]
-  - Entity: 4023341451
+  - Entity: 64
     TagComponent:
       Tag: DEF-breast.R
     HierarchyComponent:
-      Parent: 3721093445
+      Parent: 5
       Children:
         []
     TransformComponent:
       Translation: [-0.11837692, -0.0002921039, -0.0057417685]
       Rotation: [6.2500876e-05, -4.540388e-08, 0.7254904, 0.6882323]
       Scale: [1, 0.99999994, 0.99999994]
-  - Entity: 2895941593
+  - Entity: 63
     TagComponent:
       Tag: DEF-breast.L
     HierarchyComponent:
-      Parent: 3721093445
+      Parent: 5
       Children:
         []
     TransformComponent:
       Translation: [0.11842308, -0.0003124611, -0.0057203053]
       Rotation: [6.250089e-05, -4.5388838e-08, 0.7254904, 0.6882323]
       Scale: [1, 0.99999994, 0.99999994]
-  - Entity: 3616721249
+  - Entity: 62
     TagComponent:
       Tag: DEF-palm.04.R
     HierarchyComponent:
-      Parent: 400728634
+      Parent: 43
       Children:
         []
     TransformComponent:
       Translation: [-0.011225517, 0.027512047, -0.0008090542]
       Rotation: [-0.013333603, -0.19223113, 0.98112065, -0.016482523]
       Scale: [1, 1, 1]
-  - Entity: 673106468
+  - Entity: 61
     TagComponent:
       Tag: DEF-f_pinky.03.R
     HierarchyComponent:
-      Parent: 1250125568
+      Parent: 60
       Children:
         []
     TransformComponent:
       Translation: [7.2423063e-09, 0.025948502, -8.091956e-08]
       Rotation: [1, 1.3122467e-06, 1.2043356e-06, -1.060973e-05]
       Scale: [1, 1, 1]
-  - Entity: 1250125568
+  - Entity: 60
     TagComponent:
       Tag: DEF-f_pinky.02.R
     HierarchyComponent:
-      Parent: 1758841748
+      Parent: 59
       Children:
-        - 673106468
+        - 61
     TransformComponent:
       Translation: [-8.007646e-09, 0.041366603, -7.4273885e-08]
       Rotation: [1, -1.073812e-06, -1.0484039e-06, 1.0550115e-05]
       Scale: [1, 1, 1]
-  - Entity: 1758841748
+  - Entity: 59
     TagComponent:
       Tag: DEF-f_pinky.01.R
     HierarchyComponent:
-      Parent: 400728634
+      Parent: 43
       Children:
-        - 1250125568
+        - 60
     TransformComponent:
       Translation: [-0.044902038, 0.11004847, -0.003236082]
       Rotation: [0.9996253, -0.025173023, 0.00027441946, -0.01075455]
       Scale: [1, 1, 1]
-  - Entity: 652662970
+  - Entity: 58
     TagComponent:
       Tag: DEF-palm.03.R
     HierarchyComponent:
-      Parent: 400728634
+      Parent: 43
       Children:
         []
     TransformComponent:
       Translation: [-0.004888003, 0.030439828, -0.0015537126]
       Rotation: [-0.002172491, -0.07939472, 0.99651647, -0.025431301]
       Scale: [1, 1, 1]
-  - Entity: 2061724347
+  - Entity: 57
     TagComponent:
       Tag: DEF-f_ring.03.R
     HierarchyComponent:
-      Parent: 2816075561
+      Parent: 56
       Children:
         []
     TransformComponent:
       Translation: [8.981715e-09, 0.033073176, -5.86474e-08]
       Rotation: [1, 7.1552097e-07, 7.162263e-07, -3.0398996e-06]
       Scale: [1, 1, 1]
-  - Entity: 2816075561
+  - Entity: 56
     TagComponent:
       Tag: DEF-f_ring.02.R
     HierarchyComponent:
-      Parent: 3179663966
+      Parent: 55
       Children:
-        - 2061724347
+        - 57
     TransformComponent:
       Translation: [-3.5470293e-09, 0.036011897, -1.1536713e-07]
       Rotation: [1, -1.4312195e-06, -1.3953777e-06, 7.987144e-06]
       Scale: [1, 1, 1]
-  - Entity: 3179663966
+  - Entity: 55
     TagComponent:
       Tag: DEF-f_ring.01.R
     HierarchyComponent:
-      Parent: 400728634
+      Parent: 43
       Children:
-        - 2816075561
+        - 56
     TransformComponent:
       Translation: [-0.019552078, 0.12175963, -0.0062155537]
       Rotation: [0.9996252, -0.025173025, 0.00027437648, -0.010756098]
       Scale: [0.99999994, 1, 1]
-  - Entity: 3075636875
+  - Entity: 54
     TagComponent:
       Tag: DEF-palm.02.R
     HierarchyComponent:
-      Parent: 400728634
+      Parent: 43
       Children:
         []
     TransformComponent:
       Translation: [0.000686112, 0.031890944, -0.0016078143]
       Rotation: [-0.00027382502, 0.010752011, 0.99962527, -0.025173588]
       Scale: [0.99999994, 1, 1]
-  - Entity: 3699291482
+  - Entity: 53
     TagComponent:
       Tag: DEF-f_middle.03.R
     HierarchyComponent:
-      Parent: 1356960012
+      Parent: 52
       Children:
         []
     TransformComponent:
       Translation: [-1.6443664e-09, 0.034597594, 1.3155841e-09]
       Rotation: [1, -1.072158e-06, -1.0633778e-06, -8.165744e-06]
       Scale: [1, 1, 1]
-  - Entity: 1356960012
+  - Entity: 52
     TagComponent:
       Tag: DEF-f_middle.02.R
     HierarchyComponent:
-      Parent: 2643902612
+      Parent: 51
       Children:
-        - 3699291482
+        - 53
     TransformComponent:
       Translation: [-5.5410965e-09, 0.0361398, 3.4114873e-07]
       Rotation: [1, 1.9069676e-06, 1.9422696e-06, 4.2913643e-06]
       Scale: [1, 1, 1]
-  - Entity: 2643902612
+  - Entity: 51
     TagComponent:
       Tag: DEF-f_middle.01.R
     HierarchyComponent:
-      Parent: 400728634
+      Parent: 43
       Children:
-        - 1356960012
+        - 52
     TransformComponent:
       Translation: [0.0027444628, 0.12756376, -0.0064302734]
       Rotation: [0.9996252, -0.025174826, 0.00027269902, -0.010751761]
       Scale: [1, 1, 1]
-  - Entity: 728904626
+  - Entity: 50
     TagComponent:
       Tag: DEF-palm.01.R
     HierarchyComponent:
-      Parent: 400728634
+      Parent: 43
       Children:
         []
     TransformComponent:
       Translation: [0.0077128215, 0.030498033, -0.00096432073]
       Rotation: [-0.0077715213, 0.12360775, 0.99219525, -0.01447006]
       Scale: [0.99999994, 1, 1]
-  - Entity: 1605549273
+  - Entity: 49
     TagComponent:
       Tag: DEF-thumb.03.R
     HierarchyComponent:
-      Parent: 3486722358
+      Parent: 48
       Children:
         []
     TransformComponent:
       Translation: [1.3783574e-07, 0.04382141, -6.519258e-08]
       Rotation: [1, -2.4586918e-06, -2.1254647e-05, -6.834046e-06]
       Scale: [1, 1, 1]
-  - Entity: 3486722358
+  - Entity: 48
     TagComponent:
       Tag: DEF-thumb.02.R
     HierarchyComponent:
-      Parent: 3405969883
+      Parent: 47
       Children:
-        - 1605549273
+        - 49
     TransformComponent:
       Translation: [-3.3527613e-08, 0.047449578, -4.5169145e-08]
       Rotation: [1, 7.960945e-06, 4.294142e-05, 1.0270625e-05]
       Scale: [1, 1, 1]
-  - Entity: 3405969883
+  - Entity: 47
     TagComponent:
       Tag: DEF-thumb.01.R
     HierarchyComponent:
-      Parent: 400728634
+      Parent: 43
       Children:
-        - 3486722358
+        - 48
     TransformComponent:
       Translation: [0.030858265, 0.038276237, 0.0197396]
       Rotation: [0.83625376, 0.30526727, 0.4402761, -0.1168267]
       Scale: [1, 1, 0.99999994]
-  - Entity: 773573721
+  - Entity: 46
     TagComponent:
       Tag: DEF-f_index.03.R
     HierarchyComponent:
-      Parent: 2375225705
+      Parent: 45
       Children:
         []
     TransformComponent:
       Translation: [1.117337e-08, 0.034151547, -1.5133014e-07]
       Rotation: [1, 2.861189e-06, 2.8431386e-06, -1.8479998e-06]
       Scale: [1, 1, 1]
-  - Entity: 2375225705
+  - Entity: 45
     TagComponent:
       Tag: DEF-f_index.02.R
     HierarchyComponent:
-      Parent: 3424100971
+      Parent: 44
       Children:
-        - 773573721
+        - 46
     TransformComponent:
       Translation: [3.4924597e-09, 0.038919777, 1.117744e-07]
       Rotation: [1, 7.147289e-07, 7.9999484e-07, 6.02e-06]
       Scale: [1, 1, 1]
-  - Entity: 3424100971
+  - Entity: 44
     TagComponent:
       Tag: DEF-f_index.01.R
     HierarchyComponent:
-      Parent: 400728634
+      Parent: 43
       Children:
-        - 2375225705
+        - 45
     TransformComponent:
       Translation: [0.03085119, 0.12199211, -0.0038566564]
       Rotation: [0.99962515, -0.025174836, 0.0002725395, -0.010756053]
       Scale: [1, 1, 1]
-  - Entity: 400728634
+  - Entity: 43
     TagComponent:
       Tag: DEF-hand.R
     HierarchyComponent:
-      Parent: 2112062644
+      Parent: 42
       Children:
-        - 3424100971
-        - 3405969883
-        - 728904626
-        - 2643902612
-        - 3075636875
-        - 3179663966
-        - 652662970
-        - 1758841748
-        - 3616721249
+        - 44
+        - 47
+        - 50
+        - 51
+        - 54
+        - 55
+        - 58
+        - 59
+        - 62
     TransformComponent:
       Translation: [2.7269493e-09, 0.09204822, -1.9616618e-07]
       Rotation: [0.9996253, 0.02517431, -0.00027368282, 0.010751655]
       Scale: [1, 1, 0.99999994]
-  - Entity: 2112062644
+  - Entity: 42
     TagComponent:
       Tag: DEF-forearm.R.002
     HierarchyComponent:
-      Parent: 2653289835
+      Parent: 41
       Children:
-        - 400728634
+        - 43
     TransformComponent:
       Translation: [-7.212691e-09, 0.09204816, 4.195863e-08]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 2653289835
+  - Entity: 41
     TagComponent:
       Tag: DEF-forearm.R.001
     HierarchyComponent:
-      Parent: 3551659839
+      Parent: 40
       Children:
-        - 2112062644
+        - 42
     TransformComponent:
       Translation: [-1.2763053e-09, 0.09204822, 1.5695605e-08]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 3551659839
+  - Entity: 40
     TagComponent:
       Tag: DEF-forearm.R
     HierarchyComponent:
-      Parent: 1585654104
+      Parent: 39
       Children:
-        - 2653289835
+        - 41
     TransformComponent:
       Translation: [-3.4966376e-09, 0.09134896, 1.8404035e-07]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 1585654104
+  - Entity: 39
     TagComponent:
       Tag: DEF-upper_arm.R.002
     HierarchyComponent:
-      Parent: 2930373661
+      Parent: 38
       Children:
-        - 3551659839
+        - 40
     TransformComponent:
       Translation: [2.2221798e-09, 0.09134887, 8.564621e-08]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 2930373661
+  - Entity: 38
     TagComponent:
       Tag: DEF-upper_arm.R.001
     HierarchyComponent:
-      Parent: 1001894677
+      Parent: 37
       Children:
-        - 1585654104
+        - 39
     TransformComponent:
       Translation: [-1.3054375e-09, 0.0913489, 6.2035724e-08]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 1001894677
+  - Entity: 37
     TagComponent:
       Tag: DEF-upper_arm.R
     HierarchyComponent:
-      Parent: 3170689970
+      Parent: 36
       Children:
-        - 2930373661
+        - 38
     TransformComponent:
       Translation: [-3.1199306e-08, 0.12922287, -6.3725864e-08]
       Rotation: [0.9948157, -0.010451431, 0.0011064399, -0.10114992]
       Scale: [1, 1, 1]
-  - Entity: 3170689970
+  - Entity: 36
     TagComponent:
       Tag: DEF-shoulder.R
     HierarchyComponent:
-      Parent: 3721093445
+      Parent: 5
       Children:
-        - 1001894677
+        - 37
     TransformComponent:
       Translation: [-0.06105731, 0.09135015, 0.0022418683]
       Rotation: [0.4528216, 0.4407911, -0.52855676, 0.5668188]
       Scale: [0.99999994, 1, 1]
-  - Entity: 3307334649
+  - Entity: 35
     TagComponent:
       Tag: DEF-palm.04.L
     HierarchyComponent:
-      Parent: 455155825
+      Parent: 16
       Children:
         []
     TransformComponent:
       Translation: [0.011225706, 0.027512137, -0.000807098]
       Rotation: [0.0133310575, 0.19223382, 0.9811207, -0.016450033]
       Scale: [1, 1, 0.99999994]
-  - Entity: 4191147026
+  - Entity: 34
     TagComponent:
       Tag: DEF-f_pinky.03.L
     HierarchyComponent:
-      Parent: 3641901994
+      Parent: 33
       Children:
         []
     TransformComponent:
       Translation: [-9.749783e-09, 0.025948282, -5.3772965e-08]
       Rotation: [1, 9.516909e-06, -7.46551e-06, 0.00023037143]
       Scale: [1, 1, 1]
-  - Entity: 3641901994
+  - Entity: 33
     TagComponent:
       Tag: DEF-f_pinky.02.L
     HierarchyComponent:
-      Parent: 3850344679
+      Parent: 32
       Children:
-        - 4191147026
+        - 34
     TransformComponent:
       Translation: [-3.3833203e-09, 0.04136651, 2.474735e-09]
       Rotation: [0.99999994, -7.835692e-06, 6.415662e-06, -0.00036829663]
       Scale: [0.99999994, 0.99999994, 1]
-  - Entity: 3850344679
+  - Entity: 32
     TagComponent:
       Tag: DEF-f_pinky.01.L
     HierarchyComponent:
-      Parent: 455155825
+      Parent: 16
       Children:
-        - 3641901994
+        - 33
     TransformComponent:
       Translation: [0.0449026, 0.11004848, -0.0032284376]
       Rotation: [0.9996238, -0.02517376, -0.00026981847, 0.010888141]
       Scale: [1, 1, 1]
-  - Entity: 3761777599
+  - Entity: 31
     TagComponent:
       Tag: DEF-palm.03.L
     HierarchyComponent:
-      Parent: 455155825
+      Parent: 16
       Children:
         []
     TransformComponent:
       Translation: [0.0048882994, 0.03043998, -0.0015528864]
       Rotation: [0.0021703478, 0.07939875, 0.99651647, -0.025417875]
       Scale: [0.99999994, 1, 0.99999994]
-  - Entity: 2249569262
+  - Entity: 30
     TagComponent:
       Tag: DEF-f_ring.03.L
     HierarchyComponent:
-      Parent: 188782218
+      Parent: 29
       Children:
         []
     TransformComponent:
       Translation: [2.0855623e-08, 0.033073224, 1.357148e-08]
       Rotation: [1, 8.341726e-07, -1.0857384e-06, 3.4569762e-06]
       Scale: [1, 1, 1]
-  - Entity: 188782218
+  - Entity: 29
     TagComponent:
       Tag: DEF-f_ring.02.L
     HierarchyComponent:
-      Parent: 467230188
+      Parent: 28
       Children:
-        - 2249569262
+        - 30
     TransformComponent:
       Translation: [4.0654413e-09, 0.036011834, 3.7989594e-09]
       Rotation: [1, -2.377111e-07, 3.3571527e-07, -8.106203e-06]
       Scale: [1, 1, 1]
-  - Entity: 467230188
+  - Entity: 28
     TagComponent:
       Tag: DEF-f_ring.01.L
     HierarchyComponent:
-      Parent: 455155825
+      Parent: 16
       Children:
-        - 188782218
+        - 29
     TransformComponent:
       Translation: [0.019553076, 0.12175991, -0.0062125414]
       Rotation: [0.99962527, -0.02517637, -0.0002704061, 0.010751986]
       Scale: [0.99999994, 0.99999994, 1]
-  - Entity: 4106501587
+  - Entity: 27
     TagComponent:
       Tag: DEF-palm.02.L
     HierarchyComponent:
-      Parent: 455155825
+      Parent: 16
       Children:
         []
     TransformComponent:
       Translation: [-0.00068582373, 0.031890977, -0.0016075257]
       Rotation: [0.0002701422, -0.010747665, 0.9996252, -0.025176937]
       Scale: [1, 1, 1]
-  - Entity: 3732303767
+  - Entity: 26
     TagComponent:
       Tag: DEF-f_middle.03.L
     HierarchyComponent:
-      Parent: 3702855889
+      Parent: 25
       Children:
         []
     TransformComponent:
       Translation: [4.642061e-09, 0.034597743, 8.897632e-08]
       Rotation: [1, -8.351486e-07, 6.594904e-07, 8.225496e-06]
       Scale: [1, 1, 1]
-  - Entity: 3702855889
+  - Entity: 25
     TagComponent:
       Tag: DEF-f_middle.02.L
     HierarchyComponent:
-      Parent: 858578250
+      Parent: 24
       Children:
-        - 3732303767
+        - 26
     TransformComponent:
       Translation: [7.2898345e-09, 0.03613979, -1.6543981e-07]
       Rotation: [1, 1.550065e-06, -1.4085972e-06, -4.053234e-06]
       Scale: [1, 1, 1]
-  - Entity: 858578250
+  - Entity: 24
     TagComponent:
       Tag: DEF-f_middle.01.L
     HierarchyComponent:
-      Parent: 455155825
+      Parent: 16
       Children:
-        - 3702855889
+        - 25
     TransformComponent:
       Translation: [-0.0027433624, 0.12756376, -0.0064309905]
       Rotation: [0.9996252, -0.025176253, -0.00027067476, 0.010747164]
       Scale: [1, 1, 0.99999994]
-  - Entity: 682851838
+  - Entity: 23
     TagComponent:
       Tag: DEF-palm.01.L
     HierarchyComponent:
-      Parent: 455155825
+      Parent: 16
       Children:
         []
     TransformComponent:
       Translation: [-0.0077126357, 0.030498087, -0.000965439]
       Rotation: [0.0077685732, -0.12360516, 0.99219525, -0.014492025]
       Scale: [0.99999994, 1, 1]
-  - Entity: 4052887753
+  - Entity: 22
     TagComponent:
       Tag: DEF-thumb.03.L
     HierarchyComponent:
-      Parent: 860023588
+      Parent: 21
       Children:
         []
     TransformComponent:
       Translation: [2.142042e-08, 0.043821175, -1.5005935e-07]
       Rotation: [1, 3.8146977e-06, 0.00019743668, -5.140902e-07]
       Scale: [1, 1, 1]
-  - Entity: 860023588
+  - Entity: 21
     TagComponent:
       Tag: DEF-thumb.02.L
     HierarchyComponent:
-      Parent: 2382198370
+      Parent: 20
       Children:
-        - 4052887753
+        - 22
     TransformComponent:
       Translation: [-5.122274e-08, 0.047449853, -1.549488e-07]
       Rotation: [1, 2.5313348e-06, -0.00019546974, 1.5012922e-06]
       Scale: [1, 1, 1]
-  - Entity: 2382198370
+  - Entity: 20
     TagComponent:
       Tag: DEF-thumb.01.L
     HierarchyComponent:
-      Parent: 455155825
+      Parent: 16
       Children:
-        - 860023588
+        - 21
     TransformComponent:
       Translation: [-0.030861698, 0.038276482, 0.019734206]
       Rotation: [0.9347553, 0.24949436, -0.1392673, 0.2111628]
       Scale: [0.99999994, 1, 1]
-  - Entity: 1331205506
+  - Entity: 19
     TagComponent:
       Tag: DEF-f_index.03.L
     HierarchyComponent:
-      Parent: 4282819577
+      Parent: 18
       Children:
         []
     TransformComponent:
       Translation: [-3.0011051e-09, 0.034151543, -1.6851118e-08]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 4282819577
+  - Entity: 18
     TagComponent:
       Tag: DEF-f_index.02.L
     HierarchyComponent:
-      Parent: 4026976763
+      Parent: 17
       Children:
-        - 1331205506
+        - 19
     TransformComponent:
       Translation: [-1.6125341e-09, 0.038919616, 2.8636578e-08]
       Rotation: [1, -2.2644394e-06, 2.5294507e-06, -6.258273e-06]
       Scale: [1, 1, 1]
-  - Entity: 4026976763
+  - Entity: 17
     TagComponent:
       Tag: DEF-f_index.01.L
     HierarchyComponent:
-      Parent: 455155825
+      Parent: 16
       Children:
-        - 4282819577
+        - 18
     TransformComponent:
       Translation: [-0.030850552, 0.121992216, -0.0038620513]
       Rotation: [0.9996252, -0.025174677, -0.00027223604, 0.010751971]
       Scale: [0.99999994, 0.99999994, 1]
-  - Entity: 455155825
+  - Entity: 16
     TagComponent:
       Tag: DEF-hand.L
     HierarchyComponent:
-      Parent: 2680969999
+      Parent: 15
       Children:
-        - 4026976763
-        - 2382198370
-        - 682851838
-        - 858578250
-        - 4106501587
-        - 467230188
-        - 3761777599
-        - 3850344679
-        - 3307334649
+        - 17
+        - 20
+        - 23
+        - 24
+        - 27
+        - 28
+        - 31
+        - 32
+        - 35
     TransformComponent:
       Translation: [1.3970386e-08, 0.092048176, 2.148704e-07]
       Rotation: [0.9996252, 0.025177974, 0.00026966206, -0.010747177]
       Scale: [1, 1, 0.99999994]
-  - Entity: 2680969999
+  - Entity: 15
     TagComponent:
       Tag: DEF-forearm.L.002
     HierarchyComponent:
-      Parent: 2876411575
+      Parent: 14
       Children:
-        - 455155825
+        - 16
     TransformComponent:
       Translation: [2.4119657e-09, 0.09204809, 9.182622e-08]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 2876411575
+  - Entity: 14
     TagComponent:
       Tag: DEF-forearm.L.001
     HierarchyComponent:
-      Parent: 3503864179
+      Parent: 13
       Children:
-        - 2680969999
+        - 15
     TransformComponent:
       Translation: [-1.6202648e-09, 0.09204817, 8.2327006e-08]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 3503864179
+  - Entity: 13
     TagComponent:
       Tag: DEF-forearm.L
     HierarchyComponent:
-      Parent: 1205510232
+      Parent: 12
       Children:
-        - 2876411575
+        - 14
     TransformComponent:
       Translation: [-2.1386057e-09, 0.09134891, 8.405959e-08]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 1205510232
+  - Entity: 12
     TagComponent:
       Tag: DEF-upper_arm.L.002
     HierarchyComponent:
-      Parent: 506885290
+      Parent: 11
       Children:
-        - 3503864179
+        - 13
     TransformComponent:
       Translation: [1.6870416e-09, 0.09134888, -3.5657195e-08]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 506885290
+  - Entity: 11
     TagComponent:
       Tag: DEF-upper_arm.L.001
     HierarchyComponent:
-      Parent: 2729453512
+      Parent: 10
       Children:
-        - 1205510232
+        - 12
     TransformComponent:
       Translation: [-4.378194e-09, 0.0913489, 1.4612078e-07]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 2729453512
+  - Entity: 10
     TagComponent:
       Tag: DEF-upper_arm.L
     HierarchyComponent:
-      Parent: 1178501493
+      Parent: 9
       Children:
-        - 506885290
+        - 11
     TransformComponent:
       Translation: [-1.9557774e-08, 0.1292229, 2.3297179e-07]
       Rotation: [0.99481577, -0.01045602, -0.0010186572, 0.10114998]
       Scale: [0.99999994, 1, 1]
-  - Entity: 1178501493
+  - Entity: 9
     TagComponent:
       Tag: DEF-shoulder.L
     HierarchyComponent:
-      Parent: 3721093445
+      Parent: 5
       Children:
-        - 2729453512
+        - 10
     TransformComponent:
       Translation: [0.061057877, 0.0913493, 0.0022522344]
       Rotation: [-0.45286947, -0.44083577, -0.5285208, 0.56677926]
       Scale: [1, 1, 0.99999994]
-  - Entity: 4203726756
+  - Entity: 8
     TagComponent:
       Tag: DEF-spine.006
     HierarchyComponent:
-      Parent: 1868713702
+      Parent: 7
       Children:
         []
     TransformComponent:
       Translation: [1.27613475e-11, 0.05394801, 8.0096925e-09]
       Rotation: [0.99969584, 0.024663385, -5.3514245e-06, -1.809009e-06]
       Scale: [1, 0.99999994, 0.99999994]
-  - Entity: 1868713702
+  - Entity: 7
     TagComponent:
       Tag: DEF-spine.005
     HierarchyComponent:
-      Parent: 4171593231
+      Parent: 6
       Children:
-        - 4203726756
+        - 8
     TransformComponent:
       Translation: [2.4670044e-11, 0.05394798, -3.2459354e-08]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 4171593231
+  - Entity: 6
     TagComponent:
       Tag: DEF-spine.004
     HierarchyComponent:
-      Parent: 3721093445
+      Parent: 5
       Children:
-        - 1868713702
+        - 7
     TransformComponent:
       Translation: [-2.046363e-12, 0.15053397, 6.010986e-08]
       Rotation: [0.9926381, 0.121118166, 7.706588e-07, 1.1157869e-05]
       Scale: [1, 1, 1]
-  - Entity: 3721093445
+  - Entity: 5
     TagComponent:
       Tag: DEF-spine.003
     HierarchyComponent:
-      Parent: 2582817983
+      Parent: 4
       Children:
-        - 4171593231
-        - 1178501493
-        - 3170689970
-        - 2895941593
-        - 4023341451
+        - 6
+        - 9
+        - 36
+        - 63
+        - 64
     TransformComponent:
       Translation: [2.5238478e-11, 0.13458866, 1.3292258e-08]
       Rotation: [0.9962248, 0.086810686, 2.4441747e-06, 9.79204e-06]
       Scale: [1, 1, 1]
-  - Entity: 2582817983
+  - Entity: 4
     TagComponent:
       Tag: DEF-spine.002
     HierarchyComponent:
-      Parent: 3800895869
+      Parent: 3
       Children:
-        - 3721093445
+        - 5
     TransformComponent:
       Translation: [2.5465852e-11, 0.117319934, 8.311697e-10]
       Rotation: [1, 0.0001960434, -8.231804e-06, -9.29781e-06]
       Scale: [1, 1, 1]
-  - Entity: 3800895869
+  - Entity: 3
     TagComponent:
       Tag: DEF-spine.001
     HierarchyComponent:
-      Parent: 2898972917
+      Parent: 2
       Children:
-        - 2582817983
+        - 4
     TransformComponent:
       Translation: [-9.0355465e-09, 0.09999084, 1.490128e-08]
       Rotation: [-4.3505006e-05, 4.9099825e-05, 0.9999997, -0.0007599076]
       Scale: [1, 1, 1]
-  - Entity: 2898972917
+  - Entity: 2
     TagComponent:
       Tag: DEF-spine
     HierarchyComponent:
-      Parent: 1385795903
+      Parent: 1
       Children:
-        - 3800895869
-        - 2182609122
-        - 2312190349
-        - 2290984935
-        - 1998981664
+        - 3
+        - 65
+        - 66
+        - 67
+        - 75
     TransformComponent:
       Translation: [-6.757138e-08, -3.9434474e-07, 0.9979194]
       Rotation: [2.5228804e-08, -6.254411e-07, 0.74924797, 0.6622897]
       Scale: [1, 1, 1]
-  - Entity: 1385795903
+  - Entity: 1
     TagComponent:
       Tag: Skeleton Root Bone
     HierarchyComponent:
-      Parent: 1900330409
+      Parent: 0
       Children:
-        - 2898972917
+        - 2
     TransformComponent:
       Translation: [0, 0, 0]
       Rotation: [-0.7071067, 0.7071068, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 1900330409
+  - Entity: 0
     TagComponent:
       Tag: YBot Non Root Motion
     HierarchyComponent:
       Parent: 4294967295
       Children:
-        - 1385795903
-        - 3168732996
-        - 2898167317
+        - 1
+        - 83
+        - 84
     ScriptComponent:
       Script_1:
         Active: true
         Script Name: AnimatorController
         Fields:
-          - Name: shoot_entity
-            Type: Entity
-            Data: 2898167317
-          - Name: bullet_prefab
-            Type: Prefab
-            Data: 3878583585
+          []
     TransformComponent:
-      Translation: [0, -1.37, 0]
+      Translation: [0, -10.160536, 0]
       Rotation: [1, 0, 0, 0]
       Scale: [1, 1, 1]
     SkinnedMeshComponent:
@@ -997,495 +991,250 @@ Entities:
       BoneMapping:
         Bone 0:
           Bone Index: 0
-          Bone Entity Reference: 1385795903
+          Bone Entity Reference: 1
         Bone 1:
           Bone Index: 1
-          Bone Entity Reference: 2898972917
+          Bone Entity Reference: 2
         Bone 2:
           Bone Index: 2
-          Bone Entity Reference: 3800895869
+          Bone Entity Reference: 3
         Bone 3:
           Bone Index: 3
-          Bone Entity Reference: 2582817983
+          Bone Entity Reference: 4
         Bone 4:
           Bone Index: 4
-          Bone Entity Reference: 3721093445
+          Bone Entity Reference: 5
         Bone 5:
           Bone Index: 5
-          Bone Entity Reference: 4171593231
+          Bone Entity Reference: 6
         Bone 6:
           Bone Index: 6
-          Bone Entity Reference: 1868713702
+          Bone Entity Reference: 7
         Bone 7:
           Bone Index: 7
-          Bone Entity Reference: 4203726756
+          Bone Entity Reference: 8
         Bone 8:
           Bone Index: 8
-          Bone Entity Reference: 1178501493
+          Bone Entity Reference: 9
         Bone 9:
           Bone Index: 9
-          Bone Entity Reference: 2729453512
+          Bone Entity Reference: 10
         Bone 10:
           Bone Index: 10
-          Bone Entity Reference: 506885290
+          Bone Entity Reference: 11
         Bone 11:
           Bone Index: 11
-          Bone Entity Reference: 1205510232
+          Bone Entity Reference: 12
         Bone 12:
           Bone Index: 12
-          Bone Entity Reference: 3503864179
+          Bone Entity Reference: 13
         Bone 13:
           Bone Index: 13
-          Bone Entity Reference: 2876411575
+          Bone Entity Reference: 14
         Bone 14:
           Bone Index: 14
-          Bone Entity Reference: 2680969999
+          Bone Entity Reference: 15
         Bone 15:
           Bone Index: 15
-          Bone Entity Reference: 455155825
+          Bone Entity Reference: 16
         Bone 16:
           Bone Index: 16
-          Bone Entity Reference: 4026976763
+          Bone Entity Reference: 17
         Bone 17:
           Bone Index: 17
-          Bone Entity Reference: 4282819577
+          Bone Entity Reference: 18
         Bone 18:
           Bone Index: 18
-          Bone Entity Reference: 1331205506
+          Bone Entity Reference: 19
         Bone 19:
           Bone Index: 19
-          Bone Entity Reference: 2382198370
+          Bone Entity Reference: 20
         Bone 20:
           Bone Index: 20
-          Bone Entity Reference: 860023588
+          Bone Entity Reference: 21
         Bone 21:
           Bone Index: 21
-          Bone Entity Reference: 4052887753
+          Bone Entity Reference: 22
         Bone 22:
           Bone Index: 22
-          Bone Entity Reference: 682851838
+          Bone Entity Reference: 23
         Bone 23:
           Bone Index: 23
-          Bone Entity Reference: 858578250
+          Bone Entity Reference: 24
         Bone 24:
           Bone Index: 24
-          Bone Entity Reference: 3702855889
+          Bone Entity Reference: 25
         Bone 25:
           Bone Index: 25
-          Bone Entity Reference: 3732303767
+          Bone Entity Reference: 26
         Bone 26:
           Bone Index: 26
-          Bone Entity Reference: 4106501587
+          Bone Entity Reference: 27
         Bone 27:
           Bone Index: 27
-          Bone Entity Reference: 467230188
+          Bone Entity Reference: 28
         Bone 28:
           Bone Index: 28
-          Bone Entity Reference: 188782218
+          Bone Entity Reference: 29
         Bone 29:
           Bone Index: 29
-          Bone Entity Reference: 2249569262
+          Bone Entity Reference: 30
         Bone 30:
           Bone Index: 30
-          Bone Entity Reference: 3761777599
+          Bone Entity Reference: 31
         Bone 31:
           Bone Index: 31
-          Bone Entity Reference: 3850344679
+          Bone Entity Reference: 32
         Bone 32:
           Bone Index: 32
-          Bone Entity Reference: 3641901994
+          Bone Entity Reference: 33
         Bone 33:
           Bone Index: 33
-          Bone Entity Reference: 4191147026
+          Bone Entity Reference: 34
         Bone 34:
           Bone Index: 34
-          Bone Entity Reference: 3307334649
+          Bone Entity Reference: 35
         Bone 35:
           Bone Index: 35
-          Bone Entity Reference: 3170689970
+          Bone Entity Reference: 36
         Bone 36:
           Bone Index: 36
-          Bone Entity Reference: 1001894677
+          Bone Entity Reference: 37
         Bone 37:
           Bone Index: 37
-          Bone Entity Reference: 2930373661
+          Bone Entity Reference: 38
         Bone 38:
           Bone Index: 38
-          Bone Entity Reference: 1585654104
+          Bone Entity Reference: 39
         Bone 39:
           Bone Index: 39
-          Bone Entity Reference: 3551659839
+          Bone Entity Reference: 40
         Bone 40:
           Bone Index: 40
-          Bone Entity Reference: 2653289835
+          Bone Entity Reference: 41
         Bone 41:
           Bone Index: 41
-          Bone Entity Reference: 2112062644
+          Bone Entity Reference: 42
         Bone 42:
           Bone Index: 42
-          Bone Entity Reference: 400728634
+          Bone Entity Reference: 43
         Bone 43:
           Bone Index: 43
-          Bone Entity Reference: 3424100971
+          Bone Entity Reference: 44
         Bone 44:
           Bone Index: 44
-          Bone Entity Reference: 2375225705
+          Bone Entity Reference: 45
         Bone 45:
           Bone Index: 45
-          Bone Entity Reference: 773573721
+          Bone Entity Reference: 46
         Bone 46:
           Bone Index: 46
-          Bone Entity Reference: 3405969883
+          Bone Entity Reference: 47
         Bone 47:
           Bone Index: 47
-          Bone Entity Reference: 3486722358
+          Bone Entity Reference: 48
         Bone 48:
           Bone Index: 48
-          Bone Entity Reference: 1605549273
+          Bone Entity Reference: 49
         Bone 49:
           Bone Index: 49
-          Bone Entity Reference: 728904626
+          Bone Entity Reference: 50
         Bone 50:
           Bone Index: 50
-          Bone Entity Reference: 2643902612
+          Bone Entity Reference: 51
         Bone 51:
           Bone Index: 51
-          Bone Entity Reference: 1356960012
+          Bone Entity Reference: 52
         Bone 52:
           Bone Index: 52
-          Bone Entity Reference: 3699291482
+          Bone Entity Reference: 53
         Bone 53:
           Bone Index: 53
-          Bone Entity Reference: 3075636875
+          Bone Entity Reference: 54
         Bone 54:
           Bone Index: 54
-          Bone Entity Reference: 3179663966
+          Bone Entity Reference: 55
         Bone 55:
           Bone Index: 55
-          Bone Entity Reference: 2816075561
+          Bone Entity Reference: 56
         Bone 56:
           Bone Index: 56
-          Bone Entity Reference: 2061724347
+          Bone Entity Reference: 57
         Bone 57:
           Bone Index: 57
-          Bone Entity Reference: 652662970
+          Bone Entity Reference: 58
         Bone 58:
           Bone Index: 58
-          Bone Entity Reference: 1758841748
+          Bone Entity Reference: 59
         Bone 59:
           Bone Index: 59
-          Bone Entity Reference: 1250125568
+          Bone Entity Reference: 60
         Bone 60:
           Bone Index: 60
-          Bone Entity Reference: 673106468
+          Bone Entity Reference: 61
         Bone 61:
           Bone Index: 61
-          Bone Entity Reference: 3616721249
+          Bone Entity Reference: 62
         Bone 62:
           Bone Index: 62
-          Bone Entity Reference: 2895941593
+          Bone Entity Reference: 63
         Bone 63:
           Bone Index: 63
-          Bone Entity Reference: 4023341451
+          Bone Entity Reference: 64
         Bone 64:
           Bone Index: 64
-          Bone Entity Reference: 2182609122
+          Bone Entity Reference: 65
         Bone 65:
           Bone Index: 65
-          Bone Entity Reference: 2312190349
+          Bone Entity Reference: 66
         Bone 66:
           Bone Index: 66
-          Bone Entity Reference: 2290984935
+          Bone Entity Reference: 67
         Bone 67:
           Bone Index: 67
-          Bone Entity Reference: 2946555426
+          Bone Entity Reference: 68
         Bone 68:
           Bone Index: 68
-          Bone Entity Reference: 3307105374
+          Bone Entity Reference: 69
         Bone 69:
           Bone Index: 69
-          Bone Entity Reference: 365019615
+          Bone Entity Reference: 70
         Bone 70:
           Bone Index: 70
-          Bone Entity Reference: 3616262695
+          Bone Entity Reference: 71
         Bone 71:
           Bone Index: 71
-          Bone Entity Reference: 1271323766
+          Bone Entity Reference: 72
         Bone 72:
           Bone Index: 72
-          Bone Entity Reference: 4105691830
+          Bone Entity Reference: 73
         Bone 73:
           Bone Index: 73
-          Bone Entity Reference: 368477405
+          Bone Entity Reference: 74
         Bone 74:
           Bone Index: 74
-          Bone Entity Reference: 1998981664
+          Bone Entity Reference: 75
         Bone 75:
           Bone Index: 75
-          Bone Entity Reference: 2875721693
+          Bone Entity Reference: 76
         Bone 76:
           Bone Index: 76
-          Bone Entity Reference: 87833066
+          Bone Entity Reference: 77
         Bone 77:
           Bone Index: 77
-          Bone Entity Reference: 2426223695
+          Bone Entity Reference: 78
         Bone 78:
           Bone Index: 78
-          Bone Entity Reference: 380099525
+          Bone Entity Reference: 79
         Bone 79:
           Bone Index: 79
-          Bone Entity Reference: 4026388085
+          Bone Entity Reference: 80
         Bone 80:
           Bone Index: 80
-          Bone Entity Reference: 2487981899
+          Bone Entity Reference: 81
         Bone 81:
           Bone Index: 81
-          Bone Entity Reference: 315352436
+          Bone Entity Reference: 82
     AnimatorComponent:
       StateMachineHandle: 4266216949
       CullingMode: AlwaysAnimate
-  - Entity: 1619223168
-    TagComponent:
-      Tag: North Wall
-    HierarchyComponent:
-      Parent: 1517891620
-      Children:
-        []
-    TransformComponent:
-      Translation: [-3.5857403, -5.9657288, -42.79475]
-      Rotation: [0.99999994, 0, 0, 0]
-      Scale: [42.88889, 9.938943, 2.2222223]
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [0, 0, 0]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.6, 0.6, 0]
-  - Entity: 3372889811
-    TagComponent:
-      Tag: Blue Ambient
-    HierarchyComponent:
-      Parent: 4294967295
-      Children:
-        []
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [-0.32588494, 0.060319137, 0.9277376, 0.17165023]
-      Scale: [1.0000337, 1, 1.0000334]
-    DirectionalLightComponent:
-      Active: true
-      Colour: [0.2926038, 0.47515514, 0.60294116, 1]
-      Intensity: 0.1
-      Shadow Type: None
-      Max Shadow Visible Distance: 1
-  - Entity: 3022937320
-    TagComponent:
-      Tag: Main Light
-    HierarchyComponent:
-      Parent: 4294967295
-      Children:
-        []
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0.9165803, -0.18220808, 0.34909177, 0.069396414]
-      Scale: [1, 1, 1]
-    DirectionalLightComponent:
-      Active: true
-      Colour: [1, 1, 1, 1]
-      Intensity: 1
-      Shadow Type: None
-      Max Shadow Visible Distance: 1
-  - Entity: 200016417
-    TagComponent:
-      Tag: East Wall
-    HierarchyComponent:
-      Parent: 1517891620
-      Children:
-        []
-    TransformComponent:
-      Translation: [-45.721695, -0.13046265, 0.39885706]
-      Rotation: [-0.7071062, 0, 0.70710737, 0]
-      Scale: [42.889225, 4, 2.221881]
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [0, 0, 0]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.6, 0.6, 0]
-  - Entity: 3478445864
-    TagComponent:
-      Tag: South Wall
-    HierarchyComponent:
-      Parent: 1517891620
-      Children:
-        []
-    TransformComponent:
-      Translation: [-3.5857403, -6.723959, 39.927]
-      Rotation: [1, 0, 0, 0]
-      Scale: [42.88889, 10.721012, 2.2222223]
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [0, 0, 0]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.6, 0.6, 0]
-  - Entity: 3242833265
-    TagComponent:
-      Tag: West Wall
-    HierarchyComponent:
-      Parent: 1517891620
-      Children:
-        []
-    TransformComponent:
-      Translation: [36.980347, -8.6598625, -0.07309469]
-      Rotation: [0.7071067, 0, 0.7071068, 0]
-      Scale: [42.88888, 12.444445, 2.2220647]
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [0, 0, 0]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.6, 0.6, 0]
-  - Entity: 1517891620
-    TagComponent:
-      Tag: Sandbox Scene
-    HierarchyComponent:
-      Parent: 4294967295
-      Children:
-        - 2379218829
-        - 3219997740
-        - 594118827
-        - 200016417
-        - 3478445864
-        - 3242833265
-        - 1619223168
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [1, 0, 0, 0]
-      Scale: [0.5, 0.5, 0.5]
-  - Entity: 2379218829
-    TagComponent:
-      Tag: Cube (1)
-    HierarchyComponent:
-      Parent: 1517891620
-      Children:
-        []
-    TransformComponent:
-      Translation: [-4.3076205, -3.117323, -1.463773]
-      Rotation: [1, 0, 0, 0]
-      Scale: [41.442192, 0.40562433, 41.442192]
-    MeshFilterComponent:
-      MeshAssetHandle: 2368717142
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 2
-      MaterialAssetHandles:
-        - 1330509634
-        - 321815037
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [3.7252903e-09, 0, 0]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.6, 0.6, 0]
-  - Entity: 3219997740
-    TagComponent:
-      Tag: Cube.001
-    HierarchyComponent:
-      Parent: 1517891620
-      Children:
-        []
-    TransformComponent:
-      Translation: [-26.529842, -2.627346, -1.463773]
-      Rotation: [1, 0, 0, 0]
-      Scale: [9.17923, 2.7628129, 2.7628129]
-    MeshFilterComponent:
-      MeshAssetHandle: 74713179
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 1
-      MaterialAssetHandles:
-        - 1061379974
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [0, 0, -2.9802322e-08]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.6, 0.6, 0]
-  - Entity: 594118827
-    TagComponent:
-      Tag: Cube.004
-    HierarchyComponent:
-      Parent: 1517891620
-      Children:
-        []
-    TransformComponent:
-      Translation: [-15.601983, -3.3165188, -1.463779]
-      Rotation: [0.98957306, 0, 0, -0.1440317]
-      Scale: [2.7628126, 2.7628126, 2.7628129]
-    MeshFilterComponent:
-      MeshAssetHandle: 125046036
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 1
-      MaterialAssetHandles:
-        - 1061379974
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [2.2, 0, 2.9802322e-08]
-      Size: [3.19, 1, 1]
-      MaterialProperties: [0.6, 0.6, 0]
-  - Entity: 185916776
-    TagComponent:
-      Tag: Cube
-    HierarchyComponent:
-      Parent: 4294967295
-      Children:
-        []
-    TransformComponent:
-      Translation: [-13.767048, 7.9101896, 9.742515]
-      Rotation: [0.7386699, -0.41562414, -0.52760977, -0.057020325]
-      Scale: [3.752508, 1.2216483, 1.3724431]
-    MeshFilterComponent:
-      MeshAssetHandle: 1708907836
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 1
-      MaterialAssetHandles:
-        - 1802845666
-    RigidbodyComponent:
-      Mass: 10
-      Drag: 0
-      AngularDrag: 0.05
-      AutomaticCentreOfMass: true
-      UseGravity: true
-      IsKinematic: false
-      PositionConstraint: [false, false, false]
-      RotationConstraint: [false, false, false]
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [-1.7881393e-07, 0, 4.7683716e-07]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.6, 0.6, 0]
-  - Entity: 230949447
-    TagComponent:
-      Tag: Cube (Copy)
-    HierarchyComponent:
-      Parent: 4294967295
-      Children:
-        []
-    TransformComponent:
-      Translation: [5.2204523, -0.90760916, -10.7472725]
-      Rotation: [0.93099, 0, -0.36504474, 0]
-      Scale: [5.4606805, 1, 2.381108]
-    MeshFilterComponent:
-      MeshAssetHandle: 1708907836
-    MeshRendererComponent:
-      MeshActive: true
-      CastShadows: false
-      MaterialAssetCount: 1
-      MaterialAssetHandles:
-        - 1802845666
-    BoxColliderComponent:
-      IsTrigger: false
-      Centre: [-2.9802322e-08, 0, 2.3841858e-07]
-      Size: [1, 1, 1]
-      MaterialProperties: [0.6, 0.6, 0]

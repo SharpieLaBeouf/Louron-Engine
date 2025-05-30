@@ -8,6 +8,9 @@ namespace Louron
 {
     namespace LMath
     {
+        float Radians(float degrees) { return degrees * 0.01745329252f; }
+        float Degrees(float radians) { return radians * 57.2957795131f; }
+
         float Max(float a, float b) { return (a > b) ? a : b; }
 
         float Lerp(float t, float a, float b) { return a + t * (b - a); }

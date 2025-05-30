@@ -120,18 +120,30 @@ public:
                 animation_clip_names[(uint8_t)movement_state]));
         }
         
-        // Movement Translation
-        if(direction != IVector2::Zero())
+        if (direction != IVector2::Zero())
         {
+            // -- Movement Translation --
             Vector3 position = GetPosition();
-            position = position + -GetFront() * direction.x * speed * ((movement_state == MovementState::Run) ? 2.0f : 1.0f) * Time::GetDeltaTime();
+
+            Quaternion rotation = GetRotation();
+            Vector3 forward = rotation.Rotate(Vector3(0.0f, 0.0f, -1.0f)); // local -Z
+
+            float movement_multiplier = (movement_state == MovementState::Run) ? 2.0f : 1.0f;
+            float delta_time = Time::GetDeltaTime();
+
+            position = position + (-forward * direction.x * speed * movement_multiplier * delta_time);
             SetPosition(position);
 
-            float current_yaw = GetRotation().y;
-            float target_yaw = current_yaw + direction.y * rotation_speed * Time::GetDeltaTime();
-            current_yaw = LMath::Lerp(rotation_smoothing * Time::GetDeltaTime(), current_yaw, target_yaw);
-        
-            SetRotation(Vector3(0.0f, current_yaw, 0.0f));
+            // -- Yaw Rotation (Euler manipulation) --
+            Vector3 euler = rotation.ToEuler();
+            float current_yaw = euler.y;
+            float target_yaw = current_yaw + direction.y * rotation_speed * delta_time;
+
+            // Smooth interpolation
+            float smoothed_yaw = LMath::Lerp(rotation_smoothing * delta_time, current_yaw, target_yaw);
+            euler = Vector3(0.0f, smoothed_yaw, 0.0f);
+
+            SetRotation(Quaternion::Euler(euler));
         }
     }
 

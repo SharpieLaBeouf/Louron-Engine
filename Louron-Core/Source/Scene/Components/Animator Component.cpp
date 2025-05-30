@@ -430,7 +430,7 @@ namespace Louron
 			position = transform_component.GetLocalPosition();
 
 		if (rotation == glm::quat(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX))
-			rotation = glm::quat(glm::radians(transform_component.GetLocalRotation()));
+			rotation = transform_component.GetLocalRotation();
 
 		if (scale == glm::vec3(FLT_MAX))
 			scale = transform_component.GetLocalScale();
@@ -499,7 +499,7 @@ namespace Louron
 		}
 
 		if (!position_changed) position = transform_component.GetLocalPosition();
-		if (!rotation_changed) rotation = glm::quat(glm::radians(transform_component.GetLocalRotation()));
+		if (!rotation_changed) rotation = transform_component.GetLocalRotation();
 		if (!scale_changed) scale = transform_component.GetLocalScale();
 
 		// Apply transformation only if it's necessary

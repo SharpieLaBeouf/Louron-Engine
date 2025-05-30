@@ -1,10 +1,10 @@
-Material Asset Name: Toon Red
+Material Asset Name: Floor Material
 Material Asset Type: AssetType::Material_Standard
 Shader Handle: 608148674
 Render Type: Opaque
-Roughness: 0.46
-Metallic: 0.74
-Albedo Tint: [1, 0, 0, 0.99215686]
+Roughness: 0.85
+Metallic: 1
+Albedo Tint: [0.4019608, 0.4019608, 0.4019608, 1]
 AlbedoTextureAsset: 4294967295
 MetallicTextureAsset: 4294967295
 NormalTextureAsset: 4294967295

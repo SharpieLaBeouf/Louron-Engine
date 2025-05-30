@@ -391,6 +391,7 @@ void AnimatorPanel::Draw(bool& show_window)
                     {
                         if (ImGui::MenuItem("Rename Layer"))
                         {
+                            // TODO: IMPLEMENT RENAMING LAYERS
                             renaming_layer = true;
                             renaming_layer_index = context_popup_layer;
 
@@ -409,6 +410,7 @@ void AnimatorPanel::Draw(bool& show_window)
                             ImGui::EndGroup();
                             ImGui::PopID();
                             ImGui::PopStyleVar();
+                            s_Edited = true;
                             continue;
                         }
                         
@@ -427,9 +429,9 @@ void AnimatorPanel::Draw(bool& show_window)
                     ImGui::SameLine(content_region.x - 30 - ImGui::CalcTextSize("Options").x);
 
                     // Highlight if hovered
-                    static bool options_hovered = false;
+                    static std::unordered_map<int, bool> options_hovered;
 
-                    if (options_hovered)
+                    if (options_hovered[i])
                         ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered));
                     else
                         ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_Button));
@@ -437,10 +439,10 @@ void AnimatorPanel::Draw(bool& show_window)
                     ImGui::Button(("Options##" + std::to_string(i)).c_str());
 
                     if (!ImGui::IsMouseClicked(ImGuiMouseButton_Left)) // Bloody ImGui so difficult to work with sometimes...
-                        options_hovered = ImGui::IsItemHovered();
+                        options_hovered[i] = ImGui::IsItemHovered();
 
                     bool first_click_options_button = false;
-                    if (options_hovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
+                    if (options_hovered[i] && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
                     {
                         first_click_options_button = true;
                         open_settings_popup = true;
@@ -474,7 +476,11 @@ void AnimatorPanel::Draw(bool& show_window)
                         ImGui::NextColumn();
                         
                         ImGui::SetNextItemWidth(-1.0f);
-                        ImGui::SliderFloat(("##LayerWeightSlider" + std::to_string(popup_layer_index)).c_str(), &layers[i].LayerWeight, 0.0f, 1.0f, "%.2f");
+                        if (ImGui::SliderFloat(("##LayerWeightSlider" + std::to_string(popup_layer_index)).c_str(), &layers[i].LayerWeight, 0.0f, 1.0f, "%.2f"))
+                            s_Edited = true;
+
+                        if (ImGui::IsItemHovered())
+                            is_window_hovered = true;
 
                         ImGui::NextColumn();
                         
@@ -487,14 +493,21 @@ void AnimatorPanel::Draw(bool& show_window)
                         
                         if (ImGui::BeginCombo("##LayerBlendTypeCombo", layer_blend_types[item_current])) {
 
+                            if (ImGui::IsItemHovered())
+                                is_window_hovered = true;
+
                             for (int n = 0; n < layer_blend_types.size(); n++)
                             {
                                 const bool is_selected = (item_current == n);
                                 if (ImGui::Selectable(layer_blend_types[n], is_selected))
                                 {
+                                    s_Edited = true;
                                     item_current = n;
                                     layers[i].BlendType = static_cast<StateMachine::Layer::LayerBlendType>(item_current);
                                 }
+
+                                if (ImGui::IsItemHovered())
+                                    is_window_hovered = true;
 
                                 // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
                                 if (is_selected)
@@ -513,8 +526,12 @@ void AnimatorPanel::Draw(bool& show_window)
 
                         if (ImGui::Checkbox("##SyncLayerCheck", &layers[i].SyncLayer) && layers[i].SyncLayer)
                         {
+                            s_Edited = true;
                             layers[i].LayerIndex = 0;
                         }
+
+                        if (ImGui::IsItemHovered())
+                            is_window_hovered = true;
 
                         ImGui::NextColumn();
 
@@ -536,14 +553,21 @@ void AnimatorPanel::Draw(bool& show_window)
                             
                             if (ImGui::BeginCombo("##StateToSyncCombo", ((item_current >= 0 && item_current < layer_names.size()) ? layer_names[item_current].c_str() : "None"))) 
                             {
+                                if (ImGui::IsItemHovered())
+                                    is_window_hovered = true;
+
                                 for (int n = 0; n < layer_names.size(); n++)
                                 {
                                     const bool is_selected = (item_current == n);
                                     if (ImGui::Selectable(layer_names[n].c_str(), is_selected))
                                     {
+                                        s_Edited = true;
                                         item_current = n;
                                         layers[i].LayerIndex = item_current;
                                     }
+
+                                    if (ImGui::IsItemHovered())
+                                        is_window_hovered = true;
 
                                     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
                                     if (is_selected)
@@ -560,8 +584,12 @@ void AnimatorPanel::Draw(bool& show_window)
                             ImGui::NextColumn();
                             ImGui::SetNextItemWidth(-1.0f);
 
-                            ImGui::Checkbox("##UseOwnTimingButton", &layers[i].UseOwnLayerTiming);
+                            if (ImGui::Checkbox("##UseOwnTimingButton", &layers[i].UseOwnLayerTiming))
+                                s_Edited = true;
                         
+                            if (ImGui::IsItemHovered())
+                                is_window_hovered = true;
+
                             ImGui::NextColumn();
 
                         }
@@ -575,7 +603,11 @@ void AnimatorPanel::Draw(bool& show_window)
                         ImGui::NextColumn();
                         ImGui::SetNextItemWidth(-1.0f);
 
-                        ImGui::Checkbox("##UsingIKButton", &layers[i].UsingIK);
+                        if (ImGui::Checkbox("##UsingIKButton", &layers[i].UsingIK))
+                            s_Edited = true;
+
+                        if (ImGui::IsItemHovered())
+                            is_window_hovered = true;
 
                         ImGui::NextColumn();
                         
@@ -618,6 +650,8 @@ void AnimatorPanel::Draw(bool& show_window)
                     s_SelectedLayer = layer_index;
                     s_NodeMap.clear();
                     s_TransitionMap.clear();
+
+                    s_Edited = true;
                 }
 
                 ImGui::EndChild();
@@ -805,6 +839,14 @@ void AnimatorPanel::Draw(bool& show_window)
                                     strncpy(buf, meta_data.AssetName.c_str(), sizeof(buf));
                                 #endif
                             }
+                            else
+                            {
+                                #if defined(L_PLATFORM_WINDOWS)
+                                    strncpy_s(buf, "None", sizeof(buf));
+                                #else
+                                    strncpy(buf, "None", sizeof(buf));
+                                #endif
+                            }
         
                             ImGui::InputText("##AnimClip_Handle", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
         
@@ -845,6 +887,123 @@ void AnimatorPanel::Draw(bool& show_window)
                                 }
                                 ImGui::EndDragDropTarget();
                             }
+                            
+                            ImGui::SameLine();
+                            if (ImGui::SmallButton("x##AnimClipHandle"))
+                            {
+                                state_clip->AnimClipHandle = NULL_UUID;
+                            }
+
+                            if (auto layer = machine_asset->GetLayer(s_SelectedLayer); layer && layer->BlendType == StateMachine::Layer::LayerBlendType::Additive)
+                            {
+                                
+                                ImGui::Text("Reference Clip: ");
+                                ImGui::SameLine();
+            
+                                char ref_buf[256];
+                                ref_buf[0] = '\0';
+            
+                                if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(state_clip->ReferenceClipHandle))
+                                {
+                                    auto& meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(state_clip->ReferenceClipHandle);
+                
+                                    #if defined(L_PLATFORM_WINDOWS)
+                                        strncpy_s(ref_buf, meta_data.AssetName.c_str(), sizeof(ref_buf));
+                                    #else
+                                        strncpy(ref_buf, meta_data.AssetName.c_str(), sizeof(ref_buf));
+                                    #endif
+                                }
+                                else
+                                {
+                                    #if defined(L_PLATFORM_WINDOWS)
+                                        strncpy_s(ref_buf, "None (Referencing Current Anim)", sizeof(ref_buf));
+                                    #else
+                                        strncpy(ref_buf, "None (Referencing Current Anim)", sizeof(ref_buf));
+                                    #endif
+                                }
+            
+                                ImGui::InputText("##RefAnimClip_Handle", ref_buf, sizeof(ref_buf), ImGuiInputTextFlags_ReadOnly);
+            
+                                if (ImGui::BeginDragDropTarget()) 
+                                {
+                                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE")) {
+                                        AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+            
+                                        if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::AnimationClip) 
+                                        {
+                                            state_clip->ReferenceClipHandle = dropped_asset_handle;
+                                            s_Edited = true;
+                                        }
+                                        else {
+                                            L_APP_WARN("Invalid Asset Type Dropped on Animation Clip Target.");
+                                        }
+                                    }
+            
+                                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+            
+                                        std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+                                        std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+            
+                                        if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
+            
+                                            AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
+            
+                                            if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::AnimationClip) {
+                                                state_clip->ReferenceClipHandle = dropped_asset_handle;
+                                                s_Edited = true;
+                                            }
+                                            else {
+                                                L_APP_WARN("Invalid Asset Type Dropped on Reference Animation Clip Target.");
+                                            }
+                                        }
+                                        else {
+                                            L_APP_WARN("Invalid File Path Dropped on Reference Animation Clip Target.");
+                                        }
+                                    }
+                                    ImGui::EndDragDropTarget();
+                                }
+                                                                
+                                ImGui::SameLine();
+                                if (ImGui::SmallButton("x##ReferenceClipHandle"))
+                                {
+                                    state_clip->ReferenceClipHandle = NULL_UUID;
+                                }
+
+                                ImGui::Text("Frame Reference: ");
+                                ImGui::SameLine();
+
+                                uint32_t min_frame = 0;
+                                uint32_t max_frame = 0;
+
+                                if (AssetManager::IsAssetHandleValid(state_clip->ReferenceClipHandle))
+                                {
+                                    max_frame = AssetManager::GetAsset<AnimationClip>(state_clip->ReferenceClipHandle)->GetDuration();
+                                }
+                                else if (AssetManager::IsAssetHandleValid(state_clip->AnimClipHandle)) // If No Reference Pose, we refer to AnimClipHandle
+                                {
+                                    max_frame = AssetManager::GetAsset<AnimationClip>(state_clip->AnimClipHandle)->GetDuration();
+                                }
+
+                                // ensure valid memory pointers
+                                if (max_frame > 0)
+                                {
+                                    ImGui::SliderScalar("##ReferenceFrameSlider", ImGuiDataType_U32, &state_clip->ReferencePoseFrame, &min_frame, &max_frame);
+                                }
+                                else
+                                {
+                                    if (state_clip->ReferencePoseFrame != 0)
+                                        state_clip->ReferencePoseFrame = 0;
+
+                                    max_frame = 100; // ensure some padding in dummy slider
+                                    
+                                    ImGui::BeginDisabled();
+                                    
+                                    ImGui::SliderScalar("##ReferenceFrameSlider", ImGuiDataType_U32, &min_frame, &min_frame, &max_frame);
+                                    
+                                    ImGui::EndDisabled();
+                                }
+                            }
+                            
                             break;
                         }
                         case StateType::BlendTree:
@@ -1348,6 +1507,159 @@ void AnimatorPanel::Draw(bool& show_window)
                     if (ImGui::MenuItem("Blend Tree"))
                         blend_node.AddMotion(MotionType::BlendTree);
                     ImGui::EndPopup();
+                }
+
+                if (auto layer = machine_asset->GetLayer(s_SelectedLayer); layer && layer->BlendType == StateMachine::Layer::LayerBlendType::Additive)
+                {
+                    ImGui::Dummy({ 0.0f, 2.5f });
+                    ImGui::Separator();
+                    ImGui::Dummy({ 0.0f, 2.5f });
+
+                    if (ImGui::TreeNode("Additive Reference Clips"))
+                    {
+                        for (int i = 0; i < static_cast<int>(blend_node.ChildNode.size()); ++i)
+                        {
+                            auto& motion_base = blend_node.ChildNode[i];
+
+                            if (!motion_base)
+                                continue;
+
+                            if (motion_base->GetType() == MotionType::BlendTree)
+                            {
+                                MotionBlendTree* motion = reinterpret_cast<MotionBlendTree*>(motion_base.get());
+                                
+                                std::string tree_label = "Motion Index " + std::to_string(i) + ":";
+                                if (ImGui::TreeNode(tree_label.c_str()))
+                                {
+                                    ImGui::Text("Open Child Blend Tree to Set Reference Clips In Animation Motions.");
+                                    ImGui::TreePop();
+                                }
+                            }
+                            else if (motion_base->GetType() == MotionType::Clip)
+                            {
+                                MotionAnimation* motion = reinterpret_cast<MotionAnimation*>(motion_base.get());
+
+                                std::string tree_label = "Motion Index " + std::to_string(i) + ":";
+                                if (ImGui::TreeNode(tree_label.c_str()))
+                                {
+                                    ImGui::Text("Reference Clip: ");
+                                    ImGui::SameLine();
+                
+                                    char ref_buf[256];
+                                    ref_buf[0] = '\0';
+                
+                                    if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(motion->ReferenceClipHandle))
+                                    {
+                                        auto& meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(motion->ReferenceClipHandle);
+                    
+                                        #if defined(L_PLATFORM_WINDOWS)
+                                            strncpy_s(ref_buf, meta_data.AssetName.c_str(), sizeof(ref_buf));
+                                        #else
+                                            strncpy(ref_buf, meta_data.AssetName.c_str(), sizeof(ref_buf));
+                                        #endif
+                                    }
+                                    else
+                                    {
+                                        #if defined(L_PLATFORM_WINDOWS)
+                                            strncpy_s(ref_buf, "None (Referencing Current Anim)", sizeof(ref_buf));
+                                        #else
+                                            strncpy(ref_buf, "None (Referencing Current Anim)", sizeof(ref_buf));
+                                        #endif
+                                    }
+                
+                                    ImGui::InputText("##RefAnimClip_Handle", ref_buf, sizeof(ref_buf), ImGuiInputTextFlags_ReadOnly);
+                
+                                    if (ImGui::BeginDragDropTarget()) 
+                                    {
+                                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_HANDLE")) {
+                                            AssetHandle dropped_asset_handle = *(const AssetHandle*)payload->Data;
+                
+                                            if (Project::GetStaticEditorAssetManager()->IsAssetHandleValid(dropped_asset_handle) && Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::AnimationClip) 
+                                            {
+                                                motion->ReferenceClipHandle = dropped_asset_handle;
+                                                s_Edited = true;
+                                            }
+                                            else {
+                                                L_APP_WARN("Invalid Asset Type Dropped on Animation Clip Target.");
+                                            }
+                                        }
+                
+                                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) {
+                
+                                            std::string dropped_asset_path_string(static_cast<const char*>(payload->Data), payload->DataSize - 1);
+                                            std::filesystem::path dropped_asset_path = dropped_asset_path_string;
+                
+                                            if (AssetManager::IsExtensionSupported(dropped_asset_path.extension())) {
+                
+                                                AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_asset_path, Project::GetActiveProject()->GetAssetDirectory());
+                
+                                                if (Project::GetStaticEditorAssetManager()->GetAssetType(dropped_asset_handle) == AssetType::AnimationClip) {
+                                                    motion->ReferenceClipHandle = dropped_asset_handle;
+                                                    s_Edited = true;
+                                                }
+                                                else {
+                                                    L_APP_WARN("Invalid Asset Type Dropped on Reference Animation Clip Target.");
+                                                }
+                                            }
+                                            else {
+                                                L_APP_WARN("Invalid File Path Dropped on Reference Animation Clip Target.");
+                                            }
+                                        }
+                                        ImGui::EndDragDropTarget();
+                                    }
+                                                                    
+                                    ImGui::SameLine();
+                                    if (ImGui::SmallButton("x##ReferenceClipHandle"))
+                                    {
+                                        s_Edited = true;
+                                        motion->ReferenceClipHandle = NULL_UUID;
+                                    }
+
+                                    ImGui::Text("Frame Reference: ");
+                                    ImGui::SameLine();
+
+                                    uint32_t min_frame = 0;
+                                    uint32_t max_frame = 0;
+
+                                    if (AssetManager::IsAssetHandleValid(motion->ReferenceClipHandle))
+                                    {
+                                        max_frame = AssetManager::GetAsset<AnimationClip>(motion->ReferenceClipHandle)->GetDuration();
+                                    }
+                                    else if (AssetManager::IsAssetHandleValid(motion->AnimClipHandle)) // If No Reference Pose, we refer to AnimClipHandle
+                                    {
+                                        max_frame = AssetManager::GetAsset<AnimationClip>(motion->AnimClipHandle)->GetDuration();
+                                    }
+
+                                    // ensure valid memory pointers
+                                    if (max_frame > 0)
+                                    {
+                                        if (ImGui::SliderScalar("##ReferenceFrameSlider", ImGuiDataType_U32, &motion->ReferencePoseFrame, &min_frame, &max_frame))
+                                            s_Edited = true;
+                                    }
+                                    else
+                                    {
+                                        if (motion->ReferencePoseFrame != 0)
+                                        {
+                                            s_Edited = true;
+                                            motion->ReferencePoseFrame = 0;
+                                        }
+
+                                        max_frame = 100; // ensure some padding in dummy slider
+                                        
+                                        ImGui::BeginDisabled();
+                                        
+                                        ImGui::SliderScalar("##ReferenceFrameSlider", ImGuiDataType_U32, &min_frame, &min_frame, &max_frame);
+                                        
+                                        ImGui::EndDisabled();
+                                    }
+
+                                    ImGui::TreePop();
+                                }
+                            }
+                        }
+                        
+                        ImGui::TreePop();
+                    }
                 }
             };
 

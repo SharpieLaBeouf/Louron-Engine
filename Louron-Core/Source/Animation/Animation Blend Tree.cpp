@@ -295,7 +295,7 @@ namespace Louron::Animation
 		}
 	}
 
-	void BlendNode::EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time)
+	void BlendNode::EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time, bool additive)
 	{
 		constexpr float constant_epsilon = 0.0001f;
 
@@ -308,9 +308,9 @@ namespace Louron::Animation
 				continue;
 	
 			if (motion->GetType() == MotionType::Clip)
-				motion->EvaluatePose(child_poses[i], normalised_time); // Use This Blend Node's Normalised Time
+				motion->EvaluatePose(child_poses[i], normalised_time, additive); // Use This Blend Node's Normalised Time
 			else if (motion->GetType() == MotionType::BlendTree)
-				motion->EvaluatePose(child_poses[i], reinterpret_cast<MotionBlendTree*>(motion.get())->NormalisedMotionTime); // Use Child BLend Tree's Normalised Time
+				motion->EvaluatePose(child_poses[i], reinterpret_cast<MotionBlendTree*>(motion.get())->NormalisedMotionTime, additive); // Use Child BLend Tree's Normalised Time
 		}
 		
 		std::vector<size_t> sorted_indices(ChildNode.size());
@@ -449,13 +449,38 @@ namespace Louron::Animation
 
 #pragma region Motion Animation
 
-	void MotionAnimation::EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time)
+	void MotionAnimation::EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time, bool additive)
 	{
 		auto animation_clip = AssetManager::GetAsset<AnimationClip>(AnimClipHandle);
 		if (!animation_clip)
 			return;
 	
-		animation_clip->SamplePose(normalised_time * animation_clip->GetDuration(), evaluated_pose);
+        AnimationPose current_pose;
+		animation_clip->SamplePose(normalised_time * animation_clip->GetDuration(), current_pose);
+
+        if (additive)
+        {
+            // TODO: CACHE THIS REFERENCE POSE INTO MotionAnimation
+            AnimationPose reference_pose;
+
+            auto ref_animation_clip = AssetManager::GetAsset<AnimationClip>(ReferenceClipHandle);
+            if (!ref_animation_clip)
+            {
+                // Additive against current clip if no reference clip provided
+                animation_clip->SamplePose(glm::clamp<float>(ReferencePoseFrame, 0.0f, animation_clip->GetDuration()), reference_pose);
+                evaluated_pose = AnimationPose::ComputeDelta(current_pose, reference_pose);
+            }
+            else
+            {
+                // Additive against reference clip
+                ref_animation_clip->SamplePose(glm::clamp<float>(ReferencePoseFrame, 0.0f, ref_animation_clip->GetDuration()), reference_pose);
+                evaluated_pose = AnimationPose::ComputeDelta(current_pose, reference_pose);
+            }
+        }
+        else
+        {
+            evaluated_pose = std::move(current_pose);
+        }
 	}
 
 	void MotionAnimation::Serialise(YAML::Emitter& out)
@@ -466,8 +491,12 @@ namespace Louron::Animation
 			out << YAML::Key << "Motion Blend Position X" << YAML::Value << BlendPosition.x;
 			out << YAML::Key << "Motion Blend Position Y" << YAML::Value << BlendPosition.y;
 
-			out << YAML::Key << "Asset Handle" << YAML::Value << AnimClipHandle;
-			out << YAML::Key << "Playback Speed" << YAML::Value << PlaybackSpeed;
+			out << YAML::Key << "Asset Handle" 			<< YAML::Value << AnimClipHandle;
+
+			out << YAML::Key << "Reference Handle"      << YAML::Value << ReferenceClipHandle;
+			out << YAML::Key << "Reference Pose Frame"  << YAML::Value << ReferencePoseFrame;
+
+			out << YAML::Key << "Playback Speed" 		<< YAML::Value << PlaybackSpeed;
 		}
 		out << YAML::EndMap;
 	}
@@ -482,6 +511,12 @@ namespace Louron::Animation
 
 		if (data["Asset Handle"])
 			AnimClipHandle = data["Asset Handle"].as<uint32_t>();
+
+        if(data["Reference Handle"])
+            ReferenceClipHandle = data["Reference Handle"].as<uint32_t>();
+
+        if(data["Reference Pose Frame"])
+            ReferencePoseFrame = data["Reference Pose Frame"].as<uint32_t>();
 
 		if (data["Playback Speed"])
 			PlaybackSpeed = data["Playback Speed"].as<float>();

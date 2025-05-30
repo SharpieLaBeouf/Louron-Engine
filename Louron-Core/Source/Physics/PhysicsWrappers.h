@@ -85,7 +85,7 @@ namespace Louron {
 		// Setter methods
 		void SetGlobalPose(const PxTransform& pose);
 		void SetGlobalPose(TransformComponent& transform);
-		void SetGlobalPose(const glm::vec3& position, const glm::vec3& rotation);
+		void SetGlobalPose(const glm::vec3& position, const glm::quat& rotation);
 
 		void SetKinematic(bool isKinematicEnabled);
 		void SetKinematicTarget(const PxTransform& pose);
@@ -129,7 +129,7 @@ namespace Louron {
 		PhysicsMaterial() = default;
 		PhysicsMaterial(float dynamicFriction, float staticFriction, float bounciness);
 		PhysicsMaterial(const PhysicsMaterial& other);
-		~PhysicsMaterial() = default;
+		~PhysicsMaterial() { Shutdown(); }
 
 		PxMaterial* GetMaterial() const;
 
@@ -188,7 +188,7 @@ namespace Louron {
 
 		// Setter methods
 		void SetLocalPose(const PxTransform& pose);
-		void SetLocalPose(const glm::vec3& local_position, const glm::vec3& local_rotation);
+		void SetLocalPose(const glm::vec3& local_position, const glm::quat& local_rotation);
 		void SetLocalPose(TransformComponent& transform);
 		
 		void SetGeometry(const PxGeometry& geom);
@@ -196,7 +196,7 @@ namespace Louron {
 		void SetSimulationFilterData(const PxFilterData& filterData);
 		void SetFlag(PxShapeFlag::Enum flag, bool value);
 		void SetFlags(PxShapeFlags flags);
-		void SetMaterials(PxMaterial* const* materials, PxU32 materialCount);
+		void SetMaterial(PxMaterial* material);
 
 		#pragma endregion
 

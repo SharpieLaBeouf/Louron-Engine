@@ -1,22 +1,22 @@
 Animation Parameters:
-  - Name: Velocity X
-    Hash: 3414385514
-    Type: Float
-    Value: 0
   - Name: IsJumping
     Hash: 3340040579
     Type: Bool
     Value: 0
-  - Name: Velocity Z
-    Hash: 3380830276
+  - Name: Velocity X
+    Hash: 3414385514
     Type: Float
     Value: 0
   - Name: IsDead
     Hash: 2309383031
     Type: Bool
     Value: 0
+  - Name: Velocity Z
+    Hash: 3380830276
+    Type: Float
+    Value: 0
 State Machine Layers:
-  - Layer Name: New State
+  - Layer Name: Base State
     Layer Weight: 0
     Layer Blend Type: Override
     Layer Sync Layer: false
@@ -25,10 +25,26 @@ State Machine Layers:
     Layer Using IK: false
     Layer Default State: Locomotion
     Layer Animation States:
+      - Name: Jumping
+        Hash: 1846982131
+        Type: Clip
+        Asset Handle: 2008768937
+        Reference Handle: 4294967295
+        Reference Pose Frame: 0
+        Should Loop: false
+        Playback Speed: 1
+      - Name: Dying
+        Hash: 1099095730
+        Type: Clip
+        Asset Handle: 3905742638
+        Reference Handle: 4294967295
+        Reference Pose Frame: 0
+        Should Loop: false
+        Playback Speed: 1
       - Name: Locomotion
         Hash: 1989750836
         Type: BlendTree
-        Blend Tree Name: Default Blend Tree State
+        Blend Tree Name: Locomotion
         Blend Tree Type: TwoDimensionalFreeForm
         Blend Param X: 3414385514
         Blend Param Y: 3380830276
@@ -37,54 +53,58 @@ State Machine Layers:
             Motion Blend Position X: 0
             Motion Blend Position Y: 0
             Asset Handle: 89794127
+            Reference Handle: 4294967295
+            Reference Pose Frame: 0
             Playback Speed: 1
           - Motion Type: Clip
             Motion Blend Position X: 0
             Motion Blend Position Y: 0.5
             Asset Handle: 2661767933
+            Reference Handle: 4294967295
+            Reference Pose Frame: 0
             Playback Speed: 1
           - Motion Type: Clip
             Motion Blend Position X: 0
             Motion Blend Position Y: 1
             Asset Handle: 3059000749
+            Reference Handle: 4294967295
+            Reference Pose Frame: 0
             Playback Speed: 1
           - Motion Type: Clip
             Motion Blend Position X: 0
             Motion Blend Position Y: -0.5
             Asset Handle: 4142736987
+            Reference Handle: 4294967295
+            Reference Pose Frame: 0
             Playback Speed: 1
           - Motion Type: Clip
             Motion Blend Position X: -1
             Motion Blend Position Y: 0
             Asset Handle: 193969959
+            Reference Handle: 4294967295
+            Reference Pose Frame: 0
             Playback Speed: 1
           - Motion Type: Clip
             Motion Blend Position X: -0.5
             Motion Blend Position Y: 0
             Asset Handle: 3965387159
+            Reference Handle: 4294967295
+            Reference Pose Frame: 0
             Playback Speed: 1
           - Motion Type: Clip
             Motion Blend Position X: 0.5
             Motion Blend Position Y: 0
             Asset Handle: 2473008050
+            Reference Handle: 4294967295
+            Reference Pose Frame: 0
             Playback Speed: 1
           - Motion Type: Clip
             Motion Blend Position X: 1
             Motion Blend Position Y: 0
             Asset Handle: 2182967682
+            Reference Handle: 4294967295
+            Reference Pose Frame: 0
             Playback Speed: 1
-      - Name: Jumping
-        Hash: 1846982131
-        Type: Clip
-        Asset Handle: 2008768937
-        Should Loop: false
-        Playback Speed: 1
-      - Name: Dying
-        Hash: 1099095730
-        Type: Clip
-        Asset Handle: 3905742638
-        Should Loop: false
-        Playback Speed: 1
     Layer Animation Transitions:
       - Source Name: Entry State
         Source Hash: 24476269
@@ -152,26 +172,28 @@ State Machine Layers:
         Exit Time: 1
         Conditions:
           []
-  - Layer Name: New Layer
+  - Layer Name: Crouch Additive Layer
     Layer Weight: 1
     Layer Blend Type: Additive
     Layer Sync Layer: false
     Layer Sync Index: 18446744073709551615
     Layer Use Own Timing: false
     Layer Using IK: false
-    Layer Default State: Crouch Pose
+    Layer Default State: Crouching
     Layer Animation States:
-      - Name: Crouch Pose
-        Hash: 3483973344
+      - Name: Crouching
+        Hash: 335519341
         Type: Clip
         Asset Handle: 379988091
-        Should Loop: true
+        Reference Handle: 89794127
+        Reference Pose Frame: 0
+        Should Loop: false
         Playback Speed: 1
     Layer Animation Transitions:
       - Source Name: Entry State
         Source Hash: 24476269
-        Destination Name: Crouch Pose
-        Destination Hash: 3483973344
+        Destination Name: Crouching
+        Destination Hash: 335519341
         Transition Duration: 0.3
         Has Exit Time: false
         Exit Time: 0

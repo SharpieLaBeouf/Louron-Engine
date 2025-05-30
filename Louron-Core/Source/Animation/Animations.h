@@ -4,6 +4,9 @@
 #include "../Core/UUID.h"
 #include "../Asset/Asset.h"
 
+#include "../Core/Logging.h"
+#include "../Core/Engine.h"
+
 // C++ Standard Library Headers
 #include <string>
 #include <vector>
@@ -12,6 +15,7 @@
 // External Vendor Library Headers
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 namespace Louron
 {
@@ -36,6 +40,30 @@ namespace Louron
         // Key = Bone Name
         // Value = Local Transform
         std::unordered_map<std::string, AnimationTransform> Pose = {};
+
+        static AnimationPose ComputeDelta(const AnimationPose& current, const AnimationPose& reference)
+        {
+            AnimationPose delta;
+
+            for (const auto& [bone_name, current_transform] : current.Pose)
+            {
+                const auto ref_iter = reference.Pose.find(bone_name);
+                if (ref_iter == reference.Pose.end())
+                    continue;
+
+                const auto& reference_transform = ref_iter->second;
+
+                AnimationTransform delta_transform;
+                delta_transform.Position    = current_transform.Position - reference_transform.Position;
+                delta_transform.Orientation = glm::inverse(reference_transform.Orientation) * current_transform.Orientation;
+                delta_transform.Scale       = current_transform.Scale - reference_transform.Scale;
+
+                delta.Pose[bone_name] = delta_transform;
+            }
+
+            return delta;
+        }
+
     };
 
     struct Keyframe_Position

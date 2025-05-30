@@ -18,7 +18,7 @@ public:
 
     void OnCreate() override
     {
-        
+        GetComponent<SphereColliderComponent>().SetMaterial(PhysicsMaterial(0.6f, 0.6f, 1.0f));      
     }
 
     void OnUpdate() override

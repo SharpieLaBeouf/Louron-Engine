@@ -11,6 +11,9 @@ namespace Louron {
     {
         constexpr float PI = 3.141592653589793f;
 
+        float Radians(float degrees);
+        float Degrees(float radians);
+
         float Max(float a, float b);
 
         float Lerp(float t, float a, float b);

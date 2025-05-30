@@ -309,11 +309,11 @@ namespace Louron {
 		Entity camera_entity = m_ActiveScene->CreateEntity("Main Camera");
 		auto& camera_component = camera_entity.AddComponent<CameraComponent>();
 		camera_entity.GetTransform().SetGlobalPosition({0.0f, 5.0f, 20.0f});
-		camera_entity.GetTransform().SetGlobalRotation({ -10.0f, 0.0f, 0.0f });
+		camera_entity.GetTransform().SetGlobalRotation(glm::quat(glm::radians(glm::vec3{ -10.0f, 0.0f, 0.0f })));
 		camera_component.Primary = true;
 
 		Entity directional_light = m_ActiveScene->CreateEntity("Directional Light");
-		directional_light.GetTransform().SetGlobalRotation({-30.0f, 150.0f, 0.0f});
+		directional_light.GetTransform().SetGlobalRotation(glm::quat(glm::radians(glm::vec3{-30.0f, 150.0f, 0.0f})));
 		directional_light.AddComponent<DirectionalLightComponent>();
 
 		SceneConfig scnConfig = m_ActiveScene->GetConfig();

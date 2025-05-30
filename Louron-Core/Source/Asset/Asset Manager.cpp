@@ -140,7 +140,7 @@ namespace Louron
 										out << YAML::EndSeq;
 
 										out << YAML::Key << "Import Rotation" << YAML::Value << YAML::Flow << YAML::BeginSeq;
-										for (int i = 0; i < 3; i++)
+										for (int i = 0; i < 4; i++)
 											out << import_config->ImportRotation[i];
 										out << YAML::EndSeq;
 
@@ -256,11 +256,12 @@ namespace Louron
 								import_config->ImportPosition.y = import_config_node["Import Position"][1].as<float>();
 								import_config->ImportPosition.z = import_config_node["Import Position"][2].as<float>();
 							}
-							if (import_config_node["Import Rotation"] && import_config_node["Import Rotation"].IsSequence() && import_config_node["Import Rotation"].size() == 3)
+							if (import_config_node["Import Rotation"] && import_config_node["Import Rotation"].IsSequence() && import_config_node["Import Rotation"].size() == 4)
 							{
-								import_config->ImportRotation.x = import_config_node["Import Rotation"][0].as<float>();
-								import_config->ImportRotation.y = import_config_node["Import Rotation"][1].as<float>();
-								import_config->ImportRotation.z = import_config_node["Import Rotation"][2].as<float>();
+								import_config->ImportRotation.w = import_config_node["Import Rotation"][0].as<float>();
+								import_config->ImportRotation.x = import_config_node["Import Rotation"][1].as<float>();
+								import_config->ImportRotation.y = import_config_node["Import Rotation"][2].as<float>();
+								import_config->ImportRotation.z = import_config_node["Import Rotation"][3].as<float>();
 							}
 							if (import_config_node["Import Scale"] && import_config_node["Import Scale"].IsSequence() && import_config_node["Import Scale"].size() == 3)
 							{
@@ -508,11 +509,12 @@ namespace Louron
 								import_config->ImportPosition.y = import_config_node["Import Position"][1].as<float>();
 								import_config->ImportPosition.z = import_config_node["Import Position"][2].as<float>();
 							}
-							if (import_config_node["Import Rotation"] && import_config_node["Import Rotation"].IsSequence() && import_config_node["Import Rotation"].size() == 3)
+							if (import_config_node["Import Rotation"] && import_config_node["Import Rotation"].IsSequence() && import_config_node["Import Rotation"].size() == 4)
 							{
-								import_config->ImportRotation.x = import_config_node["Import Rotation"][0].as<float>();
-								import_config->ImportRotation.y = import_config_node["Import Rotation"][1].as<float>();
-								import_config->ImportRotation.z = import_config_node["Import Rotation"][2].as<float>();
+								import_config->ImportRotation.w = import_config_node["Import Rotation"][0].as<float>();
+								import_config->ImportRotation.x = import_config_node["Import Rotation"][1].as<float>();
+								import_config->ImportRotation.y = import_config_node["Import Rotation"][2].as<float>();
+								import_config->ImportRotation.z = import_config_node["Import Rotation"][3].as<float>();
 							}
 							if (import_config_node["Import Scale"] && import_config_node["Import Scale"].IsSequence() && import_config_node["Import Scale"].size() == 3)
 							{
@@ -1085,7 +1087,7 @@ namespace Louron
 						out << YAML::EndSeq;
 
 						out << YAML::Key << "Import Rotation" << YAML::Value << YAML::Flow << YAML::BeginSeq;
-						for (int i = 0; i < 3; i++)
+						for (int i = 0; i < 4; i++)
 							out << import_config->ImportRotation[i];
 						out << YAML::EndSeq;
 

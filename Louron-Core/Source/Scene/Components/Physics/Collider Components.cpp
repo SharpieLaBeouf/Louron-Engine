@@ -228,10 +228,10 @@ namespace Louron {
         ResetRigidbody();
 
         const glm::vec3& position = entity.GetTransform().GetGlobalPosition();
-        const glm::quat& quaternion = glm::quat(glm::radians(entity.GetTransform().GetGlobalRotation()));
+        const glm::quat& rotation = entity.GetTransform().GetGlobalRotation();
         
         m_Shape->m_StaticBody = std::make_shared<RigidDynamic>();
-        m_Shape->m_StaticBody->Init(PxTransform(position.x, position.y, position.z, PxQuat(quaternion.x, quaternion.y, quaternion.z, quaternion.w)));
+        m_Shape->m_StaticBody->Init(PxTransform(position.x, position.y, position.z, PxQuat(rotation.x, rotation.y, rotation.z, rotation.w)));
 
         m_Shape->m_StaticBody->GetActor()->attachShape(*m_Shape->m_Shape);
 
@@ -315,7 +315,7 @@ namespace Louron {
             m_Shape->m_StaticBody = nullptr;
         }
 
-        m_Shape->SetLocalPose({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+        m_Shape->SetLocalPose({ 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 0.0f });
     }
 
     // GETTERS
@@ -341,8 +341,9 @@ namespace Louron {
     {
         if (material) {
             m_Material = material;
-            if (m_Shape) {
-                m_Shape->SetMaterials((PxMaterial* const*)m_Material->GetMaterial(), 1);
+            if (m_Shape) 
+            {
+                m_Shape->SetMaterial(m_Material->GetMaterial());
             }
         }
         else {
@@ -705,10 +706,10 @@ namespace Louron {
         this->ResetRigidbody();
 
         const glm::vec3& position = entity.GetTransform().GetGlobalPosition();
-        const glm::quat& quaternion = glm::quat(glm::radians(entity.GetTransform().GetGlobalRotation()));
+        const glm::quat& rotation = entity.GetTransform().GetGlobalRotation();
 
         m_Shape->m_StaticBody = std::make_shared<RigidDynamic>();
-        m_Shape->m_StaticBody->Init(PxTransform(position.x, position.y, position.z, PxQuat(quaternion.x, quaternion.y, quaternion.z, quaternion.w)));
+        m_Shape->m_StaticBody->Init(PxTransform(position.x, position.y, position.z, PxQuat(rotation.x, rotation.y, rotation.z, rotation.w)));
 
         m_Shape->m_StaticBody->GetActor()->attachShape(*m_Shape->m_Shape);
 
@@ -817,7 +818,7 @@ namespace Louron {
         if (material) {
             m_Material = material;
             if (m_Shape) {
-                m_Shape->SetMaterials((PxMaterial* const*)m_Material->GetMaterial(), 1);
+                m_Shape->SetMaterial(m_Material->GetMaterial());
             }
         }
         else {

@@ -10,6 +10,7 @@
 
 // External Vendor Library Headers
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace Louron {
 
@@ -69,7 +70,7 @@ namespace Louron {
 	struct ModelImportConfig : public AssetImportConfig
 	{
 		glm::vec3 ImportPosition = glm::vec3(0.0f);	// Import with overriden position for root entity.
-		glm::vec3 ImportRotation = glm::vec3(0.0f);	// Import with overriden rotation for root entity.
+		glm::quat ImportRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);	// Import with overriden rotation for root entity.
 		glm::vec3 ImportScale	 = glm::vec3(1.0f);	// Import with overriden scale for root entity.
 
 		bool ImportSkeleton				= false;	// Import Skeleton Bone Structure.

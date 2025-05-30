@@ -28,6 +28,7 @@ public:
 	void OnScenePlay();
 	void OnSceneSimulate();
 	void OnSceneStop();
+	void ToggleScenePause();
 
 private:
 

@@ -249,7 +249,7 @@ namespace Louron
         // Calculate the local transform relative to the new parent
         glm::mat4 localTransform = glm::inverse(parent_transform.GetGlobalTransform()) * entity_transform.GetGlobalTransform();
         entity_transform.SetPosition(localTransform[3]);
-        entity_transform.SetRotation(glm::vec3(glm::degrees(glm::eulerAngles(glm::quat_cast(localTransform)))));
+        entity_transform.SetRotation(glm::quat_cast(localTransform));
         entity_transform.SetScale(glm::vec3(
             glm::length(localTransform[0]),
             glm::length(localTransform[1]),
@@ -306,7 +306,7 @@ namespace Louron
 
         // 2. Update the child's local transform to match the global transform
         entityTransform.SetPosition(globalTransform[3]);
-        entityTransform.SetRotation(glm::vec3(glm::degrees(glm::eulerAngles(glm::quat_cast(globalTransform)))));
+        entityTransform.SetRotation(glm::quat_cast(globalTransform));
         entityTransform.SetScale(glm::vec3(
             glm::length(globalTransform[0]),
             glm::length(globalTransform[1]),
@@ -613,7 +613,7 @@ namespace Louron
         other.SetEntity({});
 
         m_Position = other.m_Position; other.m_Position = glm::vec3(0.0f);
-        m_Rotation = other.m_Rotation; other.m_Rotation = glm::vec3(0.0f);
+        m_Rotation = other.m_Rotation; other.m_Rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
         m_Scale = other.m_Scale; other.m_Scale = glm::vec3(1.0f);
 
         m_LocalTransform = other.m_LocalTransform; other.m_LocalTransform = glm::mat4(1.0f);
@@ -656,7 +656,7 @@ namespace Louron
         other.SetEntity({});
 
         m_Position = other.m_Position; other.m_Position = glm::vec3(0.0f);
-        m_Rotation = other.m_Rotation; other.m_Rotation = glm::vec3(0.0f);
+        m_Rotation = other.m_Rotation; other.m_Rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
         m_Scale = other.m_Scale; other.m_Scale = glm::vec3(1.0f);
 
         m_LocalTransform = other.m_LocalTransform; other.m_LocalTransform = glm::mat4(1.0f);
@@ -712,27 +712,33 @@ namespace Louron
     /// <summary>
     /// Set the rotation to a fixed value.
     /// </summary>
-    /// <param name="newScale">This will be the new fixed rotation.</param>
-    void TransformComponent::SetRotation(const glm::vec3& newRotation) {
-        m_Rotation = newRotation;
+    /// <param name="newRotation">This will be the new fixed rotation.</param>
+    void TransformComponent::SetRotation(const glm::quat& newRotation) {
+        m_Rotation = glm::normalize(newRotation);
         AddFlag(TransformFlag_PropertiesUpdated);
         UpdateLocalTransformMatrix();
     }
 
-    void TransformComponent::SetRotationX(const float& newXRotation) {
-        m_Rotation.x = newXRotation;
+    void TransformComponent::SetRotationEulerX(const float& newEulerXRotation) {
+        glm::vec3 euler_deg = glm::degrees(glm::eulerAngles(m_Rotation)); // current rotation in degrees
+        euler_deg.x = newEulerXRotation;
+        m_Rotation = glm::quat(glm::radians(euler_deg)); // update quaternion
         AddFlag(TransformFlag_PropertiesUpdated);
         UpdateLocalTransformMatrix();
     }
 
-    void TransformComponent::SetRotationY(const float& newYRotation) {
-        m_Rotation.y = newYRotation;
+    void TransformComponent::SetRotationEulerY(const float& newEulerYRotation) {
+        glm::vec3 euler_deg = glm::degrees(glm::eulerAngles(m_Rotation));
+        euler_deg.y = newEulerYRotation;
+        m_Rotation = glm::quat(glm::radians(euler_deg));
         AddFlag(TransformFlag_PropertiesUpdated);
         UpdateLocalTransformMatrix();
     }
 
-    void TransformComponent::SetRotationZ(const float& newZRotation) {
-        m_Rotation.z = newZRotation;
+    void TransformComponent::SetRotationEulerZ(const float& newEulerZRotation) {
+        glm::vec3 euler_deg = glm::degrees(glm::eulerAngles(m_Rotation));
+        euler_deg.z = newEulerZRotation;
+        m_Rotation = glm::quat(glm::radians(euler_deg));
         AddFlag(TransformFlag_PropertiesUpdated);
         UpdateLocalTransformMatrix();
     }
@@ -804,42 +810,43 @@ namespace Louron
         AddFlag(TransformFlag_PropertiesUpdated);
         UpdateLocalTransformMatrix();
     }
+    
     /// <summary>
-    /// Apply a Rotation to the Transform.
+    /// Apply a Rotation to the Transform (composes with existing).
     /// </summary>
-    /// <param name="vector">This will be added to the current rotation.</param>
-    void TransformComponent::Rotate(const glm::vec3& vector) {
-        m_Rotation += vector;
+    /// <param name="rotation_delta">Delta rotation as quaternion.</param>
+    void TransformComponent::Rotate(const glm::quat& rotation_delta) {
+        m_Rotation = rotation_delta * m_Rotation; // Pre-multiply: rotate in local space
         AddFlag(TransformFlag_PropertiesUpdated);
         UpdateLocalTransformMatrix();
     }
 
     /// <summary>
-    /// Apply a Rotation to the Transform around the X-axis.
+    /// Apply a rotation around the local X-axis (Euler delta in degrees).
     /// </summary>
-    /// <param name="delta">This value will be added to the current X rotation.</param>
-    void TransformComponent::RotateX(const float& deltaRotationX) {
-        m_Rotation.x += deltaRotationX;
+    void TransformComponent::RotateEulerX(const float& deltaRotationEulerX) {
+        glm::quat delta = glm::angleAxis(glm::radians(deltaRotationEulerX), glm::vec3(1.0f, 0.0f, 0.0f));
+        m_Rotation = delta * m_Rotation;
         AddFlag(TransformFlag_PropertiesUpdated);
         UpdateLocalTransformMatrix();
     }
 
     /// <summary>
-    /// Apply a Rotation to the Transform around the Y-axis.
+    /// Apply a rotation around the local Y-axis (Euler delta in degrees).
     /// </summary>
-    /// <param name="delta">This value will be added to the current Y rotation.</param>
-    void TransformComponent::RotateY(const float& deltaRotationY) {
-        m_Rotation.y += deltaRotationY;
+    void TransformComponent::RotateEulerY(const float& deltaRotationEulerY) {
+        glm::quat delta = glm::angleAxis(glm::radians(deltaRotationEulerY), glm::vec3(0.0f, 1.0f, 0.0f));
+        m_Rotation = delta * m_Rotation;
         AddFlag(TransformFlag_PropertiesUpdated);
         UpdateLocalTransformMatrix();
     }
 
     /// <summary>
-    /// Apply a Rotation to the Transform around the Z-axis.
+    /// Apply a rotation around the local Z-axis (Euler delta in degrees).
     /// </summary>
-    /// <param name="delta">This value will be added to the current Z rotation.</param>
-    void TransformComponent::RotateZ(const float& deltaRotationZ) {
-        m_Rotation.z += deltaRotationZ;
+    void TransformComponent::RotateEulerZ(const float& deltaRotationEulerZ) {
+        glm::quat delta = glm::angleAxis(glm::radians(deltaRotationEulerZ), glm::vec3(0.0f, 0.0f, 1.0f));
+        m_Rotation = delta * m_Rotation;
         AddFlag(TransformFlag_PropertiesUpdated);
         UpdateLocalTransformMatrix();
     }
@@ -885,7 +892,7 @@ namespace Louron
     }
 
     const glm::vec3& TransformComponent::GetLocalPosition() const { return m_Position; }
-    const glm::vec3& TransformComponent::GetLocalRotation() const { return m_Rotation; }
+    const glm::quat& TransformComponent::GetLocalRotation() const { return m_Rotation; }
     const glm::vec3& TransformComponent::GetLocalScale() const { return m_Scale; }
 
     void TransformComponent::SetGlobalPosition(const glm::vec3& globalPosition) {
@@ -908,8 +915,7 @@ namespace Louron
         }
     }
 
-    void TransformComponent::SetGlobalRotation(const glm::vec3& globalRotation) {
-
+    void TransformComponent::SetGlobalRotation(const glm::quat& global_rotation) {
         if (!GetEntity()) {
             L_CORE_ERROR("Cannot Set Global Rotation - Current Entity Is Invalid!");
             return;
@@ -918,17 +924,12 @@ namespace Louron
         Entity entity = *GetEntity();
 
         if (entity && entity.GetScene() && entity.GetComponent<HierarchyComponent>().HasParent()) {
-
-            glm::quat parentGlobalRotation = glm::quat(glm::radians(GetComponentInParent<TransformComponent>().GetGlobalRotation()));
-            glm::quat parentInverseRotation = glm::inverse(parentGlobalRotation);
-
-            glm::quat globalQuat = glm::quat(glm::radians(globalRotation));
-            glm::quat localQuat = parentInverseRotation * globalQuat;
-            glm::vec3 localRot = glm::degrees(glm::eulerAngles(localQuat));
-            SetRotation(localRot);
-        }
-        else {
-            SetRotation(globalRotation);
+            auto& parent_transform = GetComponentInParent<TransformComponent>();
+            glm::quat parent_global_rotation = parent_transform.GetGlobalRotation();
+            glm::quat local_rotation = glm::inverse(parent_global_rotation) * global_rotation;
+            SetRotation(local_rotation);
+        } else {
+            SetRotation(global_rotation);
         }
     }
 
@@ -959,17 +960,15 @@ namespace Louron
         return glm::vec3(transform[3][0], transform[3][1], transform[3][2]);
     }
 
-    glm::vec3 TransformComponent::GetRotationFromMatrix(const glm::mat4& transform) {
-        // Extract the upper-left 3x3 submatrix (rotation and scale)
-        glm::mat3 rotationMatrix = glm::mat3(transform);
+    glm::quat TransformComponent::GetRotationFromMatrix(const glm::mat4& transform) {
+        glm::mat3 rotation_matrix = glm::mat3(transform);
 
-        // Remove the scaling by normalizing the basis vectors
-        rotationMatrix[0] = glm::normalize(rotationMatrix[0]);
-        rotationMatrix[1] = glm::normalize(rotationMatrix[1]);
-        rotationMatrix[2] = glm::normalize(rotationMatrix[2]);
+        // Remove scaling
+        rotation_matrix[0] = glm::normalize(rotation_matrix[0]);
+        rotation_matrix[1] = glm::normalize(rotation_matrix[1]);
+        rotation_matrix[2] = glm::normalize(rotation_matrix[2]);
 
-        // Convert the purified rotation matrix to a quaternion
-        return glm::degrees(glm::eulerAngles(glm::quat_cast(rotationMatrix)));
+        return glm::quat_cast(rotation_matrix);
     }
 
     glm::vec3 TransformComponent::GetScaleFromMatrix(const glm::mat4& transform) {
@@ -1031,7 +1030,7 @@ namespace Louron
 
             // Compute the local transform matrix if it has changed
             m_LocalTransform = glm::translate(glm::mat4(1.0f), m_Position) *
-                glm::mat4_cast(glm::quat(glm::radians(m_Rotation))) *
+                glm::mat4_cast(m_Rotation) *
                 glm::scale(glm::mat4(1.0f), m_Scale);
 
             OnTransformUpdated();
@@ -1054,7 +1053,7 @@ namespace Louron
         return m_Position;
     }
 
-    glm::vec3 TransformComponent::GetGlobalRotation() {
+    glm::quat TransformComponent::GetGlobalRotation() {
 
         if (CheckFlag(TransformFlag_GlobalTransformUpdated))
             return GetRotationFromMatrix(GetGlobalTransform());
@@ -1095,70 +1094,81 @@ namespace Louron
     void TransformComponent::SetForwardDirection(const glm::vec3& direction)
     {
         glm::vec3 forward = glm::normalize(direction);
-        glm::vec3 eulerRotation = glm::degrees(glm::eulerAngles(glm::rotation(global_forward, forward)));
-        SetGlobalRotation(eulerRotation); // Set Global
+
+        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+        if (glm::abs(glm::dot(forward, up)) > 0.999f)
+            up = glm::vec3(1.0f, 0.0f, 0.0f);
+
+        glm::quat look_rotation = glm::quatLookAt(-forward, up);
+        SetGlobalRotation(look_rotation);
     }
 
     void TransformComponent::SetRightDirection(const glm::vec3& direction)
     {
         glm::vec3 right = glm::normalize(direction);
-        glm::vec3 eulerRotation = glm::degrees(glm::eulerAngles(glm::rotation(global_right, right)));
-        SetGlobalRotation(eulerRotation); // Set Global
+        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+        if (glm::abs(glm::dot(right, up)) > 0.999f)
+            up = glm::vec3(0.0f, 0.0f, 1.0f);
+
+        glm::vec3 forward = glm::normalize(glm::cross(up, right));
+        glm::quat look_rotation = glm::quatLookAt(-forward, up);
+        SetGlobalRotation(look_rotation);
     }
 
     void TransformComponent::SetUpDirection(const glm::vec3& direction)
     {
         glm::vec3 up = glm::normalize(direction);
-        glm::vec3 eulerRotation = glm::degrees(glm::eulerAngles(glm::rotation(global_up, up)));
-        SetGlobalRotation(eulerRotation); // Set Global
+        glm::vec3 forward = glm::vec3(0.0f, 0.0f, -1.0f);
+
+        if (glm::abs(glm::dot(up, forward)) > 0.999f)
+            forward = glm::vec3(1.0f, 0.0f, 0.0f);
+
+        glm::quat look_rotation = glm::quatLookAt(forward, up);
+        SetGlobalRotation(look_rotation);
     }
 
     glm::vec3 TransformComponent::GetForwardDirection()
     {
-        glm::vec3 transform;
+        glm::quat rotation;
 
         if (CheckFlag(TransformFlag_GlobalTransformUpdated))
-            transform = GetGlobalRotation();
+            rotation = GetGlobalRotation();
         else if (m_LocalTransform != m_GlobalTransform)
-            transform = GetRotationFromMatrix(m_GlobalTransform);
+            rotation = GetRotationFromMatrix(m_GlobalTransform);
         else
-            transform = GetRotationFromMatrix(m_LocalTransform);
+            rotation = GetRotationFromMatrix(m_LocalTransform);
 
-        glm::quat globalRotation = glm::quat(glm::radians(transform));
-        glm::vec3 globalForward = globalRotation * global_forward;
-        return glm::normalize(globalForward);
+        return glm::normalize(rotation * global_forward);
     }
 
     glm::vec3 TransformComponent::GetRightDirection()
     {
-        glm::vec3 transform;
+        glm::quat rotation;
 
         if (CheckFlag(TransformFlag_GlobalTransformUpdated))
-            transform = GetGlobalRotation();
+            rotation = GetGlobalRotation();
         else if (m_LocalTransform != m_GlobalTransform)
-            transform = GetRotationFromMatrix(m_GlobalTransform);
+            rotation = GetRotationFromMatrix(m_GlobalTransform);
         else
-            transform = GetRotationFromMatrix(m_LocalTransform);
+            rotation = GetRotationFromMatrix(m_LocalTransform);
 
-        glm::quat globalRotation = glm::quat(glm::radians(transform));
-        glm::vec3 globalForward = globalRotation * global_right;
-        return glm::normalize(globalForward);
+        return glm::normalize(rotation * global_right);
     }
 
     glm::vec3 TransformComponent::GetUpDirection()
     {
-        glm::vec3 transform;
+        glm::quat rotation;
 
         if (CheckFlag(TransformFlag_GlobalTransformUpdated))
-            transform = GetGlobalRotation();
+            rotation = GetGlobalRotation();
         else if (m_LocalTransform != m_GlobalTransform)
-            transform = GetRotationFromMatrix(m_GlobalTransform);
+            rotation = GetRotationFromMatrix(m_GlobalTransform);
         else
-            transform = GetRotationFromMatrix(m_LocalTransform);
+            rotation = GetRotationFromMatrix(m_LocalTransform);
 
-        glm::quat globalRotation = glm::quat(glm::radians(transform));
-        glm::vec3 globalForward = globalRotation * global_up;
-        return glm::normalize(globalForward);
+        return glm::normalize(rotation * global_up);
     }
 
     const glm::mat4& TransformComponent::GetGlobalTransform()
@@ -1228,30 +1238,27 @@ namespace Louron
         AddFlag(TransformFlag_PropertiesUpdated);
 
         // Decompose Position
-        glm::vec3 position = glm::vec3(transform[3]); // Extract translation (last column)
+        glm::vec3 position = glm::vec3(transform[3]);
 
         // Extract Scale
         glm::vec3 scale;
-        scale.x = glm::length(glm::vec3(transform[0])); // Length of X column
-        scale.y = glm::length(glm::vec3(transform[1])); // Length of Y column
-        scale.z = glm::length(glm::vec3(transform[2])); // Length of Z column
+        scale.x = glm::length(glm::vec3(transform[0]));
+        scale.y = glm::length(glm::vec3(transform[1]));
+        scale.z = glm::length(glm::vec3(transform[2]));
 
         // Normalize rotation matrix (remove scale)
-        glm::mat3 rotationMatrix = glm::mat3(transform);
-        rotationMatrix[0] /= scale.x;
-        rotationMatrix[1] /= scale.y;
-        rotationMatrix[2] /= scale.z;
+        glm::mat3 rotation_matrix = glm::mat3(transform);
+        rotation_matrix[0] /= scale.x;
+        rotation_matrix[1] /= scale.y;
+        rotation_matrix[2] /= scale.z;
 
         // Convert to quaternion
-        glm::quat rotationQuat = glm::quat_cast(rotationMatrix);
-
-        // Convert quaternion to Euler angles (in degrees)
-        glm::vec3 rotationEuler = glm::degrees(glm::eulerAngles(rotationQuat));
+        glm::quat rotation_quat = glm::quat_cast(rotation_matrix);
 
         // Set internal values
         m_Position = position;
         m_Scale = scale;
-        m_Rotation = rotationEuler;
+        m_Rotation = rotation_quat;
 
         m_LocalTransform = transform;
     }
@@ -1274,6 +1281,7 @@ namespace Louron
 
         out << YAML::Key << "Rotation" << YAML::Value << YAML::Flow
             << YAML::BeginSeq
+            << m_Rotation.w
             << m_Rotation.x
             << m_Rotation.y
             << m_Rotation.z
@@ -1313,10 +1321,11 @@ namespace Louron
 
         if (component["Rotation"]) {
             auto rotationSeq = component["Rotation"];
-            if (rotationSeq.IsSequence() && rotationSeq.size() == 3) {
-                m_Rotation.x = rotationSeq[0].as<float>();
-                m_Rotation.y = rotationSeq[1].as<float>();
-                m_Rotation.z = rotationSeq[2].as<float>();
+            if (rotationSeq.IsSequence() && rotationSeq.size() == 4) {
+                m_Rotation.w = rotationSeq[0].as<float>();
+                m_Rotation.x = rotationSeq[1].as<float>();
+                m_Rotation.y = rotationSeq[2].as<float>();
+                m_Rotation.z = rotationSeq[3].as<float>();
             }
             else {
                 return false;

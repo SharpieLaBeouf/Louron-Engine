@@ -1102,7 +1102,7 @@ namespace Louron
         entity.GetTransform().SetGlobalPosition(*value);
     }
 
-    glm::vec3 ScriptRegister::TransformComponent_GetRotation(UUID entity_uuid)
+    glm::quat ScriptRegister::TransformComponent_GetRotation(UUID entity_uuid)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
@@ -1115,7 +1115,7 @@ namespace Louron
         return entity.GetTransform().GetLocalRotation();
     }
 
-    void ScriptRegister::TransformComponent_SetRotation(UUID entity_uuid, const glm::vec3* value)
+    void ScriptRegister::TransformComponent_SetRotation(UUID entity_uuid, const glm::quat* value)
     {
         if(!value)
             return;
@@ -1131,7 +1131,7 @@ namespace Louron
         entity.GetTransform().SetRotation(*value);
     }
 
-    glm::vec3 ScriptRegister::TransformComponent_GetGlobalRotation(UUID entity_uuid)
+    glm::quat ScriptRegister::TransformComponent_GetGlobalRotation(UUID entity_uuid)
     {
         auto scene_ref = Project::GetActiveScene();
         if (!scene_ref)
@@ -1144,7 +1144,7 @@ namespace Louron
         return entity.GetTransform().GetGlobalRotation();
     }
 
-    void ScriptRegister::TransformComponent_SetGlobalRotation(UUID entity_uuid, const glm::vec3 *value)
+    void ScriptRegister::TransformComponent_SetGlobalRotation(UUID entity_uuid, const glm::quat *value)
     {
         if(!value)
             return;
@@ -2474,6 +2474,7 @@ namespace Louron
             return;
 
         auto phys_material = std::make_shared<PhysicsMaterial>(value->m_DynamicFriction, value->m_StaticFriction, value->m_Bounciness);
+        phys_material->Init();
         entity.GetComponent<SphereColliderComponent>().SetMaterial(phys_material);
     }
     

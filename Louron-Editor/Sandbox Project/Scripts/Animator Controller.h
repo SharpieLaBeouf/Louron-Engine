@@ -30,6 +30,7 @@ public:
     void OnCreate() override
     {
         animator = GetComponent<AnimatorComponent>();
+        last_mouse_x = -Input::GetMousePosition().x;
 
         if (!shoot_entity)
         {
@@ -92,6 +93,8 @@ public:
             bullet.GetComponent<RigidbodyComponent>().ApplyForce(shoot_entity.GetFront() * 75.0f, RigidbodyComponent::ForceMode::Impulse);
         }
     }
+
+    float last_mouse_x = 0.0f;
 
     void Animate()
     {
@@ -172,32 +175,37 @@ public:
     
         animator.SetFloat(vel_x_hash, final_velocity.x);
         animator.SetFloat(vel_z_hash, final_velocity.y);
-    
-        // -- Movement --
+
+            // -- Movement --
         Vector3 position = GetPosition();
-        Vector3 rotation = GetRotation(); // Euler angles in degrees
-    
-        // Compute forward and right vectors from Y-rotation
-        Vector3 forward = GetFront();
-        Vector3 right   = { forward.z, 0.0f, -forward.x }; // 90° rotated right
-    
-        // Combine input with orientation to get world movement direction
+        Quaternion orientation = GetRotation(); // current orientation
+
+        // Compute local directions based on current orientation
+        Vector3 forward = orientation.Rotate(Vector3(0.0f, 0.0f, -1.0f));
+        Vector3 right   = orientation.Rotate(Vector3(-1.0f, 0.0f, 0.0f));
+
         Vector3 movement =
-            (right   * final_velocity.x +
-             forward * -final_velocity.y) // move backward relative to forward
+            (right * final_velocity.x +
+            forward * -final_velocity.y)
             * move_speed * dt;
-    
+
         position = position + movement;
         SetPosition(position);
-    
-        // -- Rotation --
-        static float last_mouse_x = -Input::GetMousePosition().x;
+
+        // -- Rotation -- (Quaternion-based yaw)
         float current_mouse_x = -Input::GetMousePosition().x;
         float delta_mouse_x = current_mouse_x - last_mouse_x;
         last_mouse_x = current_mouse_x;
-    
-        rotation.y += delta_mouse_x * mouse_sensitivity;
-        SetRotation(rotation);
+
+        // Compute yaw delta in degrees
+        float yaw_delta_degrees = delta_mouse_x * mouse_sensitivity;
+
+        // Create yaw delta quaternion around world up (Y-axis)
+        Quaternion yaw_delta = Quaternion::AxisAngle(Vector3(0.0f, 1.0f, 0.0f), yaw_delta_degrees);
+
+        // Apply yaw delta (on top of current rotation)
+        orientation = yaw_delta * orientation; // Order matters: delta * current
+        SetRotation(orientation);
 
     }
 

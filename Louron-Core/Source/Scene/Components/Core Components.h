@@ -100,7 +100,7 @@ namespace Louron
     private:
 
         glm::vec3 m_Position = glm::vec3(0.0f);
-        glm::vec3 m_Rotation = glm::vec3(0.0f);
+        glm::quat m_Rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
         glm::vec3 m_Scale = glm::vec3(1.0f);
 
         glm::mat4 m_LocalTransform = glm::mat4(1.0f);
@@ -134,11 +134,11 @@ namespace Louron
         void SetPositionY(const float& newYPosition);
         void SetPositionZ(const float& newZPosition);
 
-        void SetRotation(const glm::vec3& newRotation);
-        void SetGlobalRotation(const glm::vec3& newRotation);
-        void SetRotationX(const float& newXRotation);
-        void SetRotationY(const float& newYRotation);
-        void SetRotationZ(const float& newZRotation);
+        void SetRotation(const glm::quat& newRotation);
+        void SetGlobalRotation(const glm::quat& newRotation);
+        void SetRotationEulerX(const float& newEulerXRotation);
+        void SetRotationEulerY(const float& newEulerYRotation);
+        void SetRotationEulerZ(const float& newEulerZRotation);
 
         void SetScale(const glm::vec3& newScale);
         void SetGlobalScale(const glm::vec3& newScale);
@@ -151,10 +151,10 @@ namespace Louron
         void TranslateY(const float& deltaTranslationY);
         void TranslateZ(const float& deltaTranslationZ);
 
-        void Rotate(const glm::vec3& vector);
-        void RotateX(const float& deltaRotationX);
-        void RotateY(const float& deltaRotationY);
-        void RotateZ(const float& deltaRotationZ);
+        void Rotate(const glm::quat& rotation_delta);
+        void RotateEulerX(const float& deltaRotationEulerX);
+        void RotateEulerY(const float& deltaRotationEulerY);
+        void RotateEulerZ(const float& deltaRotationEulerZ);
 
         void Scale(const glm::vec3& vector);
         void ScaleX(const float& deltaScaleX);
@@ -162,7 +162,7 @@ namespace Louron
         void ScaleZ(const float& deltaScaleZ);
 
         glm::vec3 GetGlobalPosition();
-        glm::vec3 GetGlobalRotation();
+        glm::quat GetGlobalRotation();
         glm::vec3 GetGlobalScale();
 
         void SetForwardDirection(const glm::vec3& direction);
@@ -174,7 +174,7 @@ namespace Louron
         glm::vec3 GetUpDirection();
 
         const glm::vec3& GetLocalPosition() const;
-        const glm::vec3& GetLocalRotation() const;
+        const glm::quat& GetLocalRotation() const;
         const glm::vec3& GetLocalScale() const;
 
         const glm::mat4& GetGlobalTransform();
@@ -190,7 +190,7 @@ namespace Louron
 
         // Helper function, converts transform matrix to PURE rotation matrix
         static glm::vec3 GetPositionFromMatrix(const glm::mat4& transform);
-        static glm::vec3 GetRotationFromMatrix(const glm::mat4& transform);
+        static glm::quat GetRotationFromMatrix(const glm::mat4& transform);
         static glm::vec3 GetScaleFromMatrix(const glm::mat4& transform);
 
         void UpdateLocalTransformMatrix();

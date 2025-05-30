@@ -5,36 +5,12 @@ Asset Is Composite: true
 Asset Import Config:
   AutoReImport: true
   Import Position: [0, 0, 0]
-  Import Rotation: [0, 0, 0]
+  Import Rotation: [0, 0, 1, 0]
   Import Scale: [1, 1, 1]
   Import Skeleton: false
   Import Animations: false
   Import Materials: true
 Composite Assets:
-  - Asset Name: sponza.234
-    Asset Handle: 1241755
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.247
-    Asset Handle: 16886541
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.227
-    Asset Handle: 17872279
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.256
-    Asset Handle: 33811255
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.236
-    Asset Handle: 34796993
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.225
-    Asset Handle: 51427517
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.254
-    Asset Handle: 67366493
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.232
-    Asset Handle: 101907469
-    Asset Type: AssetType::Mesh
   - Asset Name: floor.002
     Asset Handle: 265318135
     Asset Type: AssetType::Material_Standard
@@ -44,53 +20,20 @@ Composite Assets:
   - Asset Name: fabric_f.002
     Asset Handle: 790877299
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.194
-    Asset Handle: 886096832
-    Asset Type: AssetType::Mesh
   - Asset Name: fabric_c.002
     Asset Handle: 890518080
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.190
-    Asset Handle: 953207308
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.168
-    Asset Handle: 985335523
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.192
-    Asset Handle: 986762546
-    Asset Type: AssetType::Mesh
   - Asset Name: column_b.002
     Asset Handle: 988845788
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.161
-    Asset Handle: 1102778856
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.199
-    Asset Handle: 1104205879
-    Asset Type: AssetType::Mesh
   - Asset Name: sponza.109
     Asset Handle: 1170183522
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.108
-    Asset Handle: 1186961141
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.107
-    Asset Handle: 1203738760
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.166
-    Asset Handle: 1220222189
     Asset Type: AssetType::Mesh
   - Asset Name: ceiling.002
     Asset Handle: 1223737034
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.111
-    Asset Handle: 1237146903
-    Asset Type: AssetType::Mesh
   - Asset Name: sponza.047
     Asset Handle: 1240777951
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.112
-    Asset Handle: 1253924522
     Asset Type: AssetType::Mesh
   - Asset Name: sponza.096
     Asset Handle: 1258394213
@@ -110,123 +53,18 @@ Composite Assets:
   - Asset Name: sponza.072
     Asset Handle: 1592960855
     Asset Type: AssetType::Mesh
-  - Asset Name: sponza.071
-    Asset Handle: 1609738474
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.271
-    Asset Handle: 1795755440
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.273
-    Asset Handle: 1829310678
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.272
-    Asset Handle: 1846088297
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.275
-    Asset Handle: 1862865916
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.205
-    Asset Handle: 1863013011
-    Asset Type: AssetType::Mesh
   - Asset Name: flagpole.002
     Asset Handle: 1864222147
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.274
-    Asset Handle: 1879643535
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.277
-    Asset Handle: 1896421154
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.276
-    Asset Handle: 1913198773
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.279
-    Asset Handle: 1929976392
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.201
-    Asset Handle: 1930123487
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.278
-    Asset Handle: 1946754011
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.203
-    Asset Handle: 1963678725
-    Asset Type: AssetType::Mesh
   - Asset Name: vase.002
     Asset Handle: 2039200174
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.288
-    Asset Handle: 2046286892
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.289
-    Asset Handle: 2063064511
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.284
-    Asset Handle: 2113397368
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.285
-    Asset Handle: 2130174987
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.299
-    Asset Handle: 2130322082
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.286
-    Asset Handle: 2146952606
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.298
-    Asset Handle: 2147099701
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.287
-    Asset Handle: 2163730225
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.297
-    Asset Handle: 2163877320
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.267
-    Asset Handle: 2164715963
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.280
-    Asset Handle: 2180507844
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.296
-    Asset Handle: 2180654939
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.281
-    Asset Handle: 2197285463
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.295
-    Asset Handle: 2197432558
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.282
-    Asset Handle: 2214063082
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.294
-    Asset Handle: 2214210177
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.283
-    Asset Handle: 2230840701
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.293
-    Asset Handle: 2230987796
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.292
-    Asset Handle: 2247765415
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.260
-    Asset Handle: 2248604058
-    Asset Type: AssetType::Mesh
   - Asset Name: Material__25.002
     Asset Handle: 2260243161
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.291
-    Asset Handle: 2264543034
-    Asset Type: AssetType::Mesh
   - Asset Name: fabric_e.002
     Asset Handle: 2269179066
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.290
-    Asset Handle: 2281320653
-    Asset Type: AssetType::Mesh
   - Asset Name: chain.002
     Asset Handle: 2330476196
     Asset Type: AssetType::Material_Standard
@@ -236,44 +74,8 @@ Composite Assets:
   - Asset Name: vase_hanging.002
     Asset Handle: 2736734541
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.150
-    Asset Handle: 2964550112
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.155
-    Asset Handle: 3048438207
-    Asset Type: AssetType::Mesh
   - Asset Name: sponza.141
     Asset Handle: 3048585302
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.131
-    Asset Handle: 3049423945
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.157
-    Asset Handle: 3081993445
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.177
-    Asset Handle: 3082287635
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.137
-    Asset Handle: 3082979183
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.146
-    Asset Handle: 3098918159
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.159
-    Asset Handle: 3115548683
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.144
-    Asset Handle: 3132473397
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.172
-    Asset Handle: 3132620492
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.183
-    Asset Handle: 3151222492
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.170
-    Asset Handle: 3166175730
     Asset Type: AssetType::Mesh
   - Asset Name: sponza.122
     Asset Handle: 3167014373
@@ -281,71 +83,17 @@ Composite Assets:
   - Asset Name: sponza.139
     Asset Handle: 3183644897
     Asset Type: AssetType::Mesh
-  - Asset Name: sponza.181
-    Asset Handle: 3184777730
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.148
-    Asset Handle: 3199583873
-    Asset Type: AssetType::Mesh
   - Asset Name: vase_round.002
     Asset Handle: 3267680149
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.179
-    Asset Handle: 3317174301
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.033
-    Asset Handle: 3320364064
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.188
-    Asset Handle: 3335776301
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.032
-    Asset Handle: 3337141683
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.025
-    Asset Handle: 3353772207
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.031
-    Asset Handle: 3353919302
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.026
-    Asset Handle: 3370549826
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.030
-    Asset Handle: 3370696921
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.006
-    Asset Handle: 3370844016
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.027
-    Asset Handle: 3387327445
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.037
-    Asset Handle: 3387474540
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.007
-    Asset Handle: 3387621635
-    Asset Type: AssetType::Mesh
   - Asset Name: sponza.057
     Asset Handle: 3388460278
     Asset Type: AssetType::Mesh
   - Asset Name: Material__298.002
     Asset Handle: 3389271223
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.028
-    Asset Handle: 3404105064
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.029
-    Asset Handle: 3420882683
-    Asset Type: AssetType::Mesh
   - Asset Name: sponza.035
     Asset Handle: 3421029778
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.005
-    Asset Handle: 3421176873
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.034
-    Asset Handle: 3437807397
     Asset Type: AssetType::Mesh
   - Asset Name: sponza.003
     Asset Handle: 3454732111
@@ -353,38 +101,20 @@ Composite Assets:
   - Asset Name: sponza.039
     Asset Handle: 3488140254
     Asset Type: AssetType::Mesh
-  - Asset Name: sponza.001
-    Asset Handle: 3488287349
-    Asset Type: AssetType::Mesh
   - Asset Name: fabric_g.002
     Asset Handle: 3496923124
     Asset Type: AssetType::Material_Standard
   - Asset Name: column_c.002
     Asset Handle: 3517633755
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.011
-    Asset Handle: 3555544920
-    Asset Type: AssetType::Mesh
   - Asset Name: sponza.010
     Asset Handle: 3572322539
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.013
-    Asset Handle: 3589100158
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.008
-    Asset Handle: 3605730682
     Asset Type: AssetType::Mesh
   - Asset Name: sponza.012
     Asset Handle: 3605877777
     Asset Type: AssetType::Mesh
-  - Asset Name: sponza.009
-    Asset Handle: 3622508301
-    Asset Type: AssetType::Mesh
   - Asset Name: sponza.015
     Asset Handle: 3622655396
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.017
-    Asset Handle: 3656210634
     Asset Type: AssetType::Mesh
   - Asset Name: sponza.087
     Asset Handle: 3657343467
@@ -392,32 +122,11 @@ Composite Assets:
   - Asset Name: sponza.016
     Asset Handle: 3672988253
     Asset Type: AssetType::Mesh
-  - Asset Name: sponza.084
-    Asset Handle: 3674121086
-    Asset Type: AssetType::Mesh
   - Asset Name: sponza.085
     Asset Handle: 3690898705
     Asset Type: AssetType::Mesh
-  - Asset Name: sponza.083
-    Asset Handle: 3724453943
-    Asset Type: AssetType::Mesh
   - Asset Name: sponza.080
     Asset Handle: 3741231562
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.325
-    Asset Handle: 3751683462
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.081
-    Asset Handle: 3758009181
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.324
-    Asset Handle: 3768461081
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.323
-    Asset Handle: 3785238700
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.322
-    Asset Handle: 3802016319
     Asset Type: AssetType::Mesh
   - Asset Name: sponza.318
     Asset Handle: 3802163414
@@ -434,84 +143,21 @@ Composite Assets:
   - Asset Name: Material__47.002
     Asset Handle: 3883580105
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.309
-    Asset Handle: 3886198604
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.308
-    Asset Handle: 3902976223
-    Asset Type: AssetType::Mesh
   - Asset Name: Material__57.002
     Asset Handle: 3934005460
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.310
-    Asset Handle: 3936384366
-    Asset Type: AssetType::Mesh
   - Asset Name: sponza.311
     Asset Handle: 3953161985
     Asset Type: AssetType::Mesh
-  - Asset Name: sponza.305
-    Asset Handle: 3953309080
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.304
-    Asset Handle: 3970086699
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.307
-    Asset Handle: 3986864318
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.306
-    Asset Handle: 4003641937
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.301
-    Asset Handle: 4020419556
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.300
-    Asset Handle: 4037197175
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.303
-    Asset Handle: 4053974794
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.216
-    Asset Handle: 4061028195
+  - Asset Name: $MergedNode_0
+    Asset Handle: 4033590626
     Asset Type: AssetType::Mesh
   - Asset Name: column_a.002
     Asset Handle: 4063304961
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.302
-    Asset Handle: 4070752413
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.249
-    Asset Handle: 4076967171
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.214
-    Asset Handle: 4094583433
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.212
-    Asset Handle: 4128138671
-    Asset Type: AssetType::Mesh
   - Asset Name: arch.002
     Asset Handle: 4144490975
     Asset Type: AssetType::Material_Standard
   - Asset Name: details.002
     Asset Handle: 4147577939
     Asset Type: AssetType::Material_Standard
-  - Asset Name: sponza.258
-    Asset Handle: 4161002361
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.210
-    Asset Handle: 4161693909
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.238
-    Asset Handle: 4229098575
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.243
-    Asset Handle: 4244743361
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.223
-    Asset Handle: 4245729099
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.245
-    Asset Handle: 4278298599
-    Asset Type: AssetType::Mesh
-  - Asset Name: sponza.221
-    Asset Handle: 4279284337
-    Asset Type: AssetType::Mesh

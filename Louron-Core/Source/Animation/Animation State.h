@@ -25,7 +25,7 @@ namespace Louron::Animation
         virtual void Update(float ts, const std::unordered_map<StringHash, AnimationParameter> state_params) = 0;
         virtual void CleanState() = 0;
         virtual std::unique_ptr<AnimationState> Clone() const = 0;
-        virtual void EvaluatePose(Louron::AnimationPose& evaluated_pose) = 0;
+        virtual void EvaluatePose(Louron::AnimationPose& evaluated_pose, bool additive = false) = 0;
 
         virtual void Serialise(YAML::Emitter& out) = 0;
         virtual void Deserialise(const YAML::Node& data) = 0;
@@ -55,17 +55,19 @@ namespace Louron::Animation
         void CleanState() override;
         std::unique_ptr<AnimationState> Clone() const override { return std::make_unique<AnimationState_Clip>(*this); }
 
-        void EvaluatePose(Louron::AnimationPose& evaluated_pose) override;
+        void EvaluatePose(Louron::AnimationPose& evaluated_pose, bool additive = false) override;
         
         void Serialise(YAML::Emitter& out) override;
         void Deserialise(const YAML::Node& data) override;
 
         AssetHandle AnimClipHandle = NULL_UUID;
+        AssetHandle ReferenceClipHandle = NULL_UUID;    // When Layer is Additive - this is the animation clip that will be used as a reference. If this is not set, it will use frame 0 of the AnimClipHandle as the reference.
+        uint32_t ReferencePoseFrame = 0;                // When Layer is Additive - this is the frame of the reference clip handle to use as the reference pose when solving delta
+        
+        float PlaybackSpeed = 1.0f;
 
         bool IsPlaying = false;
         bool IsLooping = false;
-        
-        float PlaybackSpeed = 1.0f;
     };
     
     struct AnimationState_BlendTree : public AnimationState
@@ -85,7 +87,7 @@ namespace Louron::Animation
         void CleanState() override;
         std::unique_ptr<AnimationState> Clone() const override { return std::make_unique<AnimationState_BlendTree>(*this); }
 
-        void EvaluatePose(Louron::AnimationPose& evaluated_pose) override;
+        void EvaluatePose(Louron::AnimationPose& evaluated_pose, bool additive = false) override;
         
         void Serialise(YAML::Emitter& out) override;
         void Deserialise(const YAML::Node& data) override;

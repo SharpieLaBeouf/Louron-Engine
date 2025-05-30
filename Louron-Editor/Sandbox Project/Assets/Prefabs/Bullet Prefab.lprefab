@@ -11,9 +11,11 @@ PrefabEntities:
       Script_1:
         Active: true
         Script Name: BulletScript
+        Fields:
+          []
     TransformComponent:
       Translation: [0, 0, 0]
-      Rotation: [0, -0, 0]
+      Rotation: [1, 0, 0, 0]
       Scale: [0.1, 0.1, 0.1]
     MeshFilterComponent:
       MeshAssetHandle: 2834195060

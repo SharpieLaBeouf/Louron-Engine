@@ -393,6 +393,39 @@ namespace Louron {
 
 	void PhysicsSystem::UpdateSimulationChanges(std::shared_ptr<Scene> scene) {
 
+		// We do this next part because if nothing ever queries these transforms, they
+		// will always stay static! A box collider with no rigidbody will never
+		// update its global transform. If it doesn't have any meshes etc., it's
+		// global transform probs won't be updated at all. We may move a parent
+		// entity with a child that is an empty entitiy except for a collider.
+		// The parent may be moving, but the parent doesn't update the childs
+		// transform directly. The child transform is only updated when its
+		// transform is queried!
+
+		auto bc_view = scene->GetAllEntitiesWith<BoxColliderComponent>();
+		for (const auto& entity_handle : bc_view)
+		{
+			Entity entity = { entity_handle, scene.get() };
+			if (!entity)
+				continue;
+
+			auto& transform = entity.GetTransform();
+			if (transform.CheckFlag(TransformFlag_GlobalTransformUpdated))
+				transform.GetGlobalTransform(); // Force Update Global Transform
+		}
+
+		auto sc_view = scene->GetAllEntitiesWith<SphereColliderComponent>();
+		for (const auto& entity_handle : bc_view)
+		{
+			Entity entity = { entity_handle, scene.get() };
+			if (!entity)
+				continue;
+
+			auto& transform = entity.GetTransform();
+			if (transform.CheckFlag(TransformFlag_GlobalTransformUpdated))
+				transform.GetGlobalTransform(); // Force Update Global Transform
+		}
+
 		// 1. Update Rigidbodies
 		// When we have hierarchy relationships of objects that have physics components,
 		// the ordering of updating the GlobalPosition and GlobalRotation MATTERS! We 
@@ -431,11 +464,9 @@ namespace Louron {
 					if (!rigidbody.GetActor()->CheckFlag(RigidbodyFlag_TransformUpdated)) // Only update if we haven't manually updated
 					{
 						PxTransform physics_transform = rigidbody.GetActor()->GetGlobalPose();
-						glm::quat quaternion(physics_transform.q.w, physics_transform.q.x, physics_transform.q.y, physics_transform.q.z);
-						glm::vec3 rotation = glm::degrees(glm::eulerAngles(quaternion));
 
 						transform.SetGlobalPosition(glm::vec3(physics_transform.p.x, physics_transform.p.y, physics_transform.p.z));
-						transform.SetGlobalRotation(rotation);
+						transform.SetGlobalRotation(glm::quat(physics_transform.q.w, physics_transform.q.x, physics_transform.q.y, physics_transform.q.z));
 					}
 				}
 			}

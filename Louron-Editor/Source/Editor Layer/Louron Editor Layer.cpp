@@ -978,6 +978,11 @@ void LouronEditorLayer::OnSceneStop()
 	}
 }
 
+void LouronEditorLayer::ToggleScenePause()
+{
+	Project::GetActiveScene()->SetPaused(!Project::GetActiveScene()->IsPaused());
+}
+
 void LouronEditorLayer::DisplaySceneViewportWindow() {
 
 	// Check if the window is open
@@ -1062,7 +1067,8 @@ void LouronEditorLayer::DisplaySceneViewportWindow() {
 					ImGuizmo::Enable(false);
 				}
 
-				glm::vec3 position, rotation, scale;
+				glm::vec3 position, scale;
+				glm::quat rotation;
 
 				position = TransformComponent::GetPositionFromMatrix(transform);
 				rotation = TransformComponent::GetRotationFromMatrix(transform);
@@ -1090,7 +1096,7 @@ void LouronEditorLayer::DisplaySceneViewportWindow() {
 			const float btn_size = 30.0f, spacing = 8.0f, margin = 5.0f;
 			ImVec2 padding = ImGui::GetStyle().FramePadding;
 			ImVec2 total_btn = ImVec2(btn_size + padding.x * 2, btn_size + padding.y * 2);
-			int btn_count = (m_SceneState == SceneState::Edit) ? 2 : 1;
+			int btn_count = 2;
 
 			ImVec2 overlay_size = ImVec2(
 				btn_count * total_btn.x + (btn_count - 1) * spacing + margin * 2,
@@ -1117,10 +1123,28 @@ void LouronEditorLayer::DisplaySceneViewportWindow() {
 					scene_image_hovered = ImGui::IsItemHovered();
 					ImGui::SameLine(0, spacing);
 					if (ImGui::ImageButton("##Sim", (ImTextureID)(uintptr_t)m_IconSimulate->GetID(), ImVec2(btn_size, btn_size))) OnSceneSimulate();
+					scene_image_hovered = ImGui::IsItemHovered();
 				}
 				else
 				{
+					bool is_paused = Project::GetActiveScene()->IsPaused();
+
+					if (is_paused)
+					{
+						ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
+						ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
+						ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
+					}
+
+					if (ImGui::ImageButton("##Pause", (ImTextureID)(uintptr_t)m_IconPause->GetID(), ImVec2(btn_size, btn_size))) ToggleScenePause();
+					
+					scene_image_hovered = ImGui::IsItemHovered();
+					ImGui::SameLine(0, spacing);
+
+					if (is_paused) ImGui::PopStyleColor(3);
+					
 					if (ImGui::ImageButton("##Stop", (ImTextureID)(uintptr_t)m_IconStop->GetID(), ImVec2(btn_size, btn_size))) OnSceneStop();
+
 					scene_image_hovered = ImGui::IsItemHovered();
 				}
 			}

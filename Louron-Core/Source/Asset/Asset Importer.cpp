@@ -325,6 +325,7 @@ namespace Louron {
 			aiProcess_LimitBoneWeights |
 			aiProcess_PopulateArmatureData |
 
+			aiProcess_FindInstances |
 			aiProcess_FindDegenerates |
 			aiProcess_FindInvalidData |
 			0
@@ -1139,6 +1140,7 @@ namespace Louron {
 
 					Keyframe_Rotation data{};
 					data.Rotation = glm::quat(ai_quaternion.w, ai_quaternion.x, ai_quaternion.y, ai_quaternion.z);
+					data.Rotation = glm::normalize(data.Rotation);
 					data.Time = time_stamp;
 					bone_key_frame.RotationKeyframes.push_back(data);
 				}

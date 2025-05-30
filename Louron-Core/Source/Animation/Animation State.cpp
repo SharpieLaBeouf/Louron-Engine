@@ -50,26 +50,61 @@ namespace Louron::Animation
         NormalisedStateTime = 0.0f;
     }
 
-    void AnimationState_Clip::EvaluatePose(Louron::AnimationPose& evaluated_pose)
+    void AnimationState_Clip::EvaluatePose(Louron::AnimationPose& evaluated_pose, bool additive)
     {
-		auto clip = AssetManager::GetAsset<AnimationClip>(AnimClipHandle);
-		if (!clip)
+		auto animation_clip = AssetManager::GetAsset<AnimationClip>(AnimClipHandle);
+		if (!animation_clip)
 			return;
 
-        clip->SamplePose(NormalisedStateTime * clip->GetDuration(), evaluated_pose);
+        AnimationPose current_pose;
+        animation_clip->SamplePose(NormalisedStateTime * animation_clip->GetDuration(), current_pose);
+
+        if (additive)
+        {
+            // TODO: CACHE THIS REFERENCE POSE INTO AnimationState_Clip
+            AnimationPose reference_pose;
+
+            auto ref_animation_clip = AssetManager::GetAsset<AnimationClip>(ReferenceClipHandle);
+            if (!ref_animation_clip)
+            {
+                // Additive against current clip if no reference clip provided
+                animation_clip->SamplePose(glm::clamp<float>(ReferencePoseFrame, 0.0f, animation_clip->GetDuration()), reference_pose);
+                evaluated_pose = AnimationPose::ComputeDelta(current_pose, reference_pose);
+            }
+            else
+            {
+                // Additive against reference clip
+                ref_animation_clip->SamplePose(glm::clamp<float>(ReferencePoseFrame, 0.0f, ref_animation_clip->GetDuration()), reference_pose);
+                evaluated_pose = AnimationPose::ComputeDelta(current_pose, reference_pose);
+            }
+        }
+        else
+        {
+            evaluated_pose = std::move(current_pose);
+        }
     }
 
     void AnimationState_Clip::Serialise(YAML::Emitter& out)
     {
-        out << YAML::Key << "Asset Handle"   << YAML::Value << AnimClipHandle;
-        out << YAML::Key << "Should Loop"    << YAML::Value << IsLooping;
-        out << YAML::Key << "Playback Speed" << YAML::Value << PlaybackSpeed;
+        out << YAML::Key << "Asset Handle"          << YAML::Value << AnimClipHandle;
+
+        out << YAML::Key << "Reference Handle"      << YAML::Value << ReferenceClipHandle;
+        out << YAML::Key << "Reference Pose Frame"  << YAML::Value << ReferencePoseFrame;
+
+        out << YAML::Key << "Should Loop"           << YAML::Value << IsLooping;
+        out << YAML::Key << "Playback Speed"        << YAML::Value << PlaybackSpeed;
     }
     
     void AnimationState_Clip::Deserialise(const YAML::Node& data)
     {
         if(data["Asset Handle"])
             AnimClipHandle = data["Asset Handle"].as<uint32_t>();
+
+        if(data["Reference Handle"])
+            ReferenceClipHandle = data["Reference Handle"].as<uint32_t>();
+
+        if(data["Reference Pose Frame"])
+            ReferencePoseFrame = data["Reference Pose Frame"].as<uint32_t>();
 
         if(data["Should Loop"])
             IsLooping = data["Should Loop"].as<bool>();
@@ -112,9 +147,9 @@ namespace Louron::Animation
         NormalisedStateTime = 0.0f;
     }
 
-    void AnimationState_BlendTree::EvaluatePose(Louron::AnimationPose& evaluated_pose)
+    void AnimationState_BlendTree::EvaluatePose(Louron::AnimationPose& evaluated_pose, bool additive)
     {
-        AnimBlendTree.EvaluatePose(evaluated_pose, NormalisedStateTime);
+        AnimBlendTree.EvaluatePose(evaluated_pose, NormalisedStateTime, additive);
     }
 
     void AnimationState_BlendTree::Serialise(YAML::Emitter& out)

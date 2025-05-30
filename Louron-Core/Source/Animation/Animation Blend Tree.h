@@ -32,7 +32,7 @@ namespace Louron::Animation
         // Functional
         virtual MotionType GetType() = 0;
         virtual void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) = 0;
-        virtual void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time) = 0;
+        virtual void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time, bool additive = false) = 0;
         
         virtual void Serialise(YAML::Emitter& out) = 0;
         virtual void Deserialise(const YAML::Node& data) = 0;
@@ -69,12 +69,13 @@ namespace Louron::Animation
         void Update(float ts, float& normalised_time, const std::unordered_map<StringHash, AnimationParameter>& state_params);
         void CleanBlendNode();
 
-        void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time);
+        void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time, bool additive = false);
         
         void Serialise(YAML::Emitter& out);
         void Deserialise(const YAML::Node& data);
 
         MotionBase* AddMotion(MotionType type);
+
         // Data
         TreeType BlendType = TreeType::OneDimensional;
         std::vector<std::unique_ptr<MotionBase>> ChildNode;
@@ -105,13 +106,16 @@ namespace Louron::Animation
         MotionType GetType() override { return MotionType::Clip; }
         void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) override { /*Do Nothing - timer driven by parent blend tree normalised time*/}
 
-        void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time) override;
+        void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time, bool additive = false) override;
 
         void Serialise(YAML::Emitter& out) override;
         void Deserialise(const YAML::Node& data) override;
 
         // Data
         AssetHandle AnimClipHandle = NULL_UUID;
+        
+        AssetHandle ReferenceClipHandle = NULL_UUID;    // When Layer is Additive - this is the animation clip that will be used as a reference. If this is not set, it will use frame 0 of the AnimClipHandle as the reference.
+        uint32_t ReferencePoseFrame = 0;                // When Layer is Additive - this is the frame of the reference clip handle to use as the reference pose when solving delta.
         
         float PlaybackSpeed = 1.0f;
     };
@@ -132,7 +136,7 @@ namespace Louron::Animation
         MotionType GetType() override { return MotionType::BlendTree; }
         void Update(float ts, const std::unordered_map<StringHash, AnimationParameter>& state_params) override { RootNode.Update(ts, NormalisedMotionTime, state_params); }
 
-        void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time) override { RootNode.EvaluatePose(evaluated_pose, normalised_time); }
+        void EvaluatePose(Louron::AnimationPose& evaluated_pose, float normalised_time, bool additive = false) override { RootNode.EvaluatePose(evaluated_pose, normalised_time, additive); }
 
         void Serialise(YAML::Emitter& out) override;
         void Deserialise(const YAML::Node& data) override;
