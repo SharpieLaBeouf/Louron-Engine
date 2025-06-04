@@ -421,7 +421,7 @@ namespace Louron::Animation
 					continue;
 				
 				motion->Magnitude = glm::length(motion->BlendPosition);
-				motion->Angle = std::atan2f(motion->BlendPosition.y, motion->BlendPosition.x);
+				motion->Angle = std::atan2(motion->BlendPosition.y, motion->BlendPosition.x);
 			}
 		}
 	}

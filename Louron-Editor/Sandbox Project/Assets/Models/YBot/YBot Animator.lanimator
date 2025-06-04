@@ -3,12 +3,12 @@ Animation Parameters:
     Hash: 3414385514
     Type: Float
     Value: 0
-  - Name: IsJumping
-    Hash: 3340040579
-    Type: Bool
-    Value: 0
   - Name: IsDead
     Hash: 2309383031
+    Type: Bool
+    Value: 0
+  - Name: IsJumping
+    Hash: 3340040579
     Type: Bool
     Value: 0
   - Name: Velocity Z

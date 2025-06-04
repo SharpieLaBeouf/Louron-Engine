@@ -29,15 +29,18 @@ private:
     
     struct TransitionLinks
     {
+        TransitionLinks() : source_node(-1), dest_node(-1), source_pin(-1), dest_pin(-1), link_id(0), valid(false) {}
+        TransitionLinks(ed::NodeId source_n, ed::NodeId dest_n, ed::PinId source_p, ed::PinId dest_p, ImGuiID _link_id, bool _valid) : source_node(source_n), dest_node(dest_n), source_pin(source_p), dest_pin(dest_p), link_id(_link_id), valid(_valid) {}
+
         ed::NodeId source_node;
         ed::NodeId dest_node;
 
         ed::PinId source_pin;
         ed::PinId dest_pin;
 
-        ImGuiID link_id = 0; // Stable ID
+        ImGuiID link_id; // Stable ID
 
-        bool valid = false;
+        bool valid;
 
         bool IsValid() const { return valid; }
     };
