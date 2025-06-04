@@ -35,6 +35,9 @@ namespace Louron {
 
 			case AssetType::Shader:					type_string = "AssetType::Shader";				 	break;
 			case AssetType::Compute_Shader:			type_string = "AssetType::Compute_Shader";		 	break;
+
+			case AssetType::Humanoid:				type_string = "AssetType::Humanoid";		 		break;
+			case AssetType::HumanoidMask:			type_string = "AssetType::HumanoidMask";		 	break;
 		}
 		return type_string;
 	}
@@ -63,6 +66,9 @@ namespace Louron {
 
 		if (assetType == "AssetType::Shader")					return AssetType::Shader;
 		if (assetType == "AssetType::Compute_Shader")			return AssetType::Compute_Shader;
+
+		if (assetType == "AssetType::Humanoid")					return AssetType::Humanoid;
+		if (assetType == "AssetType::HumanoidMask")				return AssetType::HumanoidMask;
 
 		return AssetType::Unknown;
 	}

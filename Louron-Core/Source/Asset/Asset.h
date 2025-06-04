@@ -39,12 +39,15 @@ namespace Louron {
 		Material_Skybox,
 
 		Compute_Shader,
-		Shader
+		Shader,
+		
+		Humanoid,
+		HumanoidMask
 
 	};
 
-	namespace AssetUtils {
-
+	namespace AssetUtils
+	{
 		std::string AssetTypeToString(AssetType type);
 		AssetType AssetTypeFromString(const std::string& assetType);
 	}

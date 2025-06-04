@@ -19,6 +19,10 @@ public:
     [[ExposedInEditor]] Entity shoot_entity;
     [[ExposedInEditor]] Prefab bullet_prefab;
 
+    [[ExposedInEditor]] AnimatorMachine animator_machine;
+    [[ExposedInEditor]] Humanoid humanoid;
+    [[ExposedInEditor]] HumanoidMask humanoid_mask;
+
     Animation::StringHash vel_x_hash = Utils::fnv1a_hash("Velocity X");
     Animation::StringHash vel_z_hash = Utils::fnv1a_hash("Velocity Z"); 
     Animation::StringHash jump_hash = Utils::fnv1a_hash("IsJumping"); 

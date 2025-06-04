@@ -35,6 +35,9 @@ namespace Louron
 	class Skeleton;
 	class AnimationClip;
 
+	class Humanoid;
+	class HumanoidMask;
+
 	namespace Animation
 	{
 		class StateMachine;
@@ -176,6 +179,12 @@ namespace Louron
 			}
 			else if constexpr (std::is_same_v<TAssetType, Animation::StateMachine>) {
 				expectedType = AssetType::AnimationStateMachine;
+			}
+			else if constexpr (std::is_same_v<TAssetType, Humanoid>) {
+				expectedType = AssetType::Humanoid;
+			}
+			else if constexpr (std::is_same_v<TAssetType, HumanoidMask>) {
+				expectedType = AssetType::HumanoidMask;
 			}
 			else if constexpr (std::is_same_v<TAssetType, SkyboxMaterial>) {
 				expectedType = AssetType::Material_Skybox; // Check this first so we can return Material_Skybox opposed to Material_Standard

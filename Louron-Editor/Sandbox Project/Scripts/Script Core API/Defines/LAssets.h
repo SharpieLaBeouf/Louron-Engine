@@ -38,6 +38,7 @@ namespace Louron
 
 				Skeleton,
 				AnimationClip,
+				AnimationStateMachine,
 
 				Audio,
 
@@ -45,7 +46,10 @@ namespace Louron
 				Material_Skybox,
 
 				Compute_Shader,
-				Shader
+				Shader,
+		
+				Humanoid,
+				HumanoidMask,
 
 			};
 
@@ -213,6 +217,33 @@ namespace Louron
 		public:
 
 			AssetType GetAssetType() const override { return AssetType::AnimationClip; }
+
+		};
+
+		class AnimatorMachine : public Asset
+		{
+
+		public:
+
+			AssetType GetAssetType() const override { return AssetType::AnimationStateMachine; }
+
+		};
+
+		class Humanoid : public Asset
+		{
+
+		public:
+
+			AssetType GetAssetType() const override { return AssetType::Humanoid; }
+
+		};
+
+		class HumanoidMask : public Asset
+		{
+
+		public:
+
+			AssetType GetAssetType() const override { return AssetType::HumanoidMask; }
 
 		};
 

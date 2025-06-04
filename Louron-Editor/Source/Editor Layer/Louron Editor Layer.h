@@ -56,12 +56,16 @@ private:
 	};
 	SceneState m_SceneState = SceneState::Edit;
 
-	PropertiesPanel m_PropertiesPanel;
 	HierarchyPanel m_HierarchyPanel;
+	PropertiesPanel m_PropertiesPanel;
 	ContentBrowserPanel m_ContentBrowserPanel;
 
 	int m_GizmoType = -1;
 	bool m_WindowWasUnfocused = false;
+
+	Louron::AssetHandle m_MaterialContext = NULL_UUID;
+	Louron::AssetHandle m_HumanoidContext = NULL_UUID;
+	Louron::AssetHandle m_HumanoidMaskContext = NULL_UUID;
 
 private:
 
@@ -87,8 +91,6 @@ private:
 	efsw::FileWatcher* m_ScriptFileWatcher = new efsw::FileWatcher();
 	ScriptFileListener* m_ScriptFileListener = new ScriptFileListener();
 
-	Louron::AssetHandle m_MaterialContext = NULL_UUID;
-
 	void CheckInput();
 
 	void NewScene();
@@ -109,6 +111,8 @@ private:
 	void DisplayAssetRegistryWindow();
 
 	void DisplayAnimatorStateMachineWindow();
+
+	void DisplayHumanoidConfigurationWindow();
 
 	void DisplayProjectProperties();
 	void DisplaySceneProperties();

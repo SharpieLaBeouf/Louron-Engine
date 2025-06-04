@@ -56,6 +56,9 @@ SCRIPT_API void LoadScripts() {
         fields.push_back({ "animator", offsetof(AnimatorController, animator), FieldType::AnimatorComponent });
         fields.push_back({ "shoot_entity", offsetof(AnimatorController, shoot_entity), FieldType::Entity });
         fields.push_back({ "bullet_prefab", offsetof(AnimatorController, bullet_prefab), FieldType::Prefab });
+        fields.push_back({ "animator_machine", offsetof(AnimatorController, animator_machine), FieldType::StateMachine });
+        fields.push_back({ "humanoid", offsetof(AnimatorController, humanoid), FieldType::Humanoid });
+        fields.push_back({ "humanoid_mask", offsetof(AnimatorController, humanoid_mask), FieldType::HumanoidMask });
         RegisterScript("AnimatorController", std::move(fields), &Create_AnimatorController, &Release_AnimatorController);
     }
     {

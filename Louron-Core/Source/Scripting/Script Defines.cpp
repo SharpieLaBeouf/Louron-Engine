@@ -126,6 +126,11 @@ namespace Louron
                 case ScriptFieldType::Skeleton: return "Skeleton";
                 case ScriptFieldType::AnimationClip: return "AnimationClip";
 
+                case ScriptFieldType::StateMachine: return "StateMachine";
+
+                case ScriptFieldType::Humanoid: return "Humanoid";
+                case ScriptFieldType::HumanoidMask: return "HumanoidMask";
+
                 case ScriptFieldType::Unknown: return "Unknown";
                 default: return "Unknown";
             }
@@ -202,6 +207,10 @@ namespace Louron
             MATCH_TYPE("AudioClip", AudioClip);
             MATCH_TYPE("Skeleton", Skeleton);
             MATCH_TYPE("AnimationClip", AnimationClip);
+
+            MATCH_TYPE("StateMachine", StateMachine);
+            MATCH_TYPE("Humanoid", Humanoid);
+            MATCH_TYPE("HumanoidMask", HumanoidMask);
 
             #undef MATCH_TYPE
 
@@ -280,6 +289,9 @@ namespace Louron
                 case ScriptFieldType::AudioClip:
                 case ScriptFieldType::Skeleton:
                 case ScriptFieldType::AnimationClip:
+                case ScriptFieldType::StateMachine:
+                case ScriptFieldType::Humanoid:
+                case ScriptFieldType::HumanoidMask:
                     return sizeof(uint32_t);
 
                 default: return 0;

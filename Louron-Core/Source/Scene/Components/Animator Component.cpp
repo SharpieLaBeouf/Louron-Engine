@@ -7,6 +7,8 @@
 #include "../../Core/Time.h"
 #include "../../Asset/Asset Manager API.h"
 #include "../../Animation/Animations.h"
+#include "../../Animation/Skeleton.h"
+#include "../../Animation/Humanoid.h"
 
 // C++ Standard Library Headers
 

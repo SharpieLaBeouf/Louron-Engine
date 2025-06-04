@@ -6,6 +6,8 @@
 #include "Animation/Animation State.h"
 #include "Animation/Animation Transition.h"
 #include "Animation/Animations.h"
+#include "Animation/Skeleton.h"
+#include "Animation/Humanoid.h"
 
 #include "Asset/Asset.h"
 #include "Asset/Asset Importer.h"

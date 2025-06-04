@@ -1,0 +1,106 @@
+Skeleton Handle: 3795262308
+Humanoid Bone Map:
+  - BoneType: Hips
+    BoneName: DEF-spine
+  - BoneType: LeftShoulder
+    BoneName: DEF-shoulder.L
+  - BoneType: Spine
+    BoneName: DEF-spine.001
+  - BoneType: LeftUpperArm
+    BoneName: DEF-upper_arm.L
+  - BoneType: LowerChest
+    BoneName: DEF-spine.002
+  - BoneType: UpperChest
+    BoneName: DEF-spine.003
+  - BoneType: Neck
+    BoneName: DEF-spine.004
+  - BoneType: Head
+    BoneName: DEF-spine.006
+  - BoneType: LeftLowerArm
+    BoneName: DEF-forearm.L
+  - BoneType: LeftHand
+    BoneName: DEF-hand.L
+  - BoneType: LeftThumb_Upper
+    BoneName: DEF-thumb.01.L
+  - BoneType: LeftThumb_Middle
+    BoneName: DEF-thumb.02.L
+  - BoneType: LeftThumb_End
+    BoneName: DEF-thumb.03.L
+  - BoneType: LeftIndex_Upper
+    BoneName: DEF-f_index.01.L
+  - BoneType: LeftIndex_Middle
+    BoneName: DEF-f_index.02.L
+  - BoneType: LeftIndex_End
+    BoneName: DEF-f_index.03.L
+  - BoneType: LeftMiddle_Upper
+    BoneName: DEF-f_middle.01.L
+  - BoneType: LeftMiddle_Middle
+    BoneName: DEF-f_middle.02.L
+  - BoneType: LeftMiddle_End
+    BoneName: DEF-f_middle.03.L
+  - BoneType: LeftRing_Upper
+    BoneName: DEF-f_ring.01.L
+  - BoneType: LeftRing_Middle
+    BoneName: DEF-f_ring.02.L
+  - BoneType: LeftRing_End
+    BoneName: DEF-f_ring.03.L
+  - BoneType: LeftPinky_Upper
+    BoneName: DEF-f_pinky.01.L
+  - BoneType: LeftPinky_Middle
+    BoneName: DEF-f_pinky.02.L
+  - BoneType: LeftPinky_End
+    BoneName: DEF-f_pinky.03.L
+  - BoneType: RightShoulder
+    BoneName: DEF-shoulder.R
+  - BoneType: RightLowerArm
+    BoneName: DEF-forearm.R
+  - BoneType: RightUpperArm
+    BoneName: DEF-upper_arm.R
+  - BoneType: RightHand
+    BoneName: DEF-hand.R
+  - BoneType: RightThumb_Upper
+    BoneName: DEF-thumb.01.R
+  - BoneType: RightThumb_Middle
+    BoneName: DEF-thumb.02.R
+  - BoneType: RightThumb_End
+    BoneName: DEF-thumb.03.R
+  - BoneType: RightIndex_Upper
+    BoneName: DEF-f_index.01.R
+  - BoneType: RightIndex_Middle
+    BoneName: DEF-f_index.02.R
+  - BoneType: RightIndex_End
+    BoneName: DEF-f_index.03.R
+  - BoneType: RightMiddle_Upper
+    BoneName: DEF-f_middle.01.R
+  - BoneType: RightMiddle_Middle
+    BoneName: DEF-f_middle.02.R
+  - BoneType: RightMiddle_End
+    BoneName: DEF-f_middle.03.R
+  - BoneType: RightRing_Upper
+    BoneName: DEF-f_ring.01.R
+  - BoneType: RightRing_Middle
+    BoneName: DEF-f_ring.02.R
+  - BoneType: RightRing_End
+    BoneName: DEF-f_ring.03.R
+  - BoneType: RightPinky_Upper
+    BoneName: DEF-f_pinky.01.R
+  - BoneType: RightPinky_Middle
+    BoneName: DEF-f_pinky.02.R
+  - BoneType: RightPinky_End
+    BoneName: DEF-f_pinky.03.R
+  - BoneType: LeftUpperLeg
+    BoneName: DEF-thigh.L
+  - BoneType: LeftLowerLeg
+    BoneName: DEF-shin.L
+  - BoneType: LeftFoot
+    BoneName: DEF-foot.L
+  - BoneType: LeftToe
+    BoneName: DEF-toe.L
+  - BoneType: RightUpperLeg
+    BoneName: DEF-thigh.R
+  - BoneType: RightLowerLeg
+    BoneName: DEF-shin.R
+  - BoneType: RightFoot
+    BoneName: DEF-foot.R
+  - BoneType: RightToe
+    BoneName: DEF-toe.R

@@ -2766,6 +2766,28 @@ void PropertiesPanel::OnImGuiRender(const std::shared_ptr<Scene>& scene_ref, Ent
 	DisplayEntitySelectionModal(selected_entity);
 }
 
+static bool ScriptMatchAssetType(ScriptFieldType field_type, AssetType asset_type)
+{
+	switch (field_type)
+	{
+		case ScriptFieldType::Prefab:           return asset_type == AssetType::Prefab;
+		case ScriptFieldType::Shader:           return asset_type == AssetType::Shader;
+		case ScriptFieldType::ComputeShader:    return asset_type == AssetType::Compute_Shader;
+		case ScriptFieldType::Material:         return asset_type == AssetType::Material_Standard;
+		case ScriptFieldType::Texture2D:        return asset_type == AssetType::Texture2D;
+		case ScriptFieldType::TextureCubeMap:   return asset_type == AssetType::TextureCubeMap;
+		case ScriptFieldType::StaticMesh:       return asset_type == AssetType::Mesh;
+		case ScriptFieldType::AudioClip:        return asset_type == AssetType::Audio;
+		case ScriptFieldType::Skeleton:         return asset_type == AssetType::Skeleton;
+		case ScriptFieldType::AnimationClip:    return asset_type == AssetType::AnimationClip;
+		case ScriptFieldType::StateMachine:     return asset_type == AssetType::AnimationStateMachine;
+		case ScriptFieldType::Humanoid:         return asset_type == AssetType::Humanoid;
+		case ScriptFieldType::HumanoidMask:     return asset_type == AssetType::HumanoidMask;
+		default: break;
+	}
+	return false;
+}
+
 static bool modal_box_open = false;
 static ScriptFieldType modal_box_field_type = ScriptFieldType::Unknown;
 static std::string modal_box_script_name = "";
@@ -3444,6 +3466,9 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					case ScriptFieldType::AudioClip:
 					case ScriptFieldType::Skeleton:
 					case ScriptFieldType::AnimationClip:
+					case ScriptFieldType::StateMachine:
+					case ScriptFieldType::Humanoid:
+					case ScriptFieldType::HumanoidMask:
 					{
 						ImGui::Text(field.name);
 						ImGui::NextColumn();
@@ -3470,35 +3495,20 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 						{
 							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE")) 
 							{
-								// Convert the payload data (string) back into a filesystem path
 								std::string dropped_path_str(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-								std::filesystem::path dropped_path = dropped_path_str; // Convert to path
+								std::filesystem::path dropped_path = dropped_path_str;
 
-								if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::Unknown) {
+								AssetType dropped_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension());
 
-									AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_path, Project::GetActiveProject()->GetAssetDirectory());
-
-									switch (asset_type) 
-									{
-										case AssetType::Prefab:
-										case AssetType::Shader:
-										case AssetType::Compute_Shader:
-										case AssetType::Material_Standard:
-										case AssetType::Texture2D:
-										case AssetType::TextureCubeMap:
-										case AssetType::Mesh:
-										case AssetType::ModelImport:
-										case AssetType::Audio:
-										case AssetType::Skeleton:
-										case AssetType::AnimationClip: instance->SetFieldValue(field.name, dropped_asset_handle);						break;
-
-										default:  L_APP_WARN("Cannot Set Asset Type {} to Script Prefab Field.", dropped_path.extension().string());	break;
-									}
+								if (ScriptMatchAssetType(field.type, dropped_type))
+								{
+									AssetHandle dropped_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_path, Project::GetActiveProject()->GetAssetDirectory());
+									instance->SetFieldValue(field.name, dropped_handle);
 								}
-								else {
-									L_APP_WARN("Cannot Set Prefab {} to Script.", dropped_path.filename().string());
+								else
+								{
+									L_APP_WARN("Dropped asset '{}' is not valid for field '{}'.", dropped_path.filename().string(), field.name);
 								}
-
 							}
 							ImGui::EndDragDropTarget();
 						}
@@ -3557,7 +3567,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					float data = script_field_instance_exists ? script_field->GetValue<float>() : script_field_default_value_exists ? script_default_value_field->GetValue<float>() : 0.0f;
 					if (ImGui::DragFloat(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data, 0.01f, 0.0f, 0.0f, "%.2f")) 
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3571,7 +3581,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					double data = script_field_instance_exists ? script_field->GetValue<double>() : script_field_default_value_exists ? script_default_value_field->GetValue<double>() : 0.00;
 					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, &data, 0.01f, nullptr, nullptr, "%.2f")) 
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3585,7 +3595,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					int8_t data = script_field_instance_exists ? script_field->GetValue<int8_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<int8_t>() : 0;
 					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S8, &data, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3599,7 +3609,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					int16_t data = script_field_instance_exists ? script_field->GetValue<int16_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<int16_t>() : 0;
 					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S16, &data, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3613,7 +3623,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					int32_t data = script_field_instance_exists ? script_field->GetValue<int32_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<int32_t>() : 0;
 					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, &data, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3627,7 +3637,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					int64_t data = script_field_instance_exists ? script_field->GetValue<int64_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<int64_t>() : 0;
 					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S64, &data, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3641,7 +3651,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					uint8_t data = script_field_instance_exists ? script_field->GetValue<uint8_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<uint8_t>() : 0;
 					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U8, &data, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3655,7 +3665,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					uint16_t data = script_field_instance_exists ? script_field->GetValue<uint16_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<uint16_t>() : 0;
 					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U16, &data, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3669,7 +3679,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					uint32_t data = script_field_instance_exists ? script_field->GetValue<uint32_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<uint32_t>() : 0;
 					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, &data, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3683,7 +3693,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					uint64_t data = script_field_instance_exists ? script_field->GetValue<uint64_t>() : script_field_default_value_exists ? script_default_value_field->GetValue<uint64_t>() : 0;
 					if (ImGui::DragScalar(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U64, &data, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3697,7 +3707,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					bool data = script_field_instance_exists ? script_field->GetValue<bool>() : script_field_default_value_exists ? script_default_value_field->GetValue<bool>() : false;
 					if (ImGui::Checkbox(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), &data)) 
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3720,7 +3730,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 
 					if (ImGui::InputText(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), buffer, sizeof(buffer)))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetCStringValue(buffer);
 					}
 
@@ -3735,7 +3745,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					glm::vec2 data = script_field_instance_exists ? script_field->GetValue<glm::vec2>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::vec2>() : glm::vec2(0.0f);
 					if (ImGui::DragFloat2(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data), 0.01f, -FLT_MAX, FLT_MAX, "%.2f")) 
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3756,7 +3766,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					{
 						if (ImGui::ColorEdit3(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data)))
 						{
-							if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+							if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 							script_field->SetValue(data);
 						}
 					}
@@ -3764,7 +3774,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					{
 						if (ImGui::DragFloat3(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data), 0.01f, -FLT_MAX, FLT_MAX, "%.2f"))
 						{
-							if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+							if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 							script_field->SetValue(data);
 						}
 					}
@@ -3787,7 +3797,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					{
 						if (ImGui::ColorEdit4(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data)))
 						{
-							if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+							if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 							script_field->SetValue(data);
 						}
 					}
@@ -3795,7 +3805,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					{
 						if (ImGui::DragFloat4(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), glm::value_ptr(data), 0.01f, -FLT_MAX, FLT_MAX, "%.2f"))
 						{
-							if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+							if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 							script_field->SetValue(data);
 						}
 					}
@@ -3810,7 +3820,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					glm::uvec2 data = script_field_instance_exists ? script_field->GetValue<glm::uvec2>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::uvec2>() : glm::uvec2(0);
 					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, glm::value_ptr(data), 2, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3824,7 +3834,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					glm::uvec3 data = script_field_instance_exists ? script_field->GetValue<glm::uvec3>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::uvec3>() : glm::uvec3(0);
 					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, glm::value_ptr(data), 3, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3838,7 +3848,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					glm::uvec4 data = script_field_instance_exists ? script_field->GetValue<glm::uvec4>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::uvec4>() : glm::uvec4(0);
 					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_U32, glm::value_ptr(data), 4, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3852,7 +3862,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					glm::ivec2 data = script_field_instance_exists ? script_field->GetValue<glm::ivec2>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::ivec2>() : glm::ivec2(0);
 					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, glm::value_ptr(data), 2, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3866,7 +3876,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					glm::ivec3 data = script_field_instance_exists ? script_field->GetValue<glm::ivec3>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::ivec3>() : glm::ivec3(0);
 					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, glm::value_ptr(data), 3, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3880,7 +3890,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					glm::ivec4 data = script_field_instance_exists ? script_field->GetValue<glm::ivec4>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::ivec4>() : glm::ivec4(0);
 					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_S32, glm::value_ptr(data), 4, 1))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3894,7 +3904,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					glm::dvec2 data = script_field_instance_exists ? script_field->GetValue<glm::dvec2>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::dvec2>() : glm::dvec2(0.00);
 					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, glm::value_ptr(data), 2, 0.01f, nullptr, nullptr, "%.2f"))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3908,7 +3918,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					glm::dvec3 data = script_field_instance_exists ? script_field->GetValue<glm::dvec3>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::dvec3>() : glm::dvec3(0.00);
 					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, glm::value_ptr(data), 3, 0.01f, nullptr, nullptr, "%.2f"))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3922,7 +3932,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					glm::dvec4 data = script_field_instance_exists ? script_field->GetValue<glm::dvec4>() : script_field_default_value_exists ? script_default_value_field->GetValue<glm::dvec4>() : glm::dvec4(0.00);
 					if (ImGui::DragScalarN(std::string("##" + std::string{ field.name } + ScriptUtils::FieldTypeToString(field.type)).c_str(), ImGuiDataType_Double, glm::value_ptr(data), 4, 0.01f, nullptr, nullptr, "%.2f"))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 					ImGui::NextColumn();
@@ -3954,7 +3964,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 
 					if (modified)
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 
@@ -3988,7 +3998,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 
 					if (modified)
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 
@@ -4023,7 +4033,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 
 					if (modified)
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 
@@ -4053,7 +4063,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 
 					if (modified)
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 
@@ -4084,7 +4094,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 
 					if (modified)
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						script_field->SetValue(data);
 					}
 
@@ -4145,7 +4155,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 
 					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						modal_box_open = true;
 						modal_box_field_name = field.name;
 						modal_box_field_type = field.type;
@@ -4156,7 +4166,7 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 
 					if (ImGui::Button(std::string("...##" + std::string{ field.name } + std::string(ScriptUtils::FieldTypeToString(field.type))).c_str()))
 					{
-						if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
+						if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
 						modal_box_open = true;
 						modal_box_field_name = field.name;
 						modal_box_field_type = field.type;
@@ -4178,6 +4188,9 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 				case ScriptFieldType::AudioClip:
 				case ScriptFieldType::Skeleton:
 				case ScriptFieldType::AnimationClip:
+				case ScriptFieldType::StateMachine:
+				case ScriptFieldType::Humanoid:
+				case ScriptFieldType::HumanoidMask:
 				{
 					ImGui::Text(field.name);
 					ImGui::NextColumn();
@@ -4203,44 +4216,23 @@ void PropertiesPanel::DisplayScriptFields(const std::string& script_name, Entity
 					{
 						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FILE"))
 						{
-							// Convert the payload data (string) back into a filesystem path
 							std::string dropped_path_str(static_cast<const char*>(payload->Data), payload->DataSize - 1);
-							std::filesystem::path dropped_path = dropped_path_str; // Convert to path
+							std::filesystem::path dropped_path = dropped_path_str;
 
-							if (AssetType asset_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension()); asset_type != AssetType::Unknown) {
+							AssetType dropped_type = AssetManager::GetAssetTypeFromFileExtension(dropped_path.extension());
 
-								AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(dropped_path, Project::GetActiveProject()->GetAssetDirectory());
-
-								switch (asset_type)
-								{
-									case AssetType::Prefab:
-									case AssetType::Shader:
-									case AssetType::Compute_Shader:
-									case AssetType::Material_Standard:
-									case AssetType::Texture2D:
-									case AssetType::TextureCubeMap:
-									case AssetType::Mesh:
-									case AssetType::ModelImport:
-									case AssetType::Audio:
-									case AssetType::Skeleton:
-									case AssetType::AnimationClip:
-									{
-										if (!script_field) script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field;
-										script_field->SetValue(dropped_asset_handle);
-										break;
-									}
-									default:
-									{
-										L_APP_WARN("Cannot Set Asset Type {} to Script Prefab Field.", dropped_path.extension().string());
-										break;
-									}
-								}
-							}
-							else 
+							if (ScriptMatchAssetType(field.type, dropped_type))
 							{
-								L_APP_WARN("Cannot Set Prefab {} to Script.", dropped_path.filename().string());
-							}
+								AssetHandle dropped_asset_handle = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(
+									dropped_path, Project::GetActiveProject()->GetAssetDirectory());
 
+								if (!script_field) { script_field = &(*script_field_map)[field.name]; *script_field = *script_default_value_field; }
+								script_field->SetValue(dropped_asset_handle);
+							}
+							else
+							{
+								L_APP_WARN("Invalid asset type '{}' for field '{}'.", dropped_path.extension().string(), field.name);
+							}
 						}
 						ImGui::EndDragDropTarget();
 					}

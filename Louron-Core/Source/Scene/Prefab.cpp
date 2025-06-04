@@ -15,6 +15,9 @@
 #include "Components/Physics/Collider Components.h"
 #include "Components/Physics/Rigidbody Component.h"
 
+#include "../Animation/Skeleton.h"
+#include "../Animation/Humanoid.h"
+
 // C++ Standard Library Headers
 #include <fstream>
 

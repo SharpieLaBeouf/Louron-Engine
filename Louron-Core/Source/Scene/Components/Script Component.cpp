@@ -93,7 +93,10 @@ namespace Louron
                         case ScriptFieldType::StaticMesh:
                         case ScriptFieldType::AudioClip:
                         case ScriptFieldType::Skeleton:
-                        case ScriptFieldType::AnimationClip:    out << YAML::Key << "Data" << YAML::Value << entity_fields->at(name).GetValue<uint32_t>();          break;
+                        case ScriptFieldType::AnimationClip:    
+                        case ScriptFieldType::StateMachine:    
+                        case ScriptFieldType::Humanoid:    
+                        case ScriptFieldType::HumanoidMask:     out << YAML::Key << "Data" << YAML::Value << entity_fields->at(name).GetValue<uint32_t>();          break;
 
                         case ScriptFieldType::Float:            out << YAML::Key << "Data" << YAML::Value << entity_fields->at(name).GetValue<float>();             break;
                         case ScriptFieldType::Double:           out << YAML::Key << "Data" << YAML::Value << entity_fields->at(name).GetValue<double>();            break;
@@ -375,20 +378,22 @@ namespace Louron
                             case ScriptFieldType::StaticMesh:
                             case ScriptFieldType::AudioClip:
                             case ScriptFieldType::Skeleton:
-                            case ScriptFieldType::AnimationClip: field_instance.SetValue(script_field_node["Data"].as<uint32_t>());                 break;
+                            case ScriptFieldType::AnimationClip:    
+                            case ScriptFieldType::Humanoid:    
+                            case ScriptFieldType::HumanoidMask:     field_instance.SetValue(script_field_node["Data"].as<uint32_t>());                      break;
 
-                            case ScriptFieldType::Float:    field_instance.SetValue(script_field_node["Data"].as<float>());                         break;
-                            case ScriptFieldType::Double:   field_instance.SetValue(script_field_node["Data"].as<double>());                        break;
-                            case ScriptFieldType::Int8:     field_instance.SetValue(script_field_node["Data"].as<int8_t>());                        break;
-                            case ScriptFieldType::Int16:    field_instance.SetValue(script_field_node["Data"].as<int16_t>());                       break;
-                            case ScriptFieldType::Int32:    field_instance.SetValue(script_field_node["Data"].as<int32_t>());                       break;
-                            case ScriptFieldType::Int64:    field_instance.SetValue(script_field_node["Data"].as<int64_t>());                       break;
-                            case ScriptFieldType::UInt8:    field_instance.SetValue(script_field_node["Data"].as<uint8_t>());                       break;
-                            case ScriptFieldType::UInt16:   field_instance.SetValue(script_field_node["Data"].as<uint16_t>());                      break;
-                            case ScriptFieldType::UInt32:   field_instance.SetValue(script_field_node["Data"].as<uint32_t>());                      break;
-                            case ScriptFieldType::UInt64:   field_instance.SetValue(script_field_node["Data"].as<uint64_t>());                      break;
-                            case ScriptFieldType::Bool:     field_instance.SetValue(script_field_node["Data"].as<bool>());                          break;
-                            case ScriptFieldType::CString:  field_instance.SetCStringValue(script_field_node["Data"].as<std::string>().c_str());    break;
+                            case ScriptFieldType::Float:            field_instance.SetValue(script_field_node["Data"].as<float>());                         break;
+                            case ScriptFieldType::Double:           field_instance.SetValue(script_field_node["Data"].as<double>());                        break;
+                            case ScriptFieldType::Int8:             field_instance.SetValue(script_field_node["Data"].as<int8_t>());                        break;
+                            case ScriptFieldType::Int16:            field_instance.SetValue(script_field_node["Data"].as<int16_t>());                       break;
+                            case ScriptFieldType::Int32:            field_instance.SetValue(script_field_node["Data"].as<int32_t>());                       break;
+                            case ScriptFieldType::Int64:            field_instance.SetValue(script_field_node["Data"].as<int64_t>());                       break;
+                            case ScriptFieldType::UInt8:            field_instance.SetValue(script_field_node["Data"].as<uint8_t>());                       break;
+                            case ScriptFieldType::UInt16:           field_instance.SetValue(script_field_node["Data"].as<uint16_t>());                      break;
+                            case ScriptFieldType::UInt32:           field_instance.SetValue(script_field_node["Data"].as<uint32_t>());                      break;
+                            case ScriptFieldType::UInt64:           field_instance.SetValue(script_field_node["Data"].as<uint64_t>());                      break;
+                            case ScriptFieldType::Bool:             field_instance.SetValue(script_field_node["Data"].as<bool>());                          break;
+                            case ScriptFieldType::CString:          field_instance.SetCStringValue(script_field_node["Data"].as<std::string>().c_str());    break;
 
                             // Vectors
                             case ScriptFieldType::Vector2:

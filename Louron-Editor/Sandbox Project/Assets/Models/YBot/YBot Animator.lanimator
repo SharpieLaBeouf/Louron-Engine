@@ -1,11 +1,11 @@
 Animation Parameters:
-  - Name: IsJumping
-    Hash: 3340040579
-    Type: Bool
-    Value: 0
   - Name: Velocity X
     Hash: 3414385514
     Type: Float
+    Value: 0
+  - Name: IsJumping
+    Hash: 3340040579
+    Type: Bool
     Value: 0
   - Name: IsDead
     Hash: 2309383031
@@ -173,7 +173,7 @@ State Machine Layers:
         Conditions:
           []
   - Layer Name: Crouch Additive Layer
-    Layer Weight: 1
+    Layer Weight: 0
     Layer Blend Type: Additive
     Layer Sync Layer: false
     Layer Sync Index: 18446744073709551615

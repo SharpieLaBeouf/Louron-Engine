@@ -959,17 +959,17 @@ Entities:
         - 2898972917
     TransformComponent:
       Translation: [0, 0, 0]
-      Rotation: [-0.7071067, 0.7071068, 0, 0]
-      Scale: [1, 1, 1]
+      Rotation: [-0.7071067, 0.7071069, 0, 0]
+      Scale: [1, 0.99999994, 0.99999994]
   - Entity: 1900330409
     TagComponent:
       Tag: YBot Non Root Motion
     HierarchyComponent:
       Parent: 4294967295
       Children:
-        - 1385795903
         - 3168732996
         - 2898167317
+        - 1385795903
     ScriptComponent:
       Script_1:
         Active: true
@@ -978,6 +978,9 @@ Entities:
           - Name: shoot_entity
             Type: Entity
             Data: 2898167317
+          - Name: humanoid
+            Type: Humanoid
+            Data: 1389110637
           - Name: bullet_prefab
             Type: Prefab
             Data: 3878583585

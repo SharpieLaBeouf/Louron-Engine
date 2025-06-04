@@ -37,9 +37,15 @@ namespace Louron {
 		{ ".compute",	AssetType::Compute_Shader },
 		{ ".glsl",		AssetType::Shader },
 		{ ".shader",	AssetType::Shader },
-		{ ".lshader",	AssetType::Shader }
+		{ ".lshader",	AssetType::Shader },
+
+		{ ".lhumanoid",		AssetType::Humanoid },
+		{ ".lhumanoidmask",	AssetType::HumanoidMask }
 
 	};
+
+	class Humanoid;
+	class HumanoidMask;
 
 	namespace Animation
 	{
@@ -99,6 +105,12 @@ namespace Louron {
 				}
 				else if constexpr (std::is_same_v<TAssetType, Animation::StateMachine>) {
 					expectedType = AssetType::AnimationStateMachine;
+				}
+				else if constexpr (std::is_same_v<TAssetType, Humanoid>) {
+					expectedType = AssetType::Humanoid;
+				}
+				else if constexpr (std::is_same_v<TAssetType, HumanoidMask>) {
+					expectedType = AssetType::HumanoidMask;
 				}
 				else if constexpr (std::is_same_v<TAssetType, SkyboxMaterial>) {
 					expectedType = AssetType::Material_Skybox; // Check this first so we can return Material_Skybox opposed to Material_Standard
@@ -163,6 +175,12 @@ namespace Louron {
 			}
 			else if constexpr (std::is_same_v<TAssetType, Animation::StateMachine>) {
 				return AssetType::AnimationStateMachine;
+			}
+			else if constexpr (std::is_same_v<TAssetType, Humanoid>) {
+				return AssetType::Humanoid;
+			}
+			else if constexpr (std::is_same_v<TAssetType, HumanoidMask>) {
+				return AssetType::HumanoidMask;
 			}
 			else if constexpr (std::is_same_v<TAssetType, SkyboxMaterial>) {
 				return AssetType::Material_Skybox; // Check this first so we can return Material_Skybox opposed to Material_Standard

@@ -12,9 +12,12 @@
 
 using namespace Louron;
 
-static const std::unordered_map<std::string, bool> s_SupportedOpenInEditorFiles = {
-	{ ".lscene", true },
-	{ ".lanimator", true}
+#include <unordered_set>
+static const std::unordered_set<std::string> s_SupportedOpenInEditorFiles = {
+	".lscene",
+	".lanimator",
+	".lhumanoid",
+	".lhumanoidmask"
 };
 
 ContentBrowserPanel::ContentBrowserPanel() {
@@ -406,21 +409,48 @@ void ContentBrowserPanel::OnImGuiRender(LouronEditorLayer& editor_layer) {
 							ImGui::EndDragDropSource();
 						}
 						
-						if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+						if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) 
+						{
+							auto extension = entry.path().extension().string();
+							bool supported = s_SupportedOpenInEditorFiles.contains(extension);
 
-							// If we support opening files in the editor, call the appropriate method to open that file
-							auto supported_type = s_SupportedOpenInEditorFiles.find(entry.path().extension().string());
-							if (supported_type != s_SupportedOpenInEditorFiles.end() && supported_type->first == ".lscene") 
+							if (supported)
 							{
-								editor_layer.OpenScene(entry.path());
+								if (extension == ".lscene")
+								{
+									editor_layer.OpenScene(entry.path());
+								}
+								else if (extension == ".lanimator")
+								{
+									AnimatorPanel::SetAnimatorAssetContext(Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(entry.path(), Project::GetActiveProject()->GetAssetDirectory()));
+									editor_layer.m_ActiveGUIWindows["AnimatorStateMachine"] = true;
+								}
+								else if (extension == ".lhumanoid")
+								{
+									
+									editor_layer.m_HumanoidContext = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(entry.path(), Project::GetActiveProject()->GetAssetDirectory());
+									editor_layer.m_ActiveGUIWindows["Humanoid Configuration"] = true;
+								}
+								else if (extension == ".lhumanoidmask")
+								{
+									editor_layer.m_HumanoidMaskContext = Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(entry.path(), Project::GetActiveProject()->GetAssetDirectory());
+									editor_layer.m_ActiveGUIWindows["Humanoid Mask Configuration"] = true;
+								}
 							}
-							else if (supported_type != s_SupportedOpenInEditorFiles.end() && supported_type->first == ".lanimator")
-							{
-								AnimatorPanel::SetAnimatorAssetContext(Project::GetStaticEditorAssetManager()->GetHandleFromFilePath(entry.path(), Project::GetActiveProject()->GetAssetDirectory()));
-								editor_layer.m_ActiveGUIWindows["AnimatorStateMachine"] = true;
-							}
-							else { // If not, we will system call the file to open in default system application
-								std::string command = "start \"\" \"" + entry.path().string() + "\"";
+							else 
+							{ 
+								// Open with default system application
+								std::string command;
+
+							#if defined(L_PLATFORM_WINDOWS)
+								command = "start \"\" \"" + entry.path().string() + "\"";
+							#elif defined(L_PLATFORM_LINUX)
+								command = "xdg-open \"" + entry.path().string() + "\"";
+							#else
+								// Unsupported platform
+								L_APP_ERROR("Opening files with default application is not supported on this platform.");
+							#endif
+
 								std::system(command.c_str());
 							}
 

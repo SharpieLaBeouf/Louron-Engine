@@ -263,6 +263,9 @@ namespace Louron
                 case ScriptFieldType::AudioClip:
                 case ScriptFieldType::Skeleton:
                 case ScriptFieldType::AnimationClip:
+                case ScriptFieldType::StateMachine:
+                case ScriptFieldType::Humanoid:
+                case ScriptFieldType::HumanoidMask:
                 {
                     uint32_t asset_handle = *reinterpret_cast<const uint32_t*>(field_instance.GetRawBuffer());
 

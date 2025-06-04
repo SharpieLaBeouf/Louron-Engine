@@ -15,6 +15,8 @@
 #include "../Scene/Components/SkinnedMeshComponent.h"
 
 #include "../Animation/Animations.h"
+#include "../Animation/Skeleton.h"
+#include "../Animation/Humanoid.h"
 #include "../Animation/Animation State Machine.h"
 #include "../OpenGL/Mesh.h"
 
@@ -32,8 +34,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-namespace Louron {
-
+namespace Louron 
+{
 
 #pragma region Asset Import
 
@@ -56,7 +58,10 @@ namespace Louron {
 		{ AssetType::Shader,					ShaderImporter::ImportShader },
 		{ AssetType::Compute_Shader,			ShaderImporter::ImportComputeShader },
 		
-		{ AssetType::AnimationStateMachine,		AnimationStateMachineImporter::ImportStateMachine }
+		{ AssetType::AnimationStateMachine,		AnimationStateMachineImporter::ImportStateMachine },
+
+		{ AssetType::Humanoid,					HumanoidImporter::ImportHumanoid },
+		{ AssetType::HumanoidMask,				HumanoidImporter::ImportHumanoidMask }
 	};
 
 	std::shared_ptr<Asset> AssetImporter::ImportAsset(AssetMap* asset_map, AssetRegistry* asset_reg, AssetHandle handle, const AssetMetaData& metadata, const std::filesystem::path& project_asset_directory)
@@ -1243,5 +1248,68 @@ namespace Louron {
     }
 
 #pragma endregion
+
+#pragma region Humanoid
+
+    std::shared_ptr<Humanoid> HumanoidImporter::ImportHumanoid(const AssetImporter::ImportParams &import_params)
+    {
+        return LoadHumanoid(import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
+    }
+
+    std::shared_ptr<HumanoidMask> HumanoidImporter::ImportHumanoidMask(const AssetImporter::ImportParams &import_params)
+    {
+        return LoadHumanoidMask(import_params.asset_meta_data.IsCustomAsset ? import_params.asset_meta_data.FilePath : Project::GetActiveProject()->GetAssetDirectory() / import_params.asset_meta_data.FilePath);
+    }
+
+    std::shared_ptr<Humanoid> HumanoidImporter::LoadHumanoid(const std::filesystem::path &path)
+    {
+		YAML::Node data;
+
+		if (!std::filesystem::exists(path)) return nullptr;
+
+		try 
+		{
+			data = YAML::LoadFile(path.string());
+		}
+		catch (YAML::ParserException e) 
+		{
+			L_CORE_ERROR("YAML-CPP Failed to Load Humanoid File: '{}', {}", path.string(), e.what());
+			return nullptr;
+		}
+
+		if (!data) return nullptr;
+
+		std::shared_ptr<Humanoid> asset = std::make_shared<Humanoid>();
+		asset->Deserialise(data);
+
+        return asset;
+    }
+
+    std::shared_ptr<HumanoidMask> HumanoidImporter::LoadHumanoidMask(const std::filesystem::path &path)
+    {
+		YAML::Node data;
+
+		if (!std::filesystem::exists(path)) return nullptr;
+
+		try 
+		{
+			data = YAML::LoadFile(path.string());
+		}
+		catch (YAML::ParserException e) 
+		{
+			L_CORE_ERROR("YAML-CPP Failed to Load Humanoid Mask File: '{}', {}", path.string(), e.what());
+			return nullptr;
+		}
+
+		if (!data) return nullptr;
+
+		std::shared_ptr<HumanoidMask> asset = std::make_shared<HumanoidMask>();
+		asset->Deserialise(data);
+
+        return asset;
+    }
+
+#pragma endregion
+
 
 }

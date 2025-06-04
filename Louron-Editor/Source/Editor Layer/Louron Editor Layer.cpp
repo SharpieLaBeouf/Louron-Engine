@@ -111,7 +111,9 @@ void LouronEditorLayer::OnAttach()
 		{ "SceneProperties", false },
 		{ "ScriptCompilationWarningMessage", false },
 
-		{ "AnimatorStateMachine", true }
+		{ "AnimatorStateMachine", false },
+		{ "Humanoid Configuration", false },
+		{ "Humanoid Configuration", false }
 
 	};
 
@@ -855,6 +857,7 @@ void LouronEditorLayer::OnGuiRender() {
 		DisplaySceneProperties();
 
 		DisplayAnimatorStateMachineWindow();
+		DisplayHumanoidConfigurationWindow();
 
 	}
 	ImGui::End();
@@ -2746,6 +2749,147 @@ void LouronEditorLayer::DisplayAnimatorStateMachineWindow()
 	
 	AnimatorPanel::Draw(m_ActiveGUIWindows["AnimatorStateMachine"]);
 	
+}
+
+void LouronEditorLayer::DisplayHumanoidConfigurationWindow()
+{
+	if (!m_ActiveGUIWindows["Humanoid Configuration"]) 
+	{
+		return;
+	}
+	
+	if (!AssetManager::IsAssetHandleValid(m_HumanoidContext))
+	{
+		m_ActiveGUIWindows["Humanoid Configuration"] = false;
+	}
+
+	static bool s_Edited = false;
+
+    ImGuiWindowFlags window_flags = (s_Edited) ? ImGuiWindowFlags_UnsavedDocument : 0;
+	if (ImGui::Begin("Humanoid Configuration", &m_ActiveGUIWindows["Humanoid Configuration"], window_flags)) 
+	{
+		auto humanoid_ref = AssetManager::GetAsset<Humanoid>(m_HumanoidContext);
+
+		if (!humanoid_ref || !AssetManager::IsAssetHandleValid(humanoid_ref->GetSkeletonHandle()))
+		{
+			ImGui::Text("No valid skeleton assigned.");
+			return;
+		}
+
+		auto skeleton = AssetManager::GetAsset<Skeleton>(humanoid_ref->GetSkeletonHandle());
+		if (!skeleton)
+		{
+			ImGui::Text("Failed to load skeleton.");
+			return;
+		}
+
+		auto& bone_map = humanoid_ref->GetBoneMap();
+		ImGui::Columns(2, nullptr, true);
+
+		// --- LEFT: Skeleton hierarchy with drag source ---
+		std::function<void(BoneLayout&)> draw_skeleton = [&](BoneLayout& bone)
+		{
+			auto opened = ImGui::TreeNodeEx(bone.BoneName.c_str(), (bone.BoneChildren.empty() ? ImGuiTreeNodeFlags_Leaf : 0));
+
+			if (ImGui::BeginDragDropSource())
+			{
+				ImGui::SetDragDropPayload("BONE_NAME", bone.BoneName.c_str(), bone.BoneName.size() + 1);
+				ImGui::TextUnformatted(bone.BoneName.c_str());
+				ImGui::EndDragDropSource();
+			}
+
+			if (opened)
+			{
+				for (auto& child : bone.BoneChildren)
+					draw_skeleton(child);
+
+				ImGui::TreePop();
+			}
+		};
+
+		ImGui::Text("Skeleton"); 
+		ImGui::Separator();
+		
+		// --- RIGHT: Humanoid bone mapping with drop target ---
+		ImGui::Text("Humanoid Mapping"); 
+		ImGui::Separator();
+
+		draw_skeleton(skeleton->SkeletonLayout);
+		
+		ImGui::NextColumn();
+
+		auto draw_bone_slot = [&](HumanoidBoneTypes type)
+		{
+			std::string label = Louron::Utils::BoneTypeToString(type);
+			std::string value = bone_map.contains(type) ? bone_map.at(type) : "";
+			ImGui::PushID((int)type);
+			ImGui::InputText(label.c_str(), value.data(), value.capacity() + 1, ImGuiInputTextFlags_ReadOnly);
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("BONE_NAME"))
+				{
+					std::string dropped((const char*)payload->Data);
+					humanoid_ref->SetMappedBone(type, dropped);
+					s_Edited = true;
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::PopID();
+		};
+
+		auto draw_section = [&](const char* name, std::initializer_list<HumanoidBoneTypes> bones)
+		{
+			if (ImGui::TreeNode(name))
+			{
+				for (auto b : bones) draw_bone_slot(b);
+				ImGui::TreePop();
+			}
+		};
+
+		draw_section("Torso",      { HumanoidBoneTypes::Hips, HumanoidBoneTypes::Spine, HumanoidBoneTypes::LowerChest, HumanoidBoneTypes::UpperChest });
+		draw_section("Head",       { HumanoidBoneTypes::Neck, HumanoidBoneTypes::Head, HumanoidBoneTypes::Jaw, HumanoidBoneTypes::LeftEye, HumanoidBoneTypes::RightEye });
+		draw_section("Left Arm",   { HumanoidBoneTypes::LeftShoulder, HumanoidBoneTypes::LeftUpperArm, HumanoidBoneTypes::LeftLowerArm, HumanoidBoneTypes::LeftHand,
+									HumanoidBoneTypes::LeftThumb_Upper, HumanoidBoneTypes::LeftThumb_Middle, HumanoidBoneTypes::LeftThumb_End,
+									HumanoidBoneTypes::LeftIndex_Upper, HumanoidBoneTypes::LeftIndex_Middle, HumanoidBoneTypes::LeftIndex_End,
+									HumanoidBoneTypes::LeftMiddle_Upper, HumanoidBoneTypes::LeftMiddle_Middle, HumanoidBoneTypes::LeftMiddle_End,
+									HumanoidBoneTypes::LeftRing_Upper, HumanoidBoneTypes::LeftRing_Middle, HumanoidBoneTypes::LeftRing_End,
+									HumanoidBoneTypes::LeftPinky_Upper, HumanoidBoneTypes::LeftPinky_Middle, HumanoidBoneTypes::LeftPinky_End });
+
+		draw_section("Right Arm",  { HumanoidBoneTypes::RightShoulder, HumanoidBoneTypes::RightUpperArm, HumanoidBoneTypes::RightLowerArm, HumanoidBoneTypes::RightHand,
+									HumanoidBoneTypes::RightThumb_Upper, HumanoidBoneTypes::RightThumb_Middle, HumanoidBoneTypes::RightThumb_End,
+									HumanoidBoneTypes::RightIndex_Upper, HumanoidBoneTypes::RightIndex_Middle, HumanoidBoneTypes::RightIndex_End,
+									HumanoidBoneTypes::RightMiddle_Upper, HumanoidBoneTypes::RightMiddle_Middle, HumanoidBoneTypes::RightMiddle_End,
+									HumanoidBoneTypes::RightRing_Upper, HumanoidBoneTypes::RightRing_Middle, HumanoidBoneTypes::RightRing_End,
+									HumanoidBoneTypes::RightPinky_Upper, HumanoidBoneTypes::RightPinky_Middle, HumanoidBoneTypes::RightPinky_End });
+
+		draw_section("Left Leg",   { HumanoidBoneTypes::LeftUpperLeg, HumanoidBoneTypes::LeftLowerLeg, HumanoidBoneTypes::LeftFoot, HumanoidBoneTypes::LeftToe });
+		draw_section("Right Leg",  { HumanoidBoneTypes::RightUpperLeg, HumanoidBoneTypes::RightLowerLeg, HumanoidBoneTypes::RightFoot, HumanoidBoneTypes::RightToe });
+
+		ImGui::Columns(1);
+    
+		if (Engine::Get().GetInput().GetKey(GLFW_KEY_LEFT_CONTROL) && ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_RootAndChildWindows))
+		{
+			if (Engine::Get().GetInput().GetKeyDown(GLFW_KEY_S))
+			{
+				auto meta_data = Project::GetStaticEditorAssetManager()->GetMetadata(m_HumanoidContext);
+				YAML::Emitter out;
+				{
+					out << YAML::BeginMap;
+	
+					humanoid_ref->Serialise(out);
+	
+					out << YAML::EndMap;
+				}
+	
+				std::ofstream fout(Project::GetActiveProject()->GetAssetDirectory() / meta_data.FilePath); // Create the file
+				fout << out.c_str(); // Save
+				fout.close();
+
+				s_Edited = false;
+			}
+		}
+	}
+	ImGui::End();
 }
 
 void LouronEditorLayer::DisplayProjectProperties() {

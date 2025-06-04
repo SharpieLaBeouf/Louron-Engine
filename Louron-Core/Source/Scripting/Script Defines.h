@@ -95,6 +95,8 @@ namespace Louron
         Skeleton,
         AnimationClip,
         StateMachine,
+        Humanoid,
+        HumanoidMask,
 
         // Unknown
         Unknown

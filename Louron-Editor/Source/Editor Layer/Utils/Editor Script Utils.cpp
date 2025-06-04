@@ -322,7 +322,9 @@ namespace Utils
             {"audioclip", "FieldType::AudioClip"},
             {"skeleton", "FieldType::Skeleton"},
             {"animationclip", "FieldType::AnimationClip"},
-            {"statemachine", "FieldType::StateMachine"},
+            {"animatormachine", "FieldType::StateMachine"},
+            {"humanoid", "FieldType::Humanoid"},
+            {"humanoidmask", "FieldType::HumanoidMask"},
 
             // Primitive Types
             {"float", "FieldType::Float"},

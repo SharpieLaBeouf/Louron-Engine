@@ -8,6 +8,8 @@
 
 #include "../Animation/Animations.h"
 #include "../Animation/Animation State Machine.h"
+#include "../Animation/Skeleton.h"
+#include "../Animation/Humanoid.h"
 
 #include "../Core/UUID.h"
 #include "../Core/Time.h"

@@ -317,6 +317,8 @@ namespace BackEndAPI
 		Skeleton,
 		AnimationClip,
         StateMachine,
+        Humanoid,
+        HumanoidMask,
 
 		// Unknown
 		Unknown

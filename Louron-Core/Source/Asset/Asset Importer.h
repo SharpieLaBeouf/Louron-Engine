@@ -18,11 +18,14 @@
 
 #include <entt/entt.hpp>
 
-namespace Louron {
-
+namespace Louron 
+{
 	class Scene;
 	class Prefab;
 	class Texture2D;
+
+	class Humanoid;
+	class HumanoidMask;
 
 	namespace Animation
 	{
@@ -155,6 +158,20 @@ namespace Louron {
 	
 		static std::shared_ptr<Animation::StateMachine> LoadStateMachine(const std::filesystem::path& path);
 
+	};
+
+	class HumanoidImporter
+	{
+	
+	public:
+		
+		static std::shared_ptr<Humanoid> 		ImportHumanoid(const AssetImporter::ImportParams& import_params);
+		static std::shared_ptr<HumanoidMask> 	ImportHumanoidMask(const AssetImporter::ImportParams& import_params);
+
+	private:
+
+		static std::shared_ptr<Humanoid>  		LoadHumanoid(const std::filesystem::path& path);
+		static std::shared_ptr<HumanoidMask>  	LoadHumanoidMask(const std::filesystem::path& path);
 	};
 
 }
